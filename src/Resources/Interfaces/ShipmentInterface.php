@@ -61,31 +61,20 @@ interface ShipmentInterface extends ResourceInterface
     public function setDescription($description);
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getDescription();
 
     /**
-     * @param int $priceAmount
+     * @param int $price
      * @return $this
      */
-    public function setPriceAmount($priceAmount);
+    public function setPrice($price);
 
     /**
      * @return int
      */
-    public function getPriceAmount();
-
-    /**
-     * @param string $priceCurrency
-     * @return $this
-     */
-    public function setPriceCurrency($priceCurrency);
-
-    /**
-     * @return string
-     */
-    public function getPriceCurrency();
+    public function getPrice();
 
     /**
      * @param int $insuranceAmount
@@ -99,15 +88,15 @@ interface ShipmentInterface extends ResourceInterface
     public function getInsuranceAmount();
 
     /**
-     * @param string $insuranceCurrency
+     * @param string $currency
      * @return $this
      */
-    public function setInsuranceCurrency($insuranceCurrency);
+    public function setCurrency($currency);
 
     /**
      * @return string
      */
-    public function getInsuranceCurrency();
+    public function getCurrency();
 
     /**
      * @param string $barcode

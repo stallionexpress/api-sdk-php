@@ -2,7 +2,7 @@
 
 namespace MyParcelCom\Sdk\Resources\Interfaces;
 
-interface PositionInterface extends JsonInterface
+interface PositionInterface extends \JsonSerializable
 {
     const UNIT_KILOMETER = 'kilometers';
     const UNIT_METER = 'meters';

@@ -10,7 +10,6 @@ interface PickUpDropOffLocationInterface extends ResourceInterface
      */
     public function setId($id);
 
-
     /**
      * @param AddressInterface $address
      * @return $this

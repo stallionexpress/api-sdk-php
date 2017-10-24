@@ -8,6 +8,7 @@ use MyParcelCom\Sdk\Resources\Interfaces\FileInterface;
 interface LabelCombinerInterface
 {
     const PAGE_SIZE_A4 = 'A4';
+    const PAGE_SIZE_A5 = 'A5';
     const PAGE_SIZE_A6 = 'A6';
 
     const LOCATION_TOP = 1;
@@ -34,9 +35,12 @@ interface LabelCombinerInterface
      * - LOCATION_BOTTOM_LEFT
      * - LOCATION_BOTTOM_RIGHT
      *
+     * PAGE_SIZE_A5
+     * - LOCATION_TOP
+     * - LOCATION_BOTTOM
+     *
      * PAGE_SIZE_A6
-     * - LOCAIOTN_TOP
-     * - LOCAIOTN_BOTTOM
+     * - LOCATION_TOP
      *
      * @param FileInterface[] $files
      * @param string          $pageSize

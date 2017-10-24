@@ -6,6 +6,7 @@ use MyParcelCom\Sdk\Authentication\AuthenticatorInterface;
 use MyParcelCom\Sdk\Exceptions\MyParcelComException;
 use MyParcelCom\Sdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\PickUpDropOffLocationInterface;
+use MyParcelCom\Sdk\Resources\Interfaces\RegionInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ShopInterface;
@@ -22,6 +23,16 @@ interface MyParcelComApiInterface
     public function authenticate(AuthenticatorInterface $authenticator);
 
     /**
+     * Get an array with all the regions, optionally regions can be filtered by
+     * country code and region code.
+     *
+     * @param string|null $countryCode
+     * @param string|null $regionCode
+     * @return RegionInterface[]
+     */
+    public function getRegions($countryCode = null, $regionCode = null);
+
+    /**
      * Get all the carriers from the API.
      *
      * @throws MyParcelComException
@@ -30,14 +41,23 @@ interface MyParcelComApiInterface
     public function getCarriers();
 
     /**
-     * Get the pick up/drop off locations for a specific carrier. If no carrier
+     * Get the pick up/drop off locations around a given location. If no carrier
      * is given, the default carrier is used.
      *
+     * @param string                $countryCode
+     * @param string                $postalCode
+     * @param string|null           $streetName
+     * @param string|null           $streetNumber
      * @param CarrierInterface|null $carrier
-     * @throws MyParcelComException
      * @return PickUpDropOffLocationInterface[]
      */
-    public function getPickUpDropOffLocations(CarrierInterface $carrier = null);
+    public function getPickUpDropOffLocations(
+        $countryCode,
+        $postalCode,
+        $streetName = null,
+        $streetNumber = null,
+        CarrierInterface $carrier = null
+    );
 
     /**
      * Get the shops from the API.
@@ -56,6 +76,15 @@ interface MyParcelComApiInterface
      * @return ServiceInterface[]
      */
     public function getServices(ShipmentInterface $shipment = null);
+
+    /**
+     * Get all the services that are available for the given carrier.
+     *
+     * @param CarrierInterface $carrier
+     * @throws MyParcelComException
+     * @return ServiceInterface[]
+     */
+    public function getServicesForCarrier(CarrierInterface $carrier);
 
     /**
      * Get shipments for a given shop. Id no shop is given the default shop is

@@ -2,7 +2,7 @@
 
 namespace MyParcelCom\Sdk\Resources\Interfaces;
 
-interface AddressInterface extends JsonInterface
+interface AddressInterface extends \JsonSerializable
 {
     /**
      * @return string|null

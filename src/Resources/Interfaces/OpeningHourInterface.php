@@ -4,7 +4,7 @@ namespace MyParcelCom\Sdk\Resources\Interfaces;
 
 use DateTime;
 
-interface OpeningHourInterface extends JsonInterface
+interface OpeningHourInterface extends \JsonSerializable
 {
     /**
      * @param string $day
