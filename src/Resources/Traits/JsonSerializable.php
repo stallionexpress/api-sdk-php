@@ -15,7 +15,8 @@ trait JsonSerializable
     }
 
     /**
-     * Helper function to recursively
+     * Helper function to recursively convert all values in an array to scalar
+     * values or arrays with scalar values.
      *
      * @param array $arrayValues
      * @return array
@@ -28,8 +29,8 @@ trait JsonSerializable
                 $array[$key] = $value;
             } elseif (is_array($value)) {
                 $array[$key] = $this->arrayValuesToArray($value);
-            } elseif (method_exists($value, 'toArray')) {
-                $array[$key] = $value->toArray();
+            } elseif (method_exists($value, 'jsonSerialize')) {
+                $array[$key] = $value->jsonSerialize();
             }
         }
 
