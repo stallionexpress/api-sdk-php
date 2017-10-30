@@ -54,15 +54,4 @@ interface RegionInterface extends ResourceInterface
      * @return string
      */
     public function getName();
-
-    /**
-     * @param RegionInterface $region
-     * @return $this
-     */
-    public function setParentRegion(RegionInterface $region);
-
-    /**
-     * @return RegionInterface|null
-     */
-    public function getParentRegion();
 }

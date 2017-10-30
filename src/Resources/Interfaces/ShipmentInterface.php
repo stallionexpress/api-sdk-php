@@ -121,6 +121,17 @@ interface ShipmentInterface extends ResourceInterface
     public function getWeight();
 
     /**
+     * @param ShopInterface $shop
+     * @return $this
+     */
+    public function setShop(ShopInterface $shop);
+
+    /**
+     * @return ShopInterface
+     */
+    public function getShop();
+
+    /**
      * @param ServiceInterface $service
      * @return $this
      */

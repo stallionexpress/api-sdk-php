@@ -64,6 +64,15 @@ interface FileInterface extends ResourceInterface
     public function getFormats();
 
     /**
+     * Set the stream of this file for given mime type.
+     *
+     * @param StreamInterface $stream
+     * @param string          $mimeType
+     * @return $this
+     */
+    public function setStream(StreamInterface $stream, $mimeType);
+
+    /**
      * Get the a stream for this file. If no mime type supplied one is chosen in
      * the following order from the available formats:
      * application/pdf > image/png > image/jpeg > other
@@ -74,6 +83,15 @@ interface FileInterface extends ResourceInterface
     public function getStream($mimeType = null);
 
     /**
+     * Set the base64 encoded data of this file for given mime type.
+     *
+     * @param string $data
+     * @param string $mimeType
+     * @return $this
+     */
+    public function setBase64Data($data, $mimeType);
+
+    /**
      * Get the file data as a base64 encoded string. If no mime type supplied
      * one is chosen in the following order from the available formats:
      * application/pdf > image/png > image/jpeg > other
@@ -82,6 +100,15 @@ interface FileInterface extends ResourceInterface
      * @return string
      */
     public function getBase64Data($mimeType = null);
+
+    /**
+     * Set the path where this file can be found for given mime type.
+     *
+     * @param string $path
+     * @param string $mimeType
+     * @return $this
+     */
+    public function setTemporaryFilePath($path, $mimeType);
 
     /**
      * Get a path for this file saved in a temporary location on the filesystem.

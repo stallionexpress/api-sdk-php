@@ -68,6 +68,15 @@ interface MyParcelComApiInterface
     public function getShops();
 
     /**
+     * Get the default shop that will be used when interacting with the API and
+     * no specific shop has been set.
+     *
+     * @throws MyParcelComException
+     * @return ShipmentInterface
+     */
+    public function getDefaultShop();
+
+    /**
      * Get all services that can be used for given shipment. If no shipment is
      * provided, all available services are returned.
      *
