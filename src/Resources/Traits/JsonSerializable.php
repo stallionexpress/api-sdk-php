@@ -2,6 +2,8 @@
 
 namespace MyParcelCom\Sdk\Resources\Traits;
 
+use MyParcelCom\Sdk\Utils\StringUtils;
+
 trait JsonSerializable
 {
     /**
@@ -11,7 +13,38 @@ trait JsonSerializable
      */
     public function jsonSerialize()
     {
-        return $this->arrayValuesToArray(get_object_vars($this));
+        $json = $this->arrayValuesToArray(get_object_vars($this));
+
+        if (isset($json['attributes']) && $this->isEmpty($json['attributes'])) {
+            unset($json['attributes']);
+        }
+        if (isset($json['relationships']) && $this->isEmpty($json['relationships'])) {
+            unset($json['relationships']);
+        }
+
+        return $json;
+    }
+
+    /**
+     * @param mixed $values
+     * @return bool
+     */
+    private function isEmpty($values)
+    {
+        if ($values === [] || $values === null) {
+            return true;
+        }
+
+        if (!is_array($values)) {
+            return false;
+        }
+
+        $empty = true;
+        foreach ($values as $value) {
+            $empty = $empty && $this->isEmpty($value);
+        }
+
+        return $empty;
     }
 
     /**
@@ -25,6 +58,8 @@ trait JsonSerializable
     {
         $array = [];
         foreach ($arrayValues as $key => $value) {
+            $key = StringUtils::camelToSnakeCase($key);
+
             if (is_scalar($value)) {
                 $array[$key] = $value;
             } elseif (is_array($value)) {

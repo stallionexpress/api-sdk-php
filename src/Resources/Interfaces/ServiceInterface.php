@@ -76,6 +76,12 @@ interface ServiceInterface extends ResourceInterface
     public function setContracts(array $contracts);
 
     /**
+     * @param ContractInterface $contract
+     * @return $this
+     */
+    public function addContract(ContractInterface $contract);
+
+    /**
      * @return ContractInterface[]
      */
     public function getContracts();

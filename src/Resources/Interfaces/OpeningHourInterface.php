@@ -18,10 +18,10 @@ interface OpeningHourInterface extends \JsonSerializable
     public function getDay();
 
     /**
-     * @param DateTime $open
+     * @param DateTime|string $open
      * @return $this
      */
-    public function setOpen(DateTime $open);
+    public function setOpen($open);
 
     /**
      * @return DateTime
@@ -29,10 +29,10 @@ interface OpeningHourInterface extends \JsonSerializable
     public function getOpen();
 
     /**
-     * @param DateTime $closed
+     * @param DateTime|string $closed
      * @return $this
      */
-    public function setClosed(DateTime $closed);
+    public function setClosed($closed);
 
     /**
      * @return DateTime

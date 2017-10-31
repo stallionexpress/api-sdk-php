@@ -11,6 +11,17 @@ interface PickUpDropOffLocationInterface extends ResourceInterface
     public function setId($id);
 
     /**
+     * @param string $code
+     * @return $this
+     */
+    public function setCode($code);
+
+    /**
+     * @return string
+     */
+    public function getCode();
+
+    /**
      * @param AddressInterface $address
      * @return $this
      */
@@ -26,6 +37,12 @@ interface PickUpDropOffLocationInterface extends ResourceInterface
      * @return $this
      */
     public function setOpeningHours(array $openingHours);
+
+    /**
+     * @param OpeningHourInterface $openingHour
+     * @return $this
+     */
+    public function addOpeningHour(OpeningHourInterface $openingHour);
 
     /**
      * @return OpeningHourInterface[]

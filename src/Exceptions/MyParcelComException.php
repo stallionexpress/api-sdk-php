@@ -2,6 +2,7 @@
 
 namespace MyParcelCom\Sdk\Exceptions;
 
+use MyParcelCom\Sdk\Traits\HasErrors;
 use RuntimeException;
 
 /**
@@ -14,5 +15,5 @@ use RuntimeException;
  */
 class MyParcelComException extends RuntimeException
 {
-
+    use HasErrors;
 }

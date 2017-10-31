@@ -95,13 +95,24 @@ interface AddressInterface extends \JsonSerializable
     /**
      * @return string|null
      */
-    public function getPerson();
+    public function getFirstName();
 
     /**
-     * @param string $person
+     * @param string $firstName
      * @return $this
      */
-    public function setPerson($person);
+    public function setFirstName($firstName);
+
+    /**
+     * @return string|null
+     */
+    public function getLastName();
+
+    /**
+     * @param string $lastName
+     * @return $this
+     */
+    public function setLastName($lastName);
 
     /**
      * @return string|null
