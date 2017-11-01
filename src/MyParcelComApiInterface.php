@@ -13,6 +13,12 @@ use MyParcelCom\Sdk\Resources\Interfaces\ShopInterface;
 
 interface MyParcelComApiInterface
 {
+    const PATH_CARRIERS = '/v1/carriers';
+    const PATH_PUDO_LOCATIONS = '/v1/carriers/{carrier_id}/pickup-dropoff-locations/{country_code}/{postal_code}';
+    const PATH_REGIONS = '/v1/regions';
+    const PATH_SERVICES = '/v1/services';
+    const PATH_SHOPS = '/v1/shops';
+
     /**
      * Authenticate to the API using the given authenticator.
      *

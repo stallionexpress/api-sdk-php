@@ -3,8 +3,8 @@
 namespace MyParcelCom\Sdk\Validators;
 
 use MyParcelCom\Sdk\Resources\Interfaces\ShipmentInterface;
-use MyParcelCom\Sdk\Utils\StringUtils;
 use MyParcelCom\Sdk\Traits\HasErrors;
+use MyParcelCom\Sdk\Utils\StringUtils;
 
 class ShipmentValidator implements ValidatorInterface
 {

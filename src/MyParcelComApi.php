@@ -4,6 +4,8 @@ namespace MyParcelCom\Sdk;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\RequestOptions;
 use MyParcelCom\Sdk\Authentication\AuthenticatorInterface;
 use MyParcelCom\Sdk\Exceptions\InvalidResourceException;
@@ -11,169 +13,19 @@ use MyParcelCom\Sdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ResourceFactoryInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ResourceInterface;
+use MyParcelCom\Sdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\Sdk\Resources\ResourceFactory;
 use MyParcelCom\Sdk\Validators\ShipmentValidator;
+use Psr\Http\Message\ResponseInterface;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Cache\Simple\FilesystemCache;
+use function GuzzleHttp\Promise\promise_for;
+use function GuzzleHttp\Promise\unwrap;
 
 class MyParcelComApi implements MyParcelComApiInterface
 {
-    private $regions = [
-        ['country_code' => 'NL', 'region_code' => 'NH'],
-        ['country_code' => 'NL', 'region_code' => 'ZH'],
-        ['country_code' => 'GB'],
-        ['country_code' => 'US'],
-        ['country_code' => 'DE'],
-        ['country_code' => 'BE'],
-        ['country_code' => 'FR'],
-        ['country_code' => 'AF'],
-        ['country_code' => 'AQ'],
-        ['country_code' => 'BS'],
-        ['country_code' => 'BH'],
-    ];
-
-    private $carriers = [
-        ['name' => 'Spring'],
-        ['name' => 'DPD'],
-    ];
-
-    private $shops = [
-        [
-            'id'              => 'shop-id-1',
-            'name'            => 'MyParcel.com Test Shop',
-            'billing_address' => [
-                'street_1'      => 'Some road',
-                'street_number' => 17,
-                'postal_code'   => '1GL HF1',
-                'city'          => 'Cardiff',
-                'country_code'  => 'GB',
-                'first_name'    => 'John',
-                'last_name'     => 'Doe',
-                'email'         => 'john@doe.com',
-                'phone_number'  => '+31 234 567 890',
-            ],
-            'return_address'  => [
-                'street_1'      => 'Some road',
-                'street_number' => 17,
-                'postal_code'   => '1GL HF1',
-                'city'          => 'Cardiff',
-                'country_code'  => 'GB',
-                'first_name'    => 'John',
-                'last_name'     => 'Doe',
-                'email'         => 'john@doe.com',
-                'phone_number'  => '+31 234 567 890',
-            ],
-            'region'          => [
-                'country_code' => 'GB',
-            ],
-        ],
-    ];
-
-    private $pudoLocations = [
-        [
-            'id'         => 'pudo-id',
-            'type'       => 'pickup-dropoff-locations',
-            'attributes' => [
-                'address'       => [
-                    'street_1'             => 'Diagonally',
-                    'street_number'        => '1',
-                    'street_number_suffix' => 'A',
-                    'postal_code'          => '1AR BR2',
-                    'city'                 => 'London',
-                    'region_code'          => 'NH',
-                    'country_code'         => 'AF',
-                    'first_name'           => 'Robert',
-                    'last_name'            => 'Drop Tables',
-                    'company'              => 'ACME co.',
-                    'email'                => 'rob@tables.com',
-                    'phone_number'         => '+31 (0)234 567 890',
-                ],
-                'opening_hours' => [
-                    [
-                        'day'    => 'Sunday',
-                        'open'   => '09:00',
-                        'closed' => '19:00',
-                    ],
-                ],
-                'position'      => [
-                    'latitude'  => 1.2345,
-                    'longitude' => 2.34567,
-                    'distance'  => 5000,
-                    'unit'      => 'meters',
-                ],
-            ],
-        ],
-        [
-            'id'         => 'pudo-id',
-            'type'       => 'pickup-dropoff-locations',
-            'attributes' => [
-                'address'       => [
-                    'street_1'             => 'Diagonally',
-                    'street_number'        => '2',
-                    'street_number_suffix' => 'A',
-                    'postal_code'          => '1AR BR2',
-                    'city'                 => 'London',
-                    'region_code'          => 'NH',
-                    'country_code'         => 'AF',
-                    'first_name'           => 'Robert',
-                    'last_name'            => 'Drop Tables',
-                    'company'              => 'ACME co.',
-                    'email'                => 'rob@tables.com',
-                    'phone_number'         => '+31 (0)234 567 890',
-                ],
-                'opening_hours' => [
-                    [
-                        'day'    => 'Sunday',
-                        'open'   => '09:00',
-                        'closed' => '19:00',
-                    ],
-                ],
-                'position'      => [
-                    'latitude'  => 1.2345,
-                    'longitude' => 2.34567,
-                    'distance'  => 5000,
-                    'unit'      => 'meters',
-                ],
-            ],
-        ],
-        [
-            'id'         => 'pudo-id',
-            'type'       => 'pickup-dropoff-locations',
-            'attributes' => [
-                'address'       => [
-                    'street_1'             => 'Diagonally',
-                    'street_number'        => '3',
-                    'street_number_suffix' => 'A',
-                    'postal_code'          => '1AR BR2',
-                    'city'                 => 'London',
-                    'region_code'          => 'NH',
-                    'country_code'         => 'AF',
-                    'first_name'           => 'Robert',
-                    'last_name'            => 'Drop Tables',
-                    'company'              => 'ACME co.',
-                    'email'                => 'rob@tables.com',
-                    'phone_number'         => '+31 (0)234 567 890',
-                ],
-                'opening_hours' => [
-                    [
-                        'day'    => 'Sunday',
-                        'open'   => '09:00',
-                        'closed' => '19:00',
-                    ],
-                ],
-                'position'      => [
-                    'latitude'  => 1.2345,
-                    'longitude' => 2.34567,
-                    'distance'  => 5000,
-                    'unit'      => 'meters',
-                ],
-            ],
-        ],
-
-    ];
-
     private $shipments = [
         'shipment-id-1' => [
             'id'                  => 'shipment-id-1',
@@ -272,26 +124,6 @@ class MyParcelComApi implements MyParcelComApiInterface
         ],
     ];
 
-    private $services = [
-        [
-            'id' => 'service-id-1',
-
-            'name'         => 'Parcel to Parcelshop',
-            'package_type' => 'parcel',
-            'carrier'      => [
-                'id' => 'c9ce29a4-6325-11e7-907b-a6006ad3dba0',
-            ],
-            'region_from'  => ['country_code' => 'GB'],
-
-            'region_to' => ['country_code' => 'GB'],
-            'contracts' => [
-                'groups'     => [],
-                'insurances' => [],
-                'options'    => [],
-            ],
-        ],
-    ];
-
     /** @var string */
     protected $apiUri;
     /** @var CacheInterface */
@@ -303,6 +135,8 @@ class MyParcelComApi implements MyParcelComApiInterface
 
     /** @var ClientInterface */
     private $client;
+    /** @var bool */
+    private $authRetry = false;
 
     /**
      * @param string                        $apiUri
@@ -340,14 +174,9 @@ class MyParcelComApi implements MyParcelComApiInterface
      */
     public function getRegions($countryCode = null, $regionCode = null)
     {
-        return array_map(function ($region) {
-            return $this->resourceFactory->create(ResourceInterface::TYPE_REGION, $region);
-        }, array_filter($this->regions, function ($region) use ($countryCode, $regionCode) {
-            return ($countryCode === null
-                    || $region['country_code'] === $countryCode)
-                && ($regionCode === null
-                    || $region['region_code'] === $regionCode);
-        }));
+        // These resources can be stored for a week.
+        return $this->getResourcesPromise($this->apiUri . self::PATH_REGIONS, 604800)
+            ->wait();
     }
 
     /**
@@ -355,9 +184,9 @@ class MyParcelComApi implements MyParcelComApiInterface
      */
     public function getCarriers()
     {
-        return array_map(function ($carrier) {
-            return $this->resourceFactory->create(ResourceInterface::TYPE_CARRIER, $carrier);
-        }, $this->carriers);
+        // These resources can be stored for a week.
+        return $this->getResourcesPromise($this->apiUri . self::PATH_CARRIERS, 604800)
+            ->wait();
     }
 
     /**
@@ -370,9 +199,44 @@ class MyParcelComApi implements MyParcelComApiInterface
         $streetNumber = null,
         CarrierInterface $carrier = null
     ) {
-        return array_map(function ($pudoLocation) {
-            return $this->resourceFactory->create(ResourceInterface::TYPE_PUDO_LOCATION, $pudoLocation);
-        }, $this->pudoLocations);
+        $carriers = $carrier ? [$carrier] : $this->getCarriers();
+
+        $uri = $this->apiUri
+            . str_replace(
+                [
+                '{country_code}',
+                '{postal_code}',
+                ],
+                [
+                $countryCode,
+                $postalCode,
+                ],
+                self::PATH_PUDO_LOCATIONS
+            );
+
+        if ($streetName || $streetNumber) {
+            $uri .= '?';
+        }
+        if ($streetName) {
+            $uri .= 'street=' . $streetName;
+        }
+        if ($streetNumber) {
+            $uri .= 'street_number=' . $streetNumber;
+        }
+
+        $promises = array_map(function (CarrierInterface $carrier) use ($uri) {
+            $carrierUri = str_replace('{carrier_id}', $carrier->getId(), $uri);
+
+            // These resources can be stored for a week.
+            return $this->getResourcesPromise($carrierUri, 604800)
+                ->otherwise(function (RequestException $reason) {
+                    return $this->handleRequestException($reason);
+                });
+        }, $carriers);
+
+        $resources = call_user_func_array('array_merge', unwrap($promises));
+
+        return $resources;
     }
 
     /**
@@ -380,9 +244,10 @@ class MyParcelComApi implements MyParcelComApiInterface
      */
     public function getShops()
     {
-        return array_map(function ($shop) {
-            return $this->resourceFactory->create(ResourceInterface::TYPE_SHOP, $shop);
-        }, $this->shops);
+        // These resources can be stored for a week. Or should be removed from
+        // cache when updated
+        return $this->getResourcesPromise($this->apiUri . self::PATH_SHOPS, 604800)
+            ->wait();
     }
 
     /**
@@ -390,7 +255,14 @@ class MyParcelComApi implements MyParcelComApiInterface
      */
     public function getDefaultShop()
     {
-        return reset($this->getShops());
+        $shops = $this->getShops();
+
+        // For now the oldest shop shop will be the default shop.
+        usort($shops, function (ShopInterface $shopA, ShopInterface $shopB) {
+            return $shopA->getCreatedAt()->getTimestamp() - $shopB->getCreatedAt()->getTimestamp();
+        });
+
+        return reset($shops);
     }
 
     /**
@@ -398,9 +270,19 @@ class MyParcelComApi implements MyParcelComApiInterface
      */
     public function getServices(ShipmentInterface $shipment = null)
     {
-        return array_map(function ($service) {
-            return $this->resourceFactory->create(ResourceInterface::TYPE_SERVICE, $service);
-        }, $this->services);
+        // Services can be cached for a week.
+        $services = $this->getResourcesPromise($this->apiUri . self::PATH_SERVICES, 604800)
+            ->wait();
+
+        if ($shipment !== null) {
+            $services = array_filter($services, function (ServiceInterface $service) {
+                // TODO
+
+                return true;
+            });
+        }
+
+        return $services;
     }
 
     /**
@@ -408,12 +290,14 @@ class MyParcelComApi implements MyParcelComApiInterface
      */
     public function getServicesForCarrier(CarrierInterface $carrier)
     {
-        return array_map(function ($service) use ($carrier) {
-            return $this->resourceFactory->create(ResourceInterface::TYPE_SERVICE, $service)->setCarrier($carrier);
-        }, $this->services);
+        // For now, we need to manually filter the services
+        return array_filter($this->getServices(), function (ServiceInterface $service) use ($carrier) {
+            return $service->getCarrier()->getId() === $carrier->getId();
+        });
     }
 
     /**
+     * @todo
      * {@inheritdoc}
      */
     public function getShipments(ShopInterface $shop = null)
@@ -426,6 +310,7 @@ class MyParcelComApi implements MyParcelComApiInterface
     }
 
     /**
+     * @todo
      * {@inheritdoc}
      */
     public function getShipment($id)
@@ -436,6 +321,7 @@ class MyParcelComApi implements MyParcelComApiInterface
     }
 
     /**
+     * @todo
      * {@inheritdoc}
      */
     public function createShipment(ShipmentInterface $shipment)
@@ -542,11 +428,123 @@ class MyParcelComApi implements MyParcelComApiInterface
             $this->client = new Client([
                 'base_uri'              => $this->apiUri,
                 RequestOptions::HEADERS => [
-                        'Content-Type' => 'application/vnd.api+json',
-                    ] + $this->authenticator->getAuthorizationHeader(),
+                    'Content-Type' => 'application/vnd.api+json',
+                ],
             ]);
         }
 
         return $this->client;
+    }
+
+    /**
+     * Get a promise that will return an array with resources requested from
+     * given url. A time-to-live can be specified for how long this request
+     * should be cached (defaults to 10 minutes).
+     *
+     * @param string $url
+     * @param int    $ttl
+     * @return PromiseInterface
+     * @internal param string $path
+     */
+    protected function getResourcesPromise($url, $ttl = 600)
+    {
+        $cacheKey = 'get.' . str_replace([':', '{', '}', '(', ')', '/', '\\', '@'], '-', $url);
+        if (($resources = $this->cache->get($cacheKey))) {
+            return promise_for($resources);
+        }
+
+        return $this->getHttpClient()->requestAsync(
+            'get',
+            $url,
+            [
+                RequestOptions::HEADERS => $this->authenticator->getAuthorizationHeader(),
+            ]
+        )->then(function (ResponseInterface $response) use ($cacheKey, $ttl) {
+            $json = \GuzzleHttp\json_decode((string)$response->getBody(), true);
+
+            $resources = $this->jsonToResources($json['data']);
+
+            // If there is no next link, we don't have to retrieve any more data
+            if (!isset($json['links']['next'])) {
+                return $resources;
+            }
+
+            return $this->getResourcesPromise($json['links']['next'])
+                ->then(function ($nextResources) use ($resources, $cacheKey, $ttl) {
+
+                    $combinedResources = array_merge($resources, $nextResources);
+
+                    $this->cache->set($cacheKey, $combinedResources, $ttl);
+
+                    return $combinedResources;
+                });
+        }, function (RequestException $reason) {
+            return $this->handleRequestException($reason);
+        });
+    }
+
+    /**
+     * Convert the data from a json request to an array of resources.
+     *
+     * @param array $json
+     * @return array
+     */
+    protected function jsonToResources(array $json)
+    {
+        $resources = [];
+
+        foreach ($json as $resourceData) {
+            $attributes = $this->flattenResourceData($resourceData);
+
+            $resources[] = $this->resourceFactory->create($resourceData['type'], $attributes);
+        }
+
+        return $resources;
+    }
+
+    /**
+     * Flattens the data of the resource into a single array, effectively
+     * removing the `attributes` and `relationships` arrays.
+     *
+     * @param array $resourceData
+     * @return array
+     */
+    private function flattenResourceData(array $resourceData)
+    {
+        $data = ['id' => $resourceData['id']];
+
+        if (isset($resourceData['attributes'])) {
+            $data += $resourceData['attributes'];
+        }
+
+        if (isset($resourceData['relationships'])) {
+            $data += array_map(function ($relationship) {
+                return $relationship['data'];
+            }, $resourceData['relationships']);
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param RequestException $exception
+     * @return PromiseInterface
+     */
+    protected function handleRequestException(RequestException $exception)
+    {
+        $response = $exception->getResponse();
+
+        if ($response->getStatusCode() !== 401 || $this->authRetry) {
+            // TODO actually do something
+            echo (string)$exception->getRequest()->getUri();
+            echo (string)$exception->getResponse()->getBody();
+
+            throw $exception;
+        }
+
+        $this->authRetry = true;
+        $this->authenticator->getAuthorizationHeader(true);
+
+        return $this->getResourcesPromise($exception->getRequest()->getUri());
     }
 }
