@@ -3,11 +3,10 @@
 namespace MyParcelCom\Sdk\Tests\Unit\Authentication;
 
 use GuzzleHttp\ClientInterface;
-use function GuzzleHttp\Promise\promise_for;
-use GuzzleHttp\Psr7\Response;
 use MyParcelCom\Sdk\Authentication\ClientCredentials;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
+use function GuzzleHttp\Promise\promise_for;
 
 class ClientCredentialsTest extends TestCase
 {
@@ -115,9 +114,11 @@ class ClientCredentialsTest extends TestCase
         ))->setHttpClient($httpClient);
 
         $this->assertEquals(
-            ['Authorization' => 'Bearer an-access-token-for-the-myparcelcom-api'],
+            [
+                'Authorization' => 'Bearer an-access-token-for-the-myparcelcom-api',
+                'Accept'        => 'application/vnd.api+json',
+            ],
             $clientCredentials->getAuthorizationHeader()
         );
     }
-
 }
