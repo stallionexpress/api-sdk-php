@@ -11,6 +11,7 @@ use MyParcelCom\Sdk\Authentication\AuthenticatorInterface;
 use MyParcelCom\Sdk\Exceptions\InvalidResourceException;
 use MyParcelCom\Sdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\FileInterface;
+use MyParcelCom\Sdk\Resources\Interfaces\RegionInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ResourceFactoryInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ServiceInterface;
@@ -175,8 +176,14 @@ class MyParcelComApi implements MyParcelComApiInterface
     public function getRegions($countryCode = null, $regionCode = null)
     {
         // These resources can be stored for a week.
-        return $this->getResourcesPromise($this->apiUri . self::PATH_REGIONS, 604800)
+        $regions = $this->getResourcesPromise($this->apiUri . self::PATH_REGIONS, 604800)
             ->wait();
+
+        // For now, we need to manually filter the regions.
+        return array_filter($regions, function (RegionInterface $region) use ($countryCode, $regionCode) {
+            return ($countryCode === null || $countryCode === $region->getCountryCode())
+                && ($regionCode === null || $regionCode === $region->getRegionCode());
+        });
     }
 
     /**
@@ -204,12 +211,12 @@ class MyParcelComApi implements MyParcelComApiInterface
         $uri = $this->apiUri
             . str_replace(
                 [
-                '{country_code}',
-                '{postal_code}',
+                    '{country_code}',
+                    '{postal_code}',
                 ],
                 [
-                $countryCode,
-                $postalCode,
+                    $countryCode,
+                    $postalCode,
                 ],
                 self::PATH_PUDO_LOCATIONS
             );

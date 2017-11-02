@@ -174,8 +174,32 @@ class MyParcelComApiTest extends TestCase
         $regions = $this->api->getRegions();
 
         $this->assertInternalType('array', $regions);
+        $this->assertCount(78, $regions);
         array_walk($regions, function ($region) {
             $this->assertInstanceOf(RegionInterface::class, $region);
+        });
+    }
+
+    /** @test */
+    public function testGetGbRegions()
+    {
+        $regions = $this->api->getRegions('GB');
+
+        $this->assertInternalType('array', $regions);
+        $this->assertCount(4, $regions);
+        array_walk($regions, function ($region) {
+            $this->assertInstanceOf(RegionInterface::class, $region);
+            $this->assertEquals('GB', $region->getCountryCode());
+        });
+
+        $ireland = $this->api->getRegions('GB', 'NIR');
+
+        $this->assertInternalType('array', $ireland);
+        $this->assertCount(1, $ireland);
+        array_walk($ireland, function ($region) {
+            $this->assertInstanceOf(RegionInterface::class, $region);
+            $this->assertEquals('GB', $region->getCountryCode());
+            $this->assertEquals('NIR', $region->getRegionCode());
         });
     }
 
