@@ -2,6 +2,8 @@
 
 namespace MyParcelCom\Sdk\Resources\Interfaces;
 
+use DateTime;
+
 interface ShopInterface extends ResourceInterface
 {
     /**
@@ -53,4 +55,15 @@ interface ShopInterface extends ResourceInterface
      * @return RegionInterface
      */
     public function getRegion();
+
+    /**
+     * @param int|DateTime $time
+     * @return $this
+     */
+    public function setCreatedAt($time);
+
+    /**
+     * @return DateTime
+     */
+    public function getCreatedAt();
 }

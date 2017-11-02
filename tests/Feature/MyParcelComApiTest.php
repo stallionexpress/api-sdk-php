@@ -15,6 +15,8 @@ use MyParcelCom\Sdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\Sdk\Resources\Shipment;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\ResponseInterface;
+use function GuzzleHttp\Promise\promise_for;
 
 class MyParcelComApiTest extends TestCase
 {
@@ -43,9 +45,38 @@ class MyParcelComApiTest extends TestCase
             ->disableArgumentCloning()
             ->disallowMockingUnknownTypes()
             ->getMock();
+        $this->client
+            ->method('requestAsync')
+            ->willReturnCallback(function ($method, $uri, $options) {
+                $filePath = implode(DIRECTORY_SEPARATOR, [
+                        dirname(dirname(__FILE__)),
+                        'Stubs',
+                        $method,
+                        str_replace([':', '{', '}', '(', ')', '/', '\\', '@', '?', '[', ']', '=', '&'], '-', $uri),
+                    ]) . '.json';
 
-        $this->api = (new MyParcelComApi())
-            ->setHttpClient($this->client);
+                if (!file_exists($filePath)) {
+                    throw new \RuntimeException(sprintf(
+                        'File with path `%s` does not exist, please create this file with valid response data',
+                        $filePath
+                    ));
+                }
+
+                $response = $this->getMockBuilder(ResponseInterface::class)
+                    ->disableOriginalConstructor()
+                    ->disableOriginalClone()
+                    ->disableArgumentCloning()
+                    ->disallowMockingUnknownTypes()
+                    ->getMock();
+                $response->method('getBody')
+                    ->willReturn(file_get_contents($filePath));
+
+                return promise_for($response);
+            });
+
+        $this->api = (new MyParcelComApi('https://api'))
+            ->setHttpClient($this->client)
+            ->authenticate($this->authenticator);
     }
 
     /** @test */
@@ -192,7 +223,7 @@ class MyParcelComApiTest extends TestCase
 
             array_walk($services, function ($service) use ($carrier) {
                 $this->assertInstanceOf(ServiceInterface::class, $service);
-                $this->assertEquals($carrier, $service->getCarrier());
+                $this->assertEquals($carrier->getId(), $service->getCarrier()->getId());
             });
         });
     }

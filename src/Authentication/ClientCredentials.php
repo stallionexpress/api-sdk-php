@@ -13,7 +13,8 @@ use Symfony\Component\Cache\Simple\FilesystemCache;
 
 class ClientCredentials implements AuthenticatorInterface
 {
-    const CACHE_KEY = 'api-key';
+    const CACHE_TOKEN = 'auth.token';
+    const CACHE_AUTHENTICATING = 'auth.lock';
     const PATH_ACCESS_TOKEN = '/access-token';
     const TTL_MARGIN = 60;
 
@@ -52,11 +53,41 @@ class ClientCredentials implements AuthenticatorInterface
      */
     public function getAuthorizationHeader($forceRefresh = false)
     {
+        while ($this->isAuthenticating()) {
+            // Wait for 200ms
+            usleep(200000);
+            // Don't force another authentication cycle if we're already
+            // authenticating.
+            $forceRefresh = false;
+        }
+
         if ($forceRefresh) {
             return $this->authenticate();
         }
 
         return $this->getCachedHeader() ?: $this->authenticate();
+    }
+
+    /**
+     * Returns true if another request is already authenticating.
+     *
+     * @return bool
+     */
+    protected function isAuthenticating()
+    {
+        return (bool)$this->cache->get(self::CACHE_AUTHENTICATING);
+    }
+
+    /**
+     * @param bool $authenticating
+     * @return $this
+     */
+    protected function setAuthenticating($authenticating = true)
+    {
+        // Don't let the authenticating lock stay active for more than 30s.
+        $this->cache->set(self::CACHE_AUTHENTICATING, $authenticating, 30);
+
+        return $this;
     }
 
     /**
@@ -66,6 +97,8 @@ class ClientCredentials implements AuthenticatorInterface
      */
     protected function authenticate()
     {
+        $this->setAuthenticating();
+
         return $this->getHttpClient()->requestAsync(
             'post',
             $this->authUri . self::PATH_ACCESS_TOKEN,
@@ -80,13 +113,17 @@ class ClientCredentials implements AuthenticatorInterface
         )->then(function (ResponseInterface $response) {
             $data = \GuzzleHttp\json_decode((string)$response->getBody(), true);
 
-            $header = [self::HEADER_AUTH => $data['token_type'] . ' ' . $data['access_token']];
+            $header = [
+                self::HEADER_AUTH   => $data['token_type'] . ' ' . $data['access_token'],
+                self::HEADER_ACCEPT => self::MIME_TYPE_JSONAPI,
+            ];
 
+            $this->setAuthenticating(false);
             $this->setCachedHeader($header, $data['expires_in']);
 
             return $header;
-
         }, function (RequestException $reason) {
+            $this->setAuthenticating(false);
             $this->handleRequestException($reason);
         })->wait();
     }
@@ -98,7 +135,7 @@ class ClientCredentials implements AuthenticatorInterface
      */
     protected function getCachedHeader()
     {
-        return $this->cache->get(self::CACHE_KEY);
+        return $this->cache->get(self::CACHE_TOKEN);
     }
 
     /**
@@ -110,7 +147,7 @@ class ClientCredentials implements AuthenticatorInterface
      */
     protected function setCachedHeader(array $header, $ttl)
     {
-        $this->cache->set(self::CACHE_KEY, $header, $ttl - self::TTL_MARGIN);
+        $this->cache->set(self::CACHE_TOKEN, $header, $ttl - self::TTL_MARGIN);
 
         return $this;
     }

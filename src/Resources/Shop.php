@@ -2,6 +2,7 @@
 
 namespace MyParcelCom\Sdk\Resources;
 
+use DateTime;
 use MyParcelCom\Sdk\Resources\Interfaces\AddressInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\RegionInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ResourceInterface;
@@ -15,6 +16,7 @@ class Shop implements ShopInterface
     const ATTRIBUTE_NAME = 'name';
     const ATTRIBUTE_BILLING_ADDRESS = 'billing_address';
     const ATTRIBUTE_RETURN_ADDRESS = 'return_address';
+    const ATTRIBUTE_CREATED_AT = 'created_at';
 
     const RELATIONSHIP_REGION = 'region';
 
@@ -24,6 +26,7 @@ class Shop implements ShopInterface
         self::ATTRIBUTE_NAME            => null,
         self::ATTRIBUTE_BILLING_ADDRESS => null,
         self::ATTRIBUTE_RETURN_ADDRESS  => null,
+        self::ATTRIBUTE_CREATED_AT      => null,
     ];
     private $relationships = [
         self::RELATIONSHIP_REGION => [
@@ -127,5 +130,25 @@ class Shop implements ShopInterface
     public function getRegion()
     {
         return $this->relationships[self::RELATIONSHIP_REGION]['data'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setCreatedAt($time)
+    {
+        if (is_int($time)) {
+            $this->attributes[self::ATTRIBUTE_CREATED_AT] = $time;
+        } elseif ($time instanceof DateTime) {
+            $this->attributes[self::ATTRIBUTE_CREATED_AT] = $time->getTimestamp();
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCreatedAt()
+    {
+        return new DateTime($this->attributes[self::ATTRIBUTE_CREATED_AT]);
     }
 }
