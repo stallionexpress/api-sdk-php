@@ -194,6 +194,38 @@ class ShipmentTest extends TestCase
     }
 
     /** @test */
+    public function testGetFilesByType()
+    {
+        $shipment = new Shipment();
+
+        $label = $this->getMockBuilder(FileInterface::class)
+            ->disableOriginalConstructor()
+            ->disableOriginalClone()
+            ->disableArgumentCloning()
+            ->disallowMockingUnknownTypes()
+            ->getMock();
+        $label->method('getResourceType')
+            ->willReturn(FileInterface::RESOURCE_TYPE_LABEL);
+
+        $printcode = $this->getMockBuilder(FileInterface::class)
+            ->disableOriginalConstructor()
+            ->disableOriginalClone()
+            ->disableArgumentCloning()
+            ->disallowMockingUnknownTypes()
+            ->getMock();
+        $printcode->method('getResourceType')
+            ->willReturn(FileInterface::RESOURCE_TYPE_PRINTCODE);
+
+        $shipment->setFiles([$label, $printcode]);
+
+        $this->assertCount(1, $shipment->getFiles(FileInterface::RESOURCE_TYPE_PRINTCODE));
+        $this->assertEquals($printcode, reset($shipment->getFiles(FileInterface::RESOURCE_TYPE_PRINTCODE)));
+
+        $this->assertCount(1, $shipment->getFiles(FileInterface::RESOURCE_TYPE_LABEL));
+        $this->assertEquals($label, reset($shipment->getFiles(FileInterface::RESOURCE_TYPE_LABEL)));
+    }
+
+    /** @test */
     public function testJsonSerialize()
     {
         $recipientAddress = $this->getMockBuilder(AddressInterface::class)

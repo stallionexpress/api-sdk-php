@@ -183,9 +183,10 @@ interface ShipmentInterface extends ResourceInterface
     public function addFile(FileInterface $file);
 
     /**
+     * @param string|null $type
      * @return FileInterface[]
      */
-    public function getFiles();
+    public function getFiles($type = null);
 
     /**
      * @param StatusInterface $status

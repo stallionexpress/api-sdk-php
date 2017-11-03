@@ -398,9 +398,15 @@ class Shipment implements ShipmentInterface
     /**
      * {@inheritdoc}
      */
-    public function getFiles()
+    public function getFiles($type = null)
     {
-        return $this->relationships[self::RELATIONSHIP_FILES]['data'];
+        if ($type === null) {
+            return $this->relationships[self::RELATIONSHIP_FILES]['data'];
+        }
+
+        return array_filter($this->relationships[self::RELATIONSHIP_FILES]['data'], function (FileInterface $file) use ($type) {
+            return $file->getResourceType() === $type;
+        });
     }
 
     /**
