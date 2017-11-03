@@ -8,6 +8,7 @@ use MyParcelCom\Sdk\Resources\Interfaces\PhysicalPropertiesInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ServiceOptionInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ShopInterface;
+use MyParcelCom\Sdk\Resources\Interfaces\StatusInterface;
 use MyParcelCom\Sdk\Resources\Shipment;
 use PHPUnit\Framework\TestCase;
 
@@ -155,6 +156,18 @@ class ShipmentTest extends TestCase
         $this->assertEquals($options, $shipment->getOptions());
     }
 
+    /** @test */
+    public function testStatus()
+    {
+        $shipment = new Shipment();
+
+        $this->assertEmpty($shipment->getStatus());
+
+        $mock = $this->getMockClass(StatusInterface::class);
+        $status = new $mock();
+
+        $this->assertEquals($status, $shipment->setStatus($status)->getStatus());
+    }
 
     /** @test */
     public function testFiles()
@@ -193,7 +206,7 @@ class ShipmentTest extends TestCase
             ->willReturn([
                 'street_1'             => 'Diagonally',
                 'street_2'             => 'Apartment 4',
-                'street_number'        => '4',
+                'street_number'        => '1',
                 'street_number_suffix' => 'A',
                 'postal_code'          => '1AR BR2',
                 'city'                 => 'London',
@@ -216,7 +229,7 @@ class ShipmentTest extends TestCase
             ->willReturn([
                 'street_1'             => 'Diagonally',
                 'street_2'             => 'Apartment 4',
-                'street_number'        => '4',
+                'street_number'        => '2',
                 'street_number_suffix' => 'A',
                 'postal_code'          => '1AR BR2',
                 'city'                 => 'London',
@@ -239,7 +252,7 @@ class ShipmentTest extends TestCase
             ->willReturn([
                 'street_1'             => 'Diagonally',
                 'street_2'             => 'Apartment 4',
-                'street_number'        => '4',
+                'street_number'        => '3',
                 'street_number_suffix' => 'A',
                 'postal_code'          => '1AR BR2',
                 'city'                 => 'London',
@@ -315,6 +328,18 @@ class ShipmentTest extends TestCase
                 'width'  => 1400,
             ]);
 
+        $status = $this->getMockBuilder(StatusInterface::class)
+            ->disableOriginalConstructor()
+            ->disableOriginalClone()
+            ->disableArgumentCloning()
+            ->disallowMockingUnknownTypes()
+            ->getMock();
+        $status->method('jsonSerialize')
+            ->willReturn([
+                'id'   => 'status-id-1',
+                'type' => 'statuses',
+            ]);
+
         $shipment = (new Shipment())
             ->setId('shipment-id')
             ->setDescription('order #012ASD')
@@ -329,6 +354,7 @@ class ShipmentTest extends TestCase
             ->setService($service)
             ->setOptions([$option])
             ->setFiles([$file])
+            ->setStatus($status)
             ->setRecipientAddress($recipientAddress)
             ->setSenderAddress($senderAddress)
             ->setPickupLocationAddress($pudoAddress);
@@ -358,7 +384,7 @@ class ShipmentTest extends TestCase
                 'recipient_address'   => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 4',
-                    'street_number'        => '4',
+                    'street_number'        => '1',
                     'street_number_suffix' => 'A',
                     'postal_code'          => '1AR BR2',
                     'city'                 => 'London',
@@ -373,7 +399,7 @@ class ShipmentTest extends TestCase
                 'sender_address'      => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 4',
-                    'street_number'        => '4',
+                    'street_number'        => '2',
                     'street_number_suffix' => 'A',
                     'postal_code'          => '1AR BR2',
                     'city'                 => 'London',
@@ -390,7 +416,7 @@ class ShipmentTest extends TestCase
                     'address' => [
                         'street_1'             => 'Diagonally',
                         'street_2'             => 'Apartment 4',
-                        'street_number'        => '4',
+                        'street_number'        => '3',
                         'street_number_suffix' => 'A',
                         'postal_code'          => '1AR BR2',
                         'city'                 => 'London',
@@ -407,6 +433,7 @@ class ShipmentTest extends TestCase
             'relationships' => [
                 'shop'    => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
                 'service' => ['data' => ['id' => 'service-id-1', 'type' => 'services']],
+                'status'  => ['data' => ['id' => 'status-id-1', 'type' => 'statuses']],
                 'options' => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
                 'files'   => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
             ],

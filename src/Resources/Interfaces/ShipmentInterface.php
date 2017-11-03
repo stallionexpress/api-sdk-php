@@ -186,4 +186,15 @@ interface ShipmentInterface extends ResourceInterface
      * @return FileInterface[]
      */
     public function getFiles();
+
+    /**
+     * @param StatusInterface $status
+     * @return $this
+     */
+    public function setStatus(StatusInterface $status);
+
+    /**
+     * @return StatusInterface
+     */
+    public function getStatus();
 }

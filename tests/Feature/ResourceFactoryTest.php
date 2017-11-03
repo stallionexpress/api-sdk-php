@@ -535,6 +535,7 @@ class ResourceFactoryTest extends TestCase
             ],
             'shop'                    => ['id' => 'shop-id-1', 'type' => 'shops'],
             'service'                 => ['id' => 'service-id-1', 'type' => 'services'],
+            'status'                  => ['id' => 'status-id-1', 'type' => 'statuses'],
             'options'                 => [['id' => 'option-id-1', 'type' => 'service-options']],
             'files'                   => [['id' => 'file-id-1', 'type' => 'files']],
         ]);
@@ -613,6 +614,7 @@ class ResourceFactoryTest extends TestCase
             'relationships' => [
                 'shop'    => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
                 'service' => ['data' => ['id' => 'service-id-1', 'type' => 'services']],
+                'status'  => ['data' => ['id' => 'status-id-1', 'type' => 'statuses']],
                 'options' => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
                 'files'   => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
             ],

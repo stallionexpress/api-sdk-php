@@ -21,6 +21,7 @@ use MyParcelCom\Sdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ServiceOptionInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ShopInterface;
+use MyParcelCom\Sdk\Resources\Interfaces\StatusInterface;
 use MyParcelCom\Sdk\Utils\StringUtils;
 use ReflectionParameter;
 
@@ -38,6 +39,7 @@ class ResourceFactory implements ResourceFactoryInterface
         ResourceInterface::TYPE_SERVICE_GROUP     => ServiceGroup::class,
         ResourceInterface::TYPE_SERVICE_OPTION    => ServiceOption::class,
         ResourceInterface::TYPE_SERVICE_INSURANCE => ServiceInsurance::class,
+        ResourceInterface::TYPE_STATUS            => Status::class,
 
         AddressInterface::class               => Address::class,
         CarrierInterface::class               => Carrier::class,
@@ -54,6 +56,7 @@ class ResourceFactory implements ResourceFactoryInterface
         ServiceGroupInterface::class          => ServiceGroup::class,
         ServiceOptionInterface::class         => ServiceOption::class,
         ServiceInsuranceInterface::class      => ServiceInsurance::class,
+        StatusInterface::class                => Status::class,
     ];
 
     /**

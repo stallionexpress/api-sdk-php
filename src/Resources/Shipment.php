@@ -10,6 +10,7 @@ use MyParcelCom\Sdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ServiceOptionInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ShopInterface;
+use MyParcelCom\Sdk\Resources\Interfaces\StatusInterface;
 use MyParcelCom\Sdk\Resources\Traits\JsonSerializable;
 
 class Shipment implements ShipmentInterface
@@ -34,6 +35,7 @@ class Shipment implements ShipmentInterface
     const RELATIONSHIP_SERVICE = 'service';
     const RELATIONSHIP_OPTIONS = 'options';
     const RELATIONSHIP_FILES = 'files';
+    const RELATIONSHIP_STATUS = 'status';
 
     private $id;
     private $type = ResourceInterface::TYPE_SHIPMENT;
@@ -49,10 +51,13 @@ class Shipment implements ShipmentInterface
         self::ATTRIBUTE_PICKUP              => null,
     ];
     private $relationships = [
-        self::RELATIONSHIP_SHOP => [
+        self::RELATIONSHIP_SHOP    => [
             'data' => null,
         ],
         self::RELATIONSHIP_SERVICE => [
+            'data' => null,
+        ],
+        self::RELATIONSHIP_STATUS  => [
             'data' => null,
         ],
         self::RELATIONSHIP_OPTIONS => [
@@ -396,5 +401,23 @@ class Shipment implements ShipmentInterface
     public function getFiles()
     {
         return $this->relationships[self::RELATIONSHIP_FILES]['data'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setStatus(StatusInterface $status)
+    {
+        $this->relationships[self::RELATIONSHIP_STATUS]['data'] = $status;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getStatus()
+    {
+        return $this->relationships[self::RELATIONSHIP_STATUS]['data'];
     }
 }

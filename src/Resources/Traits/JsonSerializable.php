@@ -21,6 +21,9 @@ trait JsonSerializable
         if (isset($json['relationships']) && $this->isEmpty($json['relationships'])) {
             unset($json['relationships']);
         }
+        if (isset($json['meta']) && $this->isEmpty($json['meta'])) {
+            unset($json['meta']);
+        }
 
         return $json;
     }
