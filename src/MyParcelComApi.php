@@ -9,6 +9,7 @@ use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\RequestOptions;
 use MyParcelCom\Sdk\Authentication\AuthenticatorInterface;
 use MyParcelCom\Sdk\Exceptions\InvalidResourceException;
+use MyParcelCom\Sdk\Exceptions\MyParcelComException;
 use MyParcelCom\Sdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\RegionInterface;
@@ -393,6 +394,10 @@ class MyParcelComApi implements MyParcelComApiInterface
      */
     public function setResourceFactory(ResourceFactoryInterface $resourceFactory)
     {
+        if (method_exists($resourceFactory, 'setMyParcelComApi')) {
+            $resourceFactory->setMyParcelComApi($this);
+        }
+
         $this->resourceFactory = $resourceFactory;
 
         return $this;
@@ -500,6 +505,10 @@ class MyParcelComApi implements MyParcelComApiInterface
     {
         $resources = [];
 
+        if (isset($json['type'])) {
+            $json = [$json];
+        }
+
         foreach ($json as $resourceData) {
             $attributes = $this->flattenResourceData($resourceData);
 
@@ -553,5 +562,25 @@ class MyParcelComApi implements MyParcelComApiInterface
         $this->authenticator->getAuthorizationHeader(true);
 
         return $this->getResourcesPromise($exception->getRequest()->getUri());
+    }
+
+    /**
+     * @param string $resourceType
+     * @param string $id
+     * @return ResourceInterface
+     */
+    public function getResourceById($resourceType, $id)
+    {
+        $url = implode(
+            '/',
+            [
+                $this->apiUri,
+                'v1',
+                $resourceType,
+                $id,
+            ]
+        );
+
+        return reset($this->getResourcesPromise($url)->wait());
     }
 }

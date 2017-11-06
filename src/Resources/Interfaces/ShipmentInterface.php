@@ -143,6 +143,17 @@ interface ShipmentInterface extends ResourceInterface
     public function getService();
 
     /**
+     * @param ContractInterface $contract
+     * @return $this
+     */
+    public function setContract(ContractInterface $contract);
+
+    /**
+     * @return ContractInterface
+     */
+    public function getContract();
+
+    /**
      * @param ServiceOptionInterface[] $options
      * @return $this
      */

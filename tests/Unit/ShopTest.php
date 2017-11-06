@@ -64,6 +64,16 @@ class ShopTest extends TestCase
     }
 
     /** @test */
+    public function testCreatedAd()
+    {
+        $shop = new Shop();
+
+        $this->assertEquals(1509001337, $shop->setCreatedAt(1509001337)->getCreatedAt()->getTimestamp());
+        $dateTime = (new \DateTime())->setTimestamp(1509009001);
+        $this->assertEquals($dateTime, $shop->setCreatedAt($dateTime)->getCreatedAt());
+    }
+
+    /** @test */
     public function testJsonSerialize()
     {
         $returnAddress = $this->getMockBuilder(AddressInterface::class)
@@ -129,7 +139,8 @@ class ShopTest extends TestCase
             ->setName('MyParcel.com Test Shop')
             ->setRegion($region)
             ->setReturnAddress($returnAddress)
-            ->setBillingAddress($billingAddress);
+            ->setBillingAddress($billingAddress)
+            ->setCreatedAt(1509001337);
 
         $this->assertEquals([
             'id'            => 'shop-id',
@@ -166,6 +177,7 @@ class ShopTest extends TestCase
                     'email'                => 'rob@tables.com',
                     'phone_number'         => '+31 (0)234 567 890',
                 ],
+                'created_at'      => 1509001337,
             ],
             'relationships' => [
                 'region' => ['data' => ['id' => 'region-id-1', 'type' => 'regions']],

@@ -3,6 +3,7 @@
 namespace MyParcelCom\Sdk\Resources;
 
 use MyParcelCom\Sdk\Exceptions\ResourceFactoryException;
+use MyParcelCom\Sdk\MyParcelComApiInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\AddressInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ContractInterface;
@@ -22,6 +23,7 @@ use MyParcelCom\Sdk\Resources\Interfaces\ServiceOptionInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\StatusInterface;
+use MyParcelCom\Sdk\Resources\Proxy\FileProxy;
 use MyParcelCom\Sdk\Utils\StringUtils;
 use ReflectionParameter;
 
@@ -33,7 +35,6 @@ class ResourceFactory implements ResourceFactoryInterface
         ResourceInterface::TYPE_FILE              => File::class,
         ResourceInterface::TYPE_PUDO_LOCATION     => PickUpDropOffLocation::class,
         ResourceInterface::TYPE_REGION            => Region::class,
-        ResourceInterface::TYPE_SHIPMENT          => Shipment::class,
         ResourceInterface::TYPE_SHOP              => Shop::class,
         ResourceInterface::TYPE_SERVICE           => Service::class,
         ResourceInterface::TYPE_SERVICE_GROUP     => ServiceGroup::class,
@@ -59,6 +60,32 @@ class ResourceFactory implements ResourceFactoryInterface
         StatusInterface::class                => Status::class,
     ];
 
+    /** @var MyParcelComApiInterface */
+    protected $api;
+
+    public function __construct()
+    {
+        $shipmentFactory = function ($type, &$attributes) {
+            $shipment = new Shipment();
+            if (isset($attributes['files'])) {
+                array_walk($attributes['files'], function ($file) use ($shipment) {
+                    $shipment->addFile(
+                        (new FileProxy())
+                            ->setMyParcelComApi($this->api)
+                            ->setId($file['id'])
+                    );
+                });
+
+                unset($attributes['files']);
+            }
+
+            return $shipment;
+        };
+
+        $this->setFactoryForType(ResourceInterface::TYPE_SHIPMENT, $shipmentFactory);
+        $this->setFactoryForType(ShipmentInterface::class, $shipmentFactory);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -70,6 +97,10 @@ class ResourceFactory implements ResourceFactoryInterface
         );
     }
 
+    /**
+     * @param string          $type
+     * @param callable|string $factory
+     */
     public function setFactoryForType($type, $factory)
     {
         if (!is_callable($factory) && !class_exists($factory)) {
@@ -101,7 +132,7 @@ class ResourceFactory implements ResourceFactoryInterface
      * @throws ResourceFactoryException
      * @return object
      */
-    protected function createResource($type, array $attributes = [])
+    protected function createResource($type, array &$attributes = [])
     {
         if (!$this->typeHasFactory($type)) {
             throw new ResourceFactoryException(sprintf(
@@ -229,5 +260,16 @@ class ResourceFactory implements ResourceFactoryInterface
         }
 
         return reset($params);
+    }
+
+    /**
+     * @param MyParcelComApiInterface $api
+     * @return $this
+     */
+    public function setMyParcelComApi(MyParcelComApiInterface $api)
+    {
+        $this->api = $api;
+
+        return $this;
     }
 }

@@ -8,8 +8,10 @@ use MyParcelCom\Sdk\Exceptions\InvalidResourceException;
 use MyParcelCom\Sdk\MyParcelComApi;
 use MyParcelCom\Sdk\Resources\Address;
 use MyParcelCom\Sdk\Resources\Interfaces\CarrierInterface;
+use MyParcelCom\Sdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\PickUpDropOffLocationInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\RegionInterface;
+use MyParcelCom\Sdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ShopInterface;
@@ -305,5 +307,53 @@ class MyParcelComApiTest extends TestCase
     {
         $shop = $this->api->getDefaultShop();
         $this->assertInstanceOf(ShopInterface::class, $shop);
+    }
+
+    /** @test */
+    public function testGetResourceById()
+    {
+        /** @var FileInterface $file */
+        $file = $this->api->getResourceById(ResourceInterface::TYPE_FILE, 'file-id-1');
+        $this->assertInstanceOf(FileInterface::class, $file);
+        $this->assertEquals('files', $file->getType());
+        $this->assertEquals('file-id-1', $file->getId());
+        $this->assertEquals('label', $file->getResourceType());
+        $this->assertEquals([['extension' => 'pdf', 'mime_type' => 'application/pdf']], $file->getFormats());
+
+        /** @var ShopInterface $shop */
+        $shop = $this->api->getResourceById(ResourceInterface::TYPE_SHOP, 'shop-id-1');
+        $this->assertInstanceOf(ShopInterface::class, $shop);
+        $this->assertEquals('shops', $shop->getType());
+        $this->assertEquals('shop-id-1', $shop->getId());
+        $this->assertEquals('Testshop', $shop->getName());
+        $this->assertEquals((new \DateTime())->setTimestamp(1509378904), $shop->getCreatedAt());
+        $this->assertEquals(
+            (new Address())
+                ->setStreet1('Hoofdweg')
+                ->setStreetNumber(679)
+                ->setPostalCode('2131 BC')
+                ->setCity('Hoofddorp')
+                ->setCountryCode('NL')
+                ->setFirstName('Mister')
+                ->setLastName('Billing')
+                ->setCompany('MyParcel.com')
+                ->setEmail('info@myparcel.com')
+                ->setPhoneNumber('+31 85 208 5997'),
+            $shop->getBillingAddress()
+        );
+        $this->assertEquals(
+            (new Address())
+                ->setStreet1('Hoofdweg')
+                ->setStreetNumber(679)
+                ->setPostalCode('2131 BC')
+                ->setCity('Hoofddorp')
+                ->setCountryCode('NL')
+                ->setFirstName('Mister')
+                ->setLastName('Billing')
+                ->setCompany('MyParcel.com')
+                ->setEmail('info@myparcel.com')
+                ->setPhoneNumber('+31 85 208 5997'),
+            $shop->getReturnAddress()
+        );
     }
 }

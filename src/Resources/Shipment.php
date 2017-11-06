@@ -3,6 +3,7 @@
 namespace MyParcelCom\Sdk\Resources;
 
 use MyParcelCom\Sdk\Resources\Interfaces\AddressInterface;
+use MyParcelCom\Sdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\PhysicalPropertiesInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ResourceInterface;
@@ -31,10 +32,11 @@ class Shipment implements ShipmentInterface
     const ATTRIBUTE_PICKUP_CODE = 'code';
     const ATTRIBUTE_PICKUP_ADDRESS = 'address';
 
-    const RELATIONSHIP_SHOP = 'shop';
-    const RELATIONSHIP_SERVICE = 'service';
-    const RELATIONSHIP_OPTIONS = 'options';
+    const RELATIONSHIP_CONTRACT = 'contract';
     const RELATIONSHIP_FILES = 'files';
+    const RELATIONSHIP_OPTIONS = 'options';
+    const RELATIONSHIP_SERVICE = 'service';
+    const RELATIONSHIP_SHOP = 'shop';
     const RELATIONSHIP_STATUS = 'status';
 
     private $id;
@@ -55,6 +57,9 @@ class Shipment implements ShipmentInterface
             'data' => null,
         ],
         self::RELATIONSHIP_SERVICE => [
+            'data' => null,
+        ],
+        self::RELATIONSHIP_CONTRACT => [
             'data' => null,
         ],
         self::RELATIONSHIP_STATUS  => [
@@ -425,5 +430,23 @@ class Shipment implements ShipmentInterface
     public function getStatus()
     {
         return $this->relationships[self::RELATIONSHIP_STATUS]['data'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setContract(ContractInterface $contract)
+    {
+        $this->relationships[self::RELATIONSHIP_CONTRACT]['data'] = $contract;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getContract()
+    {
+        return $this->relationships[self::RELATIONSHIP_CONTRACT]['data'];
     }
 }
