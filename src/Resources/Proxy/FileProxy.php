@@ -4,11 +4,12 @@ namespace MyParcelCom\Sdk\Resources\Proxy;
 
 use MyParcelCom\Sdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ResourceInterface;
+use MyParcelCom\Sdk\Resources\Interfaces\ResourceProxyInterface;
 use MyParcelCom\Sdk\Resources\Traits\JsonSerializable;
 use MyParcelCom\Sdk\Resources\Traits\ProxiesResource;
 use Psr\Http\Message\StreamInterface;
 
-class FileProxy implements FileInterface
+class FileProxy implements FileInterface, ResourceProxyInterface
 {
     use JsonSerializable;
     use ProxiesResource;

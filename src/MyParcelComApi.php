@@ -15,6 +15,7 @@ use MyParcelCom\Sdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\RegionInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ResourceFactoryInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ResourceInterface;
+use MyParcelCom\Sdk\Resources\Interfaces\ResourceProxyInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ShopInterface;
@@ -394,7 +395,8 @@ class MyParcelComApi implements MyParcelComApiInterface
      */
     public function setResourceFactory(ResourceFactoryInterface $resourceFactory)
     {
-        if (method_exists($resourceFactory, 'setMyParcelComApi')) {
+        // Let this fetch the resources if the factory allows proxying of resources.
+        if ($resourceFactory instanceof ResourceProxyInterface) {
             $resourceFactory->setMyParcelComApi($this);
         }
 

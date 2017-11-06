@@ -16,6 +16,7 @@ use MyParcelCom\Sdk\Resources\Interfaces\PositionInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\RegionInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ResourceFactoryInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ResourceInterface;
+use MyParcelCom\Sdk\Resources\Interfaces\ResourceProxyInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ServiceGroupInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ServiceInsuranceInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ServiceInterface;
@@ -27,7 +28,7 @@ use MyParcelCom\Sdk\Resources\Proxy\FileProxy;
 use MyParcelCom\Sdk\Utils\StringUtils;
 use ReflectionParameter;
 
-class ResourceFactory implements ResourceFactoryInterface
+class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterface
 {
     private $typeFactory = [
         ResourceInterface::TYPE_CARRIER           => Carrier::class,
@@ -65,25 +66,34 @@ class ResourceFactory implements ResourceFactoryInterface
 
     public function __construct()
     {
-        $shipmentFactory = function ($type, &$attributes) {
-            $shipment = new Shipment();
-            if (isset($attributes['files'])) {
-                array_walk($attributes['files'], function ($file) use ($shipment) {
-                    $shipment->addFile(
-                        (new FileProxy())
-                            ->setMyParcelComApi($this->api)
-                            ->setId($file['id'])
-                    );
-                });
-
-                unset($attributes['files']);
-            }
-
-            return $shipment;
-        };
+        $shipmentFactory = [$this, 'shipmentFactory'];
 
         $this->setFactoryForType(ResourceInterface::TYPE_SHIPMENT, $shipmentFactory);
         $this->setFactoryForType(ShipmentInterface::class, $shipmentFactory);
+    }
+
+    /**
+     * Shipment factory method that creates proxies for all relationships.
+     *
+     * @param $type
+     * @param $attributes
+     * @return Shipment
+     */
+    protected function shipmentFactory($type, &$attributes){
+        $shipment = new Shipment();
+        if (isset($attributes['files'])) {
+            array_walk($attributes['files'], function ($file) use ($shipment) {
+                $shipment->addFile(
+                    (new FileProxy())
+                        ->setMyParcelComApi($this->api)
+                        ->setId($file['id'])
+                );
+            });
+
+            unset($attributes['files']);
+        }
+
+        return $shipment;
     }
 
     /**
