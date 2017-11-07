@@ -14,7 +14,9 @@ class FileProxy implements FileInterface, ResourceProxyInterface
     use JsonSerializable;
     use ProxiesResource;
 
+    /** @var string */
     private $id;
+    /** @var string */
     private $type = ResourceInterface::TYPE_FILE;
 
     /**

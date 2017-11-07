@@ -4,6 +4,12 @@ namespace MyParcelCom\Sdk\Resources\Interfaces;
 
 interface ShipmentInterface extends ResourceInterface
 {
+    const WEIGHT_GRAM = 'grams';
+    const WEIGHT_KILOGRAM = 'kilograms';
+    const WEIGHT_POUND = 'pounds';
+    const WEIGHT_OUNCE = 'ounces';
+    const WEIGHT_STONE = 'stones';
+
     /**
      * @param string $id
      * @return $this
@@ -110,15 +116,17 @@ interface ShipmentInterface extends ResourceInterface
     public function getBarcode();
 
     /**
-     * @param int $weight
+     * @param int    $weight
+     * @param string $unit
      * @return $this
      */
-    public function setWeight($weight);
+    public function setWeight($weight, $unit = self::WEIGHT_GRAM);
 
     /**
+     * @param string $unit
      * @return int
      */
-    public function getWeight();
+    public function getWeight($unit = self::WEIGHT_GRAM);
 
     /**
      * @param ShopInterface $shop

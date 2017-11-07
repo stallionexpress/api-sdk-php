@@ -40,6 +40,25 @@ $api = new \MyParcelCom\Sdk\MyParcelComApi(
 );
 ```
 
+For convenience, a singleton of the `MyParcelComApi` class can be instantiated
+using its static methods.
+
+```php
+<?php
+// Create the singleton once, to make it available everywhere.
+$api = \MyParcelCom\Sdk\MyParcelComApi::createSingleton(
+    new \MyParcelCom\Sdk\Authentication\ClientCredentials(
+        'client-id',
+        'client-secret',
+        'https://sandbox-auth.myparcel.com'
+    ),
+    'https://sandbox-api.myparcel.com'
+);
+
+// The singleton instance can now be retrieved anywhere.
+$api = \MyParcelCom\Sdk\MyParcelComApi::getSingleton();
+```
+
 ### Authentication
 
 Most interactions with the MyParcel.com API will require authentication. A class
@@ -92,9 +111,12 @@ should be provided in the shipment. All other fields are optional or will be
 filled with defaults by the SDK.
 
 ```php
+use MyParcelCom\Sdk\Resources\Address;
+use MyParcelCom\Sdk\Resources\Shipment;
+
 // Define the recipient address.
-$recipient = new \MyParcelCom\Sdk\Resources\Address();
-$recipient->setStreet1('Streetname')
+$recipient = new Address();
+$recipient->setStreet1('Street name')
           ->setStreetNumber(9)
           ->setCity('City name')
           ->setPostalCode('Postal code')
@@ -104,13 +126,19 @@ $recipient->setStreet1('Streetname')
           ->setEmail('email@example.com');
 
 // Define the weight.
-$shipment = new \MyParcelCom\Sdk\Resources\Shipment();
+$shipment = new Shipment();
 $shipment->setRecipientAddress($recipient)
-         ->setWeight(500); // All weights are in grams.
+         ->setWeight(500, Shipment::WEIGHT_GRAM);
 
 // Create the shipment
 $api->createShipment($shipment);
 ```
+
+If the shipment being created is invalid or there is no valid service available,
+an exception will be thrown.
+
+If you wish to use your own contracts with your shipment, you should assign it
+to the shipment before creating it.
 
 After the shipment has been created, it will be updated with an id and a price.
 Using the id the shipment can be retrieved from the MyParcel.com API to check
@@ -120,7 +148,7 @@ the status and retrieve any associated files.
 // Get the shipment based on its id. 
 $shipment = $api->getShipment('shipment-id');
 
-// Get the current of the shipment.
+// Get the current status of the shipment.
 $status = $shipment->getStatus();
 
 // Get the files associated with the shipment, eg label.
@@ -129,10 +157,12 @@ $files = $shipment->getFiles();
 
 #### Files
 
-When a shipment has been successfully registered with a carrier, a label and
-optionally a print code will be available for the shipment. These files can be
-requested from a shipment. 
-
+When a shipment has been successfully registered with a carrier, a shipping
+label will be available for the shipment. In some cases the shipping label is
+accompanied by one of more additional files. (eg when creating a PostNL
+shipment we also return a print code, that can be used to print a label on a
+pick-up/drop-off location in case customer has no printer). These files can be
+requested from a shipment.
 
 #### Carriers
 
@@ -150,7 +180,7 @@ $carriers = $api->getCarriers();
 
 The services available in the MyParcel.com API can be retrieved using the SDK.
 All available services can be retrieved, services available for a specific 
-shipment can be retrieved and shipments for a specific carrier can be retrieved.
+shipment can be retrieved and services for a specific carrier can be retrieved.
 
 ```php
 // Get all services.
@@ -180,7 +210,7 @@ $contract->getGroups();
 // Get the insurance groups for this contract and the prices.
 $contract->getInsurances();
 
-// Get the options for this contract (eg 'sign on deliver').
+// Get the options for this contract (eg 'sign on delivery').
 $contract->getOptions();
 ```
 
@@ -194,7 +224,7 @@ define a drop-off location. The MyParcel.com SDK can retrieve these locations
 from the API and can be easily displayed using the
 [MyParcel.com Delivery Plugin](https://github.com/MyParcelCOM/delivery-plugin).
 
-Most carriers can only need a postal code in a specific country, but some
+Most carriers only need a postal code in a specific country, but some
 carriers also require a street name and number. It is therefore recommended to
 always supply all this information to the SDK.
 

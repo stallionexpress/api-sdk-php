@@ -141,6 +141,36 @@ class MyParcelComApi implements MyParcelComApiInterface
     /** @var bool */
     private $authRetry = false;
 
+    /** @var MyParcelComApi */
+    private static $singleton;
+
+    /**
+     *
+     *
+     * @param AuthenticatorInterface        $authenticator
+     * @param string                        $apiUri
+     * @param CacheInterface|null           $cache
+     * @param ResourceFactoryInterface|null $resourceFactory
+     * @return MyParcelComApi
+     */
+    public static function createSingleton(
+        AuthenticatorInterface $authenticator,
+        $apiUri = 'https://sandbox-api.myparcel.com',
+        CacheInterface $cache = null,
+        ResourceFactoryInterface $resourceFactory = null
+    ) {
+        return self::$singleton = (new self($apiUri, $cache, $resourceFactory))
+            ->authenticate($authenticator);
+    }
+
+    /**
+     * @return MyParcelComApi
+     */
+    public static function getSingleton()
+    {
+        return self::$singleton;
+    }
+
     /**
      * @param string                        $apiUri
      * @param CacheInterface|null           $cache

@@ -7,6 +7,7 @@ interface PositionInterface extends \JsonSerializable
     const UNIT_KILOMETER = 'kilometers';
     const UNIT_METER = 'meters';
     const UNIT_MILE = 'miles';
+    const UNIT_FOOT = 'feet';
 
     /**
      * @param float $latitude
@@ -31,24 +32,15 @@ interface PositionInterface extends \JsonSerializable
     public function getLongitude();
 
     /**
-     * @param int $distance
-     * @return $this
-     */
-    public function setDistance($distance);
-
-    /**
-     * @return int
-     */
-    public function getDistance();
-
-    /**
+     * @param int    $distance
      * @param string $unit
      * @return $this
      */
-    public function setUnit($unit);
+    public function setDistance($distance, $unit = self::UNIT_METER);
 
     /**
-     * @return string|null
+     * @param string $unit
+     * @return int
      */
-    public function getUnit();
+    public function getDistance($unit = self::UNIT_METER);
 }

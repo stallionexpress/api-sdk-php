@@ -82,6 +82,16 @@ class MyParcelComApiTest extends TestCase
     }
 
     /** @test */
+    public function testSingleton()
+    {
+        $this->assertNull(MyParcelComApi::getSingleton());
+
+        $api = MyParcelComApi::createSingleton($this->authenticator);
+        $this->assertInstanceOf(MyParcelComApi::class, $api);
+        $this->assertEquals($api, MyParcelComApi::getSingleton());
+    }
+
+    /** @test */
     public function testAuthenticate()
     {
         $api = new MyParcelComApi();
@@ -349,7 +359,7 @@ class MyParcelComApiTest extends TestCase
                 ->setCity('Hoofddorp')
                 ->setCountryCode('NL')
                 ->setFirstName('Mister')
-                ->setLastName('Billing')
+                ->setLastName('Return')
                 ->setCompany('MyParcel.com')
                 ->setEmail('info@myparcel.com')
                 ->setPhoneNumber('+31 85 208 5997'),

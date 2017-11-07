@@ -2,6 +2,7 @@
 
 namespace MyParcelCom\Sdk\Resources;
 
+use MyParcelCom\Sdk\Exceptions\MyParcelComException;
 use MyParcelCom\Sdk\Resources\Interfaces\AddressInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\FileInterface;
@@ -53,24 +54,32 @@ class Shipment implements ShipmentInterface
         self::ATTRIBUTE_PICKUP              => null,
     ];
     private $relationships = [
-        self::RELATIONSHIP_SHOP    => [
+        self::RELATIONSHIP_SHOP     => [
             'data' => null,
         ],
-        self::RELATIONSHIP_SERVICE => [
+        self::RELATIONSHIP_SERVICE  => [
             'data' => null,
         ],
         self::RELATIONSHIP_CONTRACT => [
             'data' => null,
         ],
-        self::RELATIONSHIP_STATUS  => [
+        self::RELATIONSHIP_STATUS   => [
             'data' => null,
         ],
-        self::RELATIONSHIP_OPTIONS => [
+        self::RELATIONSHIP_OPTIONS  => [
             'data' => [],
         ],
-        self::RELATIONSHIP_FILES   => [
+        self::RELATIONSHIP_FILES    => [
             'data' => [],
         ],
+    ];
+
+    private static $unitConversion = [
+        self::WEIGHT_GRAM     => 1,
+        self::WEIGHT_KILOGRAM => 1000,
+        self::WEIGHT_POUND    => 453.59237,
+        self::WEIGHT_OUNCE    => 28.349523125,
+        self::WEIGHT_STONE    => 6350.29318,
     ];
 
     /**
@@ -275,9 +284,13 @@ class Shipment implements ShipmentInterface
     /**
      * {@inheritdoc}
      */
-    public function setWeight($weight)
+    public function setWeight($weight, $unit = self::WEIGHT_GRAM)
     {
-        $this->attributes[self::ATTRIBUTE_WEIGHT] = $weight;
+        if (!isset(self::$unitConversion[$unit])) {
+            throw new MyParcelComException('invalid unit: ' . $unit);
+        }
+
+        $this->attributes[self::ATTRIBUTE_WEIGHT] = round($weight * self::$unitConversion[$unit]);
 
         return $this;
     }
@@ -285,9 +298,13 @@ class Shipment implements ShipmentInterface
     /**
      * {@inheritdoc}
      */
-    public function getWeight()
+    public function getWeight($unit = self::WEIGHT_GRAM)
     {
-        return $this->attributes[self::ATTRIBUTE_WEIGHT];
+        if (!isset(self::$unitConversion[$unit])) {
+            throw new MyParcelComException('invalid unit: ' . $unit);
+        }
+
+        return round($this->attributes[self::ATTRIBUTE_WEIGHT] / self::$unitConversion[$unit]);
     }
 
     /**

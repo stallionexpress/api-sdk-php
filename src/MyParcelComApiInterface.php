@@ -133,7 +133,7 @@ interface MyParcelComApiInterface
     public function createShipment(ShipmentInterface $shipment);
 
     /**
-     * Get the resource fo given type with given id.
+     * Get the resource of given type with given id.
      *
      * @param string $resourceType
      * @param string $id
