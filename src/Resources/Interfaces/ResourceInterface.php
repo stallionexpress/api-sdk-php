@@ -19,6 +19,7 @@ interface ResourceInterface extends \JsonSerializable
     const TYPE_SERVICE_INSURANCE = 'service-insurances';
     const TYPE_SHIPMENT = 'shipments';
     const TYPE_SHOP = 'shops';
+    const TYPE_STATUS = 'statuses';
 
     /**
      * @return string

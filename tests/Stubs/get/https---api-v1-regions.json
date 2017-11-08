@@ -356,7 +356,7 @@
   ],
   "meta": {
     "total_pages": 3,
-    "total_records": 88
+    "total_records": 78
   },
   "links": {
     "self": "https://api/v1/regions?page[size]=30&page[number]=1",

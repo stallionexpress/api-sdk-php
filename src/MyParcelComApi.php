@@ -9,10 +9,13 @@ use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\RequestOptions;
 use MyParcelCom\Sdk\Authentication\AuthenticatorInterface;
 use MyParcelCom\Sdk\Exceptions\InvalidResourceException;
+use MyParcelCom\Sdk\Exceptions\MyParcelComException;
 use MyParcelCom\Sdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\FileInterface;
+use MyParcelCom\Sdk\Resources\Interfaces\RegionInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ResourceFactoryInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ResourceInterface;
+use MyParcelCom\Sdk\Resources\Interfaces\ResourceProxyInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ShopInterface;
@@ -138,6 +141,36 @@ class MyParcelComApi implements MyParcelComApiInterface
     /** @var bool */
     private $authRetry = false;
 
+    /** @var MyParcelComApi */
+    private static $singleton;
+
+    /**
+     *
+     *
+     * @param AuthenticatorInterface        $authenticator
+     * @param string                        $apiUri
+     * @param CacheInterface|null           $cache
+     * @param ResourceFactoryInterface|null $resourceFactory
+     * @return MyParcelComApi
+     */
+    public static function createSingleton(
+        AuthenticatorInterface $authenticator,
+        $apiUri = 'https://sandbox-api.myparcel.com',
+        CacheInterface $cache = null,
+        ResourceFactoryInterface $resourceFactory = null
+    ) {
+        return self::$singleton = (new self($apiUri, $cache, $resourceFactory))
+            ->authenticate($authenticator);
+    }
+
+    /**
+     * @return MyParcelComApi
+     */
+    public static function getSingleton()
+    {
+        return self::$singleton;
+    }
+
     /**
      * @param string                        $apiUri
      * @param CacheInterface|null           $cache
@@ -175,8 +208,14 @@ class MyParcelComApi implements MyParcelComApiInterface
     public function getRegions($countryCode = null, $regionCode = null)
     {
         // These resources can be stored for a week.
-        return $this->getResourcesPromise($this->apiUri . self::PATH_REGIONS, 604800)
+        $regions = $this->getResourcesPromise($this->apiUri . self::PATH_REGIONS, 604800)
             ->wait();
+
+        // For now, we need to manually filter the regions.
+        return array_filter($regions, function (RegionInterface $region) use ($countryCode, $regionCode) {
+            return ($countryCode === null || $countryCode === $region->getCountryCode())
+                && ($regionCode === null || $regionCode === $region->getRegionCode());
+        });
     }
 
     /**
@@ -204,12 +243,12 @@ class MyParcelComApi implements MyParcelComApiInterface
         $uri = $this->apiUri
             . str_replace(
                 [
-                '{country_code}',
-                '{postal_code}',
+                    '{country_code}',
+                    '{postal_code}',
                 ],
                 [
-                $countryCode,
-                $postalCode,
+                    $countryCode,
+                    $postalCode,
                 ],
                 self::PATH_PUDO_LOCATIONS
             );
@@ -386,6 +425,11 @@ class MyParcelComApi implements MyParcelComApiInterface
      */
     public function setResourceFactory(ResourceFactoryInterface $resourceFactory)
     {
+        // Let this fetch the resources if the factory allows proxying of resources.
+        if ($resourceFactory instanceof ResourceProxyInterface) {
+            $resourceFactory->setMyParcelComApi($this);
+        }
+
         $this->resourceFactory = $resourceFactory;
 
         return $this;
@@ -493,6 +537,10 @@ class MyParcelComApi implements MyParcelComApiInterface
     {
         $resources = [];
 
+        if (isset($json['type'])) {
+            $json = [$json];
+        }
+
         foreach ($json as $resourceData) {
             $attributes = $this->flattenResourceData($resourceData);
 
@@ -546,5 +594,25 @@ class MyParcelComApi implements MyParcelComApiInterface
         $this->authenticator->getAuthorizationHeader(true);
 
         return $this->getResourcesPromise($exception->getRequest()->getUri());
+    }
+
+    /**
+     * @param string $resourceType
+     * @param string $id
+     * @return ResourceInterface
+     */
+    public function getResourceById($resourceType, $id)
+    {
+        $url = implode(
+            '/',
+            [
+                $this->apiUri,
+                'v1',
+                $resourceType,
+                $id,
+            ]
+        );
+
+        return reset($this->getResourcesPromise($url)->wait());
     }
 }

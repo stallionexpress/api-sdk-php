@@ -142,6 +142,8 @@ class Shop implements ShopInterface
         } elseif ($time instanceof DateTime) {
             $this->attributes[self::ATTRIBUTE_CREATED_AT] = $time->getTimestamp();
         }
+
+        return $this;
     }
 
     /**
@@ -149,6 +151,6 @@ class Shop implements ShopInterface
      */
     public function getCreatedAt()
     {
-        return new DateTime($this->attributes[self::ATTRIBUTE_CREATED_AT]);
+        return (new DateTime())->setTimestamp($this->attributes[self::ATTRIBUTE_CREATED_AT]);
     }
 }

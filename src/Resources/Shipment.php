@@ -2,7 +2,9 @@
 
 namespace MyParcelCom\Sdk\Resources;
 
+use MyParcelCom\Sdk\Exceptions\MyParcelComException;
 use MyParcelCom\Sdk\Resources\Interfaces\AddressInterface;
+use MyParcelCom\Sdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\PhysicalPropertiesInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ResourceInterface;
@@ -10,6 +12,7 @@ use MyParcelCom\Sdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ServiceOptionInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ShopInterface;
+use MyParcelCom\Sdk\Resources\Interfaces\StatusInterface;
 use MyParcelCom\Sdk\Resources\Traits\JsonSerializable;
 
 class Shipment implements ShipmentInterface
@@ -30,10 +33,12 @@ class Shipment implements ShipmentInterface
     const ATTRIBUTE_PICKUP_CODE = 'code';
     const ATTRIBUTE_PICKUP_ADDRESS = 'address';
 
-    const RELATIONSHIP_SHOP = 'shop';
-    const RELATIONSHIP_SERVICE = 'service';
-    const RELATIONSHIP_OPTIONS = 'options';
+    const RELATIONSHIP_CONTRACT = 'contract';
     const RELATIONSHIP_FILES = 'files';
+    const RELATIONSHIP_OPTIONS = 'options';
+    const RELATIONSHIP_SERVICE = 'service';
+    const RELATIONSHIP_SHOP = 'shop';
+    const RELATIONSHIP_STATUS = 'status';
 
     private $id;
     private $type = ResourceInterface::TYPE_SHIPMENT;
@@ -49,18 +54,32 @@ class Shipment implements ShipmentInterface
         self::ATTRIBUTE_PICKUP              => null,
     ];
     private $relationships = [
-        self::RELATIONSHIP_SHOP => [
+        self::RELATIONSHIP_SHOP     => [
             'data' => null,
         ],
-        self::RELATIONSHIP_SERVICE => [
+        self::RELATIONSHIP_SERVICE  => [
             'data' => null,
         ],
-        self::RELATIONSHIP_OPTIONS => [
+        self::RELATIONSHIP_CONTRACT => [
+            'data' => null,
+        ],
+        self::RELATIONSHIP_STATUS   => [
+            'data' => null,
+        ],
+        self::RELATIONSHIP_OPTIONS  => [
             'data' => [],
         ],
-        self::RELATIONSHIP_FILES   => [
+        self::RELATIONSHIP_FILES    => [
             'data' => [],
         ],
+    ];
+
+    private static $unitConversion = [
+        self::WEIGHT_GRAM     => 1,
+        self::WEIGHT_KILOGRAM => 1000,
+        self::WEIGHT_POUND    => 453.59237,
+        self::WEIGHT_OUNCE    => 28.349523125,
+        self::WEIGHT_STONE    => 6350.29318,
     ];
 
     /**
@@ -265,9 +284,13 @@ class Shipment implements ShipmentInterface
     /**
      * {@inheritdoc}
      */
-    public function setWeight($weight)
+    public function setWeight($weight, $unit = self::WEIGHT_GRAM)
     {
-        $this->attributes[self::ATTRIBUTE_WEIGHT] = $weight;
+        if (!isset(self::$unitConversion[$unit])) {
+            throw new MyParcelComException('invalid unit: ' . $unit);
+        }
+
+        $this->attributes[self::ATTRIBUTE_WEIGHT] = round($weight * self::$unitConversion[$unit]);
 
         return $this;
     }
@@ -275,9 +298,13 @@ class Shipment implements ShipmentInterface
     /**
      * {@inheritdoc}
      */
-    public function getWeight()
+    public function getWeight($unit = self::WEIGHT_GRAM)
     {
-        return $this->attributes[self::ATTRIBUTE_WEIGHT];
+        if (!isset(self::$unitConversion[$unit])) {
+            throw new MyParcelComException('invalid unit: ' . $unit);
+        }
+
+        return round($this->attributes[self::ATTRIBUTE_WEIGHT] / self::$unitConversion[$unit]);
     }
 
     /**
@@ -393,8 +420,50 @@ class Shipment implements ShipmentInterface
     /**
      * {@inheritdoc}
      */
-    public function getFiles()
+    public function getFiles($type = null)
     {
-        return $this->relationships[self::RELATIONSHIP_FILES]['data'];
+        if ($type === null) {
+            return $this->relationships[self::RELATIONSHIP_FILES]['data'];
+        }
+
+        return array_filter($this->relationships[self::RELATIONSHIP_FILES]['data'], function (FileInterface $file) use ($type) {
+            return $file->getResourceType() === $type;
+        });
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setStatus(StatusInterface $status)
+    {
+        $this->relationships[self::RELATIONSHIP_STATUS]['data'] = $status;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getStatus()
+    {
+        return $this->relationships[self::RELATIONSHIP_STATUS]['data'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setContract(ContractInterface $contract)
+    {
+        $this->relationships[self::RELATIONSHIP_CONTRACT]['data'] = $contract;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getContract()
+    {
+        return $this->relationships[self::RELATIONSHIP_CONTRACT]['data'];
     }
 }

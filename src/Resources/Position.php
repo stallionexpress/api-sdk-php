@@ -2,6 +2,7 @@
 
 namespace MyParcelCom\Sdk\Resources\Interfaces;
 
+use MyParcelCom\Sdk\Exceptions\MyParcelComException;
 use MyParcelCom\Sdk\Resources\Traits\JsonSerializable;
 
 class Position implements PositionInterface
@@ -11,7 +12,14 @@ class Position implements PositionInterface
     private $latitude;
     private $longitude;
     private $distance;
-    private $unit;
+    private $unit = self::UNIT_METER;
+
+    private static $unitConversion = [
+        self::UNIT_METER     => 1,
+        self::UNIT_KILOMETER => 1000,
+        self::UNIT_MILE      => 1609.344,
+        self::UNIT_FOOT      => 0.3048,
+    ];
 
     /**
      * {@inheritdoc}
@@ -52,9 +60,13 @@ class Position implements PositionInterface
     /**
      * {@inheritdoc}
      */
-    public function setDistance($distance)
+    public function setDistance($distance, $unit = self::UNIT_METER)
     {
-        $this->distance = (int)$distance;
+        if (!isset(self::$unitConversion[$unit])) {
+            throw new MyParcelComException('invalid unit: ' . $unit);
+        }
+
+        $this->distance = round($distance * self::$unitConversion[$unit]);
 
         return $this;
     }
@@ -62,26 +74,12 @@ class Position implements PositionInterface
     /**
      * {@inheritdoc}
      */
-    public function getDistance()
+    public function getDistance($unit = self::UNIT_METER)
     {
-        return $this->distance;
-    }
+        if (!isset(self::$unitConversion[$unit])) {
+            throw new MyParcelComException('invalid unit: ' . $unit);
+        }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setUnit($unit)
-    {
-        $this->unit = $unit;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getUnit()
-    {
-        return $this->unit;
+        return round($this->distance / self::$unitConversion[$unit]);
     }
 }

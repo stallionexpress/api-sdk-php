@@ -3,11 +3,14 @@
 namespace MyParcelCom\Sdk\Tests\Unit;
 
 use MyParcelCom\Sdk\Resources\Interfaces\AddressInterface;
+use MyParcelCom\Sdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\PhysicalPropertiesInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ServiceOptionInterface;
+use MyParcelCom\Sdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ShopInterface;
+use MyParcelCom\Sdk\Resources\Interfaces\StatusInterface;
 use MyParcelCom\Sdk\Resources\Shipment;
 use PHPUnit\Framework\TestCase;
 
@@ -107,6 +110,16 @@ class ShipmentTest extends TestCase
     {
         $shipment = new Shipment();
         $this->assertEquals(8000, $shipment->setWeight(8000)->getWeight());
+        $this->assertEquals(500, $shipment->setWeight(500, Shipment::WEIGHT_GRAM)->getWeight());
+        $this->assertEquals(3000, $shipment->setWeight(3, Shipment::WEIGHT_KILOGRAM)->getWeight());
+        $this->assertEquals(1701, $shipment->setWeight(60, Shipment::WEIGHT_OUNCE)->getWeight());
+        $this->assertEquals(2268, $shipment->setWeight(5, Shipment::WEIGHT_POUND)->getWeight());
+        $this->assertEquals(12701, $shipment->setWeight(2, Shipment::WEIGHT_STONE)->getWeight());
+        $this->assertEquals(500, $shipment->setWeight(500)->getWeight(Shipment::WEIGHT_GRAM));
+        $this->assertEquals(3, $shipment->setWeight(3000)->getWeight(Shipment::WEIGHT_KILOGRAM));
+        $this->assertEquals(60, $shipment->setWeight(1701)->getWeight(Shipment::WEIGHT_OUNCE));
+        $this->assertEquals(5, $shipment->setWeight(2268)->getWeight(Shipment::WEIGHT_POUND));
+        $this->assertEquals(2, $shipment->setWeight(12701)->getWeight(Shipment::WEIGHT_STONE));
     }
 
     /** @test */
@@ -155,6 +168,29 @@ class ShipmentTest extends TestCase
         $this->assertEquals($options, $shipment->getOptions());
     }
 
+    /** @test */
+    public function testContract()
+    {
+        $shipment = new Shipment();
+
+        $mock = $this->getMockClass(ContractInterface::class);
+        $contract = new $mock();
+
+        $this->assertEquals($contract, $shipment->setContract($contract)->getContract());
+    }
+
+    /** @test */
+    public function testStatus()
+    {
+        $shipment = new Shipment();
+
+        $this->assertEmpty($shipment->getStatus());
+
+        $mock = $this->getMockClass(StatusInterface::class);
+        $status = new $mock();
+
+        $this->assertEquals($status, $shipment->setStatus($status)->getStatus());
+    }
 
     /** @test */
     public function testFiles()
@@ -181,6 +217,38 @@ class ShipmentTest extends TestCase
     }
 
     /** @test */
+    public function testGetFilesByType()
+    {
+        $shipment = new Shipment();
+
+        $label = $this->getMockBuilder(FileInterface::class)
+            ->disableOriginalConstructor()
+            ->disableOriginalClone()
+            ->disableArgumentCloning()
+            ->disallowMockingUnknownTypes()
+            ->getMock();
+        $label->method('getResourceType')
+            ->willReturn(FileInterface::RESOURCE_TYPE_LABEL);
+
+        $printcode = $this->getMockBuilder(FileInterface::class)
+            ->disableOriginalConstructor()
+            ->disableOriginalClone()
+            ->disableArgumentCloning()
+            ->disallowMockingUnknownTypes()
+            ->getMock();
+        $printcode->method('getResourceType')
+            ->willReturn(FileInterface::RESOURCE_TYPE_PRINTCODE);
+
+        $shipment->setFiles([$label, $printcode]);
+
+        $this->assertCount(1, $shipment->getFiles(FileInterface::RESOURCE_TYPE_PRINTCODE));
+        $this->assertEquals($printcode, reset($shipment->getFiles(FileInterface::RESOURCE_TYPE_PRINTCODE)));
+
+        $this->assertCount(1, $shipment->getFiles(FileInterface::RESOURCE_TYPE_LABEL));
+        $this->assertEquals($label, reset($shipment->getFiles(FileInterface::RESOURCE_TYPE_LABEL)));
+    }
+
+    /** @test */
     public function testJsonSerialize()
     {
         $recipientAddress = $this->getMockBuilder(AddressInterface::class)
@@ -193,7 +261,7 @@ class ShipmentTest extends TestCase
             ->willReturn([
                 'street_1'             => 'Diagonally',
                 'street_2'             => 'Apartment 4',
-                'street_number'        => '4',
+                'street_number'        => '1',
                 'street_number_suffix' => 'A',
                 'postal_code'          => '1AR BR2',
                 'city'                 => 'London',
@@ -216,7 +284,7 @@ class ShipmentTest extends TestCase
             ->willReturn([
                 'street_1'             => 'Diagonally',
                 'street_2'             => 'Apartment 4',
-                'street_number'        => '4',
+                'street_number'        => '2',
                 'street_number_suffix' => 'A',
                 'postal_code'          => '1AR BR2',
                 'city'                 => 'London',
@@ -239,7 +307,7 @@ class ShipmentTest extends TestCase
             ->willReturn([
                 'street_1'             => 'Diagonally',
                 'street_2'             => 'Apartment 4',
-                'street_number'        => '4',
+                'street_number'        => '3',
                 'street_number_suffix' => 'A',
                 'postal_code'          => '1AR BR2',
                 'city'                 => 'London',
@@ -288,6 +356,18 @@ class ShipmentTest extends TestCase
                 'type' => 'services',
             ]);
 
+        $contract = $this->getMockBuilder(ContractInterface::class)
+            ->disableOriginalConstructor()
+            ->disableOriginalClone()
+            ->disableArgumentCloning()
+            ->disallowMockingUnknownTypes()
+            ->getMock();
+        $contract->method('jsonSerialize')
+            ->willReturn([
+                'id'   => 'contract-id-1',
+                'type' => 'contracts',
+            ]);
+
         $shop = $this->getMockBuilder(ShopInterface::class)
             ->disableOriginalConstructor()
             ->disableOriginalClone()
@@ -315,6 +395,18 @@ class ShipmentTest extends TestCase
                 'width'  => 1400,
             ]);
 
+        $status = $this->getMockBuilder(StatusInterface::class)
+            ->disableOriginalConstructor()
+            ->disableOriginalClone()
+            ->disableArgumentCloning()
+            ->disallowMockingUnknownTypes()
+            ->getMock();
+        $status->method('jsonSerialize')
+            ->willReturn([
+                'id'   => 'status-id-1',
+                'type' => 'statuses',
+            ]);
+
         $shipment = (new Shipment())
             ->setId('shipment-id')
             ->setDescription('order #012ASD')
@@ -329,6 +421,8 @@ class ShipmentTest extends TestCase
             ->setService($service)
             ->setOptions([$option])
             ->setFiles([$file])
+            ->setContract($contract)
+            ->setStatus($status)
             ->setRecipientAddress($recipientAddress)
             ->setSenderAddress($senderAddress)
             ->setPickupLocationAddress($pudoAddress);
@@ -358,7 +452,7 @@ class ShipmentTest extends TestCase
                 'recipient_address'   => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 4',
-                    'street_number'        => '4',
+                    'street_number'        => '1',
                     'street_number_suffix' => 'A',
                     'postal_code'          => '1AR BR2',
                     'city'                 => 'London',
@@ -373,7 +467,7 @@ class ShipmentTest extends TestCase
                 'sender_address'      => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 4',
-                    'street_number'        => '4',
+                    'street_number'        => '2',
                     'street_number_suffix' => 'A',
                     'postal_code'          => '1AR BR2',
                     'city'                 => 'London',
@@ -390,7 +484,7 @@ class ShipmentTest extends TestCase
                     'address' => [
                         'street_1'             => 'Diagonally',
                         'street_2'             => 'Apartment 4',
-                        'street_number'        => '4',
+                        'street_number'        => '3',
                         'street_number_suffix' => 'A',
                         'postal_code'          => '1AR BR2',
                         'city'                 => 'London',
@@ -405,10 +499,12 @@ class ShipmentTest extends TestCase
                 ],
             ],
             'relationships' => [
-                'shop'    => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
-                'service' => ['data' => ['id' => 'service-id-1', 'type' => 'services']],
-                'options' => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
-                'files'   => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
+                'shop'     => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
+                'service'  => ['data' => ['id' => 'service-id-1', 'type' => 'services']],
+                'contract' => ['data' => ['id' => 'contract-id-1', 'type' => 'contracts']],
+                'status'   => ['data' => ['id' => 'status-id-1', 'type' => 'statuses']],
+                'options'  => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
+                'files'    => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
             ],
         ], $shipment->jsonSerialize());
     }

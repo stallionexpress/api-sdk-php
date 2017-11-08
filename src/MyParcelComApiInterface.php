@@ -7,6 +7,7 @@ use MyParcelCom\Sdk\Exceptions\MyParcelComException;
 use MyParcelCom\Sdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\PickUpDropOffLocationInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\RegionInterface;
+use MyParcelCom\Sdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ShopInterface;
@@ -130,4 +131,14 @@ interface MyParcelComApiInterface
      * @return ShipmentInterface
      */
     public function createShipment(ShipmentInterface $shipment);
+
+    /**
+     * Get the resource of given type with given id.
+     *
+     * @param string $resourceType
+     * @param string $id
+     * @throws MyParcelComException
+     * @return ResourceInterface
+     */
+    public function getResourceById($resourceType, $id);
 }
