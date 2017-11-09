@@ -18,8 +18,12 @@ trait JsonSerializable
         if (isset($json['attributes']) && $this->isEmpty($json['attributes'])) {
             unset($json['attributes']);
         }
-        if (isset($json['relationships']) && $this->isEmpty($json['relationships'])) {
-            unset($json['relationships']);
+        if (isset($json['relationships'])) {
+            if ($this->isEmpty($json['relationships'])) {
+                unset($json['relationships']);
+            } else {
+                $json['relationships'] = $this->removeRelationshipAttributes($json['relationships']);
+            }
         }
         if (isset($json['meta']) && $this->isEmpty($json['meta'])) {
             unset($json['meta']);
@@ -73,5 +77,32 @@ trait JsonSerializable
         }
 
         return $array;
+    }
+
+    /**
+     * Remove all the attributes from the relationships, so it only has `id` and
+     * `type` values.
+     *
+     * @param array $relationships
+     * @return array
+     */
+    private function removeRelationshipAttributes(array $relationships)
+    {
+        foreach ($relationships as $name => &$relationship) {
+            if (empty($relationship['data'])) {
+                unset($relationships[$name]);
+                continue;
+            }
+            if (isset($relationship['data']['id'])) {
+                unset($relationship['data']['attributes'], $relationship['data']['relationships']);
+                continue;
+            }
+            foreach ($relationship['data'] as &$relationResource) {
+                unset($relationResource['attributes'], $relationResource['relationships']);
+            }
+        }
+        unset($relationship);
+
+        return $relationships;
     }
 }

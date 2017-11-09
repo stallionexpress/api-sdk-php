@@ -9,9 +9,7 @@ use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\RequestOptions;
 use MyParcelCom\Sdk\Authentication\AuthenticatorInterface;
 use MyParcelCom\Sdk\Exceptions\InvalidResourceException;
-use MyParcelCom\Sdk\Exceptions\MyParcelComException;
 use MyParcelCom\Sdk\Resources\Interfaces\CarrierInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\RegionInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ResourceFactoryInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ResourceInterface;
@@ -20,6 +18,9 @@ use MyParcelCom\Sdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\Sdk\Resources\ResourceFactory;
+use MyParcelCom\Sdk\Shipments\ContractSelector;
+use MyParcelCom\Sdk\Shipments\PriceCalculator;
+use MyParcelCom\Sdk\Shipments\ServiceMatcher;
 use MyParcelCom\Sdk\Validators\ShipmentValidator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\SimpleCache\CacheInterface;
@@ -29,103 +30,9 @@ use function GuzzleHttp\Promise\unwrap;
 
 class MyParcelComApi implements MyParcelComApiInterface
 {
-    private $shipments = [
-        'shipment-id-1' => [
-            'id'                  => 'shipment-id-1',
-            'recipient_address'   => [
-                'street_1'             => 'Some road',
-                'street_2'             => 'Room 3',
-                'street_number'        => 17,
-                'street_number_suffix' => 'A',
-                'postal_code'          => '1GL HF1',
-                'city'                 => 'Cardiff',
-                'region_code'          => 'CRF',
-                'country_code'         => 'GB',
-                'first_name'           => 'John',
-                'last_name'            => 'Doe',
-                'company'              => 'Acme Jewelry Co.',
-                'email'                => 'john@doe.com',
-                'phone_number'         => '+31 234 567 890',
-            ],
-            'sender_address'      => [
-                'street_1'             => 'Some road',
-                'street_2'             => 'Room 3',
-                'street_number'        => 17,
-                'street_number_suffix' => 'A',
-                'postal_code'          => '1GL HF1',
-                'city'                 => 'Cardiff',
-                'region_code'          => 'CRF',
-                'country_code'         => 'GB',
-                'first_name'           => 'John',
-                'last_name'            => 'Doe',
-                'company'              => 'Acme Jewelry Co.',
-                'email'                => 'john@doe.com',
-                'phone_number'         => '+31 234 567 890',
-            ],
-            'pickup_location'     => [
-                'code'    => '123456',
-                'address' => [
-                    'street_1'             => 'Some road',
-                    'street_2'             => 'Room 3',
-                    'street_number'        => 17,
-                    'street_number_suffix' => 'A',
-                    'postal_code'          => '1GL HF1',
-                    'city'                 => 'Cardiff',
-                    'region_code'          => 'CRF',
-                    'country_code'         => 'GB',
-                    'first_name'           => 'John',
-                    'last_name'            => 'Doe',
-                    'company'              => 'Acme Jewelry Co.',
-                    'email'                => 'john@doe.com',
-                    'phone_number'         => '+31 234 567 890',
-                ],
-            ],
-            'description'         => 'order #8008135',
-            'price'               => 100,
-            'currency'            => 'EUR',
-            'insuranceAmount'     => 100,
-            'barcode'             => '3SABCD0123456789',
-            'weight'              => 24,
-            'physical_properties' => [
-                'height' => 24,
-                'width'  => 50,
-                'length' => 50,
-                'volume' => 50,
-                'weight' => 24,
-            ],
-            'service_options'     => [
-                [
-                    'id' => 'service-id-1',
-                ],
-            ],
-            'shop'                => [
-                'id' => 'shop-id-1',
-            ],
-            'status'              => [
-                'id' => 'status-id-1',
-            ],
-            'service'             => [
-                'id' => 'service-id-1',
-            ],
-            'contract'            => [
-                'id' => 'contract-id-1',
-            ],
-            'files'               => [
-                [
-                    'id'            => 'file-id-1',
-                    'resource_type' => FileInterface::RESOURCE_TYPE_LABEL,
-                    'formats'       => [['mime_type' => 'image/png', 'extension' => 'png']],
-                    'base64_data'   => 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==',
-                ],
-                [
-                    'id'            => 'file-id-2',
-                    'resource_type' => FileInterface::RESOURCE_TYPE_PRINTCODE,
-                    'formats'       => [['mime_type' => 'image/png', 'extension' => 'png']],
-                    'base64_data'   => 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkkPxfDwAC0gGZ9+czaQAAAABJRU5ErkJggg==',
-                ],
-            ],
-        ],
-    ];
+    const API_VERSION = 'v1';
+    const TTL_WEEK = 604800;
+    const TTL_10MIN = 600;
 
     /** @var string */
     protected $apiUri;
@@ -145,7 +52,8 @@ class MyParcelComApi implements MyParcelComApiInterface
     private static $singleton;
 
     /**
-     *
+     * Create an singleton instance of this class, which will be available in
+     * subsequent calls to `getSingleton()`.
      *
      * @param AuthenticatorInterface        $authenticator
      * @param string                        $apiUri
@@ -164,6 +72,8 @@ class MyParcelComApi implements MyParcelComApiInterface
     }
 
     /**
+     * Get the singleton instance created.
+     *
      * @return MyParcelComApi
      */
     public static function getSingleton()
@@ -172,6 +82,10 @@ class MyParcelComApi implements MyParcelComApiInterface
     }
 
     /**
+     * Create an instance for the api with given uri. If no cache is given, the
+     * filesystem is used for caching. If no resource factory is given, the
+     * default factory is used.
+     *
      * @param string                        $apiUri
      * @param CacheInterface|null           $cache
      * @param ResourceFactoryInterface|null $resourceFactory
@@ -208,7 +122,7 @@ class MyParcelComApi implements MyParcelComApiInterface
     public function getRegions($countryCode = null, $regionCode = null)
     {
         // These resources can be stored for a week.
-        $regions = $this->getResourcesPromise($this->apiUri . self::PATH_REGIONS, 604800)
+        $regions = $this->getResourcesPromise($this->apiUri . self::PATH_REGIONS, self::TTL_WEEK)
             ->wait();
 
         // For now, we need to manually filter the regions.
@@ -224,7 +138,7 @@ class MyParcelComApi implements MyParcelComApiInterface
     public function getCarriers()
     {
         // These resources can be stored for a week.
-        return $this->getResourcesPromise($this->apiUri . self::PATH_CARRIERS, 604800)
+        return $this->getResourcesPromise($this->apiUri . self::PATH_CARRIERS, self::TTL_WEEK)
             ->wait();
     }
 
@@ -267,7 +181,7 @@ class MyParcelComApi implements MyParcelComApiInterface
             $carrierUri = str_replace('{carrier_id}', $carrier->getId(), $uri);
 
             // These resources can be stored for a week.
-            return $this->getResourcesPromise($carrierUri, 604800)
+            return $this->getResourcesPromise($carrierUri, self::TTL_WEEK)
                 ->otherwise(function (RequestException $reason) {
                     return $this->handleRequestException($reason);
                 });
@@ -285,7 +199,7 @@ class MyParcelComApi implements MyParcelComApiInterface
     {
         // These resources can be stored for a week. Or should be removed from
         // cache when updated
-        return $this->getResourcesPromise($this->apiUri . self::PATH_SHOPS, 604800)
+        return $this->getResourcesPromise($this->apiUri . self::PATH_SHOPS, self::TTL_WEEK)
             ->wait();
     }
 
@@ -310,14 +224,17 @@ class MyParcelComApi implements MyParcelComApiInterface
     public function getServices(ShipmentInterface $shipment = null)
     {
         // Services can be cached for a week.
-        $services = $this->getResourcesPromise($this->apiUri . self::PATH_SERVICES, 604800)
+        $services = $this->getResourcesPromise($this->apiUri . self::PATH_SERVICES, self::TTL_WEEK)
             ->wait();
 
         if ($shipment !== null) {
-            $services = array_filter($services, function (ServiceInterface $service) {
-                // TODO
+            if ($shipment->getSenderAddress() === null) {
+                $shipment->setSenderAddress($this->getDefaultShop()->getReturnAddress());
+            }
 
-                return true;
+            $matcher = new ServiceMatcher();
+            $services = array_filter($services, function (ServiceInterface $service) use ($shipment, $matcher) {
+                return $matcher->matches($shipment, $service);
             });
         }
 
@@ -336,31 +253,31 @@ class MyParcelComApi implements MyParcelComApiInterface
     }
 
     /**
-     * @todo
      * {@inheritdoc}
      */
     public function getShipments(ShopInterface $shop = null)
     {
-        return array_map(function ($shipment) use ($shop) {
-            return $shop
-                ? $this->resourceFactory->create(ResourceInterface::TYPE_SHIPMENT, $shipment)->setShop($shop)
-                : $this->resourceFactory->create(ResourceInterface::TYPE_SHIPMENT, $shipment);
-        }, $this->shipments);
+        $shipments = $this->getResourcesPromise($this->apiUri . self::PATH_SHIPMENTS)->wait();
+
+        if ($shop === null) {
+            return $shipments;
+        }
+
+        // For now filter manually.
+        return array_filter($shipments, function (ShipmentInterface $shipment) use ($shop) {
+            return $shipment->getShop()->getId() === $shop->getId();
+        });
     }
 
     /**
-     * @todo
      * {@inheritdoc}
      */
     public function getShipment($id)
     {
-        return isset($this->shipments[$id])
-            ? $this->resourceFactory->create(ResourceInterface::TYPE_SHIPMENT, $this->shipments[$id])
-            : null;
+        return $this->getResourceById(ResourceInterface::TYPE_SHIPMENT, $id);
     }
 
     /**
-     * @todo
      * {@inheritdoc}
      */
     public function createShipment(ShipmentInterface $shipment)
@@ -368,14 +285,6 @@ class MyParcelComApi implements MyParcelComApiInterface
         // If no shop is set, use the default shop.
         if ($shipment->getShop() === null) {
             $shipment->setShop($this->getDefaultShop());
-        }
-
-        // If no service is set, default to the first shipment that is available
-        // for this shipment's configuration.
-        if ($shipment->getService() === null) {
-            $shipment->setService(
-                reset($this->getServices($shipment))
-            );
         }
 
         // If no sender address has been set, default to the shop's return
@@ -386,7 +295,13 @@ class MyParcelComApi implements MyParcelComApiInterface
             );
         }
 
+        // If no contract is set, select the cheapest one.
+        if ($shipment->getContract() === null) {
+            $this->determineContract($shipment);
+        }
+
         $validator = new ShipmentValidator($shipment);
+
         if (!$validator->isValid()) {
             $exception = new InvalidResourceException(
                 'Could not create shipment, shipment was invalid or incomplete'
@@ -396,11 +311,50 @@ class MyParcelComApi implements MyParcelComApiInterface
             throw $exception;
         }
 
-        $shipment->setPrice(650);
-        $shipment->setCurrency('GBP');
-        $shipment->setId('shipment-id-99');
+        return $this->postResource($shipment);
+    }
 
-        return $shipment;
+    /**
+     * Determine what contract (and service) to use for given shipment and
+     * update the shipment.
+     *
+     * @param ShipmentInterface $shipment
+     * @return $this
+     */
+    protected function determineContract(ShipmentInterface $shipment)
+    {
+
+        if ($shipment->getService() !== null) {
+
+            $shipment->setContract((new ContractSelector())->selectCheapest(
+                $shipment, $shipment->getService()->getContracts()
+            ));
+
+            return $this;
+        }
+        $selector = new ContractSelector();
+        $calculator = new PriceCalculator();
+        $contracts = array_map(
+            function (ServiceInterface $service) use ($selector, $calculator, $shipment) {
+                $contract = $selector->selectCheapest($shipment, $service->getContracts());
+
+                return [
+                    'price'    => $calculator->calculate($shipment, $contract),
+                    'contract' => $contract,
+                    'service'  => $service,
+                ];
+            }, $this->getServices($shipment)
+        );
+
+        usort($contracts, function ($a, $b) {
+            return $a['price'] - $b['price'];
+        });
+
+        $cheapest = reset($contracts);
+        $shipment->setContract($cheapest['contract'])
+            ->setService($cheapest['service']);
+
+        return $this;
     }
 
     /**
@@ -490,7 +444,7 @@ class MyParcelComApi implements MyParcelComApiInterface
      * @return PromiseInterface
      * @internal param string $path
      */
-    protected function getResourcesPromise($url, $ttl = 600)
+    protected function getResourcesPromise($url, $ttl = self::TTL_10MIN)
     {
         $cacheKey = 'get.' . str_replace([':', '{', '}', '(', ')', '/', '\\', '@'], '-', $url);
         if (($resources = $this->cache->get($cacheKey))) {
@@ -559,7 +513,10 @@ class MyParcelComApi implements MyParcelComApiInterface
      */
     private function flattenResourceData(array $resourceData)
     {
-        $data = ['id' => $resourceData['id']];
+        $data = [
+            'id'   => $resourceData['id'],
+            'type' => $resourceData['type'],
+        ];
 
         if (isset($resourceData['attributes'])) {
             $data += $resourceData['attributes'];
@@ -569,6 +526,10 @@ class MyParcelComApi implements MyParcelComApiInterface
             $data += array_map(function ($relationship) {
                 return $relationship['data'];
             }, $resourceData['relationships']);
+        }
+
+        if (isset($resourceData['links'])) {
+            $data['links'] = $resourceData['links'];
         }
 
         return $data;
@@ -584,8 +545,8 @@ class MyParcelComApi implements MyParcelComApiInterface
 
         if ($response->getStatusCode() !== 401 || $this->authRetry) {
             // TODO actually do something
-            echo (string)$exception->getRequest()->getUri();
-            echo (string)$exception->getResponse()->getBody();
+            // echo (string)$exception->getRequest()->getUri();
+            // echo (string)$exception->getResponse()->getBody();
 
             throw $exception;
         }
@@ -603,16 +564,60 @@ class MyParcelComApi implements MyParcelComApiInterface
      */
     public function getResourceById($resourceType, $id)
     {
-        $url = implode(
-            '/',
+        return reset($this->getResourcesPromise(
+            $this->getResourceUri($resourceType, $id)
+        )->wait());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getResourcesFromUri($uri)
+    {
+        return $this->getResourcesPromise($uri)->wait();
+    }
+
+    /**
+     * Post given resource and return the resource that was returned.
+     *
+     * @param ResourceInterface $resource
+     * @return ResourceInterface|null
+     */
+    protected function postResource(ResourceInterface $resource)
+    {
+        $promise = $this->getHttpClient()->requestAsync(
+            'post',
+            $this->getResourceUri($resource->getType()),
             [
+                RequestOptions::JSON => ['data' => $resource],
+            ]
+        )->then(function (ResponseInterface $response) {
+            $json = \GuzzleHttp\json_decode($response->getBody(), true);
+
+            return $this->jsonToResources($json['data']);
+        }, function (RequestException $reason) {
+            return $this->handleRequestException($reason);
+        });
+
+
+        return reset($promise->wait());
+    }
+
+    /**
+     * @param string      $resourceType
+     * @param string|null $id
+     * @return string
+     */
+    protected function getResourceUri($resourceType, $id = null)
+    {
+        return implode(
+            '/',
+            array_filter([
                 $this->apiUri,
-                'v1',
+                self::API_VERSION,
                 $resourceType,
                 $id,
-            ]
+            ])
         );
-
-        return reset($this->getResourcesPromise($url)->wait());
     }
 }

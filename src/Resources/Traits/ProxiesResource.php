@@ -13,6 +13,8 @@ trait ProxiesResource
     private $api;
 
     /**
+     * Set the api to use when retrieving the resource.
+     *
      * @param MyParcelComApiInterface $api
      * @return $this
      */
@@ -23,6 +25,11 @@ trait ProxiesResource
         return $this;
     }
 
+    /**
+     * Get the resource that this instance is a proxy for.
+     *
+     * @return ResourceInterface
+     */
     protected function getResource()
     {
         if (!isset($this->resource) && isset($this->api)) {

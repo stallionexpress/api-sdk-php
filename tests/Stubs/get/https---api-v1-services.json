@@ -8,7 +8,8 @@
         "package_type": "letter"
       },
       "links": {
-        "self": "https://api/v1/services/a3057e77-005b-4945-a41c-20ddbe4dab08"
+        "self": "https://api/v1/services/a3057e77-005b-4945-a41c-20ddbe4dab08",
+        "contracts": "https://api/v1/services/a3057e77-005b-4945-a41c-20ddbe4dab08/contracts"
       },
       "relationships": {
         "carrier": {
@@ -48,7 +49,8 @@
         "package_type": "letterbox"
       },
       "links": {
-        "self": "https://api/v1/services/433285bb-2e34-435c-9109-1120e7c4bce4"
+        "self": "https://api/v1/services/433285bb-2e34-435c-9109-1120e7c4bce4",
+        "contracts": "https://api/v1/services/433285bb-2e34-435c-9109-1120e7c4bce4/contracts"
       },
       "relationships": {
         "carrier": {
@@ -88,7 +90,8 @@
         "package_type": "parcel"
       },
       "links": {
-        "self": "https://api/v1/services/605c33ba-5504-4bb0-9467-d8901195923c"
+        "self": "https://api/v1/services/605c33ba-5504-4bb0-9467-d8901195923c",
+        "contracts": "https://api/v1/services/605c33ba-5504-4bb0-9467-d8901195923c/contracts"
       },
       "relationships": {
         "carrier": {
