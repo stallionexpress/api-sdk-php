@@ -2,6 +2,7 @@
 
 namespace MyParcelCom\Sdk;
 
+use GuzzleHttp\Promise\PromiseInterface;
 use MyParcelCom\Sdk\Authentication\AuthenticatorInterface;
 use MyParcelCom\Sdk\Exceptions\MyParcelComException;
 use MyParcelCom\Sdk\Resources\Interfaces\CarrierInterface;
@@ -15,11 +16,16 @@ use MyParcelCom\Sdk\Resources\Interfaces\ShopInterface;
 interface MyParcelComApiInterface
 {
     const PATH_CARRIERS = '/v1/carriers';
+    const PATH_FILES_ID = '/v1/files/{file_id}';
     const PATH_PUDO_LOCATIONS = '/v1/carriers/{carrier_id}/pickup-dropoff-locations/{country_code}/{postal_code}';
     const PATH_REGIONS = '/v1/regions';
     const PATH_SERVICES = '/v1/services';
     const PATH_SHIPMENTS = '/v1/shipments';
     const PATH_SHOPS = '/v1/shops';
+
+    const TTL_10MIN = 600;
+    const TTL_WEEK = 604800;
+    const TTL_MONTH = 2592000;
 
     /**
      * Authenticate to the API using the given authenticator.
@@ -150,4 +156,16 @@ interface MyParcelComApiInterface
      * @return ResourceInterface[]
      */
     public function getResourcesFromUri($uri);
+
+    /**
+     * Do an async request to given uri on the API.
+     *
+     * @param string $uri
+     * @param string $method
+     * @param array  $body
+     * @param array  $headers
+     * @param int    $ttl
+     * @return PromiseInterface
+     */
+    public function doRequest($uri, $method = 'get', array $body = [], array $headers = [], $ttl = self::TTL_10MIN);
 }

@@ -116,7 +116,6 @@ class ClientCredentialsTest extends TestCase
         $this->assertEquals(
             [
                 'Authorization' => 'Bearer an-access-token-for-the-myparcelcom-api',
-                'Accept'        => 'application/vnd.api+json',
             ],
             $clientCredentials->getAuthorizationHeader()
         );
