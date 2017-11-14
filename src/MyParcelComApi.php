@@ -325,9 +325,9 @@ class MyParcelComApi implements MyParcelComApiInterface
     {
 
         if ($shipment->getService() !== null) {
-
             $shipment->setContract((new ContractSelector())->selectCheapest(
-                $shipment, $shipment->getService()->getContracts()
+                $shipment,
+                $shipment->getService()->getContracts()
             ));
 
             return $this;
@@ -343,7 +343,8 @@ class MyParcelComApi implements MyParcelComApiInterface
                     'contract' => $contract,
                     'service'  => $service,
                 ];
-            }, $this->getServices($shipment)
+            },
+            $this->getServices($shipment)
         );
 
         usort($contracts, function ($a, $b) {

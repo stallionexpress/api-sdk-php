@@ -13,6 +13,8 @@ use MyParcelCom\Sdk\Resources\Interfaces\ShipmentInterface;
 class ServiceMatcher
 {
     /**
+     * Returns true if given service can be used for the given shipment.
+     *
      * @param ShipmentInterface $shipment
      * @param ServiceInterface  $service
      * @return bool
@@ -20,11 +22,15 @@ class ServiceMatcher
     public function matches(ShipmentInterface $shipment, ServiceInterface $service)
     {
         return $this->matchesRegion($shipment, $service)
-            && ($contracts = $this->getMatchedWeightGroups($shipment, $service->getContracts()))
-            && $this->getMatchedOptions($shipment, $contracts);
+            && ($weightContracts = $this->getMatchedWeightGroups($shipment, $service->getContracts()))
+            && ($optionContracts = $this->getMatchedOptions($shipment, $weightContracts))
+            && $this->getMatchedInsurances($shipment, $optionContracts);
     }
 
     /**
+     * Returns true if the sender and and recipient address on the shipment
+     * match the regions from and to on the service.
+     *
      * @param ShipmentInterface $shipment
      * @param ServiceInterface  $service
      * @return bool
@@ -47,6 +53,8 @@ class ServiceMatcher
     }
 
     /**
+     * Returns true if the address matches given region.
+     *
      * @param AddressInterface $address
      * @param RegionInterface  $region
      * @return bool
@@ -59,6 +67,9 @@ class ServiceMatcher
     }
 
     /**
+     * Returns an subset of the given contracts that have weight groups that
+     * match the weight of the shipment.
+     *
      * @param ShipmentInterface   $shipment
      * @param ContractInterface[] $contracts
      * @return ContractInterface[]
@@ -80,6 +91,9 @@ class ServiceMatcher
     }
 
     /**
+     * Returns a subset of the given contracts that have all the options that
+     * the shipment requires.
+     *
      * @param ShipmentInterface   $shipment
      * @param ContractInterface[] $contracts
      * @return ContractInterface[]
@@ -102,5 +116,30 @@ class ServiceMatcher
         }
 
         return $matches;
+    }
+
+    /**
+     * Returns a subset of the given contracts that can cover the desired
+     * insurance of the shipment.
+     *
+     * @param ShipmentInterface   $shipment
+     * @param ContractInterface[] $contracts
+     * @return ContractInterface[]
+     */
+    public function getMatchedInsurances(ShipmentInterface $shipment, array $contracts)
+    {
+        if (!$shipment->getInsuranceAmount()) {
+            return $contracts;
+        }
+
+        return array_filter($contracts, function (ContractInterface $contract) use ($shipment) {
+            foreach ($contract->getInsurances() as $insurance) {
+                if ($shipment->getInsuranceAmount() <= $insurance->getCovered()) {
+                    return true;
+                }
+            }
+
+            return false;
+        });
     }
 }

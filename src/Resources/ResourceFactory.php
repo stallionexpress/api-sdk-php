@@ -98,7 +98,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
             unset($attributes['files']);
         }
 
-        if (isset($attributes['shop'])) {
+        if (isset($attributes['shop']['id'])) {
             $shipment->setShop(
                 (new ShopProxy())->setMyParcelComApi($this->api)->setId($attributes['shop']['id'])
             );
@@ -106,7 +106,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
             unset($attributes['shop']);
         }
 
-        if (isset($attributes['status'])) {
+        if (isset($attributes['status']['id'])) {
             $shipment->setStatus(
                 (new StatusProxy())->setMyParcelComApi($this->api)->setId($attributes['status']['id'])
             );
@@ -128,14 +128,14 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
     {
         $service = new Service();
 
-        if (isset($attributes['region_from'])) {
+        if (isset($attributes['region_from']['id'])) {
             $service->setRegionFrom(
                 (new RegionProxy())->setMyParcelComApi($this->api)->setId($attributes['region_from']['id'])
             );
 
             unset($attributes['region_from']);
         }
-        if (isset($attributes['region_to'])) {
+        if (isset($attributes['region_to']['id'])) {
             $service->setRegionTo(
                 (new RegionProxy())->setMyParcelComApi($this->api)->setId($attributes['region_to']['id'])
             );
@@ -163,33 +163,35 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
     {
         $serviceGroup = new ServiceGroup();
 
-        if (isset($attributes['attributes'])) {
-            if (isset($attributes['attributes']['price'])) {
-                $attributes += [
-                    'price'    => $attributes['attributes']['price']['amount'],
-                    'currency' => $attributes['attributes']['price']['currency'],
-                ];
-            }
-            if (isset($attributes['attributes']['weight'])) {
-                $attributes += [
-                    'weight_min' => $attributes['attributes']['weight']['min'],
-                    'weight_max' => $attributes['attributes']['weight']['max'],
-                ];
-            }
-            if (isset($attributes['attributes']['step_price'])) {
-                $attributes += [
-                    'step_price' => $attributes['attributes']['step_price']['amount'],
-                    'currency'   => $attributes['attributes']['step_price']['currency'],
-                ];
-            }
-            if (isset($attributes['attributes']['step_size'])) {
-                $attributes += [
-                    'step_size' => $attributes['attributes']['step_size'],
-                ];
-            }
-
-            unset($attributes['attributes']);
+        if (!isset($attributes['attributes'])) {
+            return $serviceGroup;
         }
+
+        if (isset($attributes['attributes']['price']['amount'])) {
+            $attributes += [
+                'price'    => $attributes['attributes']['price']['amount'],
+                'currency' => $attributes['attributes']['price']['currency'],
+            ];
+        }
+        if (isset($attributes['attributes']['weight']['min'])) {
+            $attributes += [
+                'weight_min' => $attributes['attributes']['weight']['min'],
+                'weight_max' => $attributes['attributes']['weight']['max'],
+            ];
+        }
+        if (isset($attributes['attributes']['step_price']['amount'])) {
+            $attributes += [
+                'step_price' => $attributes['attributes']['step_price']['amount'],
+                'currency'   => $attributes['attributes']['step_price']['currency'],
+            ];
+        }
+        if (isset($attributes['attributes']['step_size'])) {
+            $attributes += [
+                'step_size' => $attributes['attributes']['step_size'],
+            ];
+        }
+
+        unset($attributes['attributes']);
 
         return $serviceGroup;
     }

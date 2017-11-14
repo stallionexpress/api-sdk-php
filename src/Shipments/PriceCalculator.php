@@ -5,14 +5,15 @@ namespace MyParcelCom\Sdk\Shipments;
 use MyParcelCom\Sdk\Exceptions\MyParcelComException;
 use MyParcelCom\Sdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ServiceGroupInterface;
+use MyParcelCom\Sdk\Resources\Interfaces\ServiceInsuranceInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ShipmentInterface;
 
 class PriceCalculator
 {
     /**
      * Calculate the total price of given shipment. Optionally a contract can be
-     * for the price calculations. If no contract is given, the contract on the
-     * shipment is used.
+     * supplied for the price calculations. If no contract is given, the
+     * contract on the shipment is used.
      *
      * @param ShipmentInterface      $shipment
      * @param ContractInterface|null $contract
@@ -31,13 +32,14 @@ class PriceCalculator
         }
 
         return $this->calculateGroupPrice($shipment, $contract)
-            + $this->calculateOptionsPrice($shipment, $contract);
+            + $this->calculateOptionsPrice($shipment, $contract)
+            + $this->calculateInsurancePrice($shipment, $contract);
     }
 
     /**
      * Calculate the price based on the weight group for given shipment.
-     * Optionally a contract can be for the price calculations. If no contract
-     * is given, the contract on the shipment is used.
+     * Optionally a contract can be supplied for the price calculations. If no
+     * contract is given, the contract on the shipment is used.
      *
      * @param ShipmentInterface      $shipment
      * @param ContractInterface|null $contract
@@ -97,9 +99,8 @@ class PriceCalculator
         if ($shipment->getWeight() > $group->getWeightMax()
             && $group->getStepSize()
             && $group->getStepPrice()) {
-            $price += ceil(
-                    ($shipment->getWeight() - $group->getWeightMax()) / $group->getStepSize()
-                )
+            $price +=
+                ceil(($shipment->getWeight() - $group->getWeightMax()) / $group->getStepSize())
                 * $group->getStepPrice();
         }
 
@@ -108,8 +109,8 @@ class PriceCalculator
 
     /**
      * Calculate the price based on the selected options for given shipment.
-     * Optionally a contract can be for the price calculations. If no contract
-     * is given, the contract on the shipment is used.
+     * Optionally a contract can be supplied for the price calculations. If no
+     * contract is given, the contract on the shipment is used.
      *
      * @param ShipmentInterface      $shipment
      * @param ContractInterface|null $contract
@@ -137,5 +138,41 @@ class PriceCalculator
         }
 
         return (int)$price;
+    }
+
+    /**
+     * Calculate the price based on the desired insurance for given shipment.
+     * Optionally a contract can be supplied for the price calculations. If no
+     * contract is given, the contract on the shipment is used.
+     *
+     * @param ShipmentInterface      $shipment
+     * @param ContractInterface|null $contract
+     * @return int
+     */
+    public function calculateInsurancePrice(ShipmentInterface $shipment, ContractInterface $contract = null)
+    {
+        if ($contract === null) {
+            $contract = $shipment->getContract();
+        }
+
+        if ($contract === null) {
+            throw new MyParcelComException('Cannot calculate a price for given shipment without a contract');
+        }
+
+        if (!$shipment->getInsuranceAmount() || !($insurances = $contract->getInsurances())) {
+            return 0;
+        }
+
+        usort($insurances, function (ServiceInsuranceInterface $a, ServiceInsuranceInterface $b) {
+            return $a->getCovered() - $b->getCovered();
+        });
+
+        foreach ($insurances as $insurance) {
+            if ($shipment->getInsuranceAmount() <= $insurance->getCovered()) {
+                break;
+            }
+        }
+
+        return $insurance->getPrice();
     }
 }
