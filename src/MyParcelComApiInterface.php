@@ -18,6 +18,7 @@ interface MyParcelComApiInterface
     const PATH_PUDO_LOCATIONS = '/v1/carriers/{carrier_id}/pickup-dropoff-locations/{country_code}/{postal_code}';
     const PATH_REGIONS = '/v1/regions';
     const PATH_SERVICES = '/v1/services';
+    const PATH_SHIPMENTS = '/v1/shipments';
     const PATH_SHOPS = '/v1/shops';
 
     /**
@@ -141,4 +142,12 @@ interface MyParcelComApiInterface
      * @return ResourceInterface
      */
     public function getResourceById($resourceType, $id);
+
+    /**
+     * Get an array of all the resources from given uri.
+     *
+     * @param string $uri
+     * @return ResourceInterface[]
+     */
+    public function getResourcesFromUri($uri);
 }

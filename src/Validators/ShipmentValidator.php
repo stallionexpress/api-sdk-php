@@ -37,11 +37,12 @@ class ShipmentValidator implements ValidatorInterface
      */
     protected function checkRequired()
     {
-        $required = ['weight', 'service', 'recipient_address', 'sender_address', 'shop'];
+        $required = ['weight', 'service', 'recipient_address', 'sender_address', 'shop', 'contract'];
 
         array_walk($required, function ($required) {
             $getter = 'get' . StringUtils::snakeToPascalCase($required);
-            if (empty($this->shipment->$getter())) {
+            $value = $this->shipment->$getter();
+            if (empty($value)) {
                 $this->addError(sprintf('Required property `%s` is empty', $required));
             }
         });

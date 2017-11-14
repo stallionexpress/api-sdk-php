@@ -64,6 +64,23 @@ class MyParcelComApiTest extends TestCase
                     ));
                 }
 
+                $returnJson = file_get_contents($filePath);
+                if ($method === 'post') {
+                    // Any post will have the data from the stub added to the
+                    // original request. This simulates the api creating the
+                    // resource and returning it with added attributes.
+                    $returnJson = \GuzzleHttp\json_encode(
+                        array_merge_recursive(
+                            \GuzzleHttp\json_decode($returnJson, true),
+                            // You may wonder why we would encode and then
+                            // decode this, but it is possible that the json in
+                            // the options array is not an associative array,
+                            // which we need to be able to merge.
+                            \GuzzleHttp\json_decode(\GuzzleHttp\json_encode($options['json']), true)
+                        )
+                    );
+                }
+
                 $response = $this->getMockBuilder(ResponseInterface::class)
                     ->disableOriginalConstructor()
                     ->disableOriginalClone()
@@ -71,7 +88,7 @@ class MyParcelComApiTest extends TestCase
                     ->disallowMockingUnknownTypes()
                     ->getMock();
                 $response->method('getBody')
-                    ->willReturn(file_get_contents($filePath));
+                    ->willReturn($returnJson);
 
                 return promise_for($response);
             });
@@ -121,7 +138,7 @@ class MyParcelComApiTest extends TestCase
             ->setWeight(500)
             ->setRecipientAddress($recipient);
 
-        $this->api->createShipment($shipment);
+        $shipment = $this->api->createShipment($shipment);
 
         $this->assertNotNull(
             $shipment->getService(),
@@ -198,7 +215,7 @@ class MyParcelComApiTest extends TestCase
         $regions = $this->api->getRegions('GB');
 
         $this->assertInternalType('array', $regions);
-        $this->assertCount(4, $regions);
+        $this->assertCount(5, $regions);
         array_walk($regions, function ($region) {
             $this->assertInstanceOf(RegionInterface::class, $region);
             $this->assertEquals('GB', $region->getCountryCode());
@@ -286,7 +303,13 @@ class MyParcelComApiTest extends TestCase
             $this->assertInternalType('array', $shipments);
             array_walk($shipments, function ($shipment) use ($shop) {
                 $this->assertInstanceOf(ShipmentInterface::class, $shipment);
-                $this->assertEquals($shop, $shipment->getShop());
+                $this->assertEquals($shop->getId(), $shipment->getShop()->getId());
+                $this->assertEquals($shop->getType(), $shipment->getShop()->getType());
+                $this->assertEquals($shop->getCreatedAt(), $shipment->getShop()->getCreatedAt());
+                $this->assertEquals($shop->getBillingAddress(), $shipment->getShop()->getBillingAddress());
+                $this->assertEquals($shop->getReturnAddress(), $shipment->getShop()->getReturnAddress());
+                $this->assertEquals($shop->getName(), $shipment->getShop()->getName());
+                $this->assertEquals($shop->getRegion(), $shipment->getShop()->getRegion());
             });
         });
     }
@@ -341,9 +364,9 @@ class MyParcelComApiTest extends TestCase
             (new Address())
                 ->setStreet1('Hoofdweg')
                 ->setStreetNumber(679)
-                ->setPostalCode('2131 BC')
-                ->setCity('Hoofddorp')
-                ->setCountryCode('NL')
+                ->setPostalCode('1AA BB2')
+                ->setCity('London')
+                ->setCountryCode('GB')
                 ->setFirstName('Mister')
                 ->setLastName('Billing')
                 ->setCompany('MyParcel.com')
@@ -355,9 +378,9 @@ class MyParcelComApiTest extends TestCase
             (new Address())
                 ->setStreet1('Hoofdweg')
                 ->setStreetNumber(679)
-                ->setPostalCode('2131 BC')
-                ->setCity('Hoofddorp')
-                ->setCountryCode('NL')
+                ->setPostalCode('1AA BB2')
+                ->setCity('London')
+                ->setCountryCode('GB')
                 ->setFirstName('Mister')
                 ->setLastName('Return')
                 ->setCompany('MyParcel.com')

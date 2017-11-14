@@ -8,7 +8,6 @@ use MyParcelCom\Sdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\PhysicalPropertiesInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ServiceOptionInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\StatusInterface;
 use MyParcelCom\Sdk\Resources\Shipment;
