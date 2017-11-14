@@ -67,7 +67,7 @@ class ServiceMatcher
     }
 
     /**
-     * Returns an subset of the given contracts that have weight groups that
+     * Returns a subset of the given contracts that have weight groups that
      * match the weight of the shipment.
      *
      * @param ShipmentInterface   $shipment
