@@ -25,6 +25,7 @@ use MyParcelCom\Sdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\StatusInterface;
 use MyParcelCom\Sdk\Resources\Proxy\FileProxy;
+use MyParcelCom\Sdk\Resources\Proxy\FileStreamProxy;
 use MyParcelCom\Sdk\Resources\Proxy\RegionProxy;
 use MyParcelCom\Sdk\Resources\Proxy\ShopProxy;
 use MyParcelCom\Sdk\Resources\Proxy\StatusProxy;
@@ -36,7 +37,6 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
     private $typeFactory = [
         ResourceInterface::TYPE_CARRIER           => Carrier::class,
         ResourceInterface::TYPE_CONTRACT          => Contract::class,
-        ResourceInterface::TYPE_FILE              => File::class,
         ResourceInterface::TYPE_PUDO_LOCATION     => PickUpDropOffLocation::class,
         ResourceInterface::TYPE_REGION            => Region::class,
         ResourceInterface::TYPE_SHOP              => Shop::class,
@@ -47,7 +47,6 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         AddressInterface::class               => Address::class,
         CarrierInterface::class               => Carrier::class,
         ContractInterface::class              => Contract::class,
-        FileInterface::class                  => File::class,
         OpeningHourInterface::class           => OpeningHour::class,
         PhysicalPropertiesInterface::class    => PhysicalProperties::class,
         PickUpDropOffLocationInterface::class => PickUpDropOffLocation::class,
@@ -68,13 +67,19 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         $shipmentFactory = [$this, 'shipmentFactory'];
         $serviceFactory = [$this, 'serviceFactory'];
         $serviceGroupFactory = [$this, 'serviceGroupFactory'];
+        $fileFactory = [$this, 'fileFactory'];
 
         $this->setFactoryForType(ResourceInterface::TYPE_SHIPMENT, $shipmentFactory);
         $this->setFactoryForType(ShipmentInterface::class, $shipmentFactory);
+
         $this->setFactoryForType(ResourceInterface::TYPE_SERVICE, $serviceFactory);
         $this->setFactoryForType(ServiceInterface::class, $serviceFactory);
+
         $this->setFactoryForType(ResourceInterface::TYPE_SERVICE_GROUP, $serviceGroupFactory);
         $this->setFactoryForType(ServiceGroupInterface::class, $serviceGroupFactory);
+
+        $this->setFactoryForType(ResourceInterface::TYPE_FILE, $fileFactory);
+        $this->setFactoryForType(FileInterface::class, $fileFactory);
     }
 
     /**
@@ -194,6 +199,32 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         unset($attributes['attributes']);
 
         return $serviceGroup;
+    }
+
+    /**
+     * Factory method for creating file resources, adds proxy streams to the
+     * file for requesting the file data.
+     *
+     * @param $type
+     * @param $attributes
+     * @return File
+     */
+    protected function fileFactory($type, &$attributes)
+    {
+        $file = new File();
+
+        if (!isset($attributes['formats'])) {
+            return $file;
+        }
+
+        array_walk($attributes['formats'], function ($format) use ($file, $attributes) {
+            $file->setStream(
+                new FileStreamProxy($attributes['id'], $format['mime_type'], $this->api),
+                $format['mime_type']
+            );
+        });
+
+        return $file;
     }
 
     /**

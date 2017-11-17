@@ -3,6 +3,7 @@
 namespace MyParcelCom\Sdk\Tests\Feature;
 
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Psr7\Response;
 use MyParcelCom\Sdk\Authentication\AuthenticatorInterface;
 use MyParcelCom\Sdk\Exceptions\InvalidResourceException;
 use MyParcelCom\Sdk\MyParcelComApi;
@@ -17,7 +18,6 @@ use MyParcelCom\Sdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\Sdk\Resources\Shipment;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\ResponseInterface;
 use function GuzzleHttp\Promise\promise_for;
 
 class MyParcelComApiTest extends TestCase
@@ -81,14 +81,7 @@ class MyParcelComApiTest extends TestCase
                     );
                 }
 
-                $response = $this->getMockBuilder(ResponseInterface::class)
-                    ->disableOriginalConstructor()
-                    ->disableOriginalClone()
-                    ->disableArgumentCloning()
-                    ->disallowMockingUnknownTypes()
-                    ->getMock();
-                $response->method('getBody')
-                    ->willReturn($returnJson);
+                $response = new Response(200, [], $returnJson);
 
                 return promise_for($response);
             });

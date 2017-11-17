@@ -2,6 +2,7 @@
 
 namespace MyParcelCom\Sdk\Tests\Feature;
 
+use MyParcelCom\Sdk\MyParcelComApiInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\FileInterface;
@@ -731,7 +732,19 @@ class ResourceFactoryTest extends TestCase
     /** @test */
     public function testCreateFile()
     {
-        $fileAttributes = [
+        // Mock a response from the http client.
+        $api = $this->getMockBuilder(MyParcelComApiInterface::class)
+            ->disableOriginalConstructor()
+            ->disableOriginalClone()
+            ->disableArgumentCloning()
+            ->disallowMockingUnknownTypes()
+            ->getMock();
+
+        $resourceFactory = (new ResourceFactory())
+            ->setMyParcelComApi($api);
+
+        $file = $resourceFactory->create('files', [
+            'id'            => 'file-id',
             'resource_type' => 'label',
             'formats'       => [
                 [
@@ -743,15 +756,25 @@ class ResourceFactoryTest extends TestCase
                     'mime_type' => 'image/png',
                 ],
             ],
-        ];
-
-        $resourceFactory = new ResourceFactory();
-        $file = $resourceFactory->create('files', $fileAttributes);
+        ]);
 
         $this->assertInstanceOf(FileInterface::class, $file);
         $this->assertEquals([
+            'id'         => 'file-id',
             'type'       => 'files',
-            'attributes' => $fileAttributes,
+            'attributes' => [
+                'resource_type' => 'label',
+                'formats'       => [
+                    [
+                        'extension' => 'pdf',
+                        'mime_type' => 'application/pdf',
+                    ],
+                    [
+                        'extension' => 'png',
+                        'mime_type' => 'image/png',
+                    ],
+                ],
+            ],
         ], $file->jsonSerialize());
     }
 }

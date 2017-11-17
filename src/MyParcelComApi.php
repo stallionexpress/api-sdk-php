@@ -6,6 +6,8 @@ use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Promise\PromiseInterface;
+use function GuzzleHttp\Psr7\parse_response;
+use function GuzzleHttp\Psr7\str;
 use GuzzleHttp\RequestOptions;
 use MyParcelCom\Sdk\Authentication\AuthenticatorInterface;
 use MyParcelCom\Sdk\Exceptions\InvalidResourceException;
@@ -31,8 +33,6 @@ use function GuzzleHttp\Promise\unwrap;
 class MyParcelComApi implements MyParcelComApiInterface
 {
     const API_VERSION = 'v1';
-    const TTL_WEEK = 604800;
-    const TTL_10MIN = 600;
 
     /** @var string */
     protected $apiUri;
@@ -323,7 +323,6 @@ class MyParcelComApi implements MyParcelComApiInterface
      */
     protected function determineContract(ShipmentInterface $shipment)
     {
-
         if ($shipment->getService() !== null) {
             $shipment->setContract((new ContractSelector())->selectCheapest(
                 $shipment,
@@ -437,46 +436,63 @@ class MyParcelComApi implements MyParcelComApiInterface
 
     /**
      * Get a promise that will return an array with resources requested from
-     * given url. A time-to-live can be specified for how long this request
+     * given uri. A time-to-live can be specified for how long this request
      * should be cached (defaults to 10 minutes).
      *
-     * @param string $url
+     * @param string $uri
      * @param int    $ttl
      * @return PromiseInterface
      * @internal param string $path
      */
-    protected function getResourcesPromise($url, $ttl = self::TTL_10MIN)
+    protected function getResourcesPromise($uri, $ttl = self::TTL_10MIN)
     {
-        $cacheKey = 'get.' . str_replace([':', '{', '}', '(', ')', '/', '\\', '@'], '-', $url);
-        if (($resources = $this->cache->get($cacheKey))) {
-            return promise_for($resources);
+        return $this->doRequest($uri, 'get', [], [], $ttl)
+            ->then(function (ResponseInterface $response) {
+                $json = \GuzzleHttp\json_decode((string)$response->getBody(), true);
+
+                $resources = $this->jsonToResources($json['data']);
+
+                // If there is no next link, we don't have to retrieve any more data
+                if (!isset($json['links']['next'])) {
+                    return $resources;
+                }
+
+                return $this->getResourcesPromise($json['links']['next'])
+                    ->then(function ($nextResources) use ($resources) {
+                        return array_merge($resources, $nextResources);
+                    });
+            });
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function doRequest($uri, $method = 'get', array $body = [], array $headers = [], $ttl = self::TTL_10MIN)
+    {
+        if (strpos($uri, $this->apiUri) !== 0) {
+            $uri = $this->apiUri . $uri;
+        }
+        $headers += $this->authenticator->getAuthorizationHeader() + [
+                AuthenticatorInterface::HEADER_ACCEPT => AuthenticatorInterface::MIME_TYPE_JSONAPI,
+            ];
+
+        $cacheKey = sha1($method . join($headers) . $uri);
+
+        if (($response = $this->cache->get($cacheKey))) {
+            return promise_for(parse_response($response));
         }
 
         return $this->getHttpClient()->requestAsync(
-            'get',
-            $url,
+            $method,
+            $uri,
             [
-                RequestOptions::HEADERS => $this->authenticator->getAuthorizationHeader(),
+                RequestOptions::JSON    => $body,
+                RequestOptions::HEADERS => $headers,
             ]
         )->then(function (ResponseInterface $response) use ($cacheKey, $ttl) {
-            $json = \GuzzleHttp\json_decode((string)$response->getBody(), true);
+            $this->cache->set($cacheKey, str($response), $ttl);
 
-            $resources = $this->jsonToResources($json['data']);
-
-            // If there is no next link, we don't have to retrieve any more data
-            if (!isset($json['links']['next'])) {
-                return $resources;
-            }
-
-            return $this->getResourcesPromise($json['links']['next'])
-                ->then(function ($nextResources) use ($resources, $cacheKey, $ttl) {
-
-                    $combinedResources = array_merge($resources, $nextResources);
-
-                    $this->cache->set($cacheKey, $combinedResources, $ttl);
-
-                    return $combinedResources;
-                });
+            return $response;
         }, function (RequestException $reason) {
             return $this->handleRequestException($reason);
         });
@@ -525,7 +541,9 @@ class MyParcelComApi implements MyParcelComApiInterface
 
         if (isset($resourceData['relationships'])) {
             $data += array_map(function ($relationship) {
-                return $relationship['data'];
+                return isset($relationship['data'])
+                    ? $relationship['data']
+                    : [];
             }, $resourceData['relationships']);
         }
 
@@ -553,9 +571,20 @@ class MyParcelComApi implements MyParcelComApiInterface
         }
 
         $this->authRetry = true;
-        $this->authenticator->getAuthorizationHeader(true);
+        $authHeaders = $this->authenticator->getAuthorizationHeader(true);
 
-        return $this->getResourcesPromise($exception->getRequest()->getUri());
+        $request = $exception->getRequest();
+        $body = (string)$request->getBody();
+        $jsonBody = $body
+            ? \GuzzleHttp\json_decode($body, true)
+            : [];
+
+        return $this->doRequest(
+            $request->getUri(),
+            $request->getMethod(),
+            $jsonBody,
+            $authHeaders + $request->getHeaders()
+        );
     }
 
     /**
@@ -590,7 +619,8 @@ class MyParcelComApi implements MyParcelComApiInterface
             'post',
             $this->getResourceUri($resource->getType()),
             [
-                RequestOptions::JSON => ['data' => $resource],
+                RequestOptions::HEADERS => $this->authenticator->getAuthorizationHeader(),
+                RequestOptions::JSON    => ['data' => $resource],
             ]
         )->then(function (ResponseInterface $response) {
             $json = \GuzzleHttp\json_decode($response->getBody(), true);
@@ -599,7 +629,6 @@ class MyParcelComApi implements MyParcelComApiInterface
         }, function (RequestException $reason) {
             return $this->handleRequestException($reason);
         });
-
 
         return reset($promise->wait());
     }

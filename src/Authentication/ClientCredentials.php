@@ -115,7 +115,6 @@ class ClientCredentials implements AuthenticatorInterface
 
             $header = [
                 self::HEADER_AUTH   => $data['token_type'] . ' ' . $data['access_token'],
-                self::HEADER_ACCEPT => self::MIME_TYPE_JSONAPI,
             ];
 
             $this->setAuthenticating(false);

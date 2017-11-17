@@ -219,13 +219,13 @@ class File implements FileInterface
         }
         if (isset($this->base64Data[$mimeType])) {
             $path = tempnam(sys_get_temp_dir(), 'myparcelcom_file');
-            file_put_contents($path, $this->base64Data[$mimeType]);
+            file_put_contents($path, base64_decode($this->base64Data[$mimeType]));
 
             return $this->paths[$mimeType] = $path;
         }
         if (isset($this->streams[$mimeType])) {
             $path = tempnam(sys_get_temp_dir(), 'myparcelcom_file');
-            file_put_contents($path, $this->streams[$mimeType]->getContents());
+            file_put_contents($path, (string)$this->streams[$mimeType]);
 
             return $this->paths[$mimeType] = $path;
         }
