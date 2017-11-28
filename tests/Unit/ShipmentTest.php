@@ -241,10 +241,12 @@ class ShipmentTest extends TestCase
         $shipment->setFiles([$label, $printcode]);
 
         $this->assertCount(1, $shipment->getFiles(FileInterface::RESOURCE_TYPE_PRINTCODE));
-        $this->assertEquals($printcode, reset($shipment->getFiles(FileInterface::RESOURCE_TYPE_PRINTCODE)));
+        $files = $shipment->getFiles(FileInterface::RESOURCE_TYPE_PRINTCODE);
+        $this->assertEquals($printcode, reset($files));
 
         $this->assertCount(1, $shipment->getFiles(FileInterface::RESOURCE_TYPE_LABEL));
-        $this->assertEquals($label, reset($shipment->getFiles(FileInterface::RESOURCE_TYPE_LABEL)));
+        $files = $shipment->getFiles(FileInterface::RESOURCE_TYPE_LABEL);
+        $this->assertEquals($label, reset($files));
     }
 
     /** @test */
