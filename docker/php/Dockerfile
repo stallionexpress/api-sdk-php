@@ -26,7 +26,8 @@ RUN apt-get update \
 
 # Enable xdebug
 COPY conf/xdebug.ini /etc/php/5.6/mods-available/xdebug.ini.template
-RUN ln -sf /etc/php/5.6/mods-available/xdebug.ini /etc/php/5.6/cli/conf.d/20-xdebug.ini
+RUN ln -sf /etc/php/5.6/mods-available/xdebug.ini /etc/php/5.6/cli/conf.d/20-xdebug.ini \
+    && sed -e 's/error_reporting = E_ALL \& \~E_DEPRECATED \& \~E_STRICT/error_reporting = E_ALL/' -i /etc/php/5.6/cli/php.ini
 
 # Copy entrypoint script.
 COPY entrypoint.sh /bin/entrypoint.sh

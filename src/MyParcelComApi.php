@@ -594,9 +594,11 @@ class MyParcelComApi implements MyParcelComApiInterface
      */
     public function getResourceById($resourceType, $id)
     {
-        return reset($this->getResourcesPromise(
+        $resources = $this->getResourcesPromise(
             $this->getResourceUri($resourceType, $id)
-        )->wait());
+        )->wait();
+
+        return reset($resources);
     }
 
     /**
@@ -630,7 +632,9 @@ class MyParcelComApi implements MyParcelComApiInterface
             return $this->handleRequestException($reason);
         });
 
-        return reset($promise->wait());
+        $resources = $promise->wait();
+
+        return reset($resources);
     }
 
     /**

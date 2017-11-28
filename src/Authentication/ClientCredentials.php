@@ -190,7 +190,8 @@ class ClientCredentials implements AuthenticatorInterface
         $response = json_decode((string)$exception->getResponse()->getBody());
         $message = 'An unknown error occured while authenticating with the oauth2 server';
         if (!empty($response['errors'])) {
-            $error = reset($response['errors']);
+            $errors = $response['errors'];
+            $error = reset($errors);
             $code = $error['code'];
 
             switch ($code) {
