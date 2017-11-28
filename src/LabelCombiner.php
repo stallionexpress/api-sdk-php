@@ -73,7 +73,8 @@ class LabelCombiner implements LabelCombinerInterface
 
             list($x, $y, $width) = $this->calculateDimensions($labelPosition, $labelsPerRow, $labelsPerColumn, $margin);
 
-            $format = reset($file->getFormats());
+            $formats = $file->getFormats();
+            $format = reset($formats);
             if ($format[FileInterface::FORMAT_MIME_TYPE] !== FileInterface::MIME_TYPE_PDF) {
                 // Add the image (label) to the pdf.
                 $pdf->Image($file->getTemporaryFilePath(), $x, $y, $width);
