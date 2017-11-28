@@ -7,6 +7,7 @@ use MyParcelCom\Sdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\Sdk\Resources\Traits\JsonSerializable;
 use Psr\Http\Message\StreamInterface;
 
+
 class File implements FileInterface
 {
     use JsonSerializable;
@@ -82,7 +83,7 @@ class File implements FileInterface
     {
         $this->attributes[self::ATTRIBUTE_FORMATS] = [];
         array_walk($formats, function ($format) {
-            $this->addFormat($format['mime_type'], $format['extension']);
+            $this->addFormat($format[self::FORMAT_MIME_TYPE], $format[self::FORMAT_EXTENSION]);
         });
 
         return $this;
@@ -94,14 +95,14 @@ class File implements FileInterface
     public function addFormat($mimeType, $extension)
     {
         $this->attributes[self::ATTRIBUTE_FORMATS][] = [
-            'mime_type' => $mimeType,
-            'extension' => $extension,
+            self::FORMAT_MIME_TYPE => $mimeType,
+            self::FORMAT_EXTENSION => $extension,
         ];
 
         usort($this->attributes[self::ATTRIBUTE_FORMATS], function ($formatA, $formatB) {
-            $mimeTypeOrder = ['application/pdf' => -3, 'image/png' => -2, 'image/jpeg' => -1];
+            $mimeTypeOrder = [self::MIME_TYPE_PDF => -3, self::MIME_TYPE_PNG => -2, self::MIME_TYPE_JPG => -1];
 
-            return $mimeTypeOrder[$formatA['mime_type']] - $mimeTypeOrder[$formatB['mime_type']];
+            return $mimeTypeOrder[$formatA[self::FORMAT_MIME_TYPE]] - $mimeTypeOrder[$formatB[self::FORMAT_MIME_TYPE]];
         });
 
         return $this;
@@ -132,7 +133,7 @@ class File implements FileInterface
     {
         if ($mimeType === null) {
             foreach ($this->getFormats() as $format) {
-                $stream = $this->getStream($format['mime_type']);
+                $stream = $this->getStream($format[self::FORMAT_MIME_TYPE]);
 
                 if ($stream !== null) {
                     return $stream;
@@ -164,7 +165,7 @@ class File implements FileInterface
     {
         if ($mimeType === null) {
             foreach ($this->getFormats() as $format) {
-                $data = $this->getBase64Data($format['mime_type']);
+                $data = $this->getBase64Data($format[self::FORMAT_MIME_TYPE]);
 
                 if ($data !== null) {
                     return $data;
@@ -202,23 +203,20 @@ class File implements FileInterface
      */
     public function getTemporaryFilePath($mimeType = null)
     {
-        if ($mimeType === null) {
-            foreach ($this->getFormats() as $format) {
-                $path = $this->getTemporaryFilePath($format['mime_type']);
-
-                if ($path !== null) {
-                    return $path;
-                }
-            };
-
-            return null;
-        }
+        $extension = null;
+        foreach ($this->getFormats() as $format) {
+            if ($mimeType === null || $mimeType === $format[self::FORMAT_MIME_TYPE]) {
+                $mimeType = $format[self::FORMAT_MIME_TYPE];
+                $extension = $format[self::FORMAT_EXTENSION];
+                break;
+            }
+        };
 
         if (isset($this->paths[$mimeType])) {
             return $this->paths[$mimeType];
         }
         if (isset($this->base64Data[$mimeType])) {
-            $path = tempnam(sys_get_temp_dir(), 'myparcelcom_file');
+            $path = tempnam(sys_get_temp_dir(), 'myparcelcom_file') . '.' . $extension;
             file_put_contents($path, base64_decode($this->base64Data[$mimeType]));
 
             return $this->paths[$mimeType] = $path;

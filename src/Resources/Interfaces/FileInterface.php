@@ -15,6 +15,14 @@ interface FileInterface extends ResourceInterface
     const RESOURCE_TYPE_PRINTCODE = 'printcode';
     const RESOURCE_TYPE_INVOICE = 'invoice';
 
+    const MIME_TYPE_JSON = 'application/vnd.api+json';
+    const MIME_TYPE_PNG = 'image/png';
+    const MIME_TYPE_JPG = 'image/jpeg';
+    const MIME_TYPE_PDF = 'application/pdf';
+
+    const FORMAT_MIME_TYPE = 'mime_type';
+    const FORMAT_EXTENSION = 'extension';
+
     /**
      * Set the identifier for this file.
      *
