@@ -621,7 +621,9 @@ class MyParcelComApi implements MyParcelComApiInterface
             'post',
             $this->getResourceUri($resource->getType()),
             [
-                RequestOptions::HEADERS => $this->authenticator->getAuthorizationHeader(),
+                RequestOptions::HEADERS => $this->authenticator->getAuthorizationHeader() + [
+                        AuthenticatorInterface::HEADER_ACCEPT => AuthenticatorInterface::MIME_TYPE_JSONAPI,
+                    ],
                 RequestOptions::JSON    => ['data' => $resource],
             ]
         )->then(function (ResponseInterface $response) {
