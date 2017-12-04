@@ -217,4 +217,15 @@ interface ShipmentInterface extends ResourceInterface
      * @return StatusInterface
      */
     public function getStatus();
+
+    /**
+     * @param CustomsInterface $customs
+     * @return $this
+     */
+    public function setCustoms(CustomsInterface $customs);
+
+    /**
+     * @return CustomsInterface
+     */
+    public function getCustoms();
 }

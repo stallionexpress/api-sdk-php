@@ -10,7 +10,7 @@ interface AuthenticatorInterface
     const HEADER_ACCEPT = 'Accept';
     const MIME_TYPE_JSONAPI = 'application/vnd.api+json';
     const GRANT_CLIENT_CREDENTIALS = 'client_credentials';
-    const SCOPES = '';
+    const SCOPES = 'shipments.show shipments.manage shops.show';
 
     /**
      * Authenticate with the OAuth2 server and return the header to be used in

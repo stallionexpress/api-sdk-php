@@ -5,6 +5,7 @@ namespace MyParcelCom\Sdk\Resources;
 use MyParcelCom\Sdk\Exceptions\MyParcelComException;
 use MyParcelCom\Sdk\Resources\Interfaces\AddressInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ContractInterface;
+use MyParcelCom\Sdk\Resources\Interfaces\CustomsInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\PhysicalPropertiesInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ResourceInterface;
@@ -32,6 +33,7 @@ class Shipment implements ShipmentInterface
     const ATTRIBUTE_PICKUP = 'pickup_location';
     const ATTRIBUTE_PICKUP_CODE = 'code';
     const ATTRIBUTE_PICKUP_ADDRESS = 'address';
+    const ATTRIBUTE_CUSTOMS = 'customs';
 
     const RELATIONSHIP_CONTRACT = 'contract';
     const RELATIONSHIP_FILES = 'files';
@@ -52,6 +54,7 @@ class Shipment implements ShipmentInterface
         self::ATTRIBUTE_RECIPIENT_ADDRESS   => null,
         self::ATTRIBUTE_SENDER_ADDRESS      => null,
         self::ATTRIBUTE_PICKUP              => null,
+        self::ATTRIBUTE_CUSTOMS             => null,
     ];
     private $relationships = [
         self::RELATIONSHIP_SHOP     => [
@@ -290,7 +293,7 @@ class Shipment implements ShipmentInterface
             throw new MyParcelComException('invalid unit: ' . $unit);
         }
 
-        $this->attributes[self::ATTRIBUTE_WEIGHT] = round($weight * self::$unitConversion[$unit]);
+        $this->attributes[self::ATTRIBUTE_WEIGHT] = (int)round($weight * self::$unitConversion[$unit]);
 
         return $this;
     }
@@ -304,7 +307,7 @@ class Shipment implements ShipmentInterface
             throw new MyParcelComException('invalid unit: ' . $unit);
         }
 
-        return round($this->attributes[self::ATTRIBUTE_WEIGHT] / self::$unitConversion[$unit]);
+        return (int)round($this->attributes[self::ATTRIBUTE_WEIGHT] / self::$unitConversion[$unit]);
     }
 
     /**
@@ -465,5 +468,23 @@ class Shipment implements ShipmentInterface
     public function getContract()
     {
         return $this->relationships[self::RELATIONSHIP_CONTRACT]['data'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setCustoms(CustomsInterface $customs)
+    {
+        $this->attributes[self::ATTRIBUTE_CUSTOMS] = $customs;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCustoms()
+    {
+        return $this->attributes[self::ATTRIBUTE_CUSTOMS];
     }
 }
