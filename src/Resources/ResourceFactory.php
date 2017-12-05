@@ -11,7 +11,6 @@ use MyParcelCom\Sdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\OpeningHourInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\PhysicalPropertiesInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\PickUpDropOffLocationInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\Position;
 use MyParcelCom\Sdk\Resources\Interfaces\PositionInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\RegionInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ResourceFactoryInterface;
