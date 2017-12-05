@@ -1,8 +1,9 @@
 <?php
 
-namespace MyParcelCom\Sdk\Resources\Interfaces;
+namespace MyParcelCom\Sdk\Resources;
 
 use MyParcelCom\Sdk\Exceptions\MyParcelComException;
+use MyParcelCom\Sdk\Resources\Interfaces\PositionInterface;
 use MyParcelCom\Sdk\Resources\Traits\JsonSerializable;
 
 class Position implements PositionInterface
