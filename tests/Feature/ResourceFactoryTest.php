@@ -157,10 +157,6 @@ class ResourceFactoryTest extends TestCase
         ], $contract->jsonSerialize());
     }
 
-    // TODO
-    const TYPE_FILE = 'files';
-
-
     /** @test */
     public function testCreateEmptyPickUpDropOffLocation()
     {
@@ -611,6 +607,230 @@ class ResourceFactoryTest extends TestCase
                         'email'                => 'rob@tables.com',
                         'phone_number'         => '+31 (0)234 567 890',
                     ],
+                ],
+            ],
+            'relationships' => [
+                'shop'     => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
+                'service'  => ['data' => ['id' => 'service-id-1', 'type' => 'services']],
+                'contract' => ['data' => ['id' => 'contract-id-1', 'type' => 'contracts']],
+                'status'   => ['data' => ['id' => 'status-id-1', 'type' => 'statuses']],
+                'options'  => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
+                'files'    => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
+            ],
+        ], $shipment->jsonSerialize());
+    }
+
+    /** @test */
+    public function testCreateShipmentWitCustoms()
+    {
+        $resourceFactory = new ResourceFactory();
+        $shipment = $resourceFactory->create('shipments', [
+            'barcode'                 => 'S3BARCODE',
+            'description'             => 'order #012ASD',
+            'price'                   => 99,
+            'currency'                => 'USD',
+            'insurance_amount'        => 50,
+            'weight'                  => 8000,
+            'physical_properties'     => [
+                'weight' => 1000,
+                'length' => 1100,
+                'volume' => 1200,
+                'height' => 1300,
+                'width'  => 1400,
+            ],
+            'recipient_address'       => [
+                'street_1'             => 'Diagonally',
+                'street_2'             => 'Apartment 4',
+                'street_number'        => '1',
+                'street_number_suffix' => 'A',
+                'postal_code'          => '1AR BR2',
+                'city'                 => 'London',
+                'country_code'         => 'GB',
+                'first_name'           => 'Robert',
+                'last_name'            => 'Drop Tables',
+                'company'              => 'ACME co.',
+                'email'                => 'rob@tables.com',
+                'phone_number'         => '+31 (0)234 567 890',
+            ],
+            'sender_address'          => [
+                'street_1'             => 'Diagonally',
+                'street_2'             => 'Apartment 9',
+                'street_number'        => '4',
+                'street_number_suffix' => 'A',
+                'postal_code'          => '1AR BR2',
+                'city'                 => 'London',
+                'country_code'         => 'NL',
+                'first_name'           => 'Robert',
+                'last_name'            => 'Drop Tables',
+                'company'              => 'ACME co.',
+                'email'                => 'rob@tables.com',
+                'phone_number'         => '+31 (0)234 567 890',
+            ],
+            'pickup_location_code'    => 'CODE123',
+            'pickup_location_address' => [
+                'street_1'             => 'Diagonally',
+                'street_2'             => 'Apartment 41',
+                'street_number'        => '2',
+                'street_number_suffix' => 'A',
+                'postal_code'          => '1AR BR2',
+                'city'                 => 'London',
+                'country_code'         => 'GB',
+                'first_name'           => 'Robert',
+                'last_name'            => 'Drop Tables',
+                'company'              => 'ACME co.',
+                'email'                => 'rob@tables.com',
+                'phone_number'         => '+31 (0)234 567 890',
+            ],
+            'customs'                 => [
+                'content_type'   => 'documents',
+                'invoice_number' => 'NO.5',
+                'items'          => [
+                    [
+                        'sku'                 => '123456789',
+                        'description'         => 'OnePlus X',
+                        'item_value'          => 100,
+                        'currency'            => 'GBP',
+                        'quantity'            => 2,
+                        'hs_code'             => '8517.12.00',
+                        'origin_country_code' => 'GB',
+                    ],
+                    [
+                        'sku'                 => '213425',
+                        'description'         => 'OnePlus One',
+                        'item_value'          => 200,
+                        'currency'            => 'GBP',
+                        'quantity'            => 3,
+                        'hs_code'             => '8517.12.00',
+                        'origin_country_code' => 'GB',
+                    ],
+                    [
+                        'sku'                 => '6876',
+                        'description'         => 'OnePlus Two',
+                        'item_value'          => 300,
+                        'currency'            => 'GBP',
+                        'quantity'            => 1,
+                        'hs_code'             => '8517.12.00',
+                        'origin_country_code' => 'GB',
+                    ],
+                ],
+                'non_delivery'   => 'return',
+                'incoterm'       => 'DDU',
+            ],
+            'shop'                    => ['id' => 'shop-id-1', 'type' => 'shops'],
+            'service'                 => ['id' => 'service-id-1', 'type' => 'services'],
+            'contract'                => ['id' => 'contract-id-1', 'type' => 'contracts'],
+            'status'                  => ['id' => 'status-id-1', 'type' => 'statuses'],
+            'options'                 => [['id' => 'option-id-1', 'type' => 'service-options']],
+            'files'                   => [['id' => 'file-id-1', 'type' => 'files']],
+        ]);
+
+        $this->assertInstanceOf(ShipmentInterface::class, $shipment);
+        $this->assertEquals([
+            'type'          => 'shipments',
+            'attributes'    => [
+                'barcode'             => 'S3BARCODE',
+                'description'         => 'order #012ASD',
+                'price'               => [
+                    'amount'   => 99,
+                    'currency' => 'USD',
+                ],
+                'insurance'           => [
+                    'amount'   => 50,
+                    'currency' => 'USD',
+                ],
+                'weight'              => 8000,
+                'physical_properties' => [
+                    'weight' => 1000,
+                    'length' => 1100,
+                    'volume' => 1200,
+                    'height' => 1300,
+                    'width'  => 1400,
+                ],
+                'recipient_address'   => [
+                    'street_1'             => 'Diagonally',
+                    'street_2'             => 'Apartment 4',
+                    'street_number'        => '1',
+                    'street_number_suffix' => 'A',
+                    'postal_code'          => '1AR BR2',
+                    'city'                 => 'London',
+                    'country_code'         => 'GB',
+                    'first_name'           => 'Robert',
+                    'last_name'            => 'Drop Tables',
+                    'company'              => 'ACME co.',
+                    'email'                => 'rob@tables.com',
+                    'phone_number'         => '+31 (0)234 567 890',
+                ],
+                'sender_address'      => [
+                    'street_1'             => 'Diagonally',
+                    'street_2'             => 'Apartment 9',
+                    'street_number'        => '4',
+                    'street_number_suffix' => 'A',
+                    'postal_code'          => '1AR BR2',
+                    'city'                 => 'London',
+                    'country_code'         => 'NL',
+                    'first_name'           => 'Robert',
+                    'last_name'            => 'Drop Tables',
+                    'company'              => 'ACME co.',
+                    'email'                => 'rob@tables.com',
+                    'phone_number'         => '+31 (0)234 567 890',
+                ],
+                'pickup_location'     => [
+                    'code'    => 'CODE123',
+                    'address' => [
+                        'street_1'             => 'Diagonally',
+                        'street_2'             => 'Apartment 41',
+                        'street_number'        => '2',
+                        'street_number_suffix' => 'A',
+                        'postal_code'          => '1AR BR2',
+                        'city'                 => 'London',
+                        'country_code'         => 'GB',
+                        'first_name'           => 'Robert',
+                        'last_name'            => 'Drop Tables',
+                        'company'              => 'ACME co.',
+                        'email'                => 'rob@tables.com',
+                        'phone_number'         => '+31 (0)234 567 890',
+                    ],
+                ],
+                'customs'             => [
+                    'content_type'   => 'documents',
+                    'invoice_number' => 'NO.5',
+                    'items'          => [
+                        [
+                            'sku'                 => '123456789',
+                            'description'         => 'OnePlus X',
+                            'item_value'          => [
+                                'amount'   => 100,
+                                'currency' => 'GBP',
+                            ],
+                            'quantity'            => 2,
+                            'hs_code'             => '8517.12.00',
+                            'origin_country_code' => 'GB',
+                        ],
+                        [
+                            'sku'                 => '213425',
+                            'description'         => 'OnePlus One',
+                            'item_value'          => [
+                                'amount'   => 200,
+                                'currency' => 'GBP',
+                            ],
+                            'quantity'            => 3,
+                            'hs_code'             => '8517.12.00',
+                            'origin_country_code' => 'GB',
+                        ],
+                        [
+                            'sku'                 => '6876',
+                            'description'         => 'OnePlus Two',
+                            'item_value'          => [
+                                'amount'   => 300,
+                                'currency' => 'GBP',
+                            ],
+                            'quantity'            => 1,
+                            'hs_code'             => '8517.12.00',
+                            'origin_country_code' => 'GB',
+                        ],
+                    ],
+                    'non_delivery'   => 'return',
+                    'incoterm'       => 'DDU',
                 ],
             ],
             'relationships' => [

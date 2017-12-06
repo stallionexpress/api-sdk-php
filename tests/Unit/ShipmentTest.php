@@ -2,8 +2,10 @@
 
 namespace MyParcelCom\Sdk\Tests\Unit;
 
+use MyParcelCom\Sdk\Exceptions\MyParcelComException;
 use MyParcelCom\Sdk\Resources\Interfaces\AddressInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ContractInterface;
+use MyParcelCom\Sdk\Resources\Interfaces\CustomsInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\PhysicalPropertiesInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ServiceInterface;
@@ -122,6 +124,25 @@ class ShipmentTest extends TestCase
     }
 
     /** @test */
+    public function testSetWeightInvalidUnit()
+    {
+        $shipment = new Shipment();
+
+        $this->expectException(MyParcelComException::class);
+        $shipment->setWeight(8000, 'tons');
+    }
+
+    /** @test */
+    public function testGetWeightInvalidUnit()
+    {
+        $shipment = new Shipment();
+        $shipment->setWeight(8000);
+
+        $this->expectException(MyParcelComException::class);
+        $shipment->getWeight('truckloads');
+    }
+
+    /** @test */
     public function testPhysicalProperties()
     {
         $shipment = new Shipment();
@@ -189,6 +210,17 @@ class ShipmentTest extends TestCase
         $status = new $mock();
 
         $this->assertEquals($status, $shipment->setStatus($status)->getStatus());
+    }
+
+    /** @test */
+    public function testCustoms()
+    {
+        $shipment = new Shipment();
+
+        $mock = $this->getMockClass(CustomsInterface::class);
+        $customs = new $mock();
+
+        $this->assertEquals($customs, $shipment->setCustoms($customs)->getCustoms());
     }
 
     /** @test */
@@ -408,6 +440,33 @@ class ShipmentTest extends TestCase
                 'type' => 'statuses',
             ]);
 
+        $customs = $this->getMockBuilder(CustomsInterface::class)
+            ->disableOriginalConstructor()
+            ->disableOriginalClone()
+            ->disableArgumentCloning()
+            ->disallowMockingUnknownTypes()
+            ->getMock();
+        $customs->method('jsonSerialize')
+            ->willReturn([
+                'content_type'   => 'documents',
+                'invoice_number' => 'NO.5',
+                'items'          => [
+                    [
+                        'sku'                 => '123456789',
+                        'description'         => 'OnePlus X',
+                        'item_value'          => [
+                            'amount'   => 100,
+                            'currency' => 'EUR',
+                        ],
+                        'quantity'            => 2,
+                        'hs_code'             => '8517.12.00',
+                        'origin_country_code' => 'GB',
+                    ],
+                ],
+                'non_delivery'   => 'return',
+                'incoterm'       => 'DDU',
+            ]);
+
         $shipment = (new Shipment())
             ->setId('shipment-id')
             ->setDescription('order #012ASD')
@@ -426,7 +485,8 @@ class ShipmentTest extends TestCase
             ->setStatus($status)
             ->setRecipientAddress($recipientAddress)
             ->setSenderAddress($senderAddress)
-            ->setPickupLocationAddress($pudoAddress);
+            ->setPickupLocationAddress($pudoAddress)
+            ->setCustoms($customs);
 
         $this->assertEquals([
             'id'            => 'shipment-id',
@@ -497,6 +557,25 @@ class ShipmentTest extends TestCase
                         'email'                => 'rob@tables.com',
                         'phone_number'         => '+31 (0)234 567 890',
                     ],
+                ],
+                'customs'             => [
+                    'content_type'   => 'documents',
+                    'invoice_number' => 'NO.5',
+                    'items'          => [
+                        [
+                            'sku'                 => '123456789',
+                            'description'         => 'OnePlus X',
+                            'item_value'          => [
+                                'amount'   => 100,
+                                'currency' => 'EUR',
+                            ],
+                            'quantity'            => 2,
+                            'hs_code'             => '8517.12.00',
+                            'origin_country_code' => 'GB',
+                        ],
+                    ],
+                    'non_delivery'   => 'return',
+                    'incoterm'       => 'DDU',
                 ],
             ],
             'relationships' => [

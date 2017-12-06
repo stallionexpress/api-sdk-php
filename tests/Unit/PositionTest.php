@@ -3,6 +3,7 @@
 namespace MyParcelCom\Sdk\Tests\Unit;
 
 use MyParcelCom\Sdk\Resources\Position;
+use MyParcelCom\Sdk\Exceptions\MyParcelComException;
 use PHPUnit\Framework\TestCase;
 
 class PositionTest extends TestCase
@@ -34,6 +35,25 @@ class PositionTest extends TestCase
         $this->assertEquals(3, $position->setDistance(3000)->getDistance(Position::UNIT_KILOMETER));
         $this->assertEquals(5000, $position->setDistance(1524)->getDistance(Position::UNIT_FOOT));
         $this->assertEquals(12, $position->setDistance(19312)->getDistance(Position::UNIT_MILE));
+    }
+
+    /** @test */
+    public function testSetDistanceInvalidUnit()
+    {
+        $position = new Position();
+
+        $this->expectException(MyParcelComException::class);
+        $position->setDistance(900, 'lightyears');
+    }
+
+    /** @test */
+    public function testGetDistanceInvalidUnit()
+    {
+        $position = new Position();
+        $position->setDistance(900);
+
+        $this->expectException(MyParcelComException::class);
+        $position->getDistance('au');
     }
 
     /** @test */

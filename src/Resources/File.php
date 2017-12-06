@@ -7,7 +7,6 @@ use MyParcelCom\Sdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\Sdk\Resources\Traits\JsonSerializable;
 use Psr\Http\Message\StreamInterface;
 
-
 class File implements FileInterface
 {
     use JsonSerializable;

@@ -7,6 +7,8 @@ use MyParcelCom\Sdk\MyParcelComApiInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\AddressInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\ContractInterface;
+use MyParcelCom\Sdk\Resources\Interfaces\CustomsInterface;
+use MyParcelCom\Sdk\Resources\Interfaces\CustomsItemInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\OpeningHourInterface;
 use MyParcelCom\Sdk\Resources\Interfaces\PhysicalPropertiesInterface;
@@ -34,18 +36,17 @@ use ReflectionParameter;
 class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterface
 {
     private $typeFactory = [
-        ResourceInterface::TYPE_CARRIER           => Carrier::class,
-        ResourceInterface::TYPE_CONTRACT          => Contract::class,
-        ResourceInterface::TYPE_PUDO_LOCATION     => PickUpDropOffLocation::class,
-        ResourceInterface::TYPE_REGION            => Region::class,
-        ResourceInterface::TYPE_SHOP              => Shop::class,
-        ResourceInterface::TYPE_SERVICE_OPTION    => ServiceOption::class,
-        ResourceInterface::TYPE_SERVICE_INSURANCE => ServiceInsurance::class,
-        ResourceInterface::TYPE_STATUS            => Status::class,
+        ResourceInterface::TYPE_CARRIER       => Carrier::class,
+        ResourceInterface::TYPE_CONTRACT      => Contract::class,
+        ResourceInterface::TYPE_PUDO_LOCATION => PickUpDropOffLocation::class,
+        ResourceInterface::TYPE_REGION        => Region::class,
+        ResourceInterface::TYPE_SHOP          => Shop::class,
+        ResourceInterface::TYPE_STATUS        => Status::class,
 
         AddressInterface::class               => Address::class,
         CarrierInterface::class               => Carrier::class,
         ContractInterface::class              => Contract::class,
+        CustomsInterface::class               => Customs::class,
         OpeningHourInterface::class           => OpeningHour::class,
         PhysicalPropertiesInterface::class    => PhysicalProperties::class,
         PickUpDropOffLocationInterface::class => PickUpDropOffLocation::class,
@@ -53,8 +54,6 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         RegionInterface::class                => Region::class,
         ShipmentInterface::class              => Shipment::class,
         ShopInterface::class                  => Shop::class,
-        ServiceOptionInterface::class         => ServiceOption::class,
-        ServiceInsuranceInterface::class      => ServiceInsurance::class,
         StatusInterface::class                => Status::class,
     ];
 
@@ -66,7 +65,10 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         $shipmentFactory = [$this, 'shipmentFactory'];
         $serviceFactory = [$this, 'serviceFactory'];
         $serviceGroupFactory = [$this, 'serviceGroupFactory'];
+        $serviceOptionFactory = [$this, 'serviceOptionFactory'];
+        $serviceInsuranceFactory = [$this, 'serviceInsuranceFactory'];
         $fileFactory = [$this, 'fileFactory'];
+        $customsItemFactory = [$this, 'customsItemFactory'];
 
         $this->setFactoryForType(ResourceInterface::TYPE_SHIPMENT, $shipmentFactory);
         $this->setFactoryForType(ShipmentInterface::class, $shipmentFactory);
@@ -77,8 +79,16 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         $this->setFactoryForType(ResourceInterface::TYPE_SERVICE_GROUP, $serviceGroupFactory);
         $this->setFactoryForType(ServiceGroupInterface::class, $serviceGroupFactory);
 
+        $this->setFactoryForType(ResourceInterface::TYPE_SERVICE_OPTION, $serviceOptionFactory);
+        $this->setFactoryForType(ServiceOptionInterface::class, $serviceOptionFactory);
+
+        $this->setFactoryForType(ResourceInterface::TYPE_SERVICE_INSURANCE, $serviceInsuranceFactory);
+        $this->setFactoryForType(ServiceInsuranceInterface::class, $serviceInsuranceFactory);
+
         $this->setFactoryForType(ResourceInterface::TYPE_FILE, $fileFactory);
         $this->setFactoryForType(FileInterface::class, $fileFactory);
+
+        $this->setFactoryForType(CustomsItemInterface::class, $customsItemFactory);
     }
 
     /**
@@ -116,6 +126,22 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
             );
 
             unset($attributes['status']);
+        }
+
+        if (isset($attributes['price']['amount'])) {
+            $shipment->setPrice($attributes['price']['amount']);
+            $shipment->setCurrency($attributes['price']['currency']);
+
+            unset($attributes['price']);
+        }
+
+        if (isset($attributes['insurance']['amount'])) {
+            $shipment->setInsuranceAmount($attributes['insurance']['amount']);
+            if (!$shipment->getCurrency()) {
+                $shipment->setCurrency($attributes['insurance']['currency']);
+            }
+
+            unset($attributes['insurance']);
         }
 
         return $shipment;
@@ -201,6 +227,69 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
     }
 
     /**
+     * ServiceOption factory method.
+     *
+     * @param string $type
+     * @param array  $attributes
+     * @return ServiceOption
+     */
+    protected function serviceOptionFactory($type, &$attributes)
+    {
+        $serviceOption = new ServiceOption();
+
+        if (isset($attributes['attributes']['price']['amount'])) {
+            $serviceOption->setPrice($attributes['attributes']['price']['amount']);
+            $serviceOption->setCurrency($attributes['attributes']['price']['currency']);
+
+            unset($attributes['attributes']['price']);
+        }
+
+        if (isset($attributes['attributes'])) {
+            $attributes += $attributes['attributes'];
+
+            unset($attributes['attributes']);
+        }
+
+        return $serviceOption;
+    }
+
+    /**
+     * ServiceInsurance factory method.
+     *
+     * @param string $type
+     * @param array $attributes
+     * @return ServiceInsurance
+     */
+    protected function serviceInsuranceFactory($type, &$attributes)
+    {
+        $serviceInsurance = new ServiceInsurance();
+
+        if (isset($attributes['attributes']['price']['amount'])) {
+            $serviceInsurance->setPrice($attributes['attributes']['price']['amount']);
+            $serviceInsurance->setCurrency($attributes['attributes']['price']['currency']);
+
+            unset($attributes['attributes']['price']);
+        }
+
+        if (isset($attributes['attributes']['covered']['amount'])) {
+            $serviceInsurance->setCovered($attributes['attributes']['covered']['amount']);
+            if (!$serviceInsurance->getCurrency()) {
+                $serviceInsurance->setCurrency($attributes['attributes']['covered']['currency']);
+            }
+
+            unset($attributes['attributes']['covered']);
+        }
+
+        if (isset($attributes['attributes'])) {
+            $attributes += $attributes['attributes'];
+
+            unset($attributes['attributes']);
+        }
+
+        return $serviceInsurance;
+    }
+
+    /**
      * Factory method for creating file resources, adds proxy streams to the
      * file for requesting the file data.
      *
@@ -224,6 +313,27 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         });
 
         return $file;
+    }
+
+    /**
+     * Factory for creating a customs item.
+     *
+     * @param $type
+     * @param $attributes
+     * @return CustomsItem
+     */
+    protected function customsItemFactory($type, &$attributes)
+    {
+        $item = new CustomsItem();
+
+        if (isset($attributes['item_value']['amount'])) {
+            $item->setItemValue($attributes['item_value']['amount']);
+            $item->setCurrency($attributes['item_value']['currency']);
+
+            unset($attributes['item_value']);
+        }
+
+        return $item;
     }
 
     /**
