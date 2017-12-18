@@ -1,20 +1,20 @@
 <?php
 
-namespace MyParcelCom\Sdk\Tests\Feature;
+namespace MyParcelCom\ApiSdk\Tests\Feature;
 
-use MyParcelCom\Sdk\MyParcelComApiInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\CarrierInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ContractInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\FileInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\PickUpDropOffLocationInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\RegionInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ServiceGroupInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ServiceInsuranceInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ServiceInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ServiceOptionInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ShipmentInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ShopInterface;
-use MyParcelCom\Sdk\Resources\ResourceFactory;
+use MyParcelCom\ApiSdk\MyParcelComApiInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\PickUpDropOffLocationInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceGroupInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInsuranceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
+use MyParcelCom\ApiSdk\Resources\ResourceFactory;
 use PHPUnit\Framework\TestCase;
 
 class ResourceFactoryTest extends TestCase

@@ -1,6 +1,6 @@
 <?php
 
-namespace MyParcelCom\Sdk\Resources\Interfaces;
+namespace MyParcelCom\ApiSdk\Resources\Interfaces;
 
 interface CustomsInterface extends \JsonSerializable
 {

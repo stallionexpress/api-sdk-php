@@ -1,8 +1,8 @@
 <?php
 
-namespace MyParcelCom\Sdk\Tests\Unit;
+namespace MyParcelCom\ApiSdk\Tests\Unit;
 
-use MyParcelCom\Sdk\Utils\StringUtils;
+use MyParcelCom\ApiSdk\Utils\StringUtils;
 use PHPUnit\Framework\TestCase;
 
 class StringUtilsTest extends TestCase

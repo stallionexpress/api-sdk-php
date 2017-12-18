@@ -1,10 +1,10 @@
 <?php
 
-namespace MyParcelCom\Sdk\Tests\Unit;
+namespace MyParcelCom\ApiSdk\Tests\Unit;
 
-use MyParcelCom\Sdk\Resources\Interfaces\AddressInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\RegionInterface;
-use MyParcelCom\Sdk\Resources\Shop;
+use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
+use MyParcelCom\ApiSdk\Resources\Shop;
 use PHPUnit\Framework\TestCase;
 
 class ShopTest extends TestCase

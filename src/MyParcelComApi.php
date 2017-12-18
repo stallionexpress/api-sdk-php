@@ -1,28 +1,28 @@
 <?php
 
-namespace MyParcelCom\Sdk;
+namespace MyParcelCom\ApiSdk;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\RequestOptions;
-use MyParcelCom\Sdk\Authentication\AuthenticatorInterface;
-use MyParcelCom\Sdk\Exceptions\InvalidResourceException;
-use MyParcelCom\Sdk\Resources\Interfaces\CarrierInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\RegionInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ResourceFactoryInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ResourceInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ResourceProxyInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ServiceInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ShipmentInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ShopInterface;
-use MyParcelCom\Sdk\Resources\ResourceFactory;
-use MyParcelCom\Sdk\Shipments\ContractSelector;
-use MyParcelCom\Sdk\Shipments\PriceCalculator;
-use MyParcelCom\Sdk\Shipments\ServiceMatcher;
-use MyParcelCom\Sdk\Utils\UrlBuilder;
-use MyParcelCom\Sdk\Validators\ShipmentValidator;
+use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
+use MyParcelCom\ApiSdk\Exceptions\InvalidResourceException;
+use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceFactoryInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
+use MyParcelCom\ApiSdk\Resources\ResourceFactory;
+use MyParcelCom\ApiSdk\Shipments\ContractSelector;
+use MyParcelCom\ApiSdk\Shipments\PriceCalculator;
+use MyParcelCom\ApiSdk\Shipments\ServiceMatcher;
+use MyParcelCom\ApiSdk\Utils\UrlBuilder;
+use MyParcelCom\ApiSdk\Validators\ShipmentValidator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Cache\Simple\FilesystemCache;

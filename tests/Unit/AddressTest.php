@@ -1,8 +1,8 @@
 <?php
 
-namespace MyParcelCom\Sdk\Tests\Unit;
+namespace MyParcelCom\ApiSdk\Tests\Unit;
 
-use MyParcelCom\Sdk\Resources\Address;
+use MyParcelCom\ApiSdk\Resources\Address;
 use PHPUnit\Framework\TestCase;
 
 class AddressTest extends TestCase

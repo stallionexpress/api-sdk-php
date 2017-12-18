@@ -1,10 +1,10 @@
 <?php
 
-namespace MyParcelCom\Sdk\Tests\Unit;
+namespace MyParcelCom\ApiSdk\Tests\Unit;
 
-use MyParcelCom\Sdk\Resources\Customs;
-use MyParcelCom\Sdk\Resources\Interfaces\CustomsInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\CustomsItemInterface;
+use MyParcelCom\ApiSdk\Resources\Customs;
+use MyParcelCom\ApiSdk\Resources\Interfaces\CustomsInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\CustomsItemInterface;
 use PHPUnit\Framework\TestCase;
 
 class CustomsTest extends TestCase

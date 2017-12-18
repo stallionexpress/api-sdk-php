@@ -1,9 +1,9 @@
 <?php
 
-namespace MyParcelCom\Sdk\Resources;
+namespace MyParcelCom\ApiSdk\Resources;
 
-use MyParcelCom\Sdk\Resources\Interfaces\CustomsItemInterface;
-use MyParcelCom\Sdk\Resources\Traits\JsonSerializable;
+use MyParcelCom\ApiSdk\Resources\Interfaces\CustomsItemInterface;
+use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 
 class CustomsItem implements CustomsItemInterface
 {

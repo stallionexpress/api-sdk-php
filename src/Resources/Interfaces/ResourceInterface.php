@@ -1,6 +1,6 @@
 <?php
 
-namespace MyParcelCom\Sdk\Resources\Interfaces;
+namespace MyParcelCom\ApiSdk\Resources\Interfaces;
 
 /**
  * Interface that should be implemented by each class that represents a resource

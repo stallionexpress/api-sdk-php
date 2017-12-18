@@ -1,6 +1,6 @@
 <?php
 
-namespace MyParcelCom\Sdk\Validators;
+namespace MyParcelCom\ApiSdk\Validators;
 
 interface ValidatorInterface
 {

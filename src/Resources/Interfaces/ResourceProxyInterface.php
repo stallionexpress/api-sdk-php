@@ -1,8 +1,8 @@
 <?php
 
-namespace MyParcelCom\Sdk\Resources\Interfaces;
+namespace MyParcelCom\ApiSdk\Resources\Interfaces;
 
-use MyParcelCom\Sdk\MyParcelComApiInterface;
+use MyParcelCom\ApiSdk\MyParcelComApiInterface;
 
 interface ResourceProxyInterface
 {

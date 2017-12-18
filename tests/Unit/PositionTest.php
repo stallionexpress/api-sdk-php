@@ -1,9 +1,9 @@
 <?php
 
-namespace MyParcelCom\Sdk\Tests\Unit;
+namespace MyParcelCom\ApiSdk\Tests\Unit;
 
-use MyParcelCom\Sdk\Exceptions\MyParcelComException;
-use MyParcelCom\Sdk\Resources\Position;
+use MyParcelCom\ApiSdk\Exceptions\MyParcelComException;
+use MyParcelCom\ApiSdk\Resources\Position;
 use PHPUnit\Framework\TestCase;
 
 class PositionTest extends TestCase

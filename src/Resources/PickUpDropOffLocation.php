@@ -1,13 +1,13 @@
 <?php
 
-namespace MyParcelCom\Sdk\Resources;
+namespace MyParcelCom\ApiSdk\Resources;
 
-use MyParcelCom\Sdk\Resources\Interfaces\AddressInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\OpeningHourInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\PickUpDropOffLocationInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\PositionInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ResourceInterface;
-use MyParcelCom\Sdk\Resources\Traits\JsonSerializable;
+use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\OpeningHourInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\PickUpDropOffLocationInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\PositionInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
+use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 
 class PickUpDropOffLocation implements PickUpDropOffLocationInterface
 {

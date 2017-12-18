@@ -1,9 +1,9 @@
 <?php
 
-namespace MyParcelCom\Sdk\Tests\Unit\Authentication;
+namespace MyParcelCom\ApiSdk\Tests\Unit\Authentication;
 
 use GuzzleHttp\ClientInterface;
-use MyParcelCom\Sdk\Authentication\ClientCredentials;
+use MyParcelCom\ApiSdk\Authentication\ClientCredentials;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use function GuzzleHttp\Promise\promise_for;

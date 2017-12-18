@@ -1,6 +1,6 @@
 <?php
 
-namespace MyParcelCom\Sdk\Traits;
+namespace MyParcelCom\ApiSdk\Traits;
 
 trait HasErrors
 {

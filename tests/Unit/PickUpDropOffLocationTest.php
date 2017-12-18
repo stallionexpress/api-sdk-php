@@ -1,11 +1,11 @@
 <?php
 
-namespace MyParcelCom\Sdk\Tests\Unit;
+namespace MyParcelCom\ApiSdk\Tests\Unit;
 
-use MyParcelCom\Sdk\Resources\Interfaces\AddressInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\OpeningHourInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\PositionInterface;
-use MyParcelCom\Sdk\Resources\PickUpDropOffLocation;
+use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\OpeningHourInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\PositionInterface;
+use MyParcelCom\ApiSdk\Resources\PickUpDropOffLocation;
 use PHPUnit\Framework\TestCase;
 
 class PickUpDropOffLocationTest extends TestCase
