@@ -23,8 +23,8 @@ class Contract implements ContractInterface
     private $type = ResourceInterface::TYPE_CONTRACT;
     /** @var array */
     private $attributes = [
-        self::ATTRIBUTE_GROUPS => [],
-        self::ATTRIBUTE_OPTIONS => [],
+        self::ATTRIBUTE_GROUPS     => [],
+        self::ATTRIBUTE_OPTIONS    => [],
         self::ATTRIBUTE_INSURANCES => [],
     ];
 

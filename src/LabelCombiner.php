@@ -140,7 +140,7 @@ class LabelCombiner implements LabelCombinerInterface
      * Return the start position, 0 being top left and 3 being bottom right.
      *
      * @param string $pageSize
-     * @param int $startLocation
+     * @param int    $startLocation
      * @return int
      */
     private function getStartPosition($pageSize, $startLocation)

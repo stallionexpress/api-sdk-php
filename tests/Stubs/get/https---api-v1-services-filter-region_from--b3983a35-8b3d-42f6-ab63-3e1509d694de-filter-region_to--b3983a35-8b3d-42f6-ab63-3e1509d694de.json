@@ -1,0 +1,54 @@
+{
+  "data": [
+    {
+      "id": "a3057e77-005b-4945-a41c-20ddbe4dab08",
+      "type": "services",
+      "attributes": {
+        "name": "Letter Test",
+        "package_type": "letter"
+      },
+      "links": {
+        "self": "https://api/v1/services/a3057e77-005b-4945-a41c-20ddbe4dab08",
+        "contracts": "https://api/v1/services/a3057e77-005b-4945-a41c-20ddbe4dab08/contracts"
+      },
+      "relationships": {
+        "carrier": {
+          "links": {
+            "related": "https://api/v1/carriers/eef00b32-177e-43d3-9b26-715365e4ce46"
+          },
+          "data": {
+            "id": "eef00b32-177e-43d3-9b26-715365e4ce46",
+            "type": "carriers"
+          }
+        },
+        "region_from": {
+          "links": {
+            "related": "https://api/v1/regions/b3983a35-8b3d-42f6-ab63-3e1509d694de"
+          },
+          "data": {
+            "id": "b3983a35-8b3d-42f6-ab63-3e1509d694de",
+            "type": "regions"
+          }
+        },
+        "region_to": {
+          "links": {
+            "related": "https://api/v1/regions/b3983a35-8b3d-42f6-ab63-3e1509d694de"
+          },
+          "data": {
+            "id": "b3983a35-8b3d-42f6-ab63-3e1509d694de",
+            "type": "regions"
+          }
+        }
+      }
+    }
+  ],
+  "meta": {
+    "total_pages": 1,
+    "total_records": 1
+  },
+  "links": {
+    "self": "https://api/v1/services?filter[region_from]=b3983a35-8b3d-42f6-ab63-3e1509d694de&filter[region_to]=b3983a35-8b3d-42f6-ab63-3e1509d694de&page[size]=30&page[number]=1",
+    "first": "https://api/v1/services?filter[region_from]=b3983a35-8b3d-42f6-ab63-3e1509d694de&filter[region_to]=b3983a35-8b3d-42f6-ab63-3e1509d694de&page[size]=30&page[number]=1",
+    "last": "https://api/v1/services?filter[region_from]=b3983a35-8b3d-42f6-ab63-3e1509d694de&filter[region_to]=b3983a35-8b3d-42f6-ab63-3e1509d694de&page[size]=30&page[number]=1"
+  }
+}

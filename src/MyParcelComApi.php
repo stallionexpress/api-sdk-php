@@ -21,6 +21,7 @@ use MyParcelCom\Sdk\Resources\ResourceFactory;
 use MyParcelCom\Sdk\Shipments\ContractSelector;
 use MyParcelCom\Sdk\Shipments\PriceCalculator;
 use MyParcelCom\Sdk\Shipments\ServiceMatcher;
+use MyParcelCom\Sdk\Utils\UrlBuilder;
 use MyParcelCom\Sdk\Validators\ShipmentValidator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\SimpleCache\CacheInterface;
@@ -223,20 +224,50 @@ class MyParcelComApi implements MyParcelComApiInterface
      */
     public function getServices(ShipmentInterface $shipment = null)
     {
+        $url = new UrlBuilder($this->apiUri . self::PATH_SERVICES);
+
+        if ($shipment === null) {
+            return $this->getResourcesPromise($url->getUrl(), self::TTL_WEEK)
+                ->wait();
+        }
+
+        if ($shipment->getSenderAddress() === null) {
+            $shipment->setSenderAddress($this->getDefaultShop()->getReturnAddress());
+        }
+
+        if ($shipment->getRecipientAddress() === null) {
+            throw new InvalidResourceException(
+                'Missing `recipient_address` on `shipments` resource'
+            );
+        }
+        if ($shipment->getSenderAddress() === null) {
+            throw new InvalidResourceException(
+                'Missing `sender_address` on `shipments` resource'
+            );
+        }
+
+        $regionsFrom = $this->getRegions(
+            $shipment->getSenderAddress()->getCountryCode(),
+            $shipment->getSenderAddress()->getRegionCode()
+        );
+        $regionsTo = $this->getRegions(
+            $shipment->getSenderAddress()->getCountryCode(),
+            $shipment->getSenderAddress()->getRegionCode()
+        );
+
+        $url->addQuery([
+            'filter[region_from]' => reset($regionsFrom)->getId(),
+            'filter[region_to]'   => reset($regionsTo)->getId(),
+        ]);
+
         // Services can be cached for a week.
-        $services = $this->getResourcesPromise($this->apiUri . self::PATH_SERVICES, self::TTL_WEEK)
+        $services = $this->getResourcesPromise($url->getUrl(), self::TTL_WEEK)
             ->wait();
 
-        if ($shipment !== null) {
-            if ($shipment->getSenderAddress() === null) {
-                $shipment->setSenderAddress($this->getDefaultShop()->getReturnAddress());
-            }
-
-            $matcher = new ServiceMatcher();
-            $services = array_filter($services, function (ServiceInterface $service) use ($shipment, $matcher) {
-                return $matcher->matches($shipment, $service);
-            });
-        }
+        $matcher = new ServiceMatcher();
+        $services = array_filter($services, function (ServiceInterface $service) use ($shipment, $matcher) {
+            return $matcher->matches($shipment, $service);
+        });
 
         return $services;
     }

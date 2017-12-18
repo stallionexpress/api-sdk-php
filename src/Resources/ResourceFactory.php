@@ -257,7 +257,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
      * ServiceInsurance factory method.
      *
      * @param string $type
-     * @param array $attributes
+     * @param array  $attributes
      * @return ServiceInsurance
      */
     protected function serviceInsuranceFactory($type, &$attributes)
