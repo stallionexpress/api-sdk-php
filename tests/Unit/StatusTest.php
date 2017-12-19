@@ -1,9 +1,9 @@
 <?php
 
-namespace MyParcelCom\Sdk\Tests\Unit;
+namespace MyParcelCom\ApiSdk\Tests\Unit;
 
-use MyParcelCom\Sdk\Resources\Interfaces\StatusInterface;
-use MyParcelCom\Sdk\Resources\Status;
+use MyParcelCom\ApiSdk\Resources\Interfaces\StatusInterface;
+use MyParcelCom\ApiSdk\Resources\Status;
 use PHPUnit\Framework\TestCase;
 
 class StatusTest extends TestCase

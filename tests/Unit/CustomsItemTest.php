@@ -1,8 +1,8 @@
 <?php
 
-namespace MyParcelCom\Sdk\Tests\Unit;
+namespace MyParcelCom\ApiSdk\Tests\Unit;
 
-use MyParcelCom\Sdk\Resources\CustomsItem;
+use MyParcelCom\ApiSdk\Resources\CustomsItem;
 use PHPUnit\Framework\TestCase;
 
 class CustomsItemTest extends TestCase

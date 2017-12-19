@@ -1,10 +1,10 @@
 <?php
 
-namespace MyParcelCom\Sdk\Resources;
+namespace MyParcelCom\ApiSdk\Resources;
 
-use MyParcelCom\Sdk\Resources\Interfaces\ResourceInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ServiceGroupInterface;
-use MyParcelCom\Sdk\Resources\Traits\JsonSerializable;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceGroupInterface;
+use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 
 class ServiceGroup implements ServiceGroupInterface
 {

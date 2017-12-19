@@ -1,5 +1,5 @@
 {
-  "name": "myparcelcom/sdk",
+  "name": "myparcelcom/api-sdk",
   "description": "Package for communicating with the MyParcel.com API.",
   "type": "library",
   "require": {
@@ -16,12 +16,12 @@
   },
   "autoload": {
     "psr-4": {
-      "MyParcelCom\\Sdk\\": "src/"
+      "MyParcelCom\\ApiSdk\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "MyParcelCom\\Sdk\\Tests\\": "tests/"
+      "MyParcelCom\\ApiSdk\\Tests\\": "tests/"
     }
   },
   "scripts": {

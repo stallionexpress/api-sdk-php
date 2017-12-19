@@ -1,8 +1,8 @@
 <?php
 
-namespace MyParcelCom\Sdk\Exceptions;
+namespace MyParcelCom\ApiSdk\Exceptions;
 
-use MyParcelCom\Sdk\Traits\HasErrors;
+use MyParcelCom\ApiSdk\Traits\HasErrors;
 use RuntimeException;
 
 /**

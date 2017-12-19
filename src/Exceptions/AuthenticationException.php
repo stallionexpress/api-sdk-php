@@ -1,6 +1,6 @@
 <?php
 
-namespace MyParcelCom\Sdk\Exceptions;
+namespace MyParcelCom\ApiSdk\Exceptions;
 
 /**
  * This exception is thrown when authentication with the API fails.

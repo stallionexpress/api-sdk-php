@@ -1,10 +1,10 @@
 <?php
 
-namespace MyParcelCom\Sdk\Validators;
+namespace MyParcelCom\ApiSdk\Validators;
 
-use MyParcelCom\Sdk\Resources\Interfaces\ShipmentInterface;
-use MyParcelCom\Sdk\Traits\HasErrors;
-use MyParcelCom\Sdk\Utils\StringUtils;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
+use MyParcelCom\ApiSdk\Traits\HasErrors;
+use MyParcelCom\ApiSdk\Utils\StringUtils;
 
 class ShipmentValidator implements ValidatorInterface
 {

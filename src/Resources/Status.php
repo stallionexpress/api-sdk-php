@@ -1,10 +1,10 @@
 <?php
 
-namespace MyParcelCom\Sdk\Resources;
+namespace MyParcelCom\ApiSdk\Resources;
 
-use MyParcelCom\Sdk\Resources\Interfaces\ResourceInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\StatusInterface;
-use MyParcelCom\Sdk\Resources\Traits\JsonSerializable;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\StatusInterface;
+use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 
 class Status implements StatusInterface
 {

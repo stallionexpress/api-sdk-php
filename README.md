@@ -23,7 +23,7 @@ The easiest way to install the sdk and keep it up to date, is to use composer.
 [Install PHP Composer](https://getcomposer.org/doc/00-intro.md)
 
 ```bash
-composer require myparcelcom/sdk
+composer require myparcelcom/api-sdk
 ```
 
 ## Usage
@@ -35,7 +35,7 @@ argument during construction. If no url is supplied it will default to the
 sandbox URL.
 
 ```php
-$api = new \MyParcelCom\Sdk\MyParcelComApi(
+$api = new \MyParcelCom\ApiSdk\MyParcelComApi(
     'https://sandbox-api.myparcel.com'
 );
 ```
@@ -46,8 +46,8 @@ using its static methods.
 ```php
 <?php
 // Create the singleton once, to make it available everywhere.
-$api = \MyParcelCom\Sdk\MyParcelComApi::createSingleton(
-    new \MyParcelCom\Sdk\Authentication\ClientCredentials(
+$api = \MyParcelCom\ApiSdk\MyParcelComApi::createSingleton(
+    new \MyParcelCom\ApiSdk\Authentication\ClientCredentials(
         'client-id',
         'client-secret',
         'https://sandbox-auth.myparcel.com'
@@ -56,7 +56,7 @@ $api = \MyParcelCom\Sdk\MyParcelComApi::createSingleton(
 );
 
 // The singleton instance can now be retrieved anywhere.
-$api = \MyParcelCom\Sdk\MyParcelComApi::getSingleton();
+$api = \MyParcelCom\ApiSdk\MyParcelComApi::getSingleton();
 ```
 
 ### Authentication
@@ -68,7 +68,7 @@ OAuth2.0 server. A URL should be supplied to define te location of the  OAuth2.0
 server.
 
 ```php
-$authenticator = new \MyParcelCom\Sdk\Authentication\ClientCredentials(
+$authenticator = new \MyParcelCom\ApiSdk\Authentication\ClientCredentials(
     'client-id',
     'client-secret', 
     'https://sandbox-auth.myparcel.com'
@@ -82,13 +82,13 @@ $api->authenticate($authenticator);
 Most of the resources available in the MyParcel.com API can be accessed using
 the SDK. All resources will be mapped to classes implementing their specific
 interface. These interfaces are all defined in the
-`\MyParcelCom\Sdk\Resources\Interfaces` namespace.
+`\MyParcelCom\ApiSdk\Resources\Interfaces` namespace.
 
 #### Shops
 
 All the shops or the default shop for the currently authenticated user can be
 retrieved. The shops will be mapped to objects implementing
-`\MyParcelCom\Sdk\Resources\Interfaces\ShopInterface`.
+`\MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface`.
 
 ```php
 // Get all shops.
@@ -104,15 +104,15 @@ retrieving shipments can be done through the MyParcel.com SDK. As wel as
 retrieving the shipment status and any files associated with the shipment.
 
 To create a shipment an object implementing
-`\MyParcelCom\Sdk\Resources\Interfaces\ShipmentInterface` should be created. A
+`\MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface` should be created. A
 class implementing this interface has been provided in
-`\MyParcelCom\Sdk\Resources\Shipment`. At least a recipient address and a weight
+`\MyParcelCom\ApiSdk\Resources\Shipment`. At least a recipient address and a weight
 should be provided in the shipment. All other fields are optional or will be
 filled with defaults by the SDK.
 
 ```php
-use MyParcelCom\Sdk\Resources\Address;
-use MyParcelCom\Sdk\Resources\Shipment;
+use MyParcelCom\ApiSdk\Resources\Address;
+use MyParcelCom\ApiSdk\Resources\Shipment;
 
 // Define the recipient address.
 $recipient = new Address();
@@ -169,7 +169,7 @@ requested from a shipment.
 Services for different carriers are available through the MyParcel.com API. The
 SDK can retrieve all the carriers the currently authenticated user can access.
 All carriers will be mapped to objects implementing
-`MyParcelCom\Sdk\Resources\Interfaces\CarrierInterface`.
+`MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface`.
 
 ```php
 // Get the carriers.
@@ -263,8 +263,8 @@ array of objects that implement `FileInterface` and returns a new object that
 implements `FileInterface`.
 
 ```php
-use MyParcelCom\Sdk\LabelCombiner;
-use MyParcelCom\Sdk\Resources\Interfaces\FileInterface;
+use MyParcelCom\ApiSdk\LabelCombiner;
+use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
 
 $files = array_merge(
     $shipmentA->getFiles(FileInterface::RESOURCE_TYPE_LABEL),
@@ -279,7 +279,7 @@ The page size (A4, A5, A6), the starting position as well as a margin can be
 specified when combining the labels.
 
 ```php
-use MyParcelCom\Sdk\LabelCombinerInterface;
+use MyParcelCom\ApiSdk\LabelCombinerInterface;
 
 $combinedFile = $labelCombiner->combineLabels(
     $files,
@@ -300,12 +300,12 @@ at construction of `MyParcelComApi` and `ClientCredentials`.
 
 ```php
 $redis = new RedisCache();
-$api = new \MyParcelCom\Sdk\MyParcelComApi(
+$api = new \MyParcelCom\ApiSdk\MyParcelComApi(
     'https://sandbox-api.myparcel.com',
     $redis
 );
 
-$authenticator = new \MyParcelCom\Sdk\Authentication\ClientCredentials(
+$authenticator = new \MyParcelCom\ApiSdk\Authentication\ClientCredentials(
     'client-id',
     'client-secret', 
     'https://sandbox-auth.myparcel.com',
@@ -335,7 +335,7 @@ $api->setHttpClient($client);
 
 ### Custom resource classes
 
-The MyParcel.com SDK uses the `MyParcelCom\Sdk\Resources\ResourceFactory` to
+The MyParcel.com SDK uses the `MyParcelCom\ApiSdk\Resources\ResourceFactory` to
 instantiate and hydrate all resource objects. If you want the SDK to instantiate
 your own classes and hydrate them, a `ResourceFactory` can be created and factory
 callables can be added to it to define how to instantiate a resource. Note that
@@ -343,9 +343,9 @@ when using your custom classes, they should still implement the corresponding
 resource's interface.
 
 ```php
-use MyParcelCom\Sdk\Resources\Interfaces\ShipmentInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ResourceInterface;
-use MyParcelCom\Sdk\Resources\ResourceFactory;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
+use MyParcelCom\ApiSdk\Resources\ResourceFactory;
 
 class CustomShipment implements ShipmentInterface
 {

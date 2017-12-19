@@ -1,9 +1,9 @@
 <?php
 
-namespace MyParcelCom\Sdk\Resources\Traits;
+namespace MyParcelCom\ApiSdk\Resources\Traits;
 
-use MyParcelCom\Sdk\MyParcelComApiInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ResourceInterface;
+use MyParcelCom\ApiSdk\MyParcelComApiInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 
 trait ProxiesResource
 {

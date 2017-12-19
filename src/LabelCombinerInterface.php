@@ -1,9 +1,9 @@
 <?php
 
-namespace MyParcelCom\Sdk;
+namespace MyParcelCom\ApiSdk;
 
-use MyParcelCom\Sdk\Exceptions\MyParcelComException;
-use MyParcelCom\Sdk\Resources\Interfaces\FileInterface;
+use MyParcelCom\ApiSdk\Exceptions\MyParcelComException;
+use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
 
 interface LabelCombinerInterface
 {

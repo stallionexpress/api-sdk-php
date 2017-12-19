@@ -1,18 +1,18 @@
 <?php
 
-namespace MyParcelCom\Sdk\Tests\Unit;
+namespace MyParcelCom\ApiSdk\Tests\Unit;
 
-use MyParcelCom\Sdk\Exceptions\MyParcelComException;
-use MyParcelCom\Sdk\Resources\Interfaces\AddressInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ContractInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\CustomsInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\FileInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\PhysicalPropertiesInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ServiceInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ServiceOptionInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ShopInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\StatusInterface;
-use MyParcelCom\Sdk\Resources\Shipment;
+use MyParcelCom\ApiSdk\Exceptions\MyParcelComException;
+use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\CustomsInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\PhysicalPropertiesInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\StatusInterface;
+use MyParcelCom\ApiSdk\Resources\Shipment;
 use PHPUnit\Framework\TestCase;
 
 class ShipmentTest extends TestCase

@@ -1,8 +1,8 @@
 <?php
 
-namespace MyParcelCom\Sdk\Tests\Unit;
+namespace MyParcelCom\ApiSdk\Tests\Unit;
 
-use MyParcelCom\Sdk\Resources\PhysicalProperties;
+use MyParcelCom\ApiSdk\Resources\PhysicalProperties;
 use PHPUnit\Framework\TestCase;
 
 class PhysicalPropertiesTest extends TestCase

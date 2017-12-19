@@ -1,22 +1,22 @@
 <?php
 
-namespace MyParcelCom\Sdk\Tests\Feature;
+namespace MyParcelCom\ApiSdk\Tests\Feature;
 
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Response;
-use MyParcelCom\Sdk\Authentication\AuthenticatorInterface;
-use MyParcelCom\Sdk\Exceptions\InvalidResourceException;
-use MyParcelCom\Sdk\MyParcelComApi;
-use MyParcelCom\Sdk\Resources\Address;
-use MyParcelCom\Sdk\Resources\Interfaces\CarrierInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\FileInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\PickUpDropOffLocationInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\RegionInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ResourceInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ServiceInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ShipmentInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ShopInterface;
-use MyParcelCom\Sdk\Resources\Shipment;
+use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
+use MyParcelCom\ApiSdk\Exceptions\InvalidResourceException;
+use MyParcelCom\ApiSdk\MyParcelComApi;
+use MyParcelCom\ApiSdk\Resources\Address;
+use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\PickUpDropOffLocationInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
+use MyParcelCom\ApiSdk\Resources\Shipment;
 use PHPUnit\Framework\TestCase;
 use function GuzzleHttp\Promise\promise_for;
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace MyParcelCom\Sdk\Tests\Unit;
+namespace MyParcelCom\ApiSdk\Tests\Unit;
 
-use MyParcelCom\Sdk\Resources\ServiceOption;
+use MyParcelCom\ApiSdk\Resources\ServiceOption;
 use PHPUnit\Framework\TestCase;
 
 class ServiceOptionTest extends TestCase

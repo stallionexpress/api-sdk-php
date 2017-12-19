@@ -1,11 +1,11 @@
 <?php
 
-namespace MyParcelCom\Sdk\Tests\Unit;
+namespace MyParcelCom\ApiSdk\Tests\Unit;
 
-use MyParcelCom\Sdk\Resources\Interfaces\CarrierInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ContractInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\RegionInterface;
-use MyParcelCom\Sdk\Resources\Service;
+use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
+use MyParcelCom\ApiSdk\Resources\Service;
 use PHPUnit\Framework\TestCase;
 
 class ServiceTest extends TestCase

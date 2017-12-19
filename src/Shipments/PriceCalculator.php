@@ -1,12 +1,12 @@
 <?php
 
-namespace MyParcelCom\Sdk\Shipments;
+namespace MyParcelCom\ApiSdk\Shipments;
 
-use MyParcelCom\Sdk\Exceptions\MyParcelComException;
-use MyParcelCom\Sdk\Resources\Interfaces\ContractInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ServiceGroupInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ServiceInsuranceInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ShipmentInterface;
+use MyParcelCom\ApiSdk\Exceptions\MyParcelComException;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceGroupInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInsuranceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 
 class PriceCalculator
 {

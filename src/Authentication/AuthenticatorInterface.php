@@ -1,8 +1,8 @@
 <?php
 
-namespace MyParcelCom\Sdk\Authentication;
+namespace MyParcelCom\ApiSdk\Authentication;
 
-use MyParcelCom\Sdk\Exceptions\AuthenticationException;
+use MyParcelCom\ApiSdk\Exceptions\AuthenticationException;
 
 interface AuthenticatorInterface
 {

@@ -1,12 +1,12 @@
 <?php
 
-namespace MyParcelCom\Sdk\Authentication;
+namespace MyParcelCom\ApiSdk\Authentication;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\RequestOptions;
-use MyParcelCom\Sdk\Exceptions\AuthenticationException;
+use MyParcelCom\ApiSdk\Exceptions\AuthenticationException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Cache\Simple\FilesystemCache;

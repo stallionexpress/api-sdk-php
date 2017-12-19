@@ -1,36 +1,36 @@
 <?php
 
-namespace MyParcelCom\Sdk\Resources;
+namespace MyParcelCom\ApiSdk\Resources;
 
-use MyParcelCom\Sdk\Exceptions\ResourceFactoryException;
-use MyParcelCom\Sdk\MyParcelComApiInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\AddressInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\CarrierInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ContractInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\CustomsInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\CustomsItemInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\FileInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\OpeningHourInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\PhysicalPropertiesInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\PickUpDropOffLocationInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\PositionInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\RegionInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ResourceFactoryInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ResourceInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ResourceProxyInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ServiceGroupInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ServiceInsuranceInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ServiceInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ServiceOptionInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ShipmentInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ShopInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\StatusInterface;
-use MyParcelCom\Sdk\Resources\Proxy\FileProxy;
-use MyParcelCom\Sdk\Resources\Proxy\FileStreamProxy;
-use MyParcelCom\Sdk\Resources\Proxy\RegionProxy;
-use MyParcelCom\Sdk\Resources\Proxy\ShopProxy;
-use MyParcelCom\Sdk\Resources\Proxy\StatusProxy;
-use MyParcelCom\Sdk\Utils\StringUtils;
+use MyParcelCom\ApiSdk\Exceptions\ResourceFactoryException;
+use MyParcelCom\ApiSdk\MyParcelComApiInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\CustomsInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\CustomsItemInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\OpeningHourInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\PhysicalPropertiesInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\PickUpDropOffLocationInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\PositionInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceFactoryInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceGroupInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInsuranceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\StatusInterface;
+use MyParcelCom\ApiSdk\Resources\Proxy\FileProxy;
+use MyParcelCom\ApiSdk\Resources\Proxy\FileStreamProxy;
+use MyParcelCom\ApiSdk\Resources\Proxy\RegionProxy;
+use MyParcelCom\ApiSdk\Resources\Proxy\ShopProxy;
+use MyParcelCom\ApiSdk\Resources\Proxy\StatusProxy;
+use MyParcelCom\ApiSdk\Utils\StringUtils;
 use ReflectionParameter;
 
 class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterface

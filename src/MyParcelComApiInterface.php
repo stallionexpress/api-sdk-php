@@ -1,17 +1,17 @@
 <?php
 
-namespace MyParcelCom\Sdk;
+namespace MyParcelCom\ApiSdk;
 
 use GuzzleHttp\Promise\PromiseInterface;
-use MyParcelCom\Sdk\Authentication\AuthenticatorInterface;
-use MyParcelCom\Sdk\Exceptions\MyParcelComException;
-use MyParcelCom\Sdk\Resources\Interfaces\CarrierInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\PickUpDropOffLocationInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\RegionInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ResourceInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ServiceInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ShipmentInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ShopInterface;
+use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
+use MyParcelCom\ApiSdk\Exceptions\MyParcelComException;
+use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\PickUpDropOffLocationInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 
 interface MyParcelComApiInterface
 {

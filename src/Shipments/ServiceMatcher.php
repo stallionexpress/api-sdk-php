@@ -1,11 +1,11 @@
 <?php
 
-namespace MyParcelCom\Sdk\Shipments;
+namespace MyParcelCom\ApiSdk\Shipments;
 
-use MyParcelCom\Sdk\Resources\Interfaces\ContractInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ServiceInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ServiceOptionInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ShipmentInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 
 class ServiceMatcher
 {

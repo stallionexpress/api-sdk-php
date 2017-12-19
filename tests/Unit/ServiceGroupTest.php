@@ -1,8 +1,8 @@
 <?php
 
-namespace MyParcelCom\Sdk\Tests\Unit;
+namespace MyParcelCom\ApiSdk\Tests\Unit;
 
-use MyParcelCom\Sdk\Resources\ServiceGroup;
+use MyParcelCom\ApiSdk\Resources\ServiceGroup;
 use PHPUnit\Framework\TestCase;
 
 class ServiceGroupTest extends TestCase

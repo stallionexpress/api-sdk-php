@@ -1,9 +1,9 @@
 <?php
 
-namespace MyParcelCom\Sdk\Shipments;
+namespace MyParcelCom\ApiSdk\Shipments;
 
-use MyParcelCom\Sdk\Resources\Interfaces\ContractInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ShipmentInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 
 class ContractSelector
 {

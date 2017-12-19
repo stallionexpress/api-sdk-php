@@ -1,6 +1,6 @@
 <?php
 
-namespace MyParcelCom\Sdk\Utils;
+namespace MyParcelCom\ApiSdk\Utils;
 
 class UrlBuilder
 {

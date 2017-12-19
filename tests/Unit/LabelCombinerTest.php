@@ -1,10 +1,10 @@
 <?php
 
-namespace MyParcelCom\Sdk\Tests\Unit;
+namespace MyParcelCom\ApiSdk\Tests\Unit;
 
-use MyParcelCom\Sdk\LabelCombiner;
-use MyParcelCom\Sdk\LabelCombinerInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\FileInterface;
+use MyParcelCom\ApiSdk\LabelCombiner;
+use MyParcelCom\ApiSdk\LabelCombinerInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
 use PHPUnit\Framework\TestCase;
 
 class LabelCombinerTest extends TestCase

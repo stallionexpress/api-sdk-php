@@ -1,8 +1,8 @@
 <?php
 
-namespace MyParcelCom\Sdk\Tests\Unit;
+namespace MyParcelCom\ApiSdk\Tests\Unit;
 
-use MyParcelCom\Sdk\Resources\Carrier;
+use MyParcelCom\ApiSdk\Resources\Carrier;
 use PHPUnit\Framework\TestCase;
 
 class CarrierTest extends TestCase
