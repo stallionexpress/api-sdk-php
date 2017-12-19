@@ -114,7 +114,7 @@ class ClientCredentials implements AuthenticatorInterface
             $data = \GuzzleHttp\json_decode((string)$response->getBody(), true);
 
             $header = [
-                self::HEADER_AUTH   => $data['token_type'] . ' ' . $data['access_token'],
+                self::HEADER_AUTH => $data['token_type'] . ' ' . $data['access_token'],
             ];
 
             $this->setAuthenticating(false);
