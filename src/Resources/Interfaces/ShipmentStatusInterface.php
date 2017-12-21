@@ -11,10 +11,10 @@ interface ShipmentStatusInterface extends ResourceInterface
     public function setId($id);
 
     /**
-     * @param string $carrierCode
+     * @param string $carrierStatusCode
      * @return $this
      */
-    public function setCarrierStatusCode($carrierCode);
+    public function setCarrierStatusCode($carrierStatusCode);
 
     /**
      * @return string
@@ -22,10 +22,10 @@ interface ShipmentStatusInterface extends ResourceInterface
     public function getCarrierStatusCode();
 
     /**
-     * @param string $carrierDescription
+     * @param string $carrierStatusDescription
      * @return $this
      */
-    public function setCarrierStatusDescription($carrierDescription);
+    public function setCarrierStatusDescription($carrierStatusDescription);
 
     /**
      * @return string

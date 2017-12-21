@@ -50,12 +50,12 @@ class ShipmentStatusProxy implements ShipmentStatusInterface, ResourceProxyInter
     }
 
     /**
-     * @param string $carrierCode
+     * @param string $carrierStatusCode
      * @return $this
      */
-    public function setCarrierStatusCode($carrierCode)
+    public function setCarrierStatusCode($carrierStatusCode)
     {
-        $this->getResource()->setCarrierStatusCode($carrierCode);
+        $this->getResource()->setCarrierStatusCode($carrierStatusCode);
 
         return $this;
     }
@@ -69,12 +69,12 @@ class ShipmentStatusProxy implements ShipmentStatusInterface, ResourceProxyInter
     }
 
     /**
-     * @param string $carrierDescription
+     * @param string $carrierStatusDescription
      * @return $this
      */
-    public function setCarrierStatusDescription($carrierDescription)
+    public function setCarrierStatusDescription($carrierStatusDescription)
     {
-        $this->getResource()->setCarrierStatusDescription($carrierDescription);
+        $this->getResource()->setCarrierStatusDescription($carrierStatusDescription);
 
         return $this;
     }

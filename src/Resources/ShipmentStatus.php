@@ -12,9 +12,9 @@ class ShipmentStatus implements ShipmentStatusInterface
 {
     use JsonSerializable;
 
-    const ATTRIBUTE_CODE = 'carrier_status_code';
-    const ATTRIBUTE_DESCRIPTION = 'carrier_status_description';
-    const ATTRIBUTE_TIMESTAMP = 'carrier_timestamp';
+    const ATTRIBUTE_CARRIER_CODE = 'carrier_status_code';
+    const ATTRIBUTE_CARRIER_DESCRIPTION = 'carrier_status_description';
+    const ATTRIBUTE_CARRIER_TIMESTAMP = 'carrier_timestamp';
 
     const RELATIONSHIP_STATUS = 'status';
     const RELATIONSHIP_SHIPMENT = 'shipment';
@@ -22,9 +22,9 @@ class ShipmentStatus implements ShipmentStatusInterface
     private $id;
     private $type = ResourceInterface::TYPE_SHIPMENT_STATUS;
     private $attributes = [
-        self::ATTRIBUTE_CODE        => null,
-        self::ATTRIBUTE_DESCRIPTION => null,
-        self::ATTRIBUTE_TIMESTAMP   => null,
+        self::ATTRIBUTE_CARRIER_CODE        => null,
+        self::ATTRIBUTE_CARRIER_DESCRIPTION => null,
+        self::ATTRIBUTE_CARRIER_TIMESTAMP   => null,
     ];
 
     private $relationships = [
@@ -64,12 +64,12 @@ class ShipmentStatus implements ShipmentStatusInterface
     }
 
     /**
-     * @param string $code
+     * @param string $carrierStatusCode
      * @return $this
      */
-    public function setCarrierStatusCode($code)
+    public function setCarrierStatusCode($carrierStatusCode)
     {
-        $this->attributes[self::ATTRIBUTE_CODE] = $code;
+        $this->attributes[self::ATTRIBUTE_CARRIER_CODE] = $carrierStatusCode;
 
         return $this;
     }
@@ -79,16 +79,16 @@ class ShipmentStatus implements ShipmentStatusInterface
      */
     public function getCarrierStatusCode()
     {
-        return $this->attributes[self::ATTRIBUTE_CODE];
+        return $this->attributes[self::ATTRIBUTE_CARRIER_CODE];
     }
 
     /**
-     * @param string $description
+     * @param string $carrierStatusDescription
      * @return $this
      */
-    public function setCarrierStatusDescription($description)
+    public function setCarrierStatusDescription($carrierStatusDescription)
     {
-        $this->attributes[self::ATTRIBUTE_DESCRIPTION] = $description;
+        $this->attributes[self::ATTRIBUTE_CARRIER_DESCRIPTION] = $carrierStatusDescription;
 
         return $this;
     }
@@ -98,7 +98,7 @@ class ShipmentStatus implements ShipmentStatusInterface
      */
     public function getCarrierStatusDescription()
     {
-        return $this->attributes[self::ATTRIBUTE_DESCRIPTION];
+        return $this->attributes[self::ATTRIBUTE_CARRIER_DESCRIPTION];
     }
 
     /**
@@ -108,9 +108,9 @@ class ShipmentStatus implements ShipmentStatusInterface
     public function setCarrierTimestamp($timestamp)
     {
         if (is_int($timestamp)) {
-            $this->attributes[self::ATTRIBUTE_TIMESTAMP] = $timestamp;
+            $this->attributes[self::ATTRIBUTE_CARRIER_TIMESTAMP] = $timestamp;
         } elseif ($timestamp instanceof \DateTime) {
-            $this->attributes[self::ATTRIBUTE_TIMESTAMP] = $timestamp->getTimestamp();
+            $this->attributes[self::ATTRIBUTE_CARRIER_TIMESTAMP] = $timestamp->getTimestamp();
         }
 
         return $this;
@@ -121,7 +121,7 @@ class ShipmentStatus implements ShipmentStatusInterface
      */
     public function getCarrierTimestamp()
     {
-        return (new \DateTime())->setTimestamp($this->attributes[self::ATTRIBUTE_TIMESTAMP]);
+        return (new \DateTime())->setTimestamp($this->attributes[self::ATTRIBUTE_CARRIER_TIMESTAMP]);
     }
 
     /**
