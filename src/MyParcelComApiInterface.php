@@ -21,6 +21,7 @@ interface MyParcelComApiInterface
     const PATH_REGIONS = '/v1/regions';
     const PATH_SERVICES = '/v1/services';
     const PATH_SHIPMENTS = '/v1/shipments';
+    const PATH_SHIPMENT_STATUSES = '/v1/shipments/{shipment_id}/statuses';
     const PATH_SHOPS = '/v1/shops';
 
     const TTL_10MIN = 600;

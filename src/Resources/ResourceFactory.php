@@ -155,6 +155,18 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
             unset($attributes['insurance']);
         }
 
+        if (isset($attributes['id'])) {
+            $shipment->setStatusHistoryCallback(function () use ($attributes) {
+                return $this->api->getResourcesFromUri(
+                    str_replace(
+                        '{shipment_id}',
+                        $attributes['id'],
+                        MyParcelComApiInterface::PATH_SHIPMENT_STATUSES
+                    )
+                );
+            });
+        }
+
         return $shipment;
     }
 

@@ -44,6 +44,8 @@ class Shipment implements ShipmentInterface
 
     private $id;
     private $type = ResourceInterface::TYPE_SHIPMENT;
+    private $statusHistory;
+    private $statusHistoryCallback;
     private $attributes = [
         self::ATTRIBUTE_BARCODE             => null,
         self::ATTRIBUTE_DESCRIPTION         => null,
@@ -56,6 +58,7 @@ class Shipment implements ShipmentInterface
         self::ATTRIBUTE_PICKUP              => null,
         self::ATTRIBUTE_CUSTOMS             => null,
     ];
+
     private $relationships = [
         self::RELATIONSHIP_SHOP     => [
             'data' => null,
@@ -76,7 +79,6 @@ class Shipment implements ShipmentInterface
             'data' => [],
         ],
     ];
-
     private static $unitConversion = [
         self::WEIGHT_GRAM     => 1,
         self::WEIGHT_KILOGRAM => 1000,
@@ -450,6 +452,41 @@ class Shipment implements ShipmentInterface
     public function getStatus()
     {
         return $this->relationships[self::RELATIONSHIP_STATUS]['data'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setStatusHistory(array $statuses)
+    {
+        $this->statusHistory = $statuses;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getStatusHistory()
+    {
+        if (!isset($this->statusHistory) && isset($this->statusHistoryCallback)) {
+            $this->setStatusHistory(call_user_func($this->statusHistoryCallback));
+        }
+
+        return $this->statusHistory;
+    }
+
+    /**
+     * Set the callback to use when retrieving the status history.
+     *
+     * @param callable $callback
+     * @return $this
+     */
+    public function setStatusHistoryCallback(callable $callback)
+    {
+        $this->statusHistoryCallback = $callback;
+
+        return $this;
     }
 
     /**
