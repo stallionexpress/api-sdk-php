@@ -571,11 +571,10 @@ class MyParcelComApi implements MyParcelComApiInterface
         }
 
         if (isset($resourceData['relationships'])) {
-            $data += array_map(function ($relationship) {
-                return isset($relationship['data'])
-                    ? $relationship['data']
-                    : [];
-            }, $resourceData['relationships']);
+            $data += array_map(
+                [$this, 'flattenRelationship'],
+                $resourceData['relationships']
+            );
         }
 
         if (isset($resourceData['links'])) {
@@ -583,6 +582,22 @@ class MyParcelComApi implements MyParcelComApiInterface
         }
 
         return $data;
+    }
+
+    /**
+     * @param array $relationship
+     * @return array
+     */
+    private function flattenRelationship(array $relationship)
+    {
+        $data = isset($relationship['data'])
+            ? $relationship['data']
+            : [];
+        $links = isset($relationship['links'])
+            ? $relationship['links']
+            : [];
+
+        return $data + $links;
     }
 
     /**
