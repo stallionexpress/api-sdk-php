@@ -19,6 +19,7 @@ class OpeningHourTest extends TestCase
     {
         $openingHour = new OpeningHour();
         $open = new \DateTime('19:00');
+        $this->assertEquals('19:00', $openingHour->setOpen('19:00')->getOpen()->format('H:i'));
         $this->assertEquals($open, $openingHour->setOpen($open)->getOpen());
     }
 
@@ -27,6 +28,7 @@ class OpeningHourTest extends TestCase
     {
         $openingHour = new OpeningHour();
         $closed = new \DateTime('09:00');
+        $this->assertEquals('09:00', $openingHour->setClosed('09:00')->getClosed()->format('H:i'));
         $this->assertEquals($closed, $openingHour->setClosed($closed)->getClosed());
     }
 
@@ -35,8 +37,8 @@ class OpeningHourTest extends TestCase
     {
         $openingHour = (new OpeningHour())
             ->setDay('Sunday')
-            ->setOpen(new \DateTime('09:00'))
-            ->setClosed(new \DateTime('19:00'));
+            ->setOpen('09:00')
+            ->setClosed('19:00');
 
         $this->assertEquals([
             'day'    => 'Sunday',

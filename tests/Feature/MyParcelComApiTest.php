@@ -15,7 +15,9 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentStatusInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\StatusInterface;
 use MyParcelCom\ApiSdk\Resources\Shipment;
 use PHPUnit\Framework\TestCase;
 use function GuzzleHttp\Promise\promise_for;
@@ -315,6 +317,27 @@ class MyParcelComApiTest extends TestCase
         array_walk($shipments, function ($shipment) {
             $this->assertEquals($shipment, $this->api->getShipment($shipment->getId()));
         });
+    }
+
+    /** @test */
+    public function testGetShipmentStatus()
+    {
+        $shipment = $this->api->getShipment('shipment-id-1');
+
+        $shipmentStatus = $shipment->getStatus();
+
+        $this->assertInstanceOf(ShipmentStatusInterface::class, $shipmentStatus);
+        $this->assertEquals('9001', $shipmentStatus->getCarrierStatusCode());
+        $this->assertEquals('Confirmed at destination', $shipmentStatus->getCarrierStatusDescription());
+        $this->assertEquals(1504801719, $shipmentStatus->getCarrierTimestamp()->getTimestamp());
+
+        $status = $shipmentStatus->getStatus();
+
+        $this->assertInstanceOf(StatusInterface::class, $status);
+        $this->assertEquals('shipment_delivered', $status->getCode());
+        $this->assertEquals('success', $status->getLevel());
+        $this->assertEquals('Delivered', $status->getName());
+        $this->assertEquals('The shipment has been delivered', $status->getDescription());
     }
 
     /** @test */

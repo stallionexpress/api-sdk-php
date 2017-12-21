@@ -143,11 +143,11 @@
       },
       "status": {
         "data": {
-          "type": "statuses",
-          "id": "status-id-1"
+          "type": "shipment-statuses",
+          "id": "shipment-status-id-1"
         },
         "links": {
-          "related": "https://api/v1/statuses/status-id-1"
+          "related": "https://api/v1/shipments/shipment-id-1/statuses/shipment-status-id-1"
         }
       },
       "service": {

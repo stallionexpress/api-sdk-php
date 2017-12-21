@@ -9,25 +9,17 @@ use PHPUnit\Framework\TestCase;
 class StatusTest extends TestCase
 {
     /** @test */
-    public function testCarrierStatusCode()
+    public function testId()
     {
         $status = new Status();
-        $this->assertEquals('A01', $status->setCarrierStatusCode('A01')->getCarrierStatusCode());
+        $this->assertEquals('status-id', $status->setId('status-id')->getId());
     }
 
     /** @test */
-    public function testCarrierStatusDescription()
+    public function testType()
     {
         $status = new Status();
-        $this->assertEquals('We have received the shipment', $status->setCarrierStatusDescription('We have received the shipment')->getCarrierStatusDescription());
-    }
-
-    /** @test */
-    public function testCarrierTimestamp()
-    {
-        $status = new Status();
-        $this->assertEquals((new \DateTime())->setTimestamp(1504801719), $status->setCarrierTimestamp(1504801719)->getCarrierTimestamp());
-        $this->assertEquals((new \DateTime())->setTimestamp(1504801720), $status->setCarrierTimestamp((new \DateTime())->setTimestamp(1504801720))->getCarrierTimestamp());
+        $this->assertEquals('statuses', $status->getType());
     }
 
     /** @test */
@@ -45,13 +37,6 @@ class StatusTest extends TestCase
     }
 
     /** @test */
-    public function testId()
-    {
-        $status = new Status();
-        $this->assertEquals('status-id', $status->setId('status-id')->getId());
-    }
-
-    /** @test */
     public function testLevel()
     {
         $status = new Status();
@@ -66,21 +51,11 @@ class StatusTest extends TestCase
     }
 
     /** @test */
-    public function testType()
-    {
-        $status = new Status();
-        $this->assertEquals('statuses', $status->getType());
-    }
-
-    /** @test */
     public function testJsonSerialize()
     {
         $status = (new Status())
             ->setDescription('The shipment is created')
-            ->setCarrierStatusCode('A01')
-            ->setCarrierStatusDescription('We have received the shipment')
             ->setCode('shipment_concept')
-            ->setCarrierTimestamp(1504801719)
             ->setId('status-id')
             ->setName('Delivered')
             ->setLevel(StatusInterface::LEVEL_FAILED);
@@ -93,13 +68,6 @@ class StatusTest extends TestCase
                 'code'        => 'shipment_concept',
                 'level'       => 'failed',
                 'name'        => 'Delivered',
-            ],
-            'meta'       => [
-                'resource_data' => [
-                    'carrier_status_code'        => 'A01',
-                    'carrier_status_description' => 'We have received the shipment',
-                    'carrier_timestamp'          => 1504801719,
-                ],
             ],
         ], $status->jsonSerialize());
     }

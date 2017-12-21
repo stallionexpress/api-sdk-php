@@ -10,6 +10,7 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\PhysicalPropertiesInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentStatusInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\StatusInterface;
 use MyParcelCom\ApiSdk\Resources\Shipment;
@@ -206,10 +207,23 @@ class ShipmentTest extends TestCase
 
         $this->assertEmpty($shipment->getStatus());
 
-        $mock = $this->getMockClass(StatusInterface::class);
+        $mock = $this->getMockClass(ShipmentStatusInterface::class);
         $status = new $mock();
 
         $this->assertEquals($status, $shipment->setStatus($status)->getStatus());
+    }
+
+    /** @test */
+    public function testShop()
+    {
+        $shipment = new Shipment();
+
+        $this->assertEmpty($shipment->getShop());
+
+        $mock = $this->getMockClass(ShopInterface::class);
+        $shop = new $mock();
+
+        $this->assertEquals($shop, $shipment->setShop($shop)->getShop());
     }
 
     /** @test */
@@ -428,7 +442,7 @@ class ShipmentTest extends TestCase
                 'width'  => 1400,
             ]);
 
-        $status = $this->getMockBuilder(StatusInterface::class)
+        $status = $this->getMockBuilder(ShipmentStatusInterface::class)
             ->disableOriginalConstructor()
             ->disableOriginalClone()
             ->disableArgumentCloning()
@@ -436,8 +450,8 @@ class ShipmentTest extends TestCase
             ->getMock();
         $status->method('jsonSerialize')
             ->willReturn([
-                'id'   => 'status-id-1',
-                'type' => 'statuses',
+                'id'   => 'shipment-status-id-1',
+                'type' => 'shipment-statuses',
             ]);
 
         $customs = $this->getMockBuilder(CustomsInterface::class)
@@ -582,7 +596,7 @@ class ShipmentTest extends TestCase
                 'shop'     => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
                 'service'  => ['data' => ['id' => 'service-id-1', 'type' => 'services']],
                 'contract' => ['data' => ['id' => 'contract-id-1', 'type' => 'contracts']],
-                'status'   => ['data' => ['id' => 'status-id-1', 'type' => 'statuses']],
+                'status'   => ['data' => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses']],
                 'options'  => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
                 'files'    => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
             ],
