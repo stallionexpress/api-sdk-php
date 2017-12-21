@@ -340,6 +340,83 @@ class MyParcelComApiTest extends TestCase
         $this->assertEquals('The shipment has been delivered', $status->getDescription());
     }
 
+    public function testGetShipmentStatusHistory()
+    {
+        $shipment = $this->api->getShipment('shipment-id-1');
+
+        $shipmentStatuses = $shipment->getStatusHistory();
+
+        /** @var ShipmentStatusInterface $shipmentStatus */
+        $shipmentStatus = reset($shipmentStatuses);
+        $this->assertInstanceOf(ShipmentStatusInterface::class, $shipmentStatus);
+        $this->assertEquals('9001', $shipmentStatus->getCarrierStatusCode());
+        $this->assertEquals('Confirmed at destination', $shipmentStatus->getCarrierStatusDescription());
+        $this->assertEquals(1504801719, $shipmentStatus->getCarrierTimestamp()->getTimestamp());
+
+        $status = $shipmentStatus->getStatus();
+        $this->assertInstanceOf(StatusInterface::class, $status);
+        $this->assertEquals('shipment_delivered', $status->getCode());
+        $this->assertEquals('success', $status->getLevel());
+        $this->assertEquals('Delivered', $status->getName());
+        $this->assertEquals('The shipment has been delivered', $status->getDescription());
+
+
+        $shipmentStatus = next($shipmentStatuses);
+        $this->assertInstanceOf(ShipmentStatusInterface::class, $shipmentStatus);
+        $this->assertEquals('4567', $shipmentStatus->getCarrierStatusCode());
+        $this->assertEquals('Delivery on it\'s way', $shipmentStatus->getCarrierStatusDescription());
+        $this->assertEquals(1504701719, $shipmentStatus->getCarrierTimestamp()->getTimestamp());
+
+        $status = $shipmentStatus->getStatus();
+        $this->assertInstanceOf(StatusInterface::class, $status);
+        $this->assertEquals('shipment_at_courier', $status->getCode());
+        $this->assertEquals('success', $status->getLevel());
+        $this->assertEquals('At courier', $status->getName());
+        $this->assertEquals('The shipment is at the courier', $status->getDescription());
+
+
+        $shipmentStatus = next($shipmentStatuses);
+        $this->assertInstanceOf(ShipmentStatusInterface::class, $shipmentStatus);
+        $this->assertEquals('10001', $shipmentStatus->getCarrierStatusCode());
+        $this->assertEquals('Parcel received', $shipmentStatus->getCarrierStatusDescription());
+        $this->assertEquals(1504501719, $shipmentStatus->getCarrierTimestamp()->getTimestamp());
+
+        $status = $shipmentStatus->getStatus();
+        $this->assertInstanceOf(StatusInterface::class, $status);
+        $this->assertEquals('shipment_at_carrier', $status->getCode());
+        $this->assertEquals('success', $status->getLevel());
+        $this->assertEquals('At carrier', $status->getName());
+        $this->assertEquals('The shipment is at the carrier', $status->getDescription());
+
+
+        $shipmentStatus = next($shipmentStatuses);
+        $this->assertInstanceOf(ShipmentStatusInterface::class, $shipmentStatus);
+        $this->assertNull($shipmentStatus->getCarrierStatusCode());
+        $this->assertNull($shipmentStatus->getCarrierStatusDescription());
+        $this->assertEquals(1504101719, $shipmentStatus->getCarrierTimestamp()->getTimestamp());
+
+        $status = $shipmentStatus->getStatus();
+        $this->assertInstanceOf(StatusInterface::class, $status);
+        $this->assertEquals('shipment_registered', $status->getCode());
+        $this->assertEquals('success', $status->getLevel());
+        $this->assertEquals('Registered', $status->getName());
+        $this->assertEquals('The shipment has been registered at the carrier', $status->getDescription());
+
+
+        $shipmentStatus = next($shipmentStatuses);
+        $this->assertInstanceOf(ShipmentStatusInterface::class, $shipmentStatus);
+        $this->assertNull($shipmentStatus->getCarrierStatusCode());
+        $this->assertNull($shipmentStatus->getCarrierStatusDescription());
+        $this->assertEquals(1504001719, $shipmentStatus->getCarrierTimestamp()->getTimestamp());
+
+        $status = $shipmentStatus->getStatus();
+        $this->assertInstanceOf(StatusInterface::class, $status);
+        $this->assertEquals('shipment_concept', $status->getCode());
+        $this->assertEquals('concept', $status->getLevel());
+        $this->assertEquals('Concept', $status->getName());
+        $this->assertEquals('The shipment is a concept', $status->getDescription());
+    }
+
     /** @test */
     public function testGetShops()
     {
