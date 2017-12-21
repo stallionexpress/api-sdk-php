@@ -152,6 +152,17 @@ class ClientCredentials implements AuthenticatorInterface
     }
 
     /**
+     * Clear the cached resources.
+     * @return $this
+     */
+    public function clearCache()
+    {
+        $this->cache->clear();
+
+        return $this;
+    }
+
+    /**
      * Set the http client to use. This can be used when extra options need to
      * be set on the client.
      *
@@ -188,7 +199,7 @@ class ClientCredentials implements AuthenticatorInterface
     protected function handleRequestException(RequestException $exception)
     {
         $response = json_decode((string)$exception->getResponse()->getBody(), true);
-        $message = 'An unknown error occured while authenticating with the oauth2 server';
+        $message = 'An unknown error occurred while authenticating with the oauth2 server';
 
         if (!empty($response['errors'])) {
             $errors = $response['errors'];

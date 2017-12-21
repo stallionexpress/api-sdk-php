@@ -434,6 +434,18 @@ class MyParcelComApi implements MyParcelComApiInterface
     }
 
     /**
+     * Clear the cached resources and the authorization cache.
+     * @return $this
+     */
+    public function clearCache()
+    {
+        $this->cache->clear();
+        $this->authenticator->clearCache();
+
+        return $this;
+    }
+
+    /**
      * Set the Guzzle client to use to connect to the api.
      *
      * @param ClientInterface $client
