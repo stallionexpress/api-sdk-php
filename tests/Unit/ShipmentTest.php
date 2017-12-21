@@ -295,6 +295,31 @@ class ShipmentTest extends TestCase
     }
 
     /** @test */
+    public function testStatusHistory()
+    {
+        $mock = $this->getMockClass(ShipmentStatusInterface::class);
+        $statuses = [
+            new $mock(),
+            new $mock(),
+            new $mock(),
+        ];
+
+        $shipment = new Shipment();
+        $shipment->setStatusHistoryCallback(function () use ($statuses) {
+            return $statuses;
+        });
+
+        $this->assertEquals($statuses, $shipment->getStatusHistory());
+
+        $statuses = [
+            new $mock(),
+            new $mock(),
+        ];
+
+        $this->assertEquals($statuses, $shipment->setStatusHistory($statuses)->getStatusHistory());
+    }
+
+    /** @test */
     public function testJsonSerialize()
     {
         $recipientAddress = $this->getMockBuilder(AddressInterface::class)
