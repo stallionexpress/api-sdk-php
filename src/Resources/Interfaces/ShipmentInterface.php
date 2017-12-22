@@ -208,13 +208,13 @@ interface ShipmentInterface extends ResourceInterface
     public function getFiles($type = null);
 
     /**
-     * @param StatusInterface $status
+     * @param ShipmentStatusInterface $status
      * @return $this
      */
-    public function setStatus(StatusInterface $status);
+    public function setStatus(ShipmentStatusInterface $status);
 
     /**
-     * @return StatusInterface
+     * @return ShipmentStatusInterface
      */
     public function getStatus();
 

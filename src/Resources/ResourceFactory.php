@@ -23,11 +23,14 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInsuranceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentStatusInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\StatusInterface;
 use MyParcelCom\ApiSdk\Resources\Proxy\FileProxy;
 use MyParcelCom\ApiSdk\Resources\Proxy\FileStreamProxy;
 use MyParcelCom\ApiSdk\Resources\Proxy\RegionProxy;
+use MyParcelCom\ApiSdk\Resources\Proxy\ShipmentProxy;
+use MyParcelCom\ApiSdk\Resources\Proxy\ShipmentStatusProxy;
 use MyParcelCom\ApiSdk\Resources\Proxy\ShopProxy;
 use MyParcelCom\ApiSdk\Resources\Proxy\StatusProxy;
 use MyParcelCom\ApiSdk\Utils\StringUtils;
@@ -63,6 +66,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
     public function __construct()
     {
         $shipmentFactory = [$this, 'shipmentFactory'];
+        $shipmentStatusFactory = [$this, 'shipmentStatusFactory'];
         $serviceFactory = [$this, 'serviceFactory'];
         $serviceGroupFactory = [$this, 'serviceGroupFactory'];
         $serviceOptionFactory = [$this, 'serviceOptionFactory'];
@@ -72,6 +76,9 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
 
         $this->setFactoryForType(ResourceInterface::TYPE_SHIPMENT, $shipmentFactory);
         $this->setFactoryForType(ShipmentInterface::class, $shipmentFactory);
+
+        $this->setFactoryForType(ResourceInterface::TYPE_SHIPMENT_STATUS, $shipmentStatusFactory);
+        $this->setFactoryForType(ShipmentStatusInterface::class, $shipmentStatusFactory);
 
         $this->setFactoryForType(ResourceInterface::TYPE_SERVICE, $serviceFactory);
         $this->setFactoryForType(ServiceInterface::class, $serviceFactory);
@@ -104,6 +111,10 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
 
         if (isset($attributes['files'])) {
             array_walk($attributes['files'], function ($file) use ($shipment) {
+                if (empty($file['id'])) {
+                    return;
+                }
+
                 $shipment->addFile(
                     (new FileProxy())->setMyParcelComApi($this->api)->setId($file['id'])
                 );
@@ -120,9 +131,9 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
             unset($attributes['shop']);
         }
 
-        if (isset($attributes['status']['id'])) {
+        if (isset($attributes['status']['related'])) {
             $shipment->setStatus(
-                (new StatusProxy())->setMyParcelComApi($this->api)->setId($attributes['status']['id'])
+                (new ShipmentStatusProxy())->setMyParcelComApi($this->api)->setResourceUri($attributes['status']['related'])
             );
 
             unset($attributes['status']);
@@ -145,6 +156,36 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         }
 
         return $shipment;
+    }
+
+    /**
+     * ShipmentStatus factory that creates proxies for all relationships.
+     *
+     * @param string $type
+     * @param array  $attributes
+     * @return ShipmentStatus
+     */
+    protected function shipmentStatusFactory($type, array &$attributes)
+    {
+        $shipmentStatus = new ShipmentStatus();
+
+        if (isset($attributes['status']['id'])) {
+            $shipmentStatus->setStatus(
+                (new StatusProxy())->setMyParcelComApi($this->api)->setId($attributes['status']['id'])
+            );
+
+            unset($attributes['status']);
+        }
+
+        if (isset($attributes['shipment']['id'])) {
+            $shipmentStatus->setShipment(
+                (new ShipmentProxy())->setMyParcelComApi($this->api)->setId($attributes['shipment']['id'])
+            );
+
+            unset($attributes['shipment']);
+        }
+
+        return $shipmentStatus;
     }
 
     /**

@@ -57,37 +57,4 @@ interface StatusInterface extends ResourceInterface
      * @return string
      */
     public function getDescription();
-
-    /**
-     * @param string $carrierCode
-     * @return $this
-     */
-    public function setCarrierStatusCode($carrierCode);
-
-    /**
-     * @return string
-     */
-    public function getCarrierStatusCode();
-
-    /**
-     * @param string $carrierDescription
-     * @return $this
-     */
-    public function setCarrierStatusDescription($carrierDescription);
-
-    /**
-     * @return string
-     */
-    public function getCarrierStatusDescription();
-
-    /**
-     * @param int|\DateTime $timestamp
-     * @return $this
-     */
-    public function setCarrierTimestamp($timestamp);
-
-    /**
-     * @return \DateTime
-     */
-    public function getCarrierTimestamp();
 }
