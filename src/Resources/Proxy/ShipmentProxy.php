@@ -424,6 +424,25 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
     }
 
     /**
+     * @param ShipmentStatusInterface[] $statuses
+     * @return $this
+     */
+    public function setStatusHistory(array $statuses)
+    {
+        $this->getResource()->setStatusHistory($statuses);
+
+        return $this;
+    }
+
+    /**
+     * @return ShipmentStatusInterface[]
+     */
+    public function getStatusHistory()
+    {
+        return $this->getResource()->getStatusHistory();
+    }
+
+    /**
      * This function puts all object properties in an array and returns it.
      *
      * @return array
