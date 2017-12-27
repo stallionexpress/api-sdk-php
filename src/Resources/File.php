@@ -181,6 +181,9 @@ class File implements FileInterface
             return $this->base64Data[$mimeType] = base64_encode(file_get_contents($this->paths[$mimeType]));
         }
         if (isset($this->streams[$mimeType])) {
+            // Rewind the stream to ensure that we're getting all of the contents.
+            $this->streams[$mimeType]->rewind();
+
             return $this->base64Data[$mimeType] = base64_encode($this->streams[$mimeType]->getContents());
         }
 
