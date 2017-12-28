@@ -116,6 +116,28 @@ interface ShipmentInterface extends ResourceInterface
     public function getBarcode();
 
     /**
+     * @param string $trackingCode
+     * @return $this
+     */
+    public function setTrackingCode($trackingCode);
+
+    /**
+     * @return string
+     */
+    public function getTrackingCode();
+
+    /**
+     * @param string $trackingUrl
+     * @return $this
+     */
+    public function setTrackingUrl($trackingUrl);
+
+    /**
+     * @return string
+     */
+    public function getTrackingUrl();
+
+    /**
      * @param int    $weight
      * @param string $unit
      * @return $this

@@ -21,6 +21,8 @@ class Shipment implements ShipmentInterface
     use JsonSerializable;
 
     const ATTRIBUTE_BARCODE = 'barcode';
+    const ATTRIBUTE_TRACKING_CODE = 'tracking_code';
+    const ATTRIBUTE_TRACKING_URL = 'tracking_url';
     const ATTRIBUTE_DESCRIPTION = 'description';
     const ATTRIBUTE_AMOUNT = 'amount';
     const ATTRIBUTE_PRICE = 'price';
@@ -48,6 +50,8 @@ class Shipment implements ShipmentInterface
     private $statusHistoryCallback;
     private $attributes = [
         self::ATTRIBUTE_BARCODE             => null,
+        self::ATTRIBUTE_TRACKING_CODE       => null,
+        self::ATTRIBUTE_TRACKING_URL        => null,
         self::ATTRIBUTE_DESCRIPTION         => null,
         self::ATTRIBUTE_PRICE               => null,
         self::ATTRIBUTE_INSURANCE           => null,
@@ -79,6 +83,7 @@ class Shipment implements ShipmentInterface
             'data' => [],
         ],
     ];
+
     private static $unitConversion = [
         self::WEIGHT_GRAM     => 1,
         self::WEIGHT_KILOGRAM => 1000,
@@ -284,6 +289,42 @@ class Shipment implements ShipmentInterface
     public function getBarcode()
     {
         return $this->attributes[self::ATTRIBUTE_BARCODE];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setTrackingCode($trackingCode)
+    {
+        $this->attributes[self::ATTRIBUTE_TRACKING_CODE] = $trackingCode;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTrackingCode()
+    {
+        return $this->attributes[self::ATTRIBUTE_TRACKING_CODE];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setTrackingUrl($trackingUrl)
+    {
+        $this->attributes[self::ATTRIBUTE_TRACKING_URL] = $trackingUrl;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTrackingUrl()
+    {
+        return $this->attributes[self::ATTRIBUTE_TRACKING_URL];
     }
 
     /**
