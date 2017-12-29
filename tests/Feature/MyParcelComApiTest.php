@@ -343,7 +343,7 @@ class MyParcelComApiTest extends TestCase
         $this->assertInstanceOf(FileInterface::class, $file);
         $this->assertEquals('files', $file->getType());
         $this->assertEquals('file-id-1', $file->getId());
-        $this->assertEquals('label', $file->getResourceType());
+        $this->assertEquals('label', $file->getDocumentType());
         $this->assertEquals([['extension' => 'pdf', 'mime_type' => 'application/pdf']], $file->getFormats());
 
         /** @var ShopInterface $shop */

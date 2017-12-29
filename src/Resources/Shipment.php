@@ -430,7 +430,7 @@ class Shipment implements ShipmentInterface
         }
 
         return array_filter($this->relationships[self::RELATIONSHIP_FILES]['data'], function (FileInterface $file) use ($type) {
-            return $file->getResourceType() === $type;
+            return $file->getDocumentType() === $type;
         });
     }
 

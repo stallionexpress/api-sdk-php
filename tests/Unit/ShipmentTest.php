@@ -258,8 +258,8 @@ class ShipmentTest extends TestCase
             ->disableArgumentCloning()
             ->disallowMockingUnknownTypes()
             ->getMock();
-        $label->method('getResourceType')
-            ->willReturn(FileInterface::RESOURCE_TYPE_LABEL);
+        $label->method('getDocumentType')
+            ->willReturn(FileInterface::DOCUMENT_TYPE_LABEL);
 
         $printcode = $this->getMockBuilder(FileInterface::class)
             ->disableOriginalConstructor()
@@ -267,17 +267,17 @@ class ShipmentTest extends TestCase
             ->disableArgumentCloning()
             ->disallowMockingUnknownTypes()
             ->getMock();
-        $printcode->method('getResourceType')
-            ->willReturn(FileInterface::RESOURCE_TYPE_PRINTCODE);
+        $printcode->method('getDocumentType')
+            ->willReturn(FileInterface::DOCUMENT_TYPE_PRINTCODE);
 
         $shipment->setFiles([$label, $printcode]);
 
-        $this->assertCount(1, $shipment->getFiles(FileInterface::RESOURCE_TYPE_PRINTCODE));
-        $files = $shipment->getFiles(FileInterface::RESOURCE_TYPE_PRINTCODE);
+        $this->assertCount(1, $shipment->getFiles(FileInterface::DOCUMENT_TYPE_PRINTCODE));
+        $files = $shipment->getFiles(FileInterface::DOCUMENT_TYPE_PRINTCODE);
         $this->assertEquals($printcode, reset($files));
 
-        $this->assertCount(1, $shipment->getFiles(FileInterface::RESOURCE_TYPE_LABEL));
-        $files = $shipment->getFiles(FileInterface::RESOURCE_TYPE_LABEL);
+        $this->assertCount(1, $shipment->getFiles(FileInterface::DOCUMENT_TYPE_LABEL));
+        $files = $shipment->getFiles(FileInterface::DOCUMENT_TYPE_LABEL);
         $this->assertEquals($label, reset($files));
     }
 
