@@ -267,8 +267,8 @@ use MyParcelCom\Sdk\LabelCombiner;
 use MyParcelCom\Sdk\Resources\Interfaces\FileInterface;
 
 $files = array_merge(
-    $shipmentA->getFiles(FileInterface::RESOURCE_TYPE_LABEL),
-    $shipmentB->getFiles(FileInterface::RESOURCE_TYPE_LABEL)
+    $shipmentA->getFiles(FileInterface::DOCUMENT_TYPE_LABEL),
+    $shipmentB->getFiles(FileInterface::DOCUMENT_TYPE_LABEL)
 );
 
 $labelCombiner = new LabelCombiner();

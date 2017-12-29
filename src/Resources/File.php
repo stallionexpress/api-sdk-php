@@ -11,7 +11,7 @@ class File implements FileInterface
 {
     use JsonSerializable;
 
-    const ATTRIBUTE_RESOURCE_TYPE = 'resource_type';
+    const ATTRIBUTE_DOCUMENT_TYPE = 'document_type';
     const ATTRIBUTE_FORMATS = 'formats';
 
     /** @var string */
@@ -21,7 +21,7 @@ class File implements FileInterface
     /** @var array */
     private $attributes = [
         self::ATTRIBUTE_FORMATS       => [],
-        self::ATTRIBUTE_RESOURCE_TYPE => null,
+        self::ATTRIBUTE_DOCUMENT_TYPE => null,
     ];
 
     /** @var StreamInterface[] */
@@ -60,9 +60,9 @@ class File implements FileInterface
     /**
      * {@inheritdoc}
      */
-    public function setResourceType($resourceType)
+    public function setDocumentType($documentType)
     {
-        $this->attributes[self::ATTRIBUTE_RESOURCE_TYPE] = $resourceType;
+        $this->attributes[self::ATTRIBUTE_DOCUMENT_TYPE] = $documentType;
 
         return $this;
     }
@@ -70,9 +70,9 @@ class File implements FileInterface
     /**
      * {@inheritdoc}
      */
-    public function getResourceType()
+    public function getDocumentType()
     {
-        return $this->attributes[self::ATTRIBUTE_RESOURCE_TYPE];
+        return $this->attributes[self::ATTRIBUTE_DOCUMENT_TYPE];
     }
 
     /**
