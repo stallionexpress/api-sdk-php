@@ -107,6 +107,20 @@ class ShipmentTest extends TestCase
     }
 
     /** @test */
+    public function testTrackingCode()
+    {
+        $shipment = new Shipment();
+        $this->assertEquals('ATRACKINGCODE', $shipment->setTrackingCode('ATRACKINGCODE')->getTrackingCode());
+    }
+
+    /** @test */
+    public function testTrackingUrl()
+    {
+        $shipment = new Shipment();
+        $this->assertEquals('https://track/ATRACKINGCODE', $shipment->setTrackingUrl('https://track/ATRACKINGCODE')->getTrackingUrl());
+    }
+
+    /** @test */
     public function testWeight()
     {
         $shipment = new Shipment();
@@ -513,6 +527,8 @@ class ShipmentTest extends TestCase
             ->setInsuranceAmount(50)
             ->setCurrency('USD')
             ->setBarcode('S3BARCODE')
+            ->setTrackingCode('ATRACKINGCODE')
+            ->setTrackingUrl('https://tra.ck/ATRACKINGCODE')
             ->setWeight(8000)
             ->setPhysicalProperties($physicalProperties)
             ->setShop($shop)
@@ -531,6 +547,8 @@ class ShipmentTest extends TestCase
             'type'          => 'shipments',
             'attributes'    => [
                 'barcode'             => 'S3BARCODE',
+                'tracking_code'       => 'ATRACKINGCODE',
+                'tracking_url'        => 'https://tra.ck/ATRACKINGCODE',
                 'description'         => 'order #012ASD',
                 'price'               => [
                     'amount'   => 99,

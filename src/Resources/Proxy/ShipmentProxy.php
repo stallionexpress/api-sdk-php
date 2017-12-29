@@ -228,6 +228,44 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
     }
 
     /**
+     * @param string $trackingCode
+     * @return $this
+     */
+    public function setTrackingCode($trackingCode)
+    {
+        $this->getResource()->setTrackingCode($trackingCode);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTrackingCode()
+    {
+        return $this->getResource()->getTrackingCode();
+    }
+
+    /**
+     * @param string $trackingUrl
+     * @return $this
+     */
+    public function setTrackingUrl($trackingUrl)
+    {
+        $this->getResource()->setTrackingUrl($trackingUrl);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTrackingUrl()
+    {
+        return $this->getResource()->getTrackingUrl();
+    }
+
+    /**
      * @param int    $weight
      * @param string $unit
      * @return $this
