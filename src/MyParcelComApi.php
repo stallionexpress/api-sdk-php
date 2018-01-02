@@ -127,10 +127,10 @@ class MyParcelComApi implements MyParcelComApiInterface
             ->wait();
 
         // For now, we need to manually filter the regions.
-        return array_filter($regions, function (RegionInterface $region) use ($countryCode, $regionCode) {
+        return array_values(array_filter($regions, function (RegionInterface $region) use ($countryCode, $regionCode) {
             return ($countryCode === null || $countryCode === $region->getCountryCode())
                 && ($regionCode === null || $regionCode === $region->getRegionCode());
-        });
+        }));
     }
 
     /**
@@ -265,9 +265,9 @@ class MyParcelComApi implements MyParcelComApiInterface
             ->wait();
 
         $matcher = new ServiceMatcher();
-        $services = array_filter($services, function (ServiceInterface $service) use ($shipment, $matcher) {
+        $services = array_values(array_filter($services, function (ServiceInterface $service) use ($shipment, $matcher) {
             return $matcher->matches($shipment, $service);
-        });
+        }));
 
         return $services;
     }
@@ -278,9 +278,9 @@ class MyParcelComApi implements MyParcelComApiInterface
     public function getServicesForCarrier(CarrierInterface $carrier)
     {
         // For now, we need to manually filter the services
-        return array_filter($this->getServices(), function (ServiceInterface $service) use ($carrier) {
+        return array_values(array_filter($this->getServices(), function (ServiceInterface $service) use ($carrier) {
             return $service->getCarrier()->getId() === $carrier->getId();
-        });
+        }));
     }
 
     /**
@@ -295,9 +295,9 @@ class MyParcelComApi implements MyParcelComApiInterface
         }
 
         // For now filter manually.
-        return array_filter($shipments, function (ShipmentInterface $shipment) use ($shop) {
+        return array_values(array_filter($shipments, function (ShipmentInterface $shipment) use ($shop) {
             return $shipment->getShop()->getId() === $shop->getId();
-        });
+        }));
     }
 
     /**
