@@ -295,9 +295,9 @@ class MyParcelComApi implements MyParcelComApiInterface
         }
 
         // For now filter manually.
-        return array_filter($shipments, function (ShipmentInterface $shipment) use ($shop) {
+        return array_values(array_filter($shipments, function (ShipmentInterface $shipment) use ($shop) {
             return $shipment->getShop()->getId() === $shop->getId();
-        });
+        }));
     }
 
     /**
