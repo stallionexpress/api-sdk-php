@@ -5,6 +5,7 @@ namespace MyParcelCom\ApiSdk;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Promise\Promise;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\RequestOptions;
 use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
@@ -183,13 +184,23 @@ class MyParcelComApi implements MyParcelComApiInterface
 
             // These resources can be stored for a week.
             return $this->getResourcesPromise($carrierUri, self::TTL_WEEK)
-                ->otherwise(function (RequestException $reason) {
-                    return $this->handleRequestException($reason);
+                ->otherwise(function ($promise) {
+                    return $promise;
                 });
+
+//                    function (RequestException $reason) use ($carrier) {
+//                    return $this->handleRequestException($reason);
+//                });
         }, $carriers);
 
-        $resources = call_user_func_array('array_merge', unwrap($promises));
+        $resources = [];
+        array_walk($promises, function ($promise) use ($resources, $carriers) {
+            /** @var Promise $promise */
+            $resources[] = $promise->wait();
+        });
+//        $resources = call_user_func_array('array_merge', unwrap($promises));
 
+        var_dump($resources); die;
         return $resources;
     }
 
@@ -435,6 +446,7 @@ class MyParcelComApi implements MyParcelComApiInterface
 
     /**
      * Clear the cached resources and the authorization cache.
+     *
      * @return $this
      */
     public function clearCache()
@@ -621,6 +633,12 @@ class MyParcelComApi implements MyParcelComApiInterface
         $response = $exception->getResponse();
 
         if ($response->getStatusCode() !== 401 || $this->authRetry) {
+            $request = $exception->getRequest();
+
+            if (strpos($request->getUri(), 'pickup-dropoff-locations') !== false) {
+                return new Promise();
+            }
+
             // TODO actually do something
             // echo (string)$exception->getRequest()->getUri();
             // echo (string)$exception->getResponse()->getBody();

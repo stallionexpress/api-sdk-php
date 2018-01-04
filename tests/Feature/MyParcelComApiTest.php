@@ -5,6 +5,7 @@ namespace MyParcelCom\ApiSdk\Tests\Feature;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Response;
 use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
+use MyParcelCom\ApiSdk\Authentication\ClientCredentials;
 use MyParcelCom\ApiSdk\Exceptions\InvalidResourceException;
 use MyParcelCom\ApiSdk\MyParcelComApi;
 use MyParcelCom\ApiSdk\Resources\Address;
@@ -481,5 +482,34 @@ class MyParcelComApiTest extends TestCase
                 ->setPhoneNumber('+31 85 208 5997'),
             $shop->getReturnAddress()
         );
+    }
+
+    /** @test */
+    public function testGetPudoLocationsWithInvalidCarrier()
+    {
+        $auth = new ClientCredentials(
+            '4415eae1-9e47-4c88-a529-878d22295554',
+            'QUhWSIuSTZOhD9GzrcI1L3ZkjitlVbaSQBFiHh5VJSukoq0UAMeF9mnH3EexP4xd');
+
+        $api = (new MyParcelComApi())
+            ->authenticate($auth);
+
+        $carriers = $api->getCarriers();
+
+        $ErrorCarrier = $carriers[0];
+
+        $pudoLocations = $api->getPickUpDropOffLocations('NL', '1016VD');
+
+        $this->assertInternalType('array', $pudoLocations);
+        $this->assertNull($pudoLocations[$ErrorCarrier->getId()]);
+
+        foreach ($pudoLocations as $carrierId => $pudoLocation) {
+            $this->assertInstanceOf(PickUpDropOffLocationInterface::class, $pudoLocation);
+
+            array_walk($carriers, function ($carrier) use ($carrierId) {
+                /** @var CarrierInterface $carrier */
+                $this->assertEquals($carrierId, $carrier->getId());
+            });
+        }
     }
 }
