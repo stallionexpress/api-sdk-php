@@ -63,7 +63,7 @@ interface MyParcelComApiInterface
      * @param string                $postalCode
      * @param string|null           $streetName
      * @param string|null           $streetNumber
-     * @param CarrierInterface|null $carrier
+     * @param CarrierInterface|null $specificCarrier
      * @return PickUpDropOffLocationInterface[]
      */
     public function getPickUpDropOffLocations(
@@ -71,7 +71,7 @@ interface MyParcelComApiInterface
         $postalCode,
         $streetName = null,
         $streetNumber = null,
-        CarrierInterface $carrier = null
+        CarrierInterface $specificCarrier = null
     );
 
     /**

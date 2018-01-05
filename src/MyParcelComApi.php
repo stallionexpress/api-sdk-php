@@ -5,7 +5,6 @@ namespace MyParcelCom\ApiSdk;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Promise\Promise;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\RequestOptions;
 use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
@@ -152,9 +151,9 @@ class MyParcelComApi implements MyParcelComApiInterface
         $postalCode,
         $streetName = null,
         $streetNumber = null,
-        CarrierInterface $carrier = null
+        CarrierInterface $specificCarrier = null
     ) {
-        $carriers = $carrier ? [$carrier] : $this->getCarriers();
+        $carriers = $specificCarrier ? $specificCarrier : $this->getCarriers();
 
         $uri = $this->apiUri
             . str_replace(
@@ -179,28 +178,36 @@ class MyParcelComApi implements MyParcelComApiInterface
             $uri .= 'street_number=' . $streetNumber;
         }
 
-        $promises = array_map(function (CarrierInterface $carrier) use ($uri) {
+        if ($specificCarrier) {
+            $carrierUri = str_replace('{carrier_id}', $specificCarrier->getId(), $uri);
+
+            $promise = $this->getResourcesPromise($carrierUri, self::TTL_WEEK)
+                ->otherwise(function (RequestException $exception) {
+
+                    throw $exception;
+                });
+
+            $resources = $promise->wait();
+
+            return $resources;
+        }
+
+        $promises = [];
+
+        foreach ($carriers as $carrier) {
             $carrierUri = str_replace('{carrier_id}', $carrier->getId(), $uri);
 
             // These resources can be stored for a week.
-            return $this->getResourcesPromise($carrierUri, self::TTL_WEEK)
-                ->otherwise(function ($promise) {
-                    return $promise;
+            $promises[$carrier->getId()] = $this->getResourcesPromise($carrierUri, self::TTL_WEEK)
+                ->otherwise(function () {
+
+                    return null;
                 });
 
-//                    function (RequestException $reason) use ($carrier) {
-//                    return $this->handleRequestException($reason);
-//                });
-        }, $carriers);
+        };
 
-        $resources = [];
-        array_walk($promises, function ($promise) use ($resources, $carriers) {
-            /** @var Promise $promise */
-            $resources[] = $promise->wait();
-        });
-//        $resources = call_user_func_array('array_merge', unwrap($promises));
+        $resources = unwrap($promises);
 
-        var_dump($resources); die;
         return $resources;
     }
 
@@ -633,12 +640,6 @@ class MyParcelComApi implements MyParcelComApiInterface
         $response = $exception->getResponse();
 
         if ($response->getStatusCode() !== 401 || $this->authRetry) {
-            $request = $exception->getRequest();
-
-            if (strpos($request->getUri(), 'pickup-dropoff-locations') !== false) {
-                return new Promise();
-            }
-
             // TODO actually do something
             // echo (string)$exception->getRequest()->getUri();
             // echo (string)$exception->getResponse()->getBody();
