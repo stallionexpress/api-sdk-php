@@ -153,7 +153,7 @@ class MyParcelComApi implements MyParcelComApiInterface
         $streetNumber = null,
         CarrierInterface $specificCarrier = null
     ) {
-        $carriers = $specificCarrier ? $specificCarrier : $this->getCarriers();
+        $carriers = $specificCarrier ? [$specificCarrier] : $this->getCarriers();
 
         $uri = $this->apiUri
             . str_replace(
@@ -178,37 +178,22 @@ class MyParcelComApi implements MyParcelComApiInterface
             $uri .= 'street_number=' . $streetNumber;
         }
 
-        if ($specificCarrier) {
-            $carrierUri = str_replace('{carrier_id}', $specificCarrier->getId(), $uri);
-
-            $promise = $this->getResourcesPromise($carrierUri, self::TTL_WEEK)
-                ->otherwise(function (RequestException $exception) {
-
-                    throw $exception;
-                });
-
-            $resources = $promise->wait();
-
-            return $resources;
-        }
-
         $promises = [];
 
         foreach ($carriers as $carrier) {
             $carrierUri = str_replace('{carrier_id}', $carrier->getId(), $uri);
 
             // These resources can be stored for a week.
-            $promises[$carrier->getId()] = $this->getResourcesPromise($carrierUri, self::TTL_WEEK)
-                ->otherwise(function () {
-
-                    return null;
-                });
-
+            $promise = $this->getResourcesPromise($carrierUri, self::TTL_WEEK);
+            if ($specificCarrier) {
+                return $promise->wait();
+            }
+            $promises[$carrier->getId()] = $promise->otherwise(function () {
+                return null;
+            });
         };
 
-        $resources = unwrap($promises);
-
-        return $resources;
+        return unwrap($promises);
     }
 
     /**
