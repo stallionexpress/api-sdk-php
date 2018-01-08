@@ -3,7 +3,7 @@
 namespace MyParcelCom\ApiSdk\Tests\Feature;
 
 use GuzzleHttp\ClientInterface;
- use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Promise\RejectedPromise;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
@@ -205,14 +205,13 @@ class MyParcelComApiTest extends TestCase
             'B48 7QN',
             null,
             null,
-            $carrier);
+            $carrier
+        );
 
         $this->assertInternalType('array', $normalCarrierPudoLocations);
         array_walk($normalCarrierPudoLocations, function ($pudoLocation) {
             $this->assertInstanceOf(PickUpDropOffLocationInterface::class, $pudoLocation);
         });
-
-
     }
 
     /** @test */

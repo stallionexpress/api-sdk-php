@@ -188,6 +188,9 @@ class MyParcelComApi implements MyParcelComApiInterface
             if ($specificCarrier) {
                 return $promise->wait();
             }
+            // When something fails while retrieving the locations
+            // for a carrier, the locations of the other carriers should
+            // still be returned. The failing carrier returns null.
             $promises[$carrier->getId()] = $promise->otherwise(function () {
                 return null;
             });
