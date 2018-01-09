@@ -9,6 +9,16 @@
       "links": {
         "self": "https://api/v1/carriers/eef00b32-177e-43d3-9b26-715365e4ce46"
       }
+    },
+    {
+      "id": "4a78637a-5d81-4e71-9b18-c338968f72fa",
+      "type": "carriers",
+      "attributes": {
+        "name": "Test Carrier 2"
+      },
+      "links": {
+        "self": "https://api/v1/carriers/4a78637a-5d81-4e71-9b18-c338968f72fa"
+      }
     }
   ],
   "meta": {

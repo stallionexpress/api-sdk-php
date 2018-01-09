@@ -151,9 +151,9 @@ class MyParcelComApi implements MyParcelComApiInterface
         $postalCode,
         $streetName = null,
         $streetNumber = null,
-        CarrierInterface $carrier = null
+        CarrierInterface $specificCarrier = null
     ) {
-        $carriers = $carrier ? [$carrier] : $this->getCarriers();
+        $carriers = $specificCarrier ? [$specificCarrier] : $this->getCarriers();
 
         $uri = $this->apiUri
             . str_replace(
@@ -178,19 +178,25 @@ class MyParcelComApi implements MyParcelComApiInterface
             $uri .= 'street_number=' . $streetNumber;
         }
 
-        $promises = array_map(function (CarrierInterface $carrier) use ($uri) {
+        $promises = [];
+
+        foreach ($carriers as $carrier) {
             $carrierUri = str_replace('{carrier_id}', $carrier->getId(), $uri);
 
             // These resources can be stored for a week.
-            return $this->getResourcesPromise($carrierUri, self::TTL_WEEK)
-                ->otherwise(function (RequestException $reason) {
-                    return $this->handleRequestException($reason);
-                });
-        }, $carriers);
+            $promise = $this->getResourcesPromise($carrierUri, self::TTL_WEEK);
+            if ($specificCarrier) {
+                return $promise->wait();
+            }
+            // When something fails while retrieving the locations
+            // for a carrier, the locations of the other carriers should
+            // still be returned. The failing carrier returns null.
+            $promises[$carrier->getId()] = $promise->otherwise(function () {
+                return null;
+            });
+        };
 
-        $resources = call_user_func_array('array_merge', unwrap($promises));
-
-        return $resources;
+        return unwrap($promises);
     }
 
     /**
@@ -435,6 +441,7 @@ class MyParcelComApi implements MyParcelComApiInterface
 
     /**
      * Clear the cached resources and the authorization cache.
+     *
      * @return $this
      */
     public function clearCache()

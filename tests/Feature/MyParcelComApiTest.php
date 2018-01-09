@@ -3,6 +3,9 @@
 namespace MyParcelCom\ApiSdk\Tests\Feature;
 
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Promise\RejectedPromise;
+use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
 use MyParcelCom\ApiSdk\Exceptions\InvalidResourceException;
@@ -81,6 +84,14 @@ class MyParcelComApiTest extends TestCase
                             \GuzzleHttp\json_decode(\GuzzleHttp\json_encode($options['json']), true)
                         )
                     );
+                }
+
+                if (strpos($returnJson, '"errors": [') !== false) {
+                    return new RejectedPromise(new RequestException(
+                        'This carrier does not have any pickup and dropoff locations.',
+                        new Request($method, $uri),
+                        new Response(500, [], $returnJson)
+                    ));
                 }
 
                 $response = new Response(200, [], $returnJson);
@@ -182,14 +193,77 @@ class MyParcelComApiTest extends TestCase
     }
 
     /** @test */
-    public function testGetPickUpDropOffLocations()
+    public function testGetPickUpDropOffLocationsForCarrier()
     {
-        $pudoLocations = $this->api->getPickUpDropOffLocations('GB', 'B48 7QN');
+        $carrier = $this->createMock(CarrierInterface::class);
+        $carrier
+            ->method('getId')
+            ->willReturn('eef00b32-177e-43d3-9b26-715365e4ce46');
 
-        $this->assertInternalType('array', $pudoLocations);
-        array_walk($pudoLocations, function ($pudoLocation) {
+        $normalCarrierPudoLocations = $this->api->getPickUpDropOffLocations(
+            'GB',
+            'B48 7QN',
+            null,
+            null,
+            $carrier
+        );
+
+        $this->assertInternalType('array', $normalCarrierPudoLocations);
+        array_walk($normalCarrierPudoLocations, function ($pudoLocation) {
             $this->assertInstanceOf(PickUpDropOffLocationInterface::class, $pudoLocation);
         });
+    }
+
+    /** @test */
+    public function testGetPickUpDropOffLocationsForFailingCarrier()
+    {
+        // This carrier does not have pickup points and thus returns an error.
+        // An exception should be thrown.
+        $failingCarrier = $this->createMock(CarrierInterface::class);
+        $failingCarrier
+            ->method('getId')
+            ->willReturn('4a78637a-5d81-4e71-9b18-c338968f72fa');
+
+        $this->expectException(RequestException::class);
+        $this->api->getPickUpDropOffLocations(
+            'GB',
+            'B48 7QN',
+            null,
+            null,
+            $failingCarrier);
+    }
+
+    /** @test */
+    public function testGetPickUpDropOffLocations()
+    {
+        $carriers = $this->api->getCarriers();
+
+        array_walk($carriers, function (CarrierInterface $carrier) use (&$failingCarrierId, &$normalCarrierId) {
+            if ($carrier->getId() === '4a78637a-5d81-4e71-9b18-c338968f72fa') {
+                $failingCarrierId = $carrier->getId();
+            } elseif ($carrier->getId() === 'eef00b32-177e-43d3-9b26-715365e4ce46') {
+                $normalCarrierId = $carrier->getId();
+            }
+        });
+
+        $allPudoLocations = $this->api->getPickUpDropOffLocations('GB', 'B48 7QN');
+
+        $this->assertInternalType('array', $allPudoLocations);
+        $this->assertNull($allPudoLocations[$failingCarrierId]);
+        $this->assertInternalType('array', $allPudoLocations[$normalCarrierId]);
+
+        array_walk($allPudoLocations[$normalCarrierId], function ($pudoLocation) {
+            $this->assertInstanceOf(PickUpDropOffLocationInterface::class, $pudoLocation);
+        });
+
+        $this->assertCount(count($carriers), $allPudoLocations);
+        $this->assertArraySubset(
+            array_map(function ($carrier) {
+                /** @var CarrierInterface $carrier */
+                return $carrier->getId();
+            }, $carriers),
+            array_keys($allPudoLocations)
+        );
     }
 
     /** @test */
