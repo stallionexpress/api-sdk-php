@@ -15,6 +15,9 @@ class Service implements ServiceInterface
 
     const ATTRIBUTE_NAME = 'name';
     const ATTRIBUTE_PACKAGE_TYPE = 'package_type';
+    const ATTRIBUTE_TRANSIT_TIME = 'transit_time';
+    const ATTRIBUTE_TRANSIT_TIME_MIN = 'min';
+    const ATTRIBUTE_TRANSIT_TIME_MAX = 'max';
 
     const RELATIONSHIP_CARRIER = 'carrier';
     const RELATIONSHIP_REGION_FROM = 'region_from';
@@ -30,6 +33,10 @@ class Service implements ServiceInterface
     private $attributes = [
         self::ATTRIBUTE_NAME         => null,
         self::ATTRIBUTE_PACKAGE_TYPE => null,
+        self::ATTRIBUTE_TRANSIT_TIME => [
+            self::ATTRIBUTE_TRANSIT_TIME_MIN => null,
+            self::ATTRIBUTE_TRANSIT_TIME_MAX => null,
+        ],
     ];
     /** @var array */
     private $relationships = [
@@ -104,6 +111,42 @@ class Service implements ServiceInterface
     public function getPackageType()
     {
         return $this->attributes[self::ATTRIBUTE_PACKAGE_TYPE];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTransitTimeMin()
+    {
+        return $this->attributes[self::ATTRIBUTE_TRANSIT_TIME][self::ATTRIBUTE_TRANSIT_TIME_MIN];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setTransitTimeMin($transitTimeMin)
+    {
+        $this->attributes[self::ATTRIBUTE_TRANSIT_TIME][self::ATTRIBUTE_TRANSIT_TIME_MIN] = $transitTimeMin;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTransitTimeMax()
+    {
+        return $this->attributes[self::ATTRIBUTE_TRANSIT_TIME][self::ATTRIBUTE_TRANSIT_TIME_MAX];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setTransitTimeMax($transitTimeMax)
+    {
+        $this->attributes[self::ATTRIBUTE_TRANSIT_TIME][self::ATTRIBUTE_TRANSIT_TIME_MAX] = $transitTimeMax;
+
+        return $this;
     }
 
     /**

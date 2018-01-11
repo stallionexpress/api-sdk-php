@@ -232,6 +232,18 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
             unset($attributes['links']['contracts']);
         }
 
+        if (isset($attributes['transit_time']['min'])) {
+            $service->setTransitTimeMin($attributes['transit_time']['min']);
+
+            unset($attributes['transit_time']['min']);
+        }
+
+        if (isset($attributes['transit_time']['max'])) {
+            $service->setTransitTimeMax($attributes['transit_time']['max']);
+
+            unset($attributes['transit_time']['max']);
+        }
+
         return $service;
     }
 
