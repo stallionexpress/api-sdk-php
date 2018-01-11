@@ -5,7 +5,11 @@
       "type": "services",
       "attributes": {
         "name": "Letter Test",
-        "package_type": "letter"
+        "package_type": "letter",
+        "transit_time": {
+          "min": 1,
+          "max": 3
+        }
       },
       "links": {
         "self": "https://api/v1/services/a3057e77-005b-4945-a41c-20ddbe4dab08",
@@ -46,7 +50,11 @@
       "type": "services",
       "attributes": {
         "name": "Letterbox Test",
-        "package_type": "letterbox"
+        "package_type": "letterbox",
+        "transit_time": {
+          "min": 2,
+          "max": 3
+        }
       },
       "links": {
         "self": "https://api/v1/services/433285bb-2e34-435c-9109-1120e7c4bce4",
@@ -87,7 +95,11 @@
       "type": "services",
       "attributes": {
         "name": "Parcel Test",
-        "package_type": "parcel"
+        "package_type": "parcel",
+        "transit_time": {
+          "min": 2,
+          "max": 4
+        }
       },
       "links": {
         "self": "https://api/v1/services/605c33ba-5504-4bb0-9467-d8901195923c",

@@ -37,6 +37,28 @@ interface ServiceInterface extends ResourceInterface
     public function getPackageType();
 
     /**
+     * @return int|null
+     */
+    public function getTransitTimeMin();
+
+    /**
+     * @param int|null $transitTimeMin
+     * @return $this
+     */
+    public function setTransitTimeMin($transitTimeMin);
+
+    /**
+     * @return int|null
+     */
+    public function getTransitTimeMax();
+
+    /**
+     * @param int|null $transitTimeMax
+     * @return $this
+     */
+    public function setTransitTimeMax($transitTimeMax);
+
+    /**
      * @param CarrierInterface $carrier
      * @return $this
      */

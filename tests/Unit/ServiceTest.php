@@ -39,6 +39,20 @@ class ServiceTest extends TestCase
     }
 
     /** @test */
+    public function testTransitTimeMin()
+    {
+        $service = new Service();
+        $this->assertEquals(5, $service->setTransitTimeMin(5)->getTransitTimeMin());
+    }
+
+    /** @test */
+    public function testTransitTimeMax()
+    {
+        $service = new Service();
+        $this->assertEquals(576, $service->setTransitTimeMax(576)->getTransitTimeMax());
+    }
+
+    /** @test */
     public function testCarrier()
     {
         $service = new Service();
@@ -131,6 +145,8 @@ class ServiceTest extends TestCase
             ->setId('service-id')
             ->setName('Easy Delivery Service')
             ->setPackageType(Service::PACKAGE_TYPE_PARCEL)
+            ->setTransitTimeMin(7)
+            ->setTransitTimeMax(14)
             ->setCarrier($carrier)
             ->setRegionFrom($regionFrom)
             ->setRegionTo($regionTo);
@@ -141,6 +157,10 @@ class ServiceTest extends TestCase
             'attributes'    => [
                 'name'         => 'Easy Delivery Service',
                 'package_type' => Service::PACKAGE_TYPE_PARCEL,
+                'transit_time' => [
+                    'min' => 7,
+                    'max' => 14,
+                ],
             ],
             'relationships' => [
                 'carrier'     => [
