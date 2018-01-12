@@ -112,7 +112,7 @@ class ShipmentValidatorTest extends TestCase
     }
 
     /**
-     * Sets $this->shipment model with all the required properties
+     * Creates and returns a Shipment model with all the required properties
      * except the given property.
      *
      * @param $missingProperty
