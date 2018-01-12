@@ -18,8 +18,6 @@ class ShipmentValidatorTest extends TestCase
     private $senderAddress;
     private $shop;
     private $contract;
-    /** @var Shipment */
-    private $shipment;
     private $weight;
 
     public function setUp()
@@ -32,7 +30,6 @@ class ShipmentValidatorTest extends TestCase
         $this->senderAddress = $this->getMockBuilder(Address::class)->getMock();
         $this->shop = $this->getMockBuilder(Shop::class)->getMock();
         $this->contract = $this->getMockBuilder(Contract::class)->getMock();
-        $this->shipment = new Shipment();
     }
 
     /** @test */
