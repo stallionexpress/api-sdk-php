@@ -224,7 +224,7 @@ class File implements FileInterface
             return $this->paths[$mimeType] = $path;
         }
         if (isset($this->streams[$mimeType])) {
-            $path = tempnam(sys_get_temp_dir(), 'myparcelcom_file');
+            $path = tempnam(sys_get_temp_dir(), 'myparcelcom_file') . '.' . $extension;
             file_put_contents($path, (string)$this->streams[$mimeType]);
 
             return $this->paths[$mimeType] = $path;
