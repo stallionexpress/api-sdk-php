@@ -13,11 +13,17 @@ use PHPUnit\Framework\TestCase;
 
 class ShipmentValidatorTest extends TestCase
 {
+    /** @var Service */
     private $service;
+    /** @var Address */
     private $recipientAddress;
+    /** @var Address */
     private $senderAddress;
+    /** @var Shop */
     private $shop;
+    /** @var Contract */
     private $contract;
+    /** @var int */
     private $weight;
 
     public function setUp()
