@@ -121,9 +121,7 @@ class ShipmentValidatorTest extends TestCase
     private function createShipmentWithoutProperty($missingProperty)
     {
         $missingProperty = StringUtils::snakeToCamelCase($missingProperty);
-
         $shipment = new Shipment();
-
         $requiredProperties = ['weight', 'service', 'recipient_address', 'sender_address', 'shop', 'contract'];
 
         foreach ($requiredProperties as $requiredProperty) {
