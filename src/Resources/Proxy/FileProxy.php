@@ -35,12 +35,12 @@ class FileProxy implements FileInterface, ResourceProxyInterface
     /**
      * Set the type of file. See constants for possible options.
      *
-     * @param string $resourceType
+     * @param string $documentType
      * @return $this
      */
-    public function setResourceType($resourceType)
+    public function setDocumentType($documentType)
     {
-        $this->getResource()->setResourceType($resourceType);
+        $this->getResource()->setDocumentType($documentType);
 
         return $this;
     }
@@ -50,9 +50,9 @@ class FileProxy implements FileInterface, ResourceProxyInterface
      *
      * @return string
      */
-    public function getResourceType()
+    public function getDocumentType()
     {
-        return $this->getResource()->getResourceType();
+        return $this->getResource()->getDocumentType();
     }
 
     /**

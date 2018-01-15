@@ -11,9 +11,9 @@ use Psr\Http\Message\StreamInterface;
  */
 interface FileInterface extends ResourceInterface
 {
-    const RESOURCE_TYPE_LABEL = 'label';
-    const RESOURCE_TYPE_PRINTCODE = 'printcode';
-    const RESOURCE_TYPE_INVOICE = 'invoice';
+    const DOCUMENT_TYPE_LABEL = 'label';
+    const DOCUMENT_TYPE_PRINTCODE = 'printcode';
+    const DOCUMENT_TYPE_INVOICE = 'invoice';
 
     const MIME_TYPE_JSON = 'application/vnd.api+json';
     const MIME_TYPE_PNG = 'image/png';
@@ -34,17 +34,17 @@ interface FileInterface extends ResourceInterface
     /**
      * Set the type of file. See constants for possible options.
      *
-     * @param string $resourceType
+     * @param string $documentType
      * @return $this
      */
-    public function setResourceType($resourceType);
+    public function setDocumentType($documentType);
 
     /**
      * Get the type of file. See constants for possible options.
      *
      * @return string
      */
-    public function getResourceType();
+    public function getDocumentType();
 
     /**
      * Set the formats that this file has available.
