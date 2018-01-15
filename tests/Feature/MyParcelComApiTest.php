@@ -230,7 +230,8 @@ class MyParcelComApiTest extends TestCase
             'B48 7QN',
             null,
             null,
-            $failingCarrier);
+            $failingCarrier
+        );
     }
 
     /** @test */
