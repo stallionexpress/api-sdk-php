@@ -26,6 +26,8 @@ class ShipmentValidator implements ValidatorInterface
 
         $this->checkRequired();
 
+        $this->checkWeight();
+
         return !$this->hasErrors();
     }
 
@@ -46,5 +48,17 @@ class ShipmentValidator implements ValidatorInterface
                 $this->addError(sprintf('Required property `%s` is empty', $required));
             }
         });
+    }
+
+    /**
+     * Check whether the weight property is not an invalid value.
+     *
+     * @return void
+     */
+    protected function checkWeight()
+    {
+        if ($this->shipment->getWeight() < 0) {
+            $this->addError('Negative weight is not allowed');
+        }
     }
 }

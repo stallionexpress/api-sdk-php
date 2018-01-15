@@ -114,6 +114,22 @@ class ShipmentValidatorTest extends TestCase
         $this->assertFalse($validator->isValid());
     }
 
+    /** @test */
+    public function testNegativeWeight()
+    {
+        $shipment = (new Shipment())
+            ->setWeight(-12512)
+            ->setService($this->service)
+            ->setRecipientAddress($this->recipientAddress)
+            ->setSenderAddress($this->senderAddress)
+            ->setShop($this->shop)
+            ->setContract($this->contract);
+
+        $validator = new ShipmentValidator($shipment);
+
+        $this->assertFalse($validator->isValid());
+    }
+
     /**
      * Creates and returns a Shipment model with all the required properties
      * except the given property.
