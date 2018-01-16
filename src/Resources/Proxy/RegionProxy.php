@@ -59,7 +59,7 @@ class RegionProxy implements RegionInterface, ResourceProxyInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getCountryCode()
     {
@@ -78,7 +78,7 @@ class RegionProxy implements RegionInterface, ResourceProxyInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getRegionCode()
     {
@@ -97,7 +97,7 @@ class RegionProxy implements RegionInterface, ResourceProxyInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getCurrency()
     {

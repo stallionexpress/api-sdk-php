@@ -37,6 +37,7 @@ class FileProxyTest extends TestCase
             ->authenticate($this->authenticator);
     }
 
+    /** @test */
     public function testAttributes()
     {
         $fileProxy = new FileProxy();
