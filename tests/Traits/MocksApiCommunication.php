@@ -1,6 +1,6 @@
 <?php
 
-namespace MyParcelCom\ApiSdk\Tests\Feature;
+namespace MyParcelCom\ApiSdk\Tests\Traits;
 
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
