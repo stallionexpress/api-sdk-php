@@ -6,6 +6,7 @@ use GuzzleHttp\ClientInterface;
 use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
 use MyParcelCom\ApiSdk\MyParcelComApi;
 use MyParcelCom\ApiSdk\MyParcelComApiInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Proxy\FileProxy;
 use MyParcelCom\ApiSdk\Tests\Traits\MocksApiCommunication;
 use PHPUnit\Framework\TestCase;
@@ -46,6 +47,7 @@ class FileProxyTest extends TestCase
             ->setId('file-id-1');
 
         $this->assertEquals('file-id-1', $fileProxy->getId());
+        $this->assertEquals(ResourceInterface::TYPE_FILE, $fileProxy->getType());
         $this->assertEquals('label', $fileProxy->getResourceType());
 
         $formats = $fileProxy->getFormats();
