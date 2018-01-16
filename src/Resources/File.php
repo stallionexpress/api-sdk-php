@@ -150,7 +150,7 @@ class File implements FileInterface
             return stream_for(base64_decode($this->base64Data[$mimeType]));
         }
         if (isset($this->paths[$mimeType])) {
-            return stream_for(file_get_contents($this->paths[$mimeType]));
+            return stream_for(fopen($this->paths[$mimeType], 'r'));
         }
     }
 

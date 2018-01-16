@@ -17,9 +17,13 @@ class FileTest extends TestCase
     /** @var StreamInterface */
     private $stream;
     /** @var string */
-    private $base64data;
-    /** @var string */
     private $path;
+    /** @var string */
+    private $streamTestData;
+    /** @var string */
+    private $base64TestData;
+    /** @var string */
+    private $pathTestData;
 
 
     public function setUp()
@@ -41,15 +45,17 @@ class FileTest extends TestCase
             'extension' => 'pdf',
         ];
 
+        $this->streamTestData = 'Some stream test data.';
         $this->stream = $this->createMock(StreamInterface::class);
         $this->stream
             ->method('getContents')
-            ->willReturn('This is some test data.');
+            ->willReturn($this->streamTestData);
 
-        $this->base64data = base64_encode('This is some test data.');
+        $this->base64TestData = base64_encode('Some base64 test data.');
 
+        $this->pathTestData = 'Some path test data.';
         $this->path = tempnam(sys_get_temp_dir(), 'myparcelcom_file') . '.pdf';
-        file_put_contents($this->path, 'This is some test data.');
+        file_put_contents($this->path, $this->pathTestData);
     }
 
     /** @test */
@@ -115,7 +121,7 @@ class FileTest extends TestCase
             ->setStream($this->stream, 'image/png')
             ->getStream('image/png');
         $this->assertInstanceOf(StreamInterface::class, $stream_A);
-        $this->assertEquals($this->stream->getContents(), $stream_A->getContents());
+        $this->assertEquals($this->streamTestData, $stream_A->getContents());
 
         // Using getStream() without giving a mime_type loops over the
         // file's formats and returns the first stream it encounters.
@@ -123,7 +129,7 @@ class FileTest extends TestCase
             ->addFormat($this->pngFormat['mime_type'], $this->pngFormat['extension'])
             ->getStream();
         $this->assertInstanceOf(StreamInterface::class, $stream_B);
-        $this->assertEquals($this->stream->getContents(), $stream_B->getContents());
+        $this->assertEquals($this->streamTestData, $stream_B->getContents());
 
         // If no stream is set under the given mime_type,
         // getStream() will look for data in other sources
@@ -131,16 +137,16 @@ class FileTest extends TestCase
         $newFile = new File();
 
         $base64Stream = $newFile
-            ->setBase64Data($this->base64data, 'image/jpeg')
+            ->setBase64Data($this->base64TestData, 'image/jpeg')
             ->getStream('image/jpeg');
         $this->assertInstanceOf(StreamInterface::class, $base64Stream);
-        $this->assertEquals($this->stream->getContents(), $base64Stream->getContents());
+        $this->assertEquals(base64_decode($this->base64TestData), $base64Stream->getContents());
 
         $fileStream = $newFile
             ->setTemporaryFilePath($this->path, 'application/pdf')
             ->getStream('application/pdf');
         $this->assertInstanceOf(StreamInterface::class, $fileStream);
-        $this->assertEquals($this->stream->getContents(), $fileStream->getContents());
+        $this->assertEquals($this->pathTestData, $fileStream->getContents());
 
         // Requesting a stream for a mime_type that has not been set
         // should return null.
@@ -154,15 +160,15 @@ class FileTest extends TestCase
 
         $this->assertNull($file->getBase64Data());
 
-        $this->assertEquals($this->base64data,
+        $this->assertEquals($this->base64TestData,
             $file
-                ->setBase64Data($this->base64data, 'application/pdf')
+                ->setBase64Data($this->base64TestData, 'application/pdf')
                 ->getBase64Data('application/pdf')
         );
 
         // Using getBase64Data() without giving a mime_type loops over the
         // file's formats and returns the first base64Data it encounters.
-        $this->assertEquals($this->base64data,
+        $this->assertEquals($this->base64TestData,
             $file
                 ->addFormat($this->pdfFormat['mime_type'], $this->pdfFormat['extension'])
                 ->getBase64Data()
@@ -173,12 +179,12 @@ class FileTest extends TestCase
         // (streams or temporary files).
         $newFile = new File();
 
-        $this->assertEquals($this->base64data,
+        $this->assertEquals(base64_encode($this->streamTestData),
             $newFile
                 ->setStream($this->stream, 'image/jpeg')
                 ->getBase64Data('image/jpeg')
         );
-        $this->assertEquals($this->base64data,
+        $this->assertEquals(base64_encode($this->pathTestData),
             $newFile
                 ->setTemporaryFilePath($this->path, 'application/pdf')
                 ->getBase64Data('application/pdf')
@@ -196,20 +202,19 @@ class FileTest extends TestCase
 
         $this->assertNull($file->getTemporaryFilePath());
 
-        $this->assertEquals($this->path,
-            $file
-                ->setTemporaryFilePath($this->path, 'application/pdf')
-                ->getTemporaryFilePath('application/pdf')
-        );
+        $filePath_A = $file
+            ->setTemporaryFilePath($this->path, 'application/pdf')
+            ->getTemporaryFilePath('application/pdf');
+        $this->assertEquals($this->pathTestData, file_get_contents($filePath_A));
+
+
 
         // Using $this->getTemporaryFilePath() without giving a mime_type loops over the
         // file's formats and returns the first path it encounters.
-        $this->assertEquals($this->path,
-            $file
-                ->addFormat($this->pdfFormat['mime_type'], $this->pdfFormat['extension'])
-                ->getTemporaryFilePath()
-        );
-
+        $filePath_B = $file
+            ->addFormat($this->pdfFormat['mime_type'], $this->pdfFormat['extension'])
+            ->getTemporaryFilePath();
+        $this->assertEquals($this->pathTestData, file_get_contents($filePath_B));
         // If no path is set under the given mime_type,
         // $this->getTemporaryFilePath() will look for data in other sources
         // (streams or base64Data).
@@ -219,15 +224,15 @@ class FileTest extends TestCase
             ->addFormat($this->pdfFormat['mime_type'], $this->pdfFormat['extension'])
             ->setStream($this->stream, 'application/pdf')
             ->getTemporaryFilePath('application/pdf');
-        $this->assertEquals(file_get_contents($this->path), file_get_contents($streamPath));
+        $this->assertEquals($this->streamTestData, file_get_contents($streamPath));
 
         $base64File = new File();
 
         $base64Path = $base64File
             ->addFormat($this->pdfFormat['mime_type'], $this->pdfFormat['extension'])
-            ->setBase64Data($this->base64data, 'application/pdf')
+            ->setBase64Data($this->base64TestData, 'application/pdf')
             ->getTemporaryFilePath('application/pdf');
-        $this->assertEquals(file_get_contents($this->path), file_get_contents($base64Path));
+        $this->assertEquals(base64_decode($this->base64TestData), file_get_contents($base64Path));
 
         // Requesting a path for a mime_type that has not been set
         // should return null.
