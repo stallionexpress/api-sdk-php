@@ -3,7 +3,7 @@
     "type": "files",
     "id": "file-id-1",
     "attributes": {
-      "resource_type": "label",
+      "document_type": "label",
       "formats": [
         {
           "extension": "pdf",

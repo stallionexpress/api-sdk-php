@@ -973,7 +973,7 @@ class ResourceFactoryTest extends TestCase
 
         $file = $resourceFactory->create('files', [
             'id'            => 'file-id',
-            'resource_type' => 'label',
+            'document_type' => 'label',
             'formats'       => [
                 [
                     'extension' => 'pdf',
@@ -991,7 +991,7 @@ class ResourceFactoryTest extends TestCase
             'id'         => 'file-id',
             'type'       => 'files',
             'attributes' => [
-                'resource_type' => 'label',
+                'document_type' => 'label',
                 'formats'       => [
                     [
                         'extension' => 'pdf',
