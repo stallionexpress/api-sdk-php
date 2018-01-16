@@ -25,7 +25,7 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
     /** @var string */
     private $id;
     /** @var string */
-    private $type = ResourceInterface::TYPE_SHIPMENT_STATUS;
+    private $type = ResourceInterface::TYPE_SHIPMENT;
 
     /**
      * Set the identifier for this file.

@@ -29,9 +29,7 @@ class FileProxyTest extends TestCase
         parent::setUp();
 
         $this->client = $this->getClientMock();
-
         $this->authenticator = $this->getAuthenticatorMock();
-
         $this->api = (new MyParcelComApi('https://api'))
             ->setCache(new NullCache())
             ->setHttpClient($this->client)
