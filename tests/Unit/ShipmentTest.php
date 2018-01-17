@@ -183,7 +183,7 @@ class ShipmentTest extends TestCase
     {
         $shipment = new Shipment();
 
-        $this->assertEmpty($shipment->getOptions());
+        $this->assertEmpty($shipment->getServiceOptions());
 
         $mock = $this->getMockClass(ServiceOptionInterface::class);
 
@@ -191,15 +191,15 @@ class ShipmentTest extends TestCase
             new $mock(),
             new $mock(),
         ];
-        $shipment->setOptions($options);
-        $this->assertCount(2, $shipment->getOptions());
-        $this->assertEquals($options, $shipment->getOptions());
+        $shipment->setServiceOptions($options);
+        $this->assertCount(2, $shipment->getServiceOptions());
+        $this->assertEquals($options, $shipment->getServiceOptions());
 
         $option = new $mock();
-        $shipment->addOption($option);
+        $shipment->addServiceOption($option);
         $options[] = $option;
-        $this->assertCount(3, $shipment->getOptions());
-        $this->assertEquals($options, $shipment->getOptions());
+        $this->assertCount(3, $shipment->getServiceOptions());
+        $this->assertEquals($options, $shipment->getServiceOptions());
     }
 
     /** @test */
@@ -533,7 +533,7 @@ class ShipmentTest extends TestCase
             ->setPhysicalProperties($physicalProperties)
             ->setShop($shop)
             ->setService($service)
-            ->setOptions([$option])
+            ->setServiceOptions([$option])
             ->setFiles([$file])
             ->setContract($contract)
             ->setStatus($status)
@@ -635,12 +635,12 @@ class ShipmentTest extends TestCase
                 ],
             ],
             'relationships' => [
-                'shop'     => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
-                'service'  => ['data' => ['id' => 'service-id-1', 'type' => 'services']],
-                'contract' => ['data' => ['id' => 'contract-id-1', 'type' => 'contracts']],
-                'status'   => ['data' => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses']],
-                'options'  => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
-                'files'    => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
+                'shop'            => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
+                'service'         => ['data' => ['id' => 'service-id-1', 'type' => 'services']],
+                'contract'        => ['data' => ['id' => 'contract-id-1', 'type' => 'contracts']],
+                'status'          => ['data' => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses']],
+                'service_options' => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
+                'files'           => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
             ],
         ], $shipment->jsonSerialize());
     }

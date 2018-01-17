@@ -69,7 +69,7 @@ class ServiceMatcher
     {
         $optionIds = array_map(function (ServiceOptionInterface $option) {
             return $option->getId();
-        }, $shipment->getOptions());
+        }, $shipment->getServiceOptions());
 
         $matches = [];
         foreach ($contracts as $contract) {

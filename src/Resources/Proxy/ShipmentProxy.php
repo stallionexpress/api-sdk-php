@@ -347,9 +347,9 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
      * @param ServiceOptionInterface[] $options
      * @return $this
      */
-    public function setOptions(array $options)
+    public function setServiceOptions(array $options)
     {
-        $this->getResource()->setOptions($options);
+        $this->getResource()->setServiceOptions($options);
 
         return $this;
     }
@@ -358,9 +358,9 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
      * @param ServiceOptionInterface $option
      * @return $this
      */
-    public function addOption(ServiceOptionInterface $option)
+    public function addServiceOption(ServiceOptionInterface $option)
     {
-        $this->getResource()->addOption($option);
+        $this->getResource()->addServiceOption($option);
 
         return $this;
     }
@@ -368,9 +368,9 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
     /**
      * @return ServiceOptionInterface[]
      */
-    public function getOptions()
+    public function getServiceOptions()
     {
-        return $this->getResource()->getOptions();
+        return $this->getResource()->getServiceOptions();
     }
 
     /**
