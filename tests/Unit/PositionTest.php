@@ -68,7 +68,6 @@ class PositionTest extends TestCase
             'latitude'  => 2.56784948,
             'longitude' => 1.123465498,
             'distance'  => 900,
-            'unit'      => 'meters',
         ], $position->jsonSerialize());
     }
 }
