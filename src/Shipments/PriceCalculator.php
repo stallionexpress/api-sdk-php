@@ -3,7 +3,6 @@
 namespace MyParcelCom\ApiSdk\Shipments;
 
 use MyParcelCom\ApiSdk\Exceptions\CalculationException;
-use MyParcelCom\ApiSdk\Exceptions\MyParcelComException;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceGroupInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInsuranceInterface;
@@ -27,7 +26,7 @@ class PriceCalculator
         }
 
         if ($contract === null) {
-            throw new MyParcelComException(
+            throw new CalculationException(
                 'Cannot calculate a price for given shipment without a contract'
             );
         }
@@ -134,7 +133,7 @@ class PriceCalculator
         }
 
         if ($contract === null) {
-            throw new MyParcelComException('Cannot calculate a price for given shipment without a contract');
+            throw new CalculationException('Cannot calculate a price for given shipment without a contract');
         }
 
         $price = 0;
