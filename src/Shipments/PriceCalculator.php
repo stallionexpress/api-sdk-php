@@ -2,6 +2,7 @@
 
 namespace MyParcelCom\ApiSdk\Shipments;
 
+use MyParcelCom\ApiSdk\Exceptions\CalculationException;
 use MyParcelCom\ApiSdk\Exceptions\MyParcelComException;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceGroupInterface;
@@ -52,8 +53,14 @@ class PriceCalculator
         }
 
         if ($contract === null) {
-            throw new MyParcelComException(
+            throw new CalculationException(
                 'Cannot calculate a price for given shipment without a contract'
+            );
+        }
+
+        if ($shipment->getWeight() < 0) {
+            throw new CalculationException(
+                'Cannot calculate a price for given shipment; negative weight given'
             );
         }
 
@@ -61,7 +68,7 @@ class PriceCalculator
 
         // Order all the groups to have the highest weight group last.
         $groups = $contract->getGroups();
-        usort($groups, function (ServiceGroupInterface $a, ServiceGroupInterface $b) {
+        @usort($groups, function (ServiceGroupInterface $a, ServiceGroupInterface $b) {
             // Sort based on the min weight;
             $minDiff = $a->getWeightMin() - $b->getWeightMin();
             if ($minDiff !== 0) {
@@ -87,7 +94,7 @@ class PriceCalculator
         // Find the weight group this shipment is in.
         foreach ($groups as $group) {
             if ($shipment->getWeight() >= $group->getWeightMin()
-                || $shipment->getWeight() <= $group->getWeightMax()) {
+                && $shipment->getWeight() <= $group->getWeightMax()) {
                 break;
             }
         }
@@ -102,6 +109,10 @@ class PriceCalculator
             $price +=
                 ceil(($shipment->getWeight() - $group->getWeightMax()) / $group->getStepSize())
                 * $group->getStepPrice();
+        } elseif ($shipment->getWeight() > $group->getWeightMax() || $shipment->getWeight() < $group->getWeightMin()) {
+            throw new CalculationException(
+                'Cannot calculate a price for given shipment; contract did not contain weight prices for: ' . $shipment->getWeight()
+            );
         }
 
         return (int)$price;
@@ -134,6 +145,12 @@ class PriceCalculator
         }
 
         foreach ($shipment->getOptions() as $option) {
+            if (!isset($optionPrices[$option->getId()])) {
+                throw new CalculationException(
+                    'Cannot calculate a price for given shipment; invalid option: ' . $option->getId()
+                );
+            }
+
             $price += $optionPrices[$option->getId()];
         }
 
@@ -156,14 +173,26 @@ class PriceCalculator
         }
 
         if ($contract === null) {
-            throw new MyParcelComException('Cannot calculate a price for given shipment without a contract');
+            throw new CalculationException('Cannot calculate a price for given shipment without a contract');
         }
 
-        if (!$shipment->getInsuranceAmount() || !($insurances = $contract->getInsurances())) {
+        if (!$shipment->getInsuranceAmount()) {
             return 0;
         }
 
-        usort($insurances, function (ServiceInsuranceInterface $a, ServiceInsuranceInterface $b) {
+        if ($shipment->getInsuranceAmount() < 0) {
+            throw new CalculationException(
+                'Cannot calculate a price for given shipment; negative insurance set'
+            );
+        }
+
+        if (!($insurances = $contract->getInsurances())) {
+            throw new CalculationException(
+                'Cannot calculate a price for given shipment; no insurances are available in contract'
+            );
+        }
+
+        @usort($insurances, function (ServiceInsuranceInterface $a, ServiceInsuranceInterface $b) {
             return $a->getCovered() - $b->getCovered();
         });
 
@@ -171,6 +200,13 @@ class PriceCalculator
             if ($shipment->getInsuranceAmount() <= $insurance->getCovered()) {
                 break;
             }
+        }
+
+        if ($shipment->getInsuranceAmount() > $insurance->getCovered()) {
+            throw new CalculationException(
+                'Cannot calculate a price for given shipment; no insurances are available in contract for amount: '
+                . $shipment->getInsuranceAmount()
+            );
         }
 
         return $insurance->getPrice();
