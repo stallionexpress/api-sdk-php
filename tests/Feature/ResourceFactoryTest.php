@@ -229,7 +229,6 @@ class ResourceFactoryTest extends TestCase
                 'latitude'  => 1.2345,
                 'longitude' => 2.34567,
                 'distance'  => 5000,
-                'unit'      => 'meters',
             ],
         ];
 

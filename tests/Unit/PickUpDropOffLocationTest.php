@@ -123,7 +123,6 @@ class PickUpDropOffLocationTest extends TestCase
                 'latitude'  => 1.2345,
                 'longitude' => 2.34567,
                 'distance'  => 5000,
-                'unit'      => 'meters',
             ]);
 
         $pudoLocation = (new PickUpDropOffLocation())
@@ -162,7 +161,6 @@ class PickUpDropOffLocationTest extends TestCase
                     'latitude'  => 1.2345,
                     'longitude' => 2.34567,
                     'distance'  => 5000,
-                    'unit'      => 'meters',
                 ],
             ],
         ], $pudoLocation->jsonSerialize());

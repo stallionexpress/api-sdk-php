@@ -13,7 +13,6 @@ class Position implements PositionInterface
     private $latitude;
     private $longitude;
     private $distance;
-    private $unit = self::UNIT_METER;
 
     private static $unitConversion = [
         self::UNIT_METER     => 1,
