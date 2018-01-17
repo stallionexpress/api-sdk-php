@@ -99,17 +99,30 @@ class FileProxyTest extends TestCase
             ->setTemporaryFilePath($createdPath, 'image/png')
             ->getTemporaryFilePath('image/png');
         $this->assertEquals('Some path test data', file_get_contents($retrievedPath));
+    }
 
-        // Check if the uri has been called only once.
-        // Creating a new proxy for the same resource will
-        // change the amount of calls to 2.
-        $this->assertEquals(1, $this->clientCalls['https://api/v1/files/file-id-1']);
-
-        $newProxy = new FileProxy();
-        $newProxy
+    /** @test */
+    public function testClientCalls()
+    {
+        // Check if the uri has been called only once
+        // while requesting multiple attributes.
+        $firstProxy = new FileProxy();
+        $firstProxy
             ->setMyParcelComApi($this->api)
             ->setId('file-id-1');
-        $newProxy->getResourceType();
+        $firstProxy->getResourceType();
+        $firstProxy->getStream();
+        $firstProxy->getFormats();
+
+        $this->assertEquals(1, $this->clientCalls['https://api/v1/files/file-id-1']);
+
+        // Creating a new proxy for the same resource will
+        // change the amount of client calls to 2.
+        $secondProxy = new FileProxy();
+        $secondProxy
+            ->setMyParcelComApi($this->api)
+            ->setId('file-id-1');
+        $secondProxy->getResourceType();
 
         $this->assertEquals(2, $this->clientCalls['https://api/v1/files/file-id-1']);
     }

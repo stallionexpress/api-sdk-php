@@ -49,18 +49,31 @@ class RegionProxyTest extends TestCase
         $this->assertEquals('ENG', $regionProxy->getRegionCode());
         $this->assertEquals('GBP', $regionProxy->setCurrency('GBP')->getCurrency());
         $this->assertEquals('United Kingdom', $regionProxy->getName());
+    }
 
-        // Check if the uri has been called only once.
-        // Creating a new proxy for the same resource will
-        // change the amount of calls to 2.
-        $this->assertEquals(1, $this->clientCalls['https://api/v1/regions/c1048135-db45-404e-adac-fdecd0c7134a']);
-
-        $newProxy = new RegionProxy();
-        $newProxy
+    /** @test */
+    public function testClientCalls()
+    {
+        // Check if the uri has been called only once
+        // while requesting multiple attributes.
+        $firstProxy = new RegionProxy();
+        $firstProxy
             ->setMyParcelComApi($this->api)
             ->setId('c1048135-db45-404e-adac-fdecd0c7134a');
-        $newProxy->getName();
+        $firstProxy->getName();
+        $firstProxy->getCurrency();
+        $firstProxy->getCountryCode();
 
-        $this->assertEquals(2, $this->clientCalls['https://api/v1/files/c1048135-db45-404e-adac-fdecd0c7134a']);
+        $this->assertEquals(1, $this->clientCalls['https://api/v1/regions/c1048135-db45-404e-adac-fdecd0c7134a']);
+
+        // Creating a new proxy for the same resource will
+        // change the amount of client calls to 2.
+        $secondProxy = new RegionProxy();
+        $secondProxy
+            ->setMyParcelComApi($this->api)
+            ->setId('c1048135-db45-404e-adac-fdecd0c7134a');
+        $secondProxy->getName();
+
+        $this->assertEquals(2, $this->clientCalls['https://api/v1/regions/c1048135-db45-404e-adac-fdecd0c7134a']);
     }
 }
