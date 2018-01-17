@@ -76,7 +76,7 @@ class FileTest extends TestCase
     }
 
     /** @test */
-    public function testResourceType()
+    public function testDocumentType()
     {
         $file = new File();
 
