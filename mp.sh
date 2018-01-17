@@ -8,6 +8,13 @@ set -o allexport
   COMPOSE="docker-compose"
   RUNNING=$(${COMPOSE} ps -q)
   [ "${RUNNING}" == "" ] && DO="run --rm" || DO="exec"
+  PHP="php"
+  if [ $# -gt 0 ]; then
+    if [ "$1" == "php70" ] || [ "$1" == "php71" ]; then
+      PHP="$1"
+      shift 1
+    fi
+  fi
 }
 set +o allexport
 

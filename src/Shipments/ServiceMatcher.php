@@ -2,6 +2,7 @@
 
 namespace MyParcelCom\ApiSdk\Shipments;
 
+use MyParcelCom\ApiSdk\Exceptions\ServiceMatchingException;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
@@ -33,11 +34,20 @@ class ServiceMatcher
      */
     public function getMatchedWeightGroups(ShipmentInterface $shipment, array $contracts)
     {
+        if ($shipment->getWeight() < 0) {
+            throw new ServiceMatchingException(
+                'Cannot match a service to given shipment; negative weight given'
+            );
+        }
+
         $matches = [];
         foreach ($contracts as $contract) {
             foreach ($contract->getGroups() as $group) {
-                if ($group->getWeightMin() <= $shipment->getWeight()
-                    && $group->getWeightMax() >= $shipment->getWeight()) {
+                if (($group->getWeightMin() <= $shipment->getWeight()
+                        && $group->getWeightMax() >= $shipment->getWeight())
+                    // If weight can be added on top of the set weight group,
+                    // this group matches.
+                    || ($group->getStepPrice() && $group->getStepSize())) {
                     $matches[] = $contract;
                     continue 2;
                 }
@@ -87,6 +97,12 @@ class ServiceMatcher
     {
         if (!$shipment->getInsuranceAmount()) {
             return $contracts;
+        }
+
+        if ($shipment->getInsuranceAmount() < 0) {
+            throw new ServiceMatchingException(
+                'Cannot match a service to given shipment; negative insurance amount given'
+            );
         }
 
         return array_filter($contracts, function (ContractInterface $contract) use ($shipment) {
