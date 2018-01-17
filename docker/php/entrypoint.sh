@@ -10,4 +10,4 @@ if [ -f /etc/php/5.6/mods-available/xdebug.ini.template ]; then
     sed -i "s/xdebug\.remote_host\=.*/xdebug\.remote_host\=${host_ip}/g" /etc/php/5.6/mods-available/xdebug.ini
 fi
 
-$@
+"$@"
