@@ -297,6 +297,7 @@ class ResourceFactoryTest extends TestCase
                 'min' => 2,
                 'max' => 5,
             ],
+            'handover_method', 'drop-off',
             'carrier'      => [
                 'id' => 'carrier-id-1',
             ],
@@ -318,6 +319,7 @@ class ResourceFactoryTest extends TestCase
                     'min' => 2,
                     'max' => 5,
                 ],
+                'handover_method' => 'drop-off',
             ],
             'relationships' => [
                 'carrier'     => [

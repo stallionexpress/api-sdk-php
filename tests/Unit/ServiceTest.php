@@ -103,6 +103,14 @@ class ServiceTest extends TestCase
     }
 
     /** @test */
+    public function testHandoverMethod()
+    {
+        $service = new Service();
+
+        $this->assertEquals('drop-off', $service->setHandoverMethod('drop-off')->getHandoverMethod());
+    }
+
+    /** @test */
     public function testJsonSerialize()
     {
         $carrier = $this->getMockBuilder(CarrierInterface::class)
