@@ -7,6 +7,7 @@ use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
 use MyParcelCom\ApiSdk\MyParcelComApi;
 use MyParcelCom\ApiSdk\MyParcelComApiInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Proxy\ServiceProxy;
@@ -53,6 +54,16 @@ class ServiceProxyTest extends TestCase
         $this->assertEquals('letterbox', $this->serviceProxy->getPackageType());
         $this->assertEquals(4, $this->serviceProxy->setTransitTimeMin(4)->getTransitTimeMin());
         $this->assertEquals(3, $this->serviceProxy->getTransitTimeMax());
+        $this->assertEquals('collection', $this->serviceProxy->getHandoverMethod());
+
+        $this->assertInternalType('array', $this->serviceProxy->getDeliveryDays());
+        $this->assertArraySubset([
+            'Monday',
+            'Tuesday',
+            'Wednesday',
+            'Thursday',
+        ], $this->serviceProxy->getDeliveryDays());
+        $this->assertCount(4, $this->serviceProxy->getDeliveryDays());
     }
 
     /** @test */
@@ -80,5 +91,79 @@ class ServiceProxyTest extends TestCase
         $this->assertInstanceOf(RegionInterface::class, $regionTo);
         $this->assertEquals('c1048135-db45-404e-adac-fdecd0c7134a', $regionTo->getId());
         $this->assertEquals(ResourceInterface::TYPE_REGION, $regionTo->getType());
+    }
+
+    /** @test */
+    public function testContractRelationship()
+    {
+        $contract_A = $this->createMock(ContractInterface::class);
+        $contract_A
+            ->method('getId')
+            ->willReturn('contract-id-1');
+        $contract_B = $this->createMock(ContractInterface::class);
+        $contract_B
+            ->method('getId')
+            ->willReturn('contract-id-2');
+
+        $contracts = $this->serviceProxy
+            ->setContracts([$contract_A, $contract_B])
+            ->getContracts();
+
+        array_walk($contracts, function (ContractInterface $contract) {
+            $this->assertInstanceOf(ContractInterface::class, $contract);
+        });
+        $contractIds = array_map(function (ContractInterface $contract) {
+            return $contract->getId();
+        }, $contracts);
+        $this->assertArraySubset(['contract-id-1', 'contract-id-2'], $contractIds);
+        $this->assertCount(2, $contracts);
+
+        $contract_C = $this->createMock(ContractInterface::class);
+        $contract_C
+            ->method('getId')
+            ->willReturn('contract-id-3');
+
+        $contracts = $this->serviceProxy
+            ->addContract($contract_C)
+            ->getContracts();
+        $this->assertCount(3, $contracts);
+    }
+
+    /** @test */
+    public function testClientCalls()
+    {
+        // Check if the uri has been called only once
+        // while requesting multiple attributes.
+        $firstProxy = new ServiceProxy();
+        $firstProxy
+            ->setMyParcelComApi($this->api)
+            ->setId('433285bb-2e34-435c-9109-1120e7c4bce4');
+        $firstProxy->getContracts();
+        $firstProxy->getRegionTo();
+        $firstProxy->getDeliveryDays();
+
+        $this->assertEquals(1, $this->clientCalls['https://api/v1/services/433285bb-2e34-435c-9109-1120e7c4bce4']);
+
+        // Creating a new proxy for the same resource will
+        // change the amount of client calls to 2.
+        $secondProxy = new ServiceProxy();
+        $secondProxy
+            ->setMyParcelComApi($this->api)
+            ->setId('433285bb-2e34-435c-9109-1120e7c4bce4');
+        $secondProxy->getTransitTimeMax();
+
+        $this->assertEquals(2, $this->clientCalls['https://api/v1/services/433285bb-2e34-435c-9109-1120e7c4bce4']);
+    }
+
+    /** @test */
+    public function testJsonSerialize()
+    {
+        $serviceProxy = new ServiceProxy();
+        $serviceProxy->setId('service-id-1');
+
+        $this->assertEquals([
+            'id' => 'service-id-1',
+            'type' => ResourceInterface::TYPE_SERVICE,
+        ], $serviceProxy->jsonSerialize());
     }
 }
