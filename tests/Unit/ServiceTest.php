@@ -155,6 +155,7 @@ class ServiceTest extends TestCase
             ->setPackageType(Service::PACKAGE_TYPE_PARCEL)
             ->setTransitTimeMin(7)
             ->setTransitTimeMax(14)
+            ->setHandoverMethod('drop-off')
             ->setCarrier($carrier)
             ->setRegionFrom($regionFrom)
             ->setRegionTo($regionTo);
@@ -163,12 +164,13 @@ class ServiceTest extends TestCase
             'id'            => 'service-id',
             'type'          => 'services',
             'attributes'    => [
-                'name'         => 'Easy Delivery Service',
-                'package_type' => Service::PACKAGE_TYPE_PARCEL,
-                'transit_time' => [
+                'name'            => 'Easy Delivery Service',
+                'package_type'    => Service::PACKAGE_TYPE_PARCEL,
+                'transit_time'    => [
                     'min' => 7,
                     'max' => 14,
                 ],
+                'handover_method' => 'drop-off',
             ],
             'relationships' => [
                 'carrier'     => [

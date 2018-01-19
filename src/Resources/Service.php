@@ -18,11 +18,11 @@ class Service implements ServiceInterface
     const ATTRIBUTE_TRANSIT_TIME = 'transit_time';
     const ATTRIBUTE_TRANSIT_TIME_MIN = 'min';
     const ATTRIBUTE_TRANSIT_TIME_MAX = 'max';
+    const ATTRIBUTE_HANDOVER_METHOD = 'handover_method';
 
     const RELATIONSHIP_CARRIER = 'carrier';
     const RELATIONSHIP_REGION_FROM = 'region_from';
     const RELATIONSHIP_REGION_TO = 'region_to';
-    const ATTRIBUTE_HANDOVER_METHOD = 'handover_method';
 
     /** @var string */
     private $id;
