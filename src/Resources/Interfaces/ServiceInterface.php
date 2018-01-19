@@ -118,4 +118,21 @@ interface ServiceInterface extends ResourceInterface
      * @return string
      */
     public function getHandoverMethod();
+
+    /**
+     * @param string[] $deliveryDays
+     * @return $this
+     */
+    public function setDeliveryDays(array $deliveryDays);
+
+    /**
+     * @param string $deliveryDay
+     * @return $this
+     */
+    public function addDeliveryDay($deliveryDay);
+
+    /**
+     * @return string[]
+     */
+    public function getDeliveryDays();
 }
