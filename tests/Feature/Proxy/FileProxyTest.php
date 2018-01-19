@@ -46,7 +46,7 @@ class FileProxyTest extends TestCase
 
         $this->assertEquals('file-id-1', $fileProxy->getId());
         $this->assertEquals(ResourceInterface::TYPE_FILE, $fileProxy->getType());
-        $this->assertEquals('label', $fileProxy->getResourceType());
+        $this->assertEquals('label', $fileProxy->getDocumentType());
 
         $formats = $fileProxy->getFormats();
         $this->assertEquals([
@@ -110,7 +110,7 @@ class FileProxyTest extends TestCase
         $firstProxy
             ->setMyParcelComApi($this->api)
             ->setId('file-id-1');
-        $firstProxy->getResourceType();
+        $firstProxy->getDocumentType();
         $firstProxy->getStream();
         $firstProxy->getFormats();
 
@@ -122,7 +122,7 @@ class FileProxyTest extends TestCase
         $secondProxy
             ->setMyParcelComApi($this->api)
             ->setId('file-id-1');
-        $secondProxy->getResourceType();
+        $secondProxy->getDocumentType();
 
         $this->assertEquals(2, $this->clientCalls['https://api/v1/files/file-id-1']);
     }
