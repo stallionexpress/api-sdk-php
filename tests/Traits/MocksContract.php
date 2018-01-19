@@ -23,7 +23,7 @@ trait MocksContract
             ->willReturn($this->getMockedGroups($groups));
         $contract->method('getInsurances')
             ->willReturn($this->getMockedInsurances($insurances));
-        $contract->method('getOptions')
+        $contract->method('getServiceOptions')
             ->willReturn($this->getMockedOptions($options));
 
         return $contract;
@@ -64,7 +64,7 @@ trait MocksContract
             return $optionMock;
         }, $options);
 
-        $shipment->method('getOptions')
+        $shipment->method('getServiceOptions')
             ->willReturn($optionMocks);
 
         /** @var ShipmentInterface $shipment */

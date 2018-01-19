@@ -14,7 +14,7 @@ class Contract implements ContractInterface
     use JsonSerializable;
 
     const ATTRIBUTE_GROUPS = 'groups';
-    const ATTRIBUTE_OPTIONS = 'options';
+    const ATTRIBUTE_SERVICE_OPTIONS = 'service_options';
     const ATTRIBUTE_INSURANCES = 'insurances';
 
     /** @var string */
@@ -23,9 +23,9 @@ class Contract implements ContractInterface
     private $type = ResourceInterface::TYPE_CONTRACT;
     /** @var array */
     private $attributes = [
-        self::ATTRIBUTE_GROUPS     => [],
-        self::ATTRIBUTE_OPTIONS    => [],
-        self::ATTRIBUTE_INSURANCES => [],
+        self::ATTRIBUTE_GROUPS          => [],
+        self::ATTRIBUTE_SERVICE_OPTIONS => [],
+        self::ATTRIBUTE_INSURANCES      => [],
     ];
 
     /**
@@ -89,12 +89,12 @@ class Contract implements ContractInterface
     /**
      * {@inheritdoc}
      */
-    public function setOptions(array $options)
+    public function setServiceOptions(array $options)
     {
-        $this->attributes[self::ATTRIBUTE_OPTIONS] = [];
+        $this->attributes[self::ATTRIBUTE_SERVICE_OPTIONS] = [];
 
         array_walk($options, function ($option) {
-            $this->addOption($option);
+            $this->addServiceOption($option);
         });
 
         return $this;
@@ -103,9 +103,9 @@ class Contract implements ContractInterface
     /**
      * {@inheritdoc}
      */
-    public function addOption(ServiceOptionInterface $option)
+    public function addServiceOption(ServiceOptionInterface $option)
     {
-        $this->attributes[self::ATTRIBUTE_OPTIONS][] = $option;
+        $this->attributes[self::ATTRIBUTE_SERVICE_OPTIONS][] = $option;
 
         return $this;
     }
@@ -113,9 +113,9 @@ class Contract implements ContractInterface
     /**
      * {@inheritdoc}
      */
-    public function getOptions()
+    public function getServiceOptions()
     {
-        return $this->attributes[self::ATTRIBUTE_OPTIONS];
+        return $this->attributes[self::ATTRIBUTE_SERVICE_OPTIONS];
     }
 
     /**

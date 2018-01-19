@@ -76,7 +76,7 @@ class ResourceFactoryTest extends TestCase
                     'step_size'  => 1,
                 ],
             ],
-            'options'    => [
+            'service_options'    => [
                 [
                     'type'     => 'service-options',
                     'id'       => 'service-option-id',
@@ -124,7 +124,7 @@ class ResourceFactoryTest extends TestCase
                         ],
                     ],
                 ],
-                'options'    => [
+                'service_options'    => [
                     [
                         'type'       => 'service-options',
                         'id'         => 'service-option-id',

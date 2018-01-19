@@ -50,11 +50,11 @@ class ContractTest extends TestCase
     }
 
     /** @test */
-    public function testOptions()
+    public function testServiceOptions()
     {
         $contract = new Contract();
 
-        $this->assertEmpty($contract->getOptions());
+        $this->assertEmpty($contract->getServiceOptions());
 
         $mock = $this->getMockClass(ServiceOptionInterface::class);
 
@@ -62,15 +62,15 @@ class ContractTest extends TestCase
             new $mock(),
             new $mock(),
         ];
-        $contract->setOptions($options);
-        $this->assertCount(2, $contract->getOptions());
-        $this->assertEquals($options, $contract->getOptions());
+        $contract->setServiceOptions($options);
+        $this->assertCount(2, $contract->getServiceOptions());
+        $this->assertEquals($options, $contract->getServiceOptions());
 
         $option = new $mock();
-        $contract->addOption($option);
+        $contract->addServiceOption($option);
         $options[] = $option;
-        $this->assertCount(3, $contract->getOptions());
-        $this->assertEquals($options, $contract->getOptions());
+        $this->assertCount(3, $contract->getServiceOptions());
+        $this->assertEquals($options, $contract->getServiceOptions());
     }
 
     /** @test */
@@ -175,7 +175,7 @@ class ContractTest extends TestCase
             ->setId('contract-id')
             ->setInsurances([$insuranceMock])
             ->setGroups([$groupMock])
-            ->setOptions([$optionMock]);
+            ->setServiceOptions([$optionMock]);
 
         $this->assertEquals([
             'id'         => 'contract-id',
@@ -202,7 +202,7 @@ class ContractTest extends TestCase
                         ],
                     ],
                 ],
-                'options'    => [
+                'service_options'    => [
                     [
                         'type'       => 'service-options',
                         'id'         => 'service-option-id',

@@ -139,7 +139,7 @@ class PriceCalculator
         $price = 0;
 
         $optionPrices = [];
-        foreach ($contract->getOptions() as $option) {
+        foreach ($contract->getServiceOptions() as $option) {
             $optionPrices[$option->getId()] = $option->getPrice();
         }
 

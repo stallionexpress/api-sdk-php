@@ -212,6 +212,55 @@ class ServiceProxy implements ServiceInterface, ResourceProxyInterface
     }
 
     /**
+     * @param string $handoverMethod
+     * @return $this
+     */
+    public function setHandoverMethod($handoverMethod)
+    {
+        $this->getResource()->setHandoverMethod($handoverMethod);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHandoverMethod()
+    {
+        return $this->getResource()->getHandoverMethod();
+    }
+
+    /**
+     * @param string[] $deliveryDays
+     * @return $this
+     */
+    public function setDeliveryDays(array $deliveryDays)
+    {
+        $this->getResource()->setDeliveryDays($deliveryDays);
+
+        return $this;
+    }
+
+    /**
+     * @param string $deliveryDay
+     * @return $this
+     */
+    public function addDeliveryDay($deliveryDay)
+    {
+        $this->getResource()->addDeliveryDay($deliveryDay);
+
+        return $this;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getDeliveryDays()
+    {
+        return $this->getResource()->getDeliveryDays();
+    }
+
+    /**
      * This function puts all object properties in an array and returns it.
      *
      * @return array
