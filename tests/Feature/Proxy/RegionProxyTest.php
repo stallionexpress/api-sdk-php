@@ -76,4 +76,16 @@ class RegionProxyTest extends TestCase
 
         $this->assertEquals(2, $this->clientCalls['https://api/v1/regions/c1048135-db45-404e-adac-fdecd0c7134a']);
     }
+
+    /** @test */
+    public function testJsonSerialize()
+    {
+        $regionProxy = new RegionProxy();
+        $regionProxy->setId('region-proxy-id-1');
+
+        $this->assertEquals([
+            'id' => 'region-proxy-id-1',
+            'type' => ResourceInterface::TYPE_REGION,
+        ], $regionProxy->jsonSerialize());
+    }
 }
