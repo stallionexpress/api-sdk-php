@@ -131,7 +131,7 @@ class ShipmentStatusProxy implements ShipmentStatusInterface, ResourceProxyInter
      */
     public function setStatus(StatusInterface $status)
     {
-        $this->getResource()->setStatus($shipment);
+        $this->getResource()->setStatus($status);
 
         return $this;
     }

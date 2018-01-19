@@ -103,7 +103,7 @@ class ShipmentProxyTest extends TestCase
     }
 
     /** @test */
-    public function testShopRelationShip()
+    public function testShopRelationship()
     {
         $this->assertInstanceOf(ShopInterface::class, $this->shipmentProxy->getShop());
         $this->assertEquals(ResourceInterface::TYPE_SHOP, $this->shipmentProxy->getShop()->getType());
@@ -119,7 +119,7 @@ class ShipmentProxyTest extends TestCase
     }
 
     /** @test */
-    public function testContractRelationShip()
+    public function testContractRelationship()
     {
         $this->assertInstanceOf(ContractInterface::class, $this->shipmentProxy->getContract());
         $this->assertEquals(ResourceInterface::TYPE_CONTRACT, $this->shipmentProxy->getContract()->getType());
