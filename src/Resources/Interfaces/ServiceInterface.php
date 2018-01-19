@@ -107,4 +107,15 @@ interface ServiceInterface extends ResourceInterface
      * @return ContractInterface[]
      */
     public function getContracts();
+
+    /**
+     * @param string $handoverMethod
+     * @return $this
+     */
+    public function setHandoverMethod($handoverMethod);
+
+    /**
+     * @return string
+     */
+    public function getHandoverMethod();
 }

@@ -18,6 +18,7 @@ class Service implements ServiceInterface
     const ATTRIBUTE_TRANSIT_TIME = 'transit_time';
     const ATTRIBUTE_TRANSIT_TIME_MIN = 'min';
     const ATTRIBUTE_TRANSIT_TIME_MAX = 'max';
+    const ATTRIBUTE_HANDOVER_METHOD = 'handover_method';
 
     const RELATIONSHIP_CARRIER = 'carrier';
     const RELATIONSHIP_REGION_FROM = 'region_from';
@@ -37,6 +38,7 @@ class Service implements ServiceInterface
             self::ATTRIBUTE_TRANSIT_TIME_MIN => null,
             self::ATTRIBUTE_TRANSIT_TIME_MAX => null,
         ],
+        self::ATTRIBUTE_HANDOVER_METHOD => null,
     ];
     /** @var array */
     private $relationships = [
@@ -233,6 +235,24 @@ class Service implements ServiceInterface
     public function getContracts()
     {
         return $this->contracts;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setHandoverMethod($handoverMethod)
+    {
+        $this->attributes[self::ATTRIBUTE_HANDOVER_METHOD] = $handoverMethod;
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getHandoverMethod()
+    {
+        return $this->attributes[self::ATTRIBUTE_HANDOVER_METHOD];
     }
 
     /**
