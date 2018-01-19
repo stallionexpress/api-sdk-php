@@ -109,7 +109,7 @@
       }
     },
     {
-      "id": "b3983a35-8b3d-42f6-ab63-3e1509d694de",
+      "id": "region-id-1",
       "type": "regions",
       "attributes": {
         "country_code": "GB",
@@ -118,7 +118,7 @@
         "region_code": "NIR"
       },
       "links": {
-        "self": "https://api/v1/regions/b3983a35-8b3d-42f6-ab63-3e1509d694de"
+        "self": "https://api/v1/regions/region-id-1"
       }
     },
     {
