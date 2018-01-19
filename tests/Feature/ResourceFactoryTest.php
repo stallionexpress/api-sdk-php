@@ -298,6 +298,11 @@ class ResourceFactoryTest extends TestCase
                 'max' => 5,
             ],
             'handover_method' => 'drop-off',
+            'delivery_days'   => [
+                'Monday',
+                'Wednesday',
+                'Friday',
+            ],
             'carrier'         => [
                 'id' => 'carrier-id-1',
             ],
@@ -320,6 +325,11 @@ class ResourceFactoryTest extends TestCase
                     'max' => 5,
                 ],
                 'handover_method' => 'drop-off',
+                'delivery_days'   => [
+                    'Monday',
+                    'Wednesday',
+                    'Friday',
+                ],
             ],
             'relationships' => [
                 'carrier'     => [

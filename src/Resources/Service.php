@@ -16,6 +16,7 @@ class Service implements ServiceInterface
     const ATTRIBUTE_NAME = 'name';
     const ATTRIBUTE_PACKAGE_TYPE = 'package_type';
     const ATTRIBUTE_TRANSIT_TIME = 'transit_time';
+    const ATTRIBUTE_DELIVERY_DAYS = 'delivery_days';
     const ATTRIBUTE_TRANSIT_TIME_MIN = 'min';
     const ATTRIBUTE_TRANSIT_TIME_MAX = 'max';
     const ATTRIBUTE_HANDOVER_METHOD = 'handover_method';
@@ -32,13 +33,14 @@ class Service implements ServiceInterface
     private $contracts = [];
     /** @var array */
     private $attributes = [
-        self::ATTRIBUTE_NAME         => null,
-        self::ATTRIBUTE_PACKAGE_TYPE => null,
-        self::ATTRIBUTE_TRANSIT_TIME => [
+        self::ATTRIBUTE_NAME            => null,
+        self::ATTRIBUTE_PACKAGE_TYPE    => null,
+        self::ATTRIBUTE_TRANSIT_TIME    => [
             self::ATTRIBUTE_TRANSIT_TIME_MIN => null,
             self::ATTRIBUTE_TRANSIT_TIME_MAX => null,
         ],
         self::ATTRIBUTE_HANDOVER_METHOD => null,
+        self::ATTRIBUTE_DELIVERY_DAYS   => [],
     ];
     /** @var array */
     private $relationships = [
@@ -253,6 +255,38 @@ class Service implements ServiceInterface
     public function getHandoverMethod()
     {
         return $this->attributes[self::ATTRIBUTE_HANDOVER_METHOD];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDeliveryDays(array $deliveryDays)
+    {
+        $this->attributes[self::ATTRIBUTE_DELIVERY_DAYS] = [];
+
+        array_walk($deliveryDays, function ($deliveryDay) {
+            $this->addDeliveryDay($deliveryDay);
+        });
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addDeliveryDay($deliveryDay)
+    {
+        $this->attributes[self::ATTRIBUTE_DELIVERY_DAYS][] = $deliveryDay;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDeliveryDays()
+    {
+        return $this->attributes[self::ATTRIBUTE_DELIVERY_DAYS];
     }
 
     /**

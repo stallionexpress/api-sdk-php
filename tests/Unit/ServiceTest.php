@@ -111,6 +111,25 @@ class ServiceTest extends TestCase
     }
 
     /** @test */
+    public function testDeliveryDays()
+    {
+        $service = new Service();
+
+        $this->assertEmpty($service->getDeliveryDays());
+
+        $this->assertEquals(['Thursday'], $service->addDeliveryDay('Thursday')->getDeliveryDays());
+        $this->assertEquals(['Tuesday', 'Friday'], $service->setDeliveryDays(['Tuesday', 'Friday'])->getDeliveryDays());
+        $this->assertEquals(
+            ['Monday', 'Tuesday', 'Friday'],
+            $service->addDeliveryDay('Monday')->getDeliveryDays(),
+            'Monday should have been added to already existing Tuesday and Friday',
+            0.0,
+            10,
+            true // Order doesn't matter
+        );
+    }
+
+    /** @test */
     public function testJsonSerialize()
     {
         $carrier = $this->getMockBuilder(CarrierInterface::class)
@@ -156,6 +175,7 @@ class ServiceTest extends TestCase
             ->setTransitTimeMin(7)
             ->setTransitTimeMax(14)
             ->setHandoverMethod('drop-off')
+            ->setDeliveryDays(['Monday'])
             ->setCarrier($carrier)
             ->setRegionFrom($regionFrom)
             ->setRegionTo($regionTo);
@@ -171,6 +191,9 @@ class ServiceTest extends TestCase
                     'max' => 14,
                 ],
                 'handover_method' => 'drop-off',
+                'delivery_days'   => [
+                    'Monday',
+                ],
             ],
             'relationships' => [
                 'carrier'     => [
