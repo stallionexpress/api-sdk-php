@@ -125,16 +125,16 @@ class ShipmentTest extends TestCase
     {
         $shipment = new Shipment();
         $this->assertEquals(8000, $shipment->setWeight(8000)->getWeight());
-        $this->assertEquals(500, $shipment->setWeight(500, Shipment::WEIGHT_GRAM)->getWeight());
-        $this->assertEquals(3000, $shipment->setWeight(3, Shipment::WEIGHT_KILOGRAM)->getWeight());
-        $this->assertEquals(1701, $shipment->setWeight(60, Shipment::WEIGHT_OUNCE)->getWeight());
-        $this->assertEquals(2268, $shipment->setWeight(5, Shipment::WEIGHT_POUND)->getWeight());
-        $this->assertEquals(12701, $shipment->setWeight(2, Shipment::WEIGHT_STONE)->getWeight());
-        $this->assertEquals(500, $shipment->setWeight(500)->getWeight(Shipment::WEIGHT_GRAM));
-        $this->assertEquals(3, $shipment->setWeight(3000)->getWeight(Shipment::WEIGHT_KILOGRAM));
-        $this->assertEquals(60, $shipment->setWeight(1701)->getWeight(Shipment::WEIGHT_OUNCE));
-        $this->assertEquals(5, $shipment->setWeight(2268)->getWeight(Shipment::WEIGHT_POUND));
-        $this->assertEquals(2, $shipment->setWeight(12701)->getWeight(Shipment::WEIGHT_STONE));
+        $this->assertEquals(500, $shipment->setWeight(500, PhysicalPropertiesInterface::WEIGHT_GRAM)->getWeight());
+        $this->assertEquals(3000, $shipment->setWeight(3, PhysicalPropertiesInterface::WEIGHT_KILOGRAM)->getWeight());
+        $this->assertEquals(1701, $shipment->setWeight(60, PhysicalPropertiesInterface::WEIGHT_OUNCE)->getWeight());
+        $this->assertEquals(2268, $shipment->setWeight(5, PhysicalPropertiesInterface::WEIGHT_POUND)->getWeight());
+        $this->assertEquals(12701, $shipment->setWeight(2, PhysicalPropertiesInterface::WEIGHT_STONE)->getWeight());
+        $this->assertEquals(500, $shipment->setWeight(500)->getWeight(PhysicalPropertiesInterface::WEIGHT_GRAM));
+        $this->assertEquals(3, $shipment->setWeight(3000)->getWeight(PhysicalPropertiesInterface::WEIGHT_KILOGRAM));
+        $this->assertEquals(60, $shipment->setWeight(1701)->getWeight(PhysicalPropertiesInterface::WEIGHT_OUNCE));
+        $this->assertEquals(5, $shipment->setWeight(2268)->getWeight(PhysicalPropertiesInterface::WEIGHT_POUND));
+        $this->assertEquals(2, $shipment->setWeight(12701)->getWeight(PhysicalPropertiesInterface::WEIGHT_STONE));
     }
 
     /** @test */
@@ -165,6 +165,17 @@ class ShipmentTest extends TestCase
         $physicalProperties = new $mock();
 
         $this->assertEquals($physicalProperties, $shipment->setPhysicalProperties($physicalProperties)->getPhysicalProperties());
+    }
+
+    /** @test */
+    public function testPhysicalPropertiesVerified()
+    {
+        $shipment = new Shipment();
+
+        $mock = $this->getMockClass(PhysicalPropertiesInterface::class);
+        $physicalProperties = new $mock();
+
+        $this->assertEquals($physicalProperties, $shipment->setPhysicalPropertiesVerified($physicalProperties)->getPhysicalPropertiesVerified());
     }
 
     /** @test */
@@ -480,6 +491,21 @@ class ShipmentTest extends TestCase
                 'width'  => 1400,
             ]);
 
+        $physicalPropertiesVerified = $this->getMockBuilder(PhysicalPropertiesInterface::class)
+            ->disableOriginalConstructor()
+            ->disableOriginalClone()
+            ->disableArgumentCloning()
+            ->disallowMockingUnknownTypes()
+            ->getMock();
+        $physicalPropertiesVerified->method('jsonSerialize')
+            ->willReturn([
+                'weight' => 2000,
+                'length' => 2100,
+                'volume' => 2200,
+                'height' => 2300,
+                'width'  => 2400,
+            ]);
+
         $status = $this->getMockBuilder(ShipmentStatusInterface::class)
             ->disableOriginalConstructor()
             ->disableOriginalClone()
@@ -529,8 +555,8 @@ class ShipmentTest extends TestCase
             ->setBarcode('S3BARCODE')
             ->setTrackingCode('ATRACKINGCODE')
             ->setTrackingUrl('https://tra.ck/ATRACKINGCODE')
-            ->setWeight(8000)
             ->setPhysicalProperties($physicalProperties)
+            ->setPhysicalPropertiesVerified($physicalPropertiesVerified)
             ->setShop($shop)
             ->setService($service)
             ->setServiceOptions([$option])
@@ -546,27 +572,33 @@ class ShipmentTest extends TestCase
             'id'            => 'shipment-id',
             'type'          => 'shipments',
             'attributes'    => [
-                'barcode'             => 'S3BARCODE',
-                'tracking_code'       => 'ATRACKINGCODE',
-                'tracking_url'        => 'https://tra.ck/ATRACKINGCODE',
-                'description'         => 'order #012ASD',
-                'price'               => [
+                'barcode'                      => 'S3BARCODE',
+                'tracking_code'                => 'ATRACKINGCODE',
+                'tracking_url'                 => 'https://tra.ck/ATRACKINGCODE',
+                'description'                  => 'order #012ASD',
+                'price'                        => [
                     'amount'   => 99,
                     'currency' => 'USD',
                 ],
-                'insurance'           => [
+                'insurance'                    => [
                     'amount'   => 50,
                     'currency' => 'USD',
                 ],
-                'weight'              => 8000,
-                'physical_properties' => [
+                'physical_properties'          => [
                     'weight' => 1000,
                     'length' => 1100,
                     'volume' => 1200,
                     'height' => 1300,
                     'width'  => 1400,
                 ],
-                'recipient_address'   => [
+                'physical_properties_verified' => [
+                    'weight' => 2000,
+                    'length' => 2100,
+                    'volume' => 2200,
+                    'height' => 2300,
+                    'width'  => 2400,
+                ],
+                'recipient_address'            => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 4',
                     'street_number'        => '1',
@@ -581,7 +613,7 @@ class ShipmentTest extends TestCase
                     'email'                => 'rob@tables.com',
                     'phone_number'         => '+31 (0)234 567 890',
                 ],
-                'sender_address'      => [
+                'sender_address'               => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 4',
                     'street_number'        => '2',
@@ -596,7 +628,7 @@ class ShipmentTest extends TestCase
                     'email'                => 'rob@tables.com',
                     'phone_number'         => '+31 (0)234 567 890',
                 ],
-                'pickup_location'     => [
+                'pickup_location'              => [
                     'code'    => 'CODE123',
                     'address' => [
                         'street_1'             => 'Diagonally',
@@ -614,7 +646,7 @@ class ShipmentTest extends TestCase
                         'phone_number'         => '+31 (0)234 567 890',
                     ],
                 ],
-                'customs'             => [
+                'customs'                      => [
                     'content_type'   => 'documents',
                     'invoice_number' => 'NO.5',
                     'items'          => [

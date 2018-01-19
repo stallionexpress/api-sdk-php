@@ -4,12 +4,6 @@ namespace MyParcelCom\ApiSdk\Resources\Interfaces;
 
 interface ShipmentInterface extends ResourceInterface
 {
-    const WEIGHT_GRAM = 'grams';
-    const WEIGHT_KILOGRAM = 'kilograms';
-    const WEIGHT_POUND = 'pounds';
-    const WEIGHT_OUNCE = 'ounces';
-    const WEIGHT_STONE = 'stones';
-
     /**
      * @param string $id
      * @return $this
@@ -138,17 +132,21 @@ interface ShipmentInterface extends ResourceInterface
     public function getTrackingUrl();
 
     /**
+     * @deprecated Use Shipment::getPhysicalProperties()->setWeight() instead.
+     *
      * @param int    $weight
      * @param string $unit
      * @return $this
      */
-    public function setWeight($weight, $unit = self::WEIGHT_GRAM);
+    public function setWeight($weight, $unit = PhysicalPropertiesInterface::WEIGHT_GRAM);
 
     /**
+     * @deprecated Use Shipment::getPhysicalProperties()->getWeight() instead.
+     *
      * @param string $unit
      * @return int
      */
-    public function getWeight($unit = self::WEIGHT_GRAM);
+    public function getWeight($unit = PhysicalPropertiesInterface::WEIGHT_GRAM);
 
     /**
      * @param ShopInterface $shop
@@ -210,6 +208,17 @@ interface ShipmentInterface extends ResourceInterface
      * @return PhysicalPropertiesInterface|null
      */
     public function getPhysicalProperties();
+
+    /**
+     * @param PhysicalPropertiesInterface $physicalProperties
+     * @return $this
+     */
+    public function setPhysicalPropertiesVerified(PhysicalPropertiesInterface $physicalProperties);
+
+    /**
+     * @return PhysicalPropertiesInterface|null
+     */
+    public function getPhysicalPropertiesVerified();
 
     /**
      * @param FileInterface[] $files

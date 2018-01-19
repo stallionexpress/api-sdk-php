@@ -64,7 +64,7 @@ class ResourceFactoryTest extends TestCase
     public function testCreateContract()
     {
         $contractAttributes = [
-            'groups'     => [
+            'groups'          => [
                 [
                     'type'       => 'service-groups',
                     'id'         => 'service-group-id',
@@ -76,7 +76,7 @@ class ResourceFactoryTest extends TestCase
                     'step_size'  => 1,
                 ],
             ],
-            'service_options'    => [
+            'service_options' => [
                 [
                     'type'     => 'service-options',
                     'id'       => 'service-option-id',
@@ -85,7 +85,7 @@ class ResourceFactoryTest extends TestCase
                     'currency' => 'EUR',
                 ],
             ],
-            'insurances' => [
+            'insurances'      => [
                 [
                     'type'     => 'service-insurances',
                     'id'       => 'service-insurance-id',
@@ -103,7 +103,7 @@ class ResourceFactoryTest extends TestCase
         $this->assertEquals([
             'type'       => 'contracts',
             'attributes' => [
-                'groups'     => [
+                'groups'          => [
                     [
                         'type'       => 'service-groups',
                         'id'         => 'service-group-id',
@@ -124,7 +124,7 @@ class ResourceFactoryTest extends TestCase
                         ],
                     ],
                 ],
-                'service_options'    => [
+                'service_options' => [
                     [
                         'type'       => 'service-options',
                         'id'         => 'service-option-id',
@@ -137,7 +137,7 @@ class ResourceFactoryTest extends TestCase
                         ],
                     ],
                 ],
-                'insurances' => [
+                'insurances'      => [
                     [
                         'type'       => 'service-insurances',
                         'id'         => 'service-insurance-id',
@@ -494,20 +494,26 @@ class ResourceFactoryTest extends TestCase
     {
         $resourceFactory = new ResourceFactory();
         $shipment = $resourceFactory->create('shipments', [
-            'barcode'                 => 'S3BARCODE',
-            'description'             => 'order #012ASD',
-            'price'                   => 99,
-            'currency'                => 'USD',
-            'insurance_amount'        => 50,
-            'weight'                  => 8000,
-            'physical_properties'     => [
+            'barcode'                      => 'S3BARCODE',
+            'description'                  => 'order #012ASD',
+            'price'                        => 99,
+            'currency'                     => 'USD',
+            'insurance_amount'             => 50,
+            'physical_properties'          => [
                 'weight' => 1000,
                 'length' => 1100,
                 'volume' => 1200,
                 'height' => 1300,
                 'width'  => 1400,
             ],
-            'recipient_address'       => [
+            'physical_properties_verified' => [
+                'weight' => 100,
+                'length' => 110,
+                'volume' => 120,
+                'height' => 130,
+                'width'  => 140,
+            ],
+            'recipient_address'            => [
                 'street_1'             => 'Diagonally',
                 'street_2'             => 'Apartment 4',
                 'street_number'        => '1',
@@ -522,7 +528,7 @@ class ResourceFactoryTest extends TestCase
                 'email'                => 'rob@tables.com',
                 'phone_number'         => '+31 (0)234 567 890',
             ],
-            'sender_address'          => [
+            'sender_address'               => [
                 'street_1'             => 'Diagonally',
                 'street_2'             => 'Apartment 9',
                 'street_number'        => '4',
@@ -537,8 +543,8 @@ class ResourceFactoryTest extends TestCase
                 'email'                => 'rob@tables.com',
                 'phone_number'         => '+31 (0)234 567 890',
             ],
-            'pickup_location_code'    => 'CODE123',
-            'pickup_location_address' => [
+            'pickup_location_code'         => 'CODE123',
+            'pickup_location_address'      => [
                 'street_1'             => 'Diagonally',
                 'street_2'             => 'Apartment 41',
                 'street_number'        => '2',
@@ -553,37 +559,43 @@ class ResourceFactoryTest extends TestCase
                 'email'                => 'rob@tables.com',
                 'phone_number'         => '+31 (0)234 567 890',
             ],
-            'shop'                    => ['id' => 'shop-id-1', 'type' => 'shops'],
-            'service'                 => ['id' => 'service-id-1', 'type' => 'services'],
-            'contract'                => ['id' => 'contract-id-1', 'type' => 'contracts'],
-            'status'                  => ['id' => 'shipment-status-id-1', 'type' => 'statuses'],
-            'service_options'         => [['id' => 'option-id-1', 'type' => 'service-options']],
-            'files'                   => [['id' => 'file-id-1', 'type' => 'files']],
+            'shop'                         => ['id' => 'shop-id-1', 'type' => 'shops'],
+            'service'                      => ['id' => 'service-id-1', 'type' => 'services'],
+            'contract'                     => ['id' => 'contract-id-1', 'type' => 'contracts'],
+            'status'                       => ['id' => 'shipment-status-id-1', 'type' => 'statuses'],
+            'service_options'              => [['id' => 'option-id-1', 'type' => 'service-options']],
+            'files'                        => [['id' => 'file-id-1', 'type' => 'files']],
         ]);
 
         $this->assertInstanceOf(ShipmentInterface::class, $shipment);
         $this->assertEquals([
             'type'          => 'shipments',
             'attributes'    => [
-                'barcode'             => 'S3BARCODE',
-                'description'         => 'order #012ASD',
-                'price'               => [
+                'barcode'                      => 'S3BARCODE',
+                'description'                  => 'order #012ASD',
+                'price'                        => [
                     'amount'   => 99,
                     'currency' => 'USD',
                 ],
-                'insurance'           => [
+                'insurance'                    => [
                     'amount'   => 50,
                     'currency' => 'USD',
                 ],
-                'weight'              => 8000,
-                'physical_properties' => [
+                'physical_properties'          => [
                     'weight' => 1000,
                     'length' => 1100,
                     'volume' => 1200,
                     'height' => 1300,
                     'width'  => 1400,
                 ],
-                'recipient_address'   => [
+                'physical_properties_verified' => [
+                    'weight' => 100,
+                    'length' => 110,
+                    'volume' => 120,
+                    'height' => 130,
+                    'width'  => 140,
+                ],
+                'recipient_address'            => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 4',
                     'street_number'        => '1',
@@ -598,7 +610,7 @@ class ResourceFactoryTest extends TestCase
                     'email'                => 'rob@tables.com',
                     'phone_number'         => '+31 (0)234 567 890',
                 ],
-                'sender_address'      => [
+                'sender_address'               => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 9',
                     'street_number'        => '4',
@@ -613,7 +625,7 @@ class ResourceFactoryTest extends TestCase
                     'email'                => 'rob@tables.com',
                     'phone_number'         => '+31 (0)234 567 890',
                 ],
-                'pickup_location'     => [
+                'pickup_location'              => [
                     'code'    => 'CODE123',
                     'address' => [
                         'street_1'             => 'Diagonally',
@@ -648,20 +660,26 @@ class ResourceFactoryTest extends TestCase
     {
         $resourceFactory = new ResourceFactory();
         $shipment = $resourceFactory->create('shipments', [
-            'barcode'                 => 'S3BARCODE',
-            'description'             => 'order #012ASD',
-            'price'                   => 99,
-            'currency'                => 'USD',
-            'insurance_amount'        => 50,
-            'weight'                  => 8000,
-            'physical_properties'     => [
+            'barcode'                      => 'S3BARCODE',
+            'description'                  => 'order #012ASD',
+            'price'                        => 99,
+            'currency'                     => 'USD',
+            'insurance_amount'             => 50,
+            'physical_properties'          => [
                 'weight' => 1000,
                 'length' => 1100,
                 'volume' => 1200,
                 'height' => 1300,
                 'width'  => 1400,
             ],
-            'recipient_address'       => [
+            'physical_properties_verified' => [
+                'weight' => 100,
+                'length' => 110,
+                'volume' => 120,
+                'height' => 130,
+                'width'  => 140,
+            ],
+            'recipient_address'            => [
                 'street_1'             => 'Diagonally',
                 'street_2'             => 'Apartment 4',
                 'street_number'        => '1',
@@ -675,7 +693,7 @@ class ResourceFactoryTest extends TestCase
                 'email'                => 'rob@tables.com',
                 'phone_number'         => '+31 (0)234 567 890',
             ],
-            'sender_address'          => [
+            'sender_address'               => [
                 'street_1'             => 'Diagonally',
                 'street_2'             => 'Apartment 9',
                 'street_number'        => '4',
@@ -689,8 +707,8 @@ class ResourceFactoryTest extends TestCase
                 'email'                => 'rob@tables.com',
                 'phone_number'         => '+31 (0)234 567 890',
             ],
-            'pickup_location_code'    => 'CODE123',
-            'pickup_location_address' => [
+            'pickup_location_code'         => 'CODE123',
+            'pickup_location_address'      => [
                 'street_1'             => 'Diagonally',
                 'street_2'             => 'Apartment 41',
                 'street_number'        => '2',
@@ -704,7 +722,7 @@ class ResourceFactoryTest extends TestCase
                 'email'                => 'rob@tables.com',
                 'phone_number'         => '+31 (0)234 567 890',
             ],
-            'customs'                 => [
+            'customs'                      => [
                 'content_type'   => 'documents',
                 'invoice_number' => 'NO.5',
                 'items'          => [
@@ -739,37 +757,43 @@ class ResourceFactoryTest extends TestCase
                 'non_delivery'   => 'return',
                 'incoterm'       => 'DDU',
             ],
-            'shop'                    => ['id' => 'shop-id-1', 'type' => 'shops'],
-            'service'                 => ['id' => 'service-id-1', 'type' => 'services'],
-            'contract'                => ['id' => 'contract-id-1', 'type' => 'contracts'],
-            'status'                  => ['id' => 'shipment-status-id-1', 'type' => 'statuses'],
-            'service_options'         => [['id' => 'option-id-1', 'type' => 'service-options']],
-            'files'                   => [['id' => 'file-id-1', 'type' => 'files']],
+            'shop'                         => ['id' => 'shop-id-1', 'type' => 'shops'],
+            'service'                      => ['id' => 'service-id-1', 'type' => 'services'],
+            'contract'                     => ['id' => 'contract-id-1', 'type' => 'contracts'],
+            'status'                       => ['id' => 'shipment-status-id-1', 'type' => 'statuses'],
+            'service_options'              => [['id' => 'option-id-1', 'type' => 'service-options']],
+            'files'                        => [['id' => 'file-id-1', 'type' => 'files']],
         ]);
 
         $this->assertInstanceOf(ShipmentInterface::class, $shipment);
         $this->assertEquals([
             'type'          => 'shipments',
             'attributes'    => [
-                'barcode'             => 'S3BARCODE',
-                'description'         => 'order #012ASD',
-                'price'               => [
+                'barcode'                      => 'S3BARCODE',
+                'description'                  => 'order #012ASD',
+                'price'                        => [
                     'amount'   => 99,
                     'currency' => 'USD',
                 ],
-                'insurance'           => [
+                'insurance'                    => [
                     'amount'   => 50,
                     'currency' => 'USD',
                 ],
-                'weight'              => 8000,
-                'physical_properties' => [
+                'physical_properties'          => [
                     'weight' => 1000,
                     'length' => 1100,
                     'volume' => 1200,
                     'height' => 1300,
                     'width'  => 1400,
                 ],
-                'recipient_address'   => [
+                'physical_properties_verified' => [
+                    'weight' => 100,
+                    'length' => 110,
+                    'volume' => 120,
+                    'height' => 130,
+                    'width'  => 140,
+                ],
+                'recipient_address'            => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 4',
                     'street_number'        => '1',
@@ -783,7 +807,7 @@ class ResourceFactoryTest extends TestCase
                     'email'                => 'rob@tables.com',
                     'phone_number'         => '+31 (0)234 567 890',
                 ],
-                'sender_address'      => [
+                'sender_address'               => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 9',
                     'street_number'        => '4',
@@ -797,7 +821,7 @@ class ResourceFactoryTest extends TestCase
                     'email'                => 'rob@tables.com',
                     'phone_number'         => '+31 (0)234 567 890',
                 ],
-                'pickup_location'     => [
+                'pickup_location'              => [
                     'code'    => 'CODE123',
                     'address' => [
                         'street_1'             => 'Diagonally',
@@ -814,7 +838,7 @@ class ResourceFactoryTest extends TestCase
                         'phone_number'         => '+31 (0)234 567 890',
                     ],
                 ],
-                'customs'             => [
+                'customs'                      => [
                     'content_type'   => 'documents',
                     'invoice_number' => 'NO.5',
                     'items'          => [

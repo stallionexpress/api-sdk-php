@@ -4,6 +4,12 @@ namespace MyParcelCom\ApiSdk\Resources\Interfaces;
 
 interface PhysicalPropertiesInterface extends \JsonSerializable
 {
+    const WEIGHT_GRAM = 'grams';
+    const WEIGHT_KILOGRAM = 'kilograms';
+    const WEIGHT_POUND = 'pounds';
+    const WEIGHT_OUNCE = 'ounces';
+    const WEIGHT_STONE = 'stones';
+
     /**
      * @param int $width
      * @return $this
@@ -38,15 +44,17 @@ interface PhysicalPropertiesInterface extends \JsonSerializable
     public function getLength();
 
     /**
-     * @param int $weight
+     * @param int    $weight
+     * @param string $unit
      * @return $this
      */
-    public function setWeight($weight);
+    public function setWeight($weight, $unit = self::WEIGHT_GRAM);
 
     /**
+     * @param string $unit
      * @return int
      */
-    public function getWeight();
+    public function getWeight($unit = self::WEIGHT_GRAM);
 
     /**
      * @param int $volume

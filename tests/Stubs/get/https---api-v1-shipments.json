@@ -105,13 +105,19 @@
         "barcode": "3SABCD0123456789",
         "tracking_code": "TR4CK1NGC0D3",
         "tracking_url": "https://track.me/TR4CK1NGC0D3",
-        "weight": 24,
         "physical_properties": {
           "height": 24,
           "width": 50,
           "length": 50,
           "volume": 50,
           "weight": 24
+        },
+        "physical_properties_verified": {
+          "height": 240,
+          "width": 500,
+          "length": 500,
+          "volume": 500,
+          "weight": 240
         },
         "created_at": 1504801719,
         "updated_at": 1504801719,
