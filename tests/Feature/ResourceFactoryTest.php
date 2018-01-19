@@ -291,13 +291,6 @@ class ResourceFactoryTest extends TestCase
     {
         $resourceFactory = new ResourceFactory();
         $service = $resourceFactory->create('services', [
-            'name'         => 'Easy Delivery Service',
-            'package_type' => ServiceInterface::PACKAGE_TYPE_PARCEL,
-            'transit_time' => [
-                'min' => 2,
-                'max' => 5,
-            ],
-
             'name'            => 'Easy Delivery Service',
             'package_type'    => ServiceInterface::PACKAGE_TYPE_PARCEL,
             'transit_time'    => [
