@@ -46,8 +46,7 @@ class ShipmentProxyTest extends TestCase
             ->setHttpClient($this->client)
             ->authenticate($this->authenticator);
 
-        $this->shipmentProxy = new ShipmentProxy();
-        $this->shipmentProxy
+        $this->shipmentProxy = (new ShipmentProxy())
             ->setMyParcelComApi($this->api)
             ->setId('shipment-id-1');
     }
@@ -280,11 +279,15 @@ class ShipmentProxyTest extends TestCase
     public function testJsonSerialize()
     {
         $shipmentProxy = new ShipmentProxy();
-        $shipmentProxy->setId('shipment-id-1');
+        $shipmentProxy
+            ->setMyParcelComApi($this->api)
+            ->setResourceUri('https://api/v1/shipments/shipment-id-1')
+            ->setId('shipment-id-1');
 
         $this->assertEquals([
-            'id' => 'shipment-id-1',
+            'id'   => 'shipment-id-1',
             'type' => ResourceInterface::TYPE_SHIPMENT,
+            'uri'  => 'https://api/v1/shipments/shipment-id-1',
         ], $shipmentProxy->jsonSerialize());
     }
 }

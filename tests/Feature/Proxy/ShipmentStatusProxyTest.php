@@ -52,7 +52,7 @@ class ShipmentStatusProxyTest extends TestCase
         $this->assertEquals(ResourceInterface::TYPE_SHIPMENT_STATUS, $this->shipmentStatusProxy->getType());
         $this->assertEquals('9001', $this->shipmentStatusProxy->getCarrierStatusCode());
         $this->assertEquals('Confirmed at destination', $this->shipmentStatusProxy->getCarrierStatusDescription());
-        $this->assertEquals(1504801719, $this->shipmentStatusProxy->getCarrierTimestamp());
+        $this->assertEquals(1504801719, $this->shipmentStatusProxy->getCarrierTimestamp()->getTimestamp());
     }
 
     /** @test */
@@ -118,7 +118,7 @@ class ShipmentStatusProxyTest extends TestCase
         $this->assertEquals([
             'id'   => 'shipment-status-id-1',
             'type' => ResourceInterface::TYPE_SHIPMENT_STATUS,
-            'uri'  => 'https://api/v1/shipments/shipment-id-1/statuses/shipment-status-id-1'
+            'uri'  => 'https://api/v1/shipments/shipment-id-1/statuses/shipment-status-id-1',
         ], $shipmentStatusProxy->jsonSerialize());
     }
 }

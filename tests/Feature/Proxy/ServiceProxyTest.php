@@ -39,8 +39,7 @@ class ServiceProxyTest extends TestCase
             ->setHttpClient($this->client)
             ->authenticate($this->authenticator);
 
-        $this->serviceProxy = new ServiceProxy();
-        $this->serviceProxy
+        $this->serviceProxy = (new ServiceProxy())
             ->setMyParcelComApi($this->api)
             ->setId('433285bb-2e34-435c-9109-1120e7c4bce4');
     }
@@ -159,11 +158,15 @@ class ServiceProxyTest extends TestCase
     public function testJsonSerialize()
     {
         $serviceProxy = new ServiceProxy();
-        $serviceProxy->setId('service-id-1');
+        $serviceProxy
+            ->setMyParcelComApi($this->api)
+            ->setResourceUri('https://api/v1/services/433285bb-2e34-435c-9109-1120e7c4bce4')
+            ->setId('service-id-1');
 
         $this->assertEquals([
-            'id' => 'service-id-1',
+            'id'   => 'service-id-1',
             'type' => ResourceInterface::TYPE_SERVICE,
+            'uri'  => 'https://api/v1/services/433285bb-2e34-435c-9109-1120e7c4bce4',
         ], $serviceProxy->jsonSerialize());
     }
 }

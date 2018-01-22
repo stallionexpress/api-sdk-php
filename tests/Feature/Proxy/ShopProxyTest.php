@@ -39,8 +39,7 @@ class ShopProxyTest extends TestCase
             ->setHttpClient($this->client)
             ->authenticate($this->authenticator);
 
-        $this->shopProxy = new ShopProxy();
-        $this->shopProxy
+        $this->shopProxy = (new ShopProxy())
             ->setMyParcelComApi($this->api)
             ->setId('shop-id-1');
     }
@@ -107,11 +106,15 @@ class ShopProxyTest extends TestCase
     public function testJsonSerialize()
     {
         $shopProxy = new ShopProxy();
-        $shopProxy->setId('shop-id-1');
+        $shopProxy
+            ->setMyParcelComApi($this->api)
+            ->setResourceUri('https://api/v1/shops/shop-id-1')
+            ->setId('shop-id-1');
 
         $this->assertEquals([
-            'id' => 'shop-id-1',
+            'id'   => 'shop-id-1',
             'type' => ResourceInterface::TYPE_SHOP,
+            'uri'  => 'https://api/v1/shops/shop-id-1',
         ], $shopProxy->jsonSerialize());
     }
 }

@@ -39,8 +39,7 @@ class FileProxyTest extends TestCase
     /** @test */
     public function testAttributes()
     {
-        $fileProxy = new FileProxy();
-        $fileProxy
+        $fileProxy = (new FileProxy())
             ->setMyParcelComApi($this->api)
             ->setId('file-id-1');
 
@@ -131,11 +130,15 @@ class FileProxyTest extends TestCase
     public function testJsonSerialize()
     {
         $fileProxy = new FileProxy();
-        $fileProxy->setId('file-proxy-id-1');
+        $fileProxy
+            ->setMyParcelComApi($this->api)
+            ->setResourceUri('https://api/v1/files/file-id-1')
+            ->setId('file-proxy-id-1');
 
         $this->assertEquals([
-            'id'       => 'file-proxy-id-1',
-            'type'     => ResourceInterface::TYPE_FILE,
+            'id'   => 'file-proxy-id-1',
+            'type' => ResourceInterface::TYPE_FILE,
+            'uri'  => 'https://api/v1/files/file-id-1',
         ], $fileProxy->jsonSerialize());
     }
 }

@@ -124,63 +124,6 @@ class StatusProxy implements StatusInterface, ResourceProxyInterface
     }
 
     /**
-     * @param string $carrierCode
-     * @return $this
-     */
-    public function setCarrierStatusCode($carrierCode)
-    {
-        $this->getResource()->setCarrierStatusCode($carrierCode);
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCarrierStatusCode()
-    {
-        return $this->getResource()->getCarrierStatusCode();
-    }
-
-    /**
-     * @param string $carrierDescription
-     * @return $this
-     */
-    public function setCarrierStatusDescription($carrierDescription)
-    {
-        $this->getResource()->setCarrierStatusDescription($carrierDescription);
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCarrierStatusDescription()
-    {
-        return $this->getResource()->getCode();
-    }
-
-    /**
-     * @param int|\DateTime $timestamp
-     * @return $this
-     */
-    public function setCarrierTimestamp($timestamp)
-    {
-        $this->getResource()->setCarrierTimestamp($timestamp);
-
-        return $this;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getCarrierTimestamp()
-    {
-        return $this->getResource()->getCarrierTimestamp();
-    }
-
-    /**
      * This function puts all object properties in an array and returns it.
      *
      * @return array

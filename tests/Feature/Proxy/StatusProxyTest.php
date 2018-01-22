@@ -36,8 +36,7 @@ class StatusProxyTest extends TestCase
             ->setHttpClient($this->client)
             ->authenticate($this->authenticator);
 
-        $this->statusProxy = new StatusProxy();
-        $this->statusProxy
+        $this->statusProxy = (new StatusProxy())
             ->setMyParcelComApi($this->api)
             ->setId('status-id-1');
     }
@@ -54,9 +53,44 @@ class StatusProxyTest extends TestCase
     }
 
     /** @test */
-    public function testCarrierStatusCodeMeta()
+    public function testClientCalls()
     {
-        $carrierStatusCode = $this->statusProxy->getCarrierStatusCode();
-        var_dump($carrierStatusCode);
+        // Check if the uri has been called only once
+        // while requesting multiple attributes.
+        $firstProxy = new StatusProxy();
+        $firstProxy
+            ->setMyParcelComApi($this->api)
+            ->setId('status-id-1');
+        $firstProxy->getName();
+        $firstProxy->getLevel();
+        $firstProxy->getCode();
+
+        $this->assertEquals(1, $this->clientCalls['https://api/v1/statuses/status-id-1']);
+
+        // Creating a new proxy for the same resource will
+        // change the amount of client calls to 2.
+        $secondProxy = new StatusProxy();
+        $secondProxy
+            ->setMyParcelComApi($this->api)
+            ->setId('status-id-1');
+        $secondProxy->getDescription();
+
+        $this->assertEquals(2, $this->clientCalls['https://api/v1/statuses/status-id-1']);
+    }
+
+    /** @test */
+    public function testJsonSerialize()
+    {
+        $statusProxy = new StatusProxy();
+        $statusProxy
+            ->setMyParcelComApi($this->api)
+            ->setResourceUri('https://api/v1/statuses/status-id-1')
+            ->setId('status-id-1');
+
+        $this->assertEquals([
+            'id' => 'status-id-1',
+            'type' => ResourceInterface::TYPE_STATUS,
+            'uri' => 'https://api/v1/statuses/status-id-1',
+        ], $statusProxy->jsonSerialize());
     }
 }
