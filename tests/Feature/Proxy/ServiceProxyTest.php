@@ -56,13 +56,23 @@ class ServiceProxyTest extends TestCase
         $this->assertEquals('collection', $this->serviceProxy->getHandoverMethod());
 
         $this->assertInternalType('array', $this->serviceProxy->getDeliveryDays());
-        $this->assertArraySubset([
+        $this->assertEquals([
             'Monday',
             'Tuesday',
             'Wednesday',
             'Thursday',
         ], $this->serviceProxy->getDeliveryDays());
         $this->assertCount(4, $this->serviceProxy->getDeliveryDays());
+        $this->assertEquals([
+            'Wednesday',
+            'Friday',
+        ], $this->serviceProxy->setDeliveryDays(['Wednesday', 'Friday'])->getDeliveryDays());
+        $this->serviceProxy->addDeliveryDay('Tuesday');
+        $this->assertEquals([
+            'Wednesday',
+            'Friday',
+            'Tuesday',
+        ], $this->serviceProxy->getDeliveryDays());
     }
 
     /** @test */
