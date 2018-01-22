@@ -32,6 +32,10 @@ trait MocksApiCommunication
                         str_replace([':', '{', '}', '(', ')', '/', '\\', '@', '?', '[', ']', '=', '&'], '-', $uri),
                     ]) . '.json';
 
+                if (strpos($filePath, 'stream') !== false) {
+                    $filePath = preg_replace('/.json/', '.txt', $filePath);
+                }
+
                 if (!file_exists($filePath)) {
                     throw new \RuntimeException(sprintf(
                         'File with path `%s` does not exist, please create this file with valid response data',
