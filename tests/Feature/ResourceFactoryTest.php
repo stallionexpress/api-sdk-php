@@ -420,17 +420,21 @@ class ResourceFactoryTest extends TestCase
             'name'     => 'Sign on delivery',
             'price'    => 55,
             'currency' => 'NOK',
+            'code'     => 'some-code',
+            'category' => 'some-category',
         ]);
 
         $this->assertInstanceOf(ServiceOptionInterface::class, $serviceOption);
         $this->assertEquals([
             'type'       => 'service-options',
             'attributes' => [
-                'name'  => 'Sign on delivery',
-                'price' => [
+                'name'     => 'Sign on delivery',
+                'price'    => [
                     'amount'   => 55,
                     'currency' => 'NOK',
                 ],
+                'code'     => 'some-code',
+                'category' => 'some-category',
             ],
         ], $serviceOption->jsonSerialize());
     }
