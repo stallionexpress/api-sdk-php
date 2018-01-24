@@ -43,23 +43,41 @@ class ServiceOptionTest extends TestCase
     }
 
     /** @test */
+    public function testCode()
+    {
+        $option = new ServiceOption();
+        $this->assertEquals('some-code', $option->setCode('some-code')->getCode());
+    }
+
+    /** @test */
+    public function testCategory()
+    {
+        $option = new ServiceOption();
+        $this->assertEquals('some-category', $option->setCategory('some-category')->getCategory());
+    }
+
+    /** @test */
     public function testJsonSerialize()
     {
         $option = (new ServiceOption())
             ->setId('service-option-id')
             ->setName('Sign on delivery')
             ->setPrice(55)
-            ->setCurrency('NOK');
+            ->setCurrency('NOK')
+            ->setCode('some-code')
+            ->setCategory('some-category');
 
         $this->assertEquals([
             'id'         => 'service-option-id',
             'type'       => 'service-options',
             'attributes' => [
-                'name'  => 'Sign on delivery',
-                'price' => [
+                'name'     => 'Sign on delivery',
+                'price'    => [
                     'amount'   => 55,
                     'currency' => 'NOK',
                 ],
+                'code'     => 'some-code',
+                'category' => 'some-category',
             ],
         ], $option->jsonSerialize());
     }

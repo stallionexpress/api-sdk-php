@@ -14,12 +14,16 @@ class ServiceOption implements ServiceOptionInterface
     const ATTRIBUTE_AMOUNT = 'amount';
     const ATTRIBUTE_PRICE = 'price';
     const ATTRIBUTE_NAME = 'name';
+    const ATTRIBUTE_CODE = 'code';
+    const ATTRIBUTE_CATEGORY = 'category';
 
     private $id;
     private $type = ResourceInterface::TYPE_SERVICE_OPTION;
     private $attributes = [
-        self::ATTRIBUTE_NAME  => null,
-        self::ATTRIBUTE_PRICE => [],
+        self::ATTRIBUTE_NAME     => null,
+        self::ATTRIBUTE_PRICE    => [],
+        self::ATTRIBUTE_CODE     => null,
+        self::ATTRIBUTE_CATEGORY => null,
     ];
 
     /**
@@ -105,5 +109,41 @@ class ServiceOption implements ServiceOptionInterface
         return isset($this->attributes[self::ATTRIBUTE_PRICE][self::ATTRIBUTE_CURRENCY])
             ? $this->attributes[self::ATTRIBUTE_PRICE][self::ATTRIBUTE_CURRENCY]
             : null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setCode($code)
+    {
+        $this->attributes[self::ATTRIBUTE_CODE] = $code;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCode()
+    {
+        return $this->attributes[self::ATTRIBUTE_CODE];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setCategory($category)
+    {
+        $this->attributes[self::ATTRIBUTE_CATEGORY] = $category;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCategory()
+    {
+        return $this->attributes[self::ATTRIBUTE_CATEGORY];
     }
 }
