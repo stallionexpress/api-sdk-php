@@ -187,18 +187,18 @@ interface ShipmentInterface extends ResourceInterface
      * @param ServiceOptionInterface[] $options
      * @return $this
      */
-    public function setOptions(array $options);
+    public function setServiceOptions(array $options);
 
     /**
      * @param ServiceOptionInterface $option
      * @return $this
      */
-    public function addOption(ServiceOptionInterface $option);
+    public function addServiceOption(ServiceOptionInterface $option);
 
     /**
      * @return ServiceOptionInterface[]
      */
-    public function getOptions();
+    public function getServiceOptions();
 
     /**
      * @param PhysicalPropertiesInterface $physicalProperties

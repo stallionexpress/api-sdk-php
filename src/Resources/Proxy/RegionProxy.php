@@ -59,7 +59,7 @@ class RegionProxy implements RegionInterface, ResourceProxyInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getCountryCode()
     {
@@ -78,7 +78,7 @@ class RegionProxy implements RegionInterface, ResourceProxyInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getRegionCode()
     {
@@ -97,7 +97,7 @@ class RegionProxy implements RegionInterface, ResourceProxyInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getCurrency()
     {
@@ -134,6 +134,7 @@ class RegionProxy implements RegionInterface, ResourceProxyInterface
         $values = get_object_vars($this);
         unset($values['resource']);
         unset($values['api']);
+        unset($values['uri']);
 
         return $this->arrayValuesToArray($values);
     }

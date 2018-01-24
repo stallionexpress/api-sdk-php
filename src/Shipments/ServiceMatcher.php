@@ -69,13 +69,13 @@ class ServiceMatcher
     {
         $optionIds = array_map(function (ServiceOptionInterface $option) {
             return $option->getId();
-        }, $shipment->getOptions());
+        }, $shipment->getServiceOptions());
 
         $matches = [];
         foreach ($contracts as $contract) {
             $contractOptionIds = array_map(function (ServiceOptionInterface $option) use ($optionIds) {
                 return $option->getId();
-            }, $contract->getOptions());
+            }, $contract->getServiceOptions());
 
             if (!array_diff($optionIds, $contractOptionIds)) {
                 $matches[] = $contract;

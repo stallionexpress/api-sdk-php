@@ -5,7 +5,7 @@
     "attributes": {
       "country_code": "GB",
       "name": "United Kingdom",
-      "region_code": null
+      "region_code": "ENG"
     },
     "links": {
       "self": "https://api/v1/regions/c1048135-db45-404e-adac-fdecd0c7134a"

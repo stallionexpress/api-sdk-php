@@ -139,11 +139,11 @@ class PriceCalculator
         $price = 0;
 
         $optionPrices = [];
-        foreach ($contract->getOptions() as $option) {
+        foreach ($contract->getServiceOptions() as $option) {
             $optionPrices[$option->getId()] = $option->getPrice();
         }
 
-        foreach ($shipment->getOptions() as $option) {
+        foreach ($shipment->getServiceOptions() as $option) {
             if (!isset($optionPrices[$option->getId()])) {
                 throw new CalculationException(
                     'Cannot calculate a price for given shipment; invalid option: ' . $option->getId()

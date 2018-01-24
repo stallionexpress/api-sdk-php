@@ -76,7 +76,7 @@ class ResourceFactoryTest extends TestCase
                     'step_size'  => 1,
                 ],
             ],
-            'options'    => [
+            'service_options'    => [
                 [
                     'type'     => 'service-options',
                     'id'       => 'service-option-id',
@@ -124,7 +124,7 @@ class ResourceFactoryTest extends TestCase
                         ],
                     ],
                 ],
-                'options'    => [
+                'service_options'    => [
                     [
                         'type'       => 'service-options',
                         'id'         => 'service-option-id',
@@ -557,7 +557,7 @@ class ResourceFactoryTest extends TestCase
             'service'                 => ['id' => 'service-id-1', 'type' => 'services'],
             'contract'                => ['id' => 'contract-id-1', 'type' => 'contracts'],
             'status'                  => ['id' => 'shipment-status-id-1', 'type' => 'statuses'],
-            'options'                 => [['id' => 'option-id-1', 'type' => 'service-options']],
+            'service_options'         => [['id' => 'option-id-1', 'type' => 'service-options']],
             'files'                   => [['id' => 'file-id-1', 'type' => 'files']],
         ]);
 
@@ -633,12 +633,12 @@ class ResourceFactoryTest extends TestCase
                 ],
             ],
             'relationships' => [
-                'shop'     => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
-                'service'  => ['data' => ['id' => 'service-id-1', 'type' => 'services']],
-                'contract' => ['data' => ['id' => 'contract-id-1', 'type' => 'contracts']],
-                'status'   => ['data' => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses']],
-                'options'  => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
-                'files'    => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
+                'shop'            => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
+                'service'         => ['data' => ['id' => 'service-id-1', 'type' => 'services']],
+                'contract'        => ['data' => ['id' => 'contract-id-1', 'type' => 'contracts']],
+                'status'          => ['data' => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses']],
+                'service_options' => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
+                'files'           => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
             ],
         ], $shipment->jsonSerialize());
     }
@@ -743,7 +743,7 @@ class ResourceFactoryTest extends TestCase
             'service'                 => ['id' => 'service-id-1', 'type' => 'services'],
             'contract'                => ['id' => 'contract-id-1', 'type' => 'contracts'],
             'status'                  => ['id' => 'shipment-status-id-1', 'type' => 'statuses'],
-            'options'                 => [['id' => 'option-id-1', 'type' => 'service-options']],
+            'service_options'         => [['id' => 'option-id-1', 'type' => 'service-options']],
             'files'                   => [['id' => 'file-id-1', 'type' => 'files']],
         ]);
 
@@ -857,12 +857,12 @@ class ResourceFactoryTest extends TestCase
                 ],
             ],
             'relationships' => [
-                'shop'     => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
-                'service'  => ['data' => ['id' => 'service-id-1', 'type' => 'services']],
-                'contract' => ['data' => ['id' => 'contract-id-1', 'type' => 'contracts']],
-                'status'   => ['data' => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses']],
-                'options'  => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
-                'files'    => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
+                'shop'            => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
+                'service'         => ['data' => ['id' => 'service-id-1', 'type' => 'services']],
+                'contract'        => ['data' => ['id' => 'contract-id-1', 'type' => 'contracts']],
+                'status'          => ['data' => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses']],
+                'service_options' => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
+                'files'           => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
             ],
         ], $shipment->jsonSerialize());
     }

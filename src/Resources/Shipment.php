@@ -39,7 +39,7 @@ class Shipment implements ShipmentInterface
 
     const RELATIONSHIP_CONTRACT = 'contract';
     const RELATIONSHIP_FILES = 'files';
-    const RELATIONSHIP_OPTIONS = 'options';
+    const RELATIONSHIP_SERVICE_OPTIONS = 'service_options';
     const RELATIONSHIP_SERVICE = 'service';
     const RELATIONSHIP_SHOP = 'shop';
     const RELATIONSHIP_STATUS = 'status';
@@ -64,22 +64,22 @@ class Shipment implements ShipmentInterface
     ];
 
     private $relationships = [
-        self::RELATIONSHIP_SHOP     => [
+        self::RELATIONSHIP_SHOP            => [
             'data' => null,
         ],
-        self::RELATIONSHIP_SERVICE  => [
+        self::RELATIONSHIP_SERVICE         => [
             'data' => null,
         ],
-        self::RELATIONSHIP_CONTRACT => [
+        self::RELATIONSHIP_CONTRACT        => [
             'data' => null,
         ],
-        self::RELATIONSHIP_STATUS   => [
+        self::RELATIONSHIP_STATUS          => [
             'data' => null,
         ],
-        self::RELATIONSHIP_OPTIONS  => [
+        self::RELATIONSHIP_SERVICE_OPTIONS => [
             'data' => [],
         ],
-        self::RELATIONSHIP_FILES    => [
+        self::RELATIONSHIP_FILES           => [
             'data' => [],
         ],
     ];
@@ -410,12 +410,12 @@ class Shipment implements ShipmentInterface
     /**
      * {@inheritdoc}
      */
-    public function setOptions(array $options)
+    public function setServiceOptions(array $options)
     {
-        $this->relationships[self::RELATIONSHIP_OPTIONS]['data'] = [];
+        $this->relationships[self::RELATIONSHIP_SERVICE_OPTIONS]['data'] = [];
 
         array_walk($options, function ($option) {
-            $this->addOption($option);
+            $this->addServiceOption($option);
         });
 
         return $this;
@@ -424,9 +424,9 @@ class Shipment implements ShipmentInterface
     /**
      * {@inheritdoc}
      */
-    public function addOption(ServiceOptionInterface $option)
+    public function addServiceOption(ServiceOptionInterface $option)
     {
-        $this->relationships[self::RELATIONSHIP_OPTIONS]['data'][] = $option;
+        $this->relationships[self::RELATIONSHIP_SERVICE_OPTIONS]['data'][] = $option;
 
         return $this;
     }
@@ -434,9 +434,9 @@ class Shipment implements ShipmentInterface
     /**
      * {@inheritdoc}
      */
-    public function getOptions()
+    public function getServiceOptions()
     {
-        return $this->relationships[self::RELATIONSHIP_OPTIONS]['data'];
+        return $this->relationships[self::RELATIONSHIP_SERVICE_OPTIONS]['data'];
     }
 
     /**

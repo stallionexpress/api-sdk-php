@@ -28,13 +28,6 @@ class Status implements StatusInterface
         self::ATTRIBUTE_NAME        => null,
         self::ATTRIBUTE_DESCRIPTION => null,
     ];
-    private $meta = [
-        self::META_RESOURCE_DATA => [
-            self::META_CODE        => null,
-            self::META_DESCRIPTION => null,
-            self::META_TIMESTAMP   => null,
-        ],
-    ];
 
     /**
      * @return string

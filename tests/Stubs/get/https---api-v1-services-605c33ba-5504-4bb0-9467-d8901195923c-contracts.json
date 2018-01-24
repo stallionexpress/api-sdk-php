@@ -44,7 +44,7 @@
             }
           }
         ],
-        "options": [
+        "service_options": [
           {
             "type": "service-options",
             "id": "00ea9fb8-e5a9-4818-bf22-c3574f5fe12b",
@@ -119,7 +119,7 @@
             }
           }
         ],
-        "options": [
+        "service_options": [
           {
             "type": "service-options",
             "id": "ad3b8030-0da1-40bb-ac07-d1bdbaeaa3e7",

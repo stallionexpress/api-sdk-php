@@ -4,9 +4,6 @@ namespace MyParcelCom\ApiSdk\Tests\Feature;
 
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Promise\RejectedPromise;
-use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Psr7\Response;
 use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
 use MyParcelCom\ApiSdk\Exceptions\InvalidResourceException;
 use MyParcelCom\ApiSdk\MyParcelComApi;
@@ -22,11 +19,13 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentStatusInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\StatusInterface;
 use MyParcelCom\ApiSdk\Resources\Shipment;
+use MyParcelCom\ApiSdk\Tests\Traits\MocksApiCommunication;
 use PHPUnit\Framework\TestCase;
-use function GuzzleHttp\Promise\promise_for;
 
 class MyParcelComApiTest extends TestCase
 {
+    use MocksApiCommunication;
+
     /** @var AuthenticatorInterface */
     private $authenticator;
     /** @var MyParcelComApi */
@@ -36,68 +35,9 @@ class MyParcelComApiTest extends TestCase
 
     public function setUp()
     {
-        $this->authenticator = $this->getMockBuilder(AuthenticatorInterface::class)
-            ->disableOriginalConstructor()
-            ->disableOriginalClone()
-            ->disableArgumentCloning()
-            ->disallowMockingUnknownTypes()
-            ->getMock();
+        $this->authenticator = $this->getAuthenticatorMock();
 
-        $this->authenticator->method('getAuthorizationHeader')
-            ->willReturn(['Authorization' => 'Bearer test-api-token']);
-
-        $this->client = $this->getMockBuilder(ClientInterface::class)
-            ->disableOriginalConstructor()
-            ->disableOriginalClone()
-            ->disableArgumentCloning()
-            ->disallowMockingUnknownTypes()
-            ->getMock();
-        $this->client
-            ->method('requestAsync')
-            ->willReturnCallback(function ($method, $uri, $options) {
-                $filePath = implode(DIRECTORY_SEPARATOR, [
-                        dirname(dirname(__FILE__)),
-                        'Stubs',
-                        $method,
-                        str_replace([':', '{', '}', '(', ')', '/', '\\', '@', '?', '[', ']', '=', '&'], '-', $uri),
-                    ]) . '.json';
-
-                if (!file_exists($filePath)) {
-                    throw new \RuntimeException(sprintf(
-                        'File with path `%s` does not exist, please create this file with valid response data',
-                        $filePath
-                    ));
-                }
-
-                $returnJson = file_get_contents($filePath);
-                if ($method === 'post') {
-                    // Any post will have the data from the stub added to the
-                    // original request. This simulates the api creating the
-                    // resource and returning it with added attributes.
-                    $returnJson = \GuzzleHttp\json_encode(
-                        array_merge_recursive(
-                            \GuzzleHttp\json_decode($returnJson, true),
-                            // You may wonder why we would encode and then
-                            // decode this, but it is possible that the json in
-                            // the options array is not an associative array,
-                            // which we need to be able to merge.
-                            \GuzzleHttp\json_decode(\GuzzleHttp\json_encode($options['json']), true)
-                        )
-                    );
-                }
-
-                if (strpos($returnJson, '"errors": [') !== false) {
-                    return new RejectedPromise(new RequestException(
-                        'This carrier does not have any pickup and dropoff locations.',
-                        new Request($method, $uri),
-                        new Response(500, [], $returnJson)
-                    ));
-                }
-
-                $response = new Response(200, [], $returnJson);
-
-                return promise_for($response);
-            });
+        $this->client = $this->getClientMock();
 
         $this->api = (new MyParcelComApi('https://api'))
             ->setHttpClient($this->client)
