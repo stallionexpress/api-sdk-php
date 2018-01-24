@@ -656,7 +656,7 @@ class ResourceFactoryTest extends TestCase
     }
 
     /** @test */
-    public function testCreateShipmentWitCustoms()
+    public function testCreateShipmentWithCustoms()
     {
         $resourceFactory = new ResourceFactory();
         $shipment = $resourceFactory->create('shipments', [
