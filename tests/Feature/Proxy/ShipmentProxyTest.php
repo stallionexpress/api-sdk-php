@@ -85,8 +85,15 @@ class ShipmentProxyTest extends TestCase
         $this->assertEquals(24, $this->shipmentProxy->getPhysicalProperties()->getHeight());
         $this->assertEquals(24, $this->shipmentProxy->getPhysicalProperties()->getWeight());
         $this->assertEquals(50, $this->shipmentProxy->getPhysicalProperties()->getLength());
-        $this->assertEquals(50, $this->shipmentProxy->getPhysicalProperties()->getVolume());
+        $this->assertEquals(0.06, $this->shipmentProxy->getPhysicalProperties()->getVolume());
         $this->assertEquals(24, $this->shipmentProxy->getPhysicalProperties()->getWeight());
+
+        $this->assertInstanceOf(PhysicalPropertiesInterface::class, $this->shipmentProxy->getPhysicalPropertiesVerified());
+        $this->assertEquals(240, $this->shipmentProxy->getPhysicalPropertiesVerified()->getHeight());
+        $this->assertEquals(240, $this->shipmentProxy->getPhysicalPropertiesVerified()->getWeight());
+        $this->assertEquals(500, $this->shipmentProxy->getPhysicalPropertiesVerified()->getLength());
+        $this->assertEquals(60, $this->shipmentProxy->getPhysicalPropertiesVerified()->getVolume());
+        $this->assertEquals(240, $this->shipmentProxy->getPhysicalPropertiesVerified()->getWeight());
 
         $customs = $this->shipmentProxy->getCustoms();
         $this->assertInstanceOf(CustomsInterface::class, $customs);

@@ -398,7 +398,7 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
      */
     public function setPhysicalPropertiesVerified(PhysicalPropertiesInterface $physicalProperties)
     {
-        $this->getResource()->setPhysicalProperties($physicalProperties);
+        $this->getResource()->setPhysicalPropertiesVerified($physicalProperties);
 
         return $this;
     }
@@ -408,7 +408,7 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
      */
     public function getPhysicalPropertiesVerified()
     {
-        return $this->getResource()->getPhysicalProperties();
+        return $this->getResource()->getPhysicalPropertiesVerified();
     }
 
     /**
