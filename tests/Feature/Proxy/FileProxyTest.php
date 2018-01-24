@@ -138,7 +138,6 @@ class FileProxyTest extends TestCase
         $this->assertEquals([
             'id'   => 'file-proxy-id-1',
             'type' => ResourceInterface::TYPE_FILE,
-            'uri'  => 'https://api/v1/files/file-id-1',
         ], $fileProxy->jsonSerialize());
     }
 }

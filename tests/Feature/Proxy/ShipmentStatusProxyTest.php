@@ -118,7 +118,6 @@ class ShipmentStatusProxyTest extends TestCase
         $this->assertEquals([
             'id'   => 'shipment-status-id-1',
             'type' => ResourceInterface::TYPE_SHIPMENT_STATUS,
-            'uri'  => 'https://api/v1/shipments/shipment-id-1/statuses/shipment-status-id-1',
         ], $shipmentStatusProxy->jsonSerialize());
     }
 }

@@ -90,7 +90,6 @@ class StatusProxyTest extends TestCase
         $this->assertEquals([
             'id' => 'status-id-1',
             'type' => ResourceInterface::TYPE_STATUS,
-            'uri' => 'https://api/v1/statuses/status-id-1',
         ], $statusProxy->jsonSerialize());
     }
 }

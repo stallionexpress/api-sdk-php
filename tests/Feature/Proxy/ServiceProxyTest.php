@@ -176,7 +176,6 @@ class ServiceProxyTest extends TestCase
         $this->assertEquals([
             'id'   => 'service-id-1',
             'type' => ResourceInterface::TYPE_SERVICE,
-            'uri'  => 'https://api/v1/services/433285bb-2e34-435c-9109-1120e7c4bce4',
         ], $serviceProxy->jsonSerialize());
     }
 }

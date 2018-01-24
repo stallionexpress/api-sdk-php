@@ -114,7 +114,6 @@ class ShopProxyTest extends TestCase
         $this->assertEquals([
             'id'   => 'shop-id-1',
             'type' => ResourceInterface::TYPE_SHOP,
-            'uri'  => 'https://api/v1/shops/shop-id-1',
         ], $shopProxy->jsonSerialize());
     }
 }

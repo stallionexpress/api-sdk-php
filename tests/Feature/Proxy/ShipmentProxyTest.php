@@ -287,7 +287,6 @@ class ShipmentProxyTest extends TestCase
         $this->assertEquals([
             'id'   => 'shipment-id-1',
             'type' => ResourceInterface::TYPE_SHIPMENT,
-            'uri'  => 'https://api/v1/shipments/shipment-id-1',
         ], $shipmentProxy->jsonSerialize());
     }
 }

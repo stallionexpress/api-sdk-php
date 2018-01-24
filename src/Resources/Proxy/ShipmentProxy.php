@@ -490,6 +490,7 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
         $values = get_object_vars($this);
         unset($values['resource']);
         unset($values['api']);
+        unset($values['uri']);
 
         return $this->arrayValuesToArray($values);
     }
