@@ -2,7 +2,6 @@
 
 namespace MyParcelCom\ApiSdk\Resources;
 
-use MyParcelCom\ApiSdk\Exceptions\MyParcelComException;
 use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CustomsInterface;
@@ -30,6 +29,7 @@ class Shipment implements ShipmentInterface
     const ATTRIBUTE_CURRENCY = 'currency';
     const ATTRIBUTE_WEIGHT = 'weight';
     const ATTRIBUTE_PHYSICAL_PROPERTIES = 'physical_properties';
+    const ATTRIBUTE_PHYSICAL_PROPERTIES_VERIFIED = 'physical_properties_verified';
     const ATTRIBUTE_RECIPIENT_ADDRESS = 'recipient_address';
     const ATTRIBUTE_SENDER_ADDRESS = 'sender_address';
     const ATTRIBUTE_PICKUP = 'pickup_location';
@@ -49,18 +49,19 @@ class Shipment implements ShipmentInterface
     private $statusHistory;
     private $statusHistoryCallback;
     private $attributes = [
-        self::ATTRIBUTE_BARCODE             => null,
-        self::ATTRIBUTE_TRACKING_CODE       => null,
-        self::ATTRIBUTE_TRACKING_URL        => null,
-        self::ATTRIBUTE_DESCRIPTION         => null,
-        self::ATTRIBUTE_PRICE               => null,
-        self::ATTRIBUTE_INSURANCE           => null,
-        self::ATTRIBUTE_WEIGHT              => null,
-        self::ATTRIBUTE_PHYSICAL_PROPERTIES => null,
-        self::ATTRIBUTE_RECIPIENT_ADDRESS   => null,
-        self::ATTRIBUTE_SENDER_ADDRESS      => null,
-        self::ATTRIBUTE_PICKUP              => null,
-        self::ATTRIBUTE_CUSTOMS             => null,
+        self::ATTRIBUTE_BARCODE                      => null,
+        self::ATTRIBUTE_TRACKING_CODE                => null,
+        self::ATTRIBUTE_TRACKING_URL                 => null,
+        self::ATTRIBUTE_DESCRIPTION                  => null,
+        self::ATTRIBUTE_PRICE                        => null,
+        self::ATTRIBUTE_INSURANCE                    => null,
+        self::ATTRIBUTE_WEIGHT                       => null,
+        self::ATTRIBUTE_PHYSICAL_PROPERTIES          => null,
+        self::ATTRIBUTE_PHYSICAL_PROPERTIES_VERIFIED => null,
+        self::ATTRIBUTE_RECIPIENT_ADDRESS            => null,
+        self::ATTRIBUTE_SENDER_ADDRESS               => null,
+        self::ATTRIBUTE_PICKUP                       => null,
+        self::ATTRIBUTE_CUSTOMS                      => null,
     ];
 
     private $relationships = [
@@ -82,14 +83,6 @@ class Shipment implements ShipmentInterface
         self::RELATIONSHIP_FILES           => [
             'data' => [],
         ],
-    ];
-
-    private static $unitConversion = [
-        self::WEIGHT_GRAM     => 1,
-        self::WEIGHT_KILOGRAM => 1000,
-        self::WEIGHT_POUND    => 453.59237,
-        self::WEIGHT_OUNCE    => 28.349523125,
-        self::WEIGHT_STONE    => 6350.29318,
     ];
 
     /**
@@ -330,13 +323,12 @@ class Shipment implements ShipmentInterface
     /**
      * {@inheritdoc}
      */
-    public function setWeight($weight, $unit = self::WEIGHT_GRAM)
+    public function setWeight($weight, $unit = PhysicalPropertiesInterface::WEIGHT_GRAM)
     {
-        if (!isset(self::$unitConversion[$unit])) {
-            throw new MyParcelComException('invalid unit: ' . $unit);
+        if ($this->getPhysicalProperties() === null) {
+            $this->setPhysicalProperties(new PhysicalProperties());
         }
-
-        $this->attributes[self::ATTRIBUTE_WEIGHT] = (int)round($weight * self::$unitConversion[$unit]);
+        $this->getPhysicalProperties()->setWeight($weight, $unit);
 
         return $this;
     }
@@ -344,13 +336,13 @@ class Shipment implements ShipmentInterface
     /**
      * {@inheritdoc}
      */
-    public function getWeight($unit = self::WEIGHT_GRAM)
+    public function getWeight($unit = PhysicalPropertiesInterface::WEIGHT_GRAM)
     {
-        if (!isset(self::$unitConversion[$unit])) {
-            throw new MyParcelComException('invalid unit: ' . $unit);
+        if ($this->getPhysicalProperties() === null) {
+            $this->setPhysicalProperties(new PhysicalProperties());
         }
 
-        return (int)round($this->attributes[self::ATTRIBUTE_WEIGHT] / self::$unitConversion[$unit]);
+        return $this->getPhysicalProperties()->getWeight($unit);
     }
 
     /**
@@ -369,6 +361,24 @@ class Shipment implements ShipmentInterface
     public function getPhysicalProperties()
     {
         return $this->attributes[self::ATTRIBUTE_PHYSICAL_PROPERTIES];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setPhysicalPropertiesVerified(PhysicalPropertiesInterface $physicalProperties)
+    {
+        $this->attributes[self::ATTRIBUTE_PHYSICAL_PROPERTIES_VERIFIED] = $physicalProperties;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPhysicalPropertiesVerified()
+    {
+        return $this->attributes[self::ATTRIBUTE_PHYSICAL_PROPERTIES_VERIFIED];
     }
 
     /**

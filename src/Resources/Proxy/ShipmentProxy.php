@@ -270,7 +270,7 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
      * @param string $unit
      * @return $this
      */
-    public function setWeight($weight, $unit = self::WEIGHT_GRAM)
+    public function setWeight($weight, $unit = PhysicalPropertiesInterface::WEIGHT_GRAM)
     {
         $this->getResource()->setWeight($weight, $unit);
 
@@ -281,7 +281,7 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
      * @param string $unit
      * @return int
      */
-    public function getWeight($unit = self::WEIGHT_GRAM)
+    public function getWeight($unit = PhysicalPropertiesInterface::WEIGHT_GRAM)
     {
         return $this->getResource()->getWeight($unit);
     }
@@ -390,6 +390,25 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
     public function getPhysicalProperties()
     {
         return $this->getResource()->getPhysicalProperties();
+    }
+
+    /**
+     * @param PhysicalPropertiesInterface $physicalProperties
+     * @return $this
+     */
+    public function setPhysicalPropertiesVerified(PhysicalPropertiesInterface $physicalProperties)
+    {
+        $this->getResource()->setPhysicalPropertiesVerified($physicalProperties);
+
+        return $this;
+    }
+
+    /**
+     * @return PhysicalPropertiesInterface|null
+     */
+    public function getPhysicalPropertiesVerified()
+    {
+        return $this->getResource()->getPhysicalPropertiesVerified();
     }
 
     /**
