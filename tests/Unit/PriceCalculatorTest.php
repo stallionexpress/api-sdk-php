@@ -3,7 +3,7 @@
 namespace MyParcelCom\ApiSdk\Tests\Unit;
 
 use MyParcelCom\ApiSdk\Exceptions\CalculationException;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Shipments\PriceCalculator;
 use MyParcelCom\ApiSdk\Tests\Traits\MocksContract;
 use PHPUnit\Framework\TestCase;
@@ -268,9 +268,9 @@ class PriceCalculatorTest extends TestCase
         $calculator->calculateOptionsPrice($this->getMockedShipment(50, 0, ['option-q'], $contract));
     }
 
+    /** @test */
     public function testCalculate()
     {
-
         $contract = $this->getMockedContract([
             [
                 'weight_min' => 3500,
@@ -345,5 +345,49 @@ class PriceCalculatorTest extends TestCase
             799 + 121 + 1233 + 789,
             $calculator->calculate($this->getMockedShipment(9000, 157, ['option-a', 'option-c'], $contract))
         );
+    }
+
+    /** @test */
+    public function testCalculateException()
+    {
+        $calculator = new PriceCalculator();
+        $shipment = $this->createMock(ShipmentInterface::class);
+        $shipment->method('getContract')->willReturn(null);
+
+        $this->expectException(CalculationException::class);
+        $calculator->calculate($shipment);
+    }
+
+    /** @test */
+    public function testCalculateGroupPriceException()
+    {
+        $calculator = new PriceCalculator();
+        $shipment = $this->createMock(ShipmentInterface::class);
+        $shipment->method('getContract')->willReturn(null);
+
+        $this->expectException(CalculationException::class);
+        $calculator->calculateGroupPrice($shipment);
+    }
+
+    /** @test */
+    public function testCalculateOptionsPriceException()
+    {
+        $calculator = new PriceCalculator();
+        $shipment = $this->createMock(ShipmentInterface::class);
+        $shipment->method('getContract')->willReturn(null);
+
+        $this->expectException(CalculationException::class);
+        $calculator->calculateOptionsPrice($shipment);
+    }
+
+    /** @test */
+    public function testCalculateInsurancePriceException()
+    {
+        $calculator = new PriceCalculator();
+        $shipment = $this->createMock(ShipmentInterface::class);
+        $shipment->method('getContract')->willReturn(null);
+
+        $this->expectException(CalculationException::class);
+        $calculator->calculateInsurancePrice($shipment);
     }
 }

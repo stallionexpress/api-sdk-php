@@ -39,6 +39,25 @@ class ShipmentValidatorTest extends TestCase
     }
 
     /** @test */
+    public function testHasErrors()
+    {
+        $validator = new ShipmentValidator(new Shipment());
+
+        $this->assertEquals([], $validator->getErrors());
+        $this->assertEquals(false, $validator->hasErrors());
+
+        $validator->setErrors(['woei']);
+        $validator->addError('boem');
+
+        $this->assertEquals(['woei', 'boem'], $validator->getErrors());
+        $this->assertEquals(true, $validator->hasErrors());
+
+        $validator->clearErrors();
+        $this->assertEquals([], $validator->getErrors());
+        $this->assertEquals(false, $validator->hasErrors());
+    }
+
+    /** @test */
     public function testIsValid()
     {
         $shipment = (new Shipment())
