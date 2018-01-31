@@ -4,11 +4,11 @@ namespace MyParcelCom\ApiSdk\Tests\Traits;
 
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
-use function GuzzleHttp\Promise\promise_for;
 use GuzzleHttp\Promise\RejectedPromise;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
+use function GuzzleHttp\Promise\promise_for;
 
 trait MocksApiCommunication
 {

@@ -111,12 +111,30 @@ class MyParcelComApiTest extends TestCase
     }
 
     /** @test */
-    public function testCreateInvalidShipment()
+    public function testCreateInvalidShipmentMissingRecipient()
     {
         $shipment = new Shipment();
 
-        // Shipments with no recipient and weight, should cause the api to throw
-        // an exception.
+        // Shipments with no recipient and weight, should cause the api to throw an exception.
+        $this->expectException(InvalidResourceException::class);
+        $this->api->createShipment($shipment);
+    }
+
+    /** @test */
+    public function testCreateInvalidShipmentMissingWeight()
+    {
+        $recipient = (new Address())
+            ->setFirstName('Bobby')
+            ->setLastName('Tables')
+            ->setCity('Birmingham')
+            ->setStreet1('Newbourne Hill')
+            ->setStreetNumber(12)
+            ->setPostalCode('B48 7QN')
+            ->setCountryCode('GB');
+        $shipment = (new Shipment())
+            ->setRecipientAddress($recipient);
+
+        // add recipient to test the exception in createShipment
         $this->expectException(InvalidResourceException::class);
         $this->api->createShipment($shipment);
     }
