@@ -2,30 +2,40 @@
 
 namespace MyParcelCom\ApiSdk\Resources;
 
-use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierContractInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceGroupInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInsuranceInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 
-class Contract implements ContractInterface
+class CarrierContract implements CarrierContractInterface
 {
     use JsonSerializable;
 
-    const ATTRIBUTE_GROUPS = 'groups';
-    const ATTRIBUTE_SERVICE_OPTIONS = 'service_options';
-    const ATTRIBUTE_INSURANCES = 'insurances';
+    const ATTRIBUTE_CURRENCY = 'currency';
+
+    const RELATIONSHIP_CARRIER = 'carrier';
+    const RELATIONSHIP_SERVICE_CONTRACTS = 'service_contracts';
 
     /** @var string */
     private $id;
+
     /** @var string */
-    private $type = ResourceInterface::TYPE_CONTRACT;
+    private $type = ResourceInterface::TYPE_CARRIER_CONTRACT;
+
     /** @var array */
     private $attributes = [
-        self::ATTRIBUTE_GROUPS          => [],
-        self::ATTRIBUTE_SERVICE_OPTIONS => [],
-        self::ATTRIBUTE_INSURANCES      => [],
+        self::ATTRIBUTE_CURRENCY => null,
+    ];
+
+    /** @var array */
+    private $relationships = [
+        self::RELATIONSHIP_CARRIER           => [
+            'data' => null,
+        ],
+        self::RELATIONSHIP_SERVICE_CONTRACTS => [
+            'data' => [],
+        ],
     ];
 
     /**
@@ -55,98 +65,74 @@ class Contract implements ContractInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param string $currency
+     * @return $this
      */
-    public function setGroups(array $groups)
+    public function setCurrency($currency)
     {
-        $this->attributes[self::ATTRIBUTE_GROUPS] = [];
+        $this->attributes[self::ATTRIBUTE_CURRENCY] = $currency;
 
-        array_walk($groups, function ($group) {
-            $this->addGroup($group);
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCurrency()
+    {
+        return $this->attributes[self::ATTRIBUTE_CURRENCY];
+    }
+
+    /**
+     * @param CarrierInterface $carrier
+     * @return $this
+     */
+    public function setCarrier(CarrierInterface $carrier)
+    {
+        $this->relationships[self::RELATIONSHIP_CARRIER] = $carrier;
+
+        return $this;
+    }
+
+    /**
+     * @return CarrierInterface
+     */
+    public function getCarrier()
+    {
+        return $this->relationships[self::RELATIONSHIP_CARRIER];
+    }
+
+    /**
+     * @param ServiceContractInterface[] $serviceContracts
+     * @return $this
+     */
+    public function setServiceContracts(array $serviceContracts)
+    {
+        $this->relationships[self::RELATIONSHIP_SERVICE_CONTRACTS]['data'] = [];
+
+        array_walk($serviceContracts, function (ServiceContractInterface $serviceContract) {
+            $this->addServiceContract($serviceContract);
         });
 
         return $this;
     }
 
     /**
-     * {@inheritdoc}
+     * @param ServiceContractInterface $serviceContract
+     * @return $this
      */
-    public function addGroup(ServiceGroupInterface $group)
+    public function addServiceContract(ServiceContractInterface $serviceContract)
     {
-        $this->attributes[self::ATTRIBUTE_GROUPS][] = $group;
+        $this->relationships[self::RELATIONSHIP_SERVICE_CONTRACTS]['data'][] = $serviceContract;
 
         return $this;
     }
 
     /**
-     * {@inheritdoc}
+     * @return ServiceContractInterface[]
      */
-    public function getGroups()
+    public function getServiceContracts()
     {
-        return $this->attributes[self::ATTRIBUTE_GROUPS];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setServiceOptions(array $options)
-    {
-        $this->attributes[self::ATTRIBUTE_SERVICE_OPTIONS] = [];
-
-        array_walk($options, function ($option) {
-            $this->addServiceOption($option);
-        });
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addServiceOption(ServiceOptionInterface $option)
-    {
-        $this->attributes[self::ATTRIBUTE_SERVICE_OPTIONS][] = $option;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getServiceOptions()
-    {
-        return $this->attributes[self::ATTRIBUTE_SERVICE_OPTIONS];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setInsurances(array $insurances)
-    {
-        $this->attributes[self::ATTRIBUTE_INSURANCES] = [];
-
-        array_walk($insurances, function ($insurance) {
-            $this->addInsurance($insurance);
-        });
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addInsurance(ServiceInsuranceInterface $insurance)
-    {
-        $this->attributes[self::ATTRIBUTE_INSURANCES][] = $insurance;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getInsurances()
-    {
-        return $this->attributes[self::ATTRIBUTE_INSURANCES];
+        return $this->relationships[self::RELATIONSHIP_SERVICE_CONTRACTS]['data'];
     }
 }

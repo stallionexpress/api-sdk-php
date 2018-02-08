@@ -3,13 +3,12 @@
 namespace MyParcelCom\ApiSdk\Resources\Proxy;
 
 use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CustomsInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\PhysicalPropertiesInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentStatusInterface;
@@ -306,41 +305,22 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
     }
 
     /**
-     * @param ServiceInterface $service
+     * @param ServiceContractInterface $serviceContract
      * @return $this
      */
-    public function setService(ServiceInterface $service)
+    public function setServiceContract(ServiceContractInterface $serviceContract)
     {
-        $this->getResource()->setService($service);
+        $this->getResource()->setServiceContract($serviceContract);
 
         return $this;
     }
 
     /**
-     * @return ServiceInterface
+     * @return ServiceContractInterface
      */
-    public function getService()
+    public function getServiceContract()
     {
-        return $this->getResource()->getService();
-    }
-
-    /**
-     * @param ContractInterface $contract
-     * @return $this
-     */
-    public function setContract(ContractInterface $contract)
-    {
-        $this->getResource()->setContract($contract);
-
-        return $this;
-    }
-
-    /**
-     * @return ContractInterface
-     */
-    public function getContract()
-    {
-        return $this->getResource()->getContract();
+        return $this->getResource()->getServiceContract();
     }
 
     /**

@@ -3,12 +3,11 @@
 namespace MyParcelCom\ApiSdk\Resources;
 
 use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CustomsInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\PhysicalPropertiesInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentStatusInterface;
@@ -37,10 +36,9 @@ class Shipment implements ShipmentInterface
     const ATTRIBUTE_PICKUP_ADDRESS = 'address';
     const ATTRIBUTE_CUSTOMS = 'customs';
 
-    const RELATIONSHIP_CONTRACT = 'contract';
+    const RELATIONSHIP_SERVICE_CONTRACT = 'service_contract';
     const RELATIONSHIP_FILES = 'files';
     const RELATIONSHIP_SERVICE_OPTIONS = 'service_options';
-    const RELATIONSHIP_SERVICE = 'service';
     const RELATIONSHIP_SHOP = 'shop';
     const RELATIONSHIP_STATUS = 'status';
 
@@ -65,22 +63,19 @@ class Shipment implements ShipmentInterface
     ];
 
     private $relationships = [
-        self::RELATIONSHIP_SHOP            => [
+        self::RELATIONSHIP_SHOP             => [
             'data' => null,
         ],
-        self::RELATIONSHIP_SERVICE         => [
+        self::RELATIONSHIP_SERVICE_CONTRACT => [
             'data' => null,
         ],
-        self::RELATIONSHIP_CONTRACT        => [
+        self::RELATIONSHIP_STATUS           => [
             'data' => null,
         ],
-        self::RELATIONSHIP_STATUS          => [
-            'data' => null,
-        ],
-        self::RELATIONSHIP_SERVICE_OPTIONS => [
+        self::RELATIONSHIP_SERVICE_OPTIONS  => [
             'data' => [],
         ],
-        self::RELATIONSHIP_FILES           => [
+        self::RELATIONSHIP_FILES            => [
             'data' => [],
         ],
     ];
@@ -402,24 +397,6 @@ class Shipment implements ShipmentInterface
     /**
      * {@inheritdoc}
      */
-    public function setService(ServiceInterface $service)
-    {
-        $this->relationships[self::RELATIONSHIP_SERVICE]['data'] = $service;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getService()
-    {
-        return $this->relationships[self::RELATIONSHIP_SERVICE]['data'];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function setServiceOptions(array $options)
     {
         $this->relationships[self::RELATIONSHIP_SERVICE_OPTIONS]['data'] = [];
@@ -543,9 +520,9 @@ class Shipment implements ShipmentInterface
     /**
      * {@inheritdoc}
      */
-    public function setContract(ContractInterface $contract)
+    public function setServiceContract(ServiceContractInterface $serviceContract)
     {
-        $this->relationships[self::RELATIONSHIP_CONTRACT]['data'] = $contract;
+        $this->relationships[self::RELATIONSHIP_SERVICE_CONTRACT]['data'] = $serviceContract;
 
         return $this;
     }
@@ -553,9 +530,9 @@ class Shipment implements ShipmentInterface
     /**
      * {@inheritdoc}
      */
-    public function getContract()
+    public function getServiceContract()
     {
-        return $this->relationships[self::RELATIONSHIP_CONTRACT]['data'];
+        return $this->relationships[self::RELATIONSHIP_SERVICE_CONTRACT]['data'];
     }
 
     /**

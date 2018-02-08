@@ -3,9 +3,9 @@
 namespace MyParcelCom\ApiSdk\Resources;
 
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 
@@ -27,10 +27,13 @@ class Service implements ServiceInterface
 
     /** @var string */
     private $id;
+
     /** @var string */
     private $type = ResourceInterface::TYPE_SERVICE;
-    /** @var ContractInterface[] */
-    private $contracts = [];
+
+    /** @var ServiceContractInterface[] */
+    private $serviceContracts = [];
+
     /** @var array */
     private $attributes = [
         self::ATTRIBUTE_NAME            => null,
@@ -42,6 +45,7 @@ class Service implements ServiceInterface
         self::ATTRIBUTE_HANDOVER_METHOD => null,
         self::ATTRIBUTE_DELIVERY_DAYS   => [],
     ];
+
     /** @var array */
     private $relationships = [
         self::RELATIONSHIP_CARRIER     => [
@@ -210,12 +214,12 @@ class Service implements ServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function setContracts(array $contracts)
+    public function setServiceContracts(array $serviceServiceContracts)
     {
-        $this->contracts = [];
+        $this->serviceContracts = [];
 
-        array_walk($contracts, function ($contract) {
-            $this->addContract($contract);
+        array_walk($serviceServiceContracts, function ($contract) {
+            $this->addServiceContract($contract);
         });
 
         return $this;
@@ -224,9 +228,9 @@ class Service implements ServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function addContract(ContractInterface $contract)
+    public function addServiceContract(ServiceContractInterface $serviceServiceContract)
     {
-        $this->contracts[] = $contract;
+        $this->serviceContracts[] = $serviceServiceContract;
 
         return $this;
     }
@@ -234,9 +238,9 @@ class Service implements ServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function getContracts()
+    public function getServiceContracts()
     {
-        return $this->contracts;
+        return $this->serviceContracts;
     }
 
     /**

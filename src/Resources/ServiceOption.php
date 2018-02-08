@@ -10,18 +10,19 @@ class ServiceOption implements ServiceOptionInterface
 {
     use JsonSerializable;
 
-    const ATTRIBUTE_CURRENCY = 'currency';
-    const ATTRIBUTE_AMOUNT = 'amount';
-    const ATTRIBUTE_PRICE = 'price';
     const ATTRIBUTE_NAME = 'name';
     const ATTRIBUTE_CODE = 'code';
     const ATTRIBUTE_CATEGORY = 'category';
 
+    /** @var string */
     private $id;
+
+    /** @var string */
     private $type = ResourceInterface::TYPE_SERVICE_OPTION;
+
+    /** @var array */
     private $attributes = [
         self::ATTRIBUTE_NAME     => null,
-        self::ATTRIBUTE_PRICE    => [],
         self::ATTRIBUTE_CODE     => null,
         self::ATTRIBUTE_CATEGORY => null,
     ];
@@ -68,47 +69,6 @@ class ServiceOption implements ServiceOptionInterface
     public function getName()
     {
         return $this->attributes[self::ATTRIBUTE_NAME];
-    }
-
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setPrice($price)
-    {
-        $this->attributes[self::ATTRIBUTE_PRICE][self::ATTRIBUTE_AMOUNT] = $price;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getPrice()
-    {
-        return isset($this->attributes[self::ATTRIBUTE_PRICE][self::ATTRIBUTE_AMOUNT])
-            ? $this->attributes[self::ATTRIBUTE_PRICE][self::ATTRIBUTE_AMOUNT]
-            : null;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setCurrency($currency)
-    {
-        $this->attributes[self::ATTRIBUTE_PRICE][self::ATTRIBUTE_CURRENCY] = $currency;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getCurrency()
-    {
-        return isset($this->attributes[self::ATTRIBUTE_PRICE][self::ATTRIBUTE_CURRENCY])
-            ? $this->attributes[self::ATTRIBUTE_PRICE][self::ATTRIBUTE_CURRENCY]
-            : null;
     }
 
     /**
