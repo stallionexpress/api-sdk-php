@@ -20,6 +20,7 @@ interface MyParcelComApiInterface
     const PATH_PUDO_LOCATIONS = '/v1/carriers/{carrier_id}/pickup-dropoff-locations/{country_code}/{postal_code}';
     const PATH_REGIONS = '/v1/regions';
     const PATH_SERVICES = '/v1/services';
+    const PATH_SERVICE_CONTRACTS = '/v1/services/{service_id}/contracts';
     const PATH_SHIPMENTS = '/v1/shipments';
     const PATH_SHIPMENT_STATUSES = '/v1/shipments/{shipment_id}/statuses';
     const PATH_SHOPS = '/v1/shops';

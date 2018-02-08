@@ -2,40 +2,42 @@
 
 namespace MyParcelCom\ApiSdk\Tests\Traits;
 
-use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceGroupInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInsuranceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionPriceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 
 trait MocksContract
 {
-    protected function getMockedContract(array $groups = [], array $insurances = [], array $options = [])
+    protected function getMockedServiceContract(array $groups = [], array $insurances = [], array $options = [])
     {
-        $contract = $this->getMockBuilder(ContractInterface::class)
+        $contract = $this->getMockBuilder(ServiceContractInterface::class)
             ->disableOriginalConstructor()
             ->disableOriginalClone()
             ->disableArgumentCloning()
             ->disallowMockingUnknownTypes()
             ->getMock();
 
-        $contract->method('getGroups')
-            ->willReturn($this->getMockedGroups($groups));
-        $contract->method('getInsurances')
-            ->willReturn($this->getMockedInsurances($insurances));
-        $contract->method('getServiceOptions')
-            ->willReturn($this->getMockedOptions($options));
+        $contract->method('getServiceGroups')
+            ->willReturn($this->getMockedServiceGroups($groups));
+        $contract->method('getServiceInsurances')
+            ->willReturn($this->getMockedServiceInsurances($insurances));
+        $contract->method('getServiceOptionPrices')
+            ->willReturn($this->getMockedServiceOptionPrices($options));
 
         return $contract;
     }
 
     /**
-     * @param int   $weight
-     * @param int   $insurance
-     * @param array $options
+     * @param int                      $weight
+     * @param int                      $insurance
+     * @param array                    $options
+     * @param ServiceContractInterface $contract
      * @return ShipmentInterface
      */
-    protected function getMockedShipment($weight = 5000, $insurance = 0, array $options = [], $contract = null)
+    protected function getMockedShipment($weight = 5000, $insurance = 0, array $options = [], ServiceContractInterface $contract = null)
     {
         $shipment = $this->getMockBuilder(ShipmentInterface::class)
             ->disableOriginalConstructor()
@@ -44,7 +46,7 @@ trait MocksContract
             ->disallowMockingUnknownTypes()
             ->getMock();
 
-        $shipment->method('getContract')
+        $shipment->method('getServiceContract')
             ->willReturn($contract);
         $shipment->method('getWeight')
             ->willReturn($weight);
@@ -76,7 +78,7 @@ trait MocksContract
      * @param array $groups
      * @return ServiceGroupInterface[]
      */
-    protected function getMockedGroups(array $groups)
+    protected function getMockedServiceGroups(array $groups)
     {
         $groupMockBuilder = $this->getMockBuilder(ServiceGroupInterface::class)
             ->disableOriginalConstructor()
@@ -109,7 +111,7 @@ trait MocksContract
      * @param array $insurances
      * @return ServiceInsuranceInterface[]
      */
-    protected function getMockedInsurances(array $insurances)
+    protected function getMockedServiceInsurances(array $insurances)
     {
         $insuranceMockBuilder = $this->getMockBuilder(ServiceInsuranceInterface::class)
             ->disableOriginalConstructor()
@@ -136,9 +138,14 @@ trait MocksContract
      * @param array $options
      * @return ServiceOptionInterface[]
      */
-    protected function getMockedOptions(array $options)
+    protected function getMockedServiceOptionPrices(array $options)
     {
-        $serviceMockBuilder = $this->getMockBuilder(ServiceOptionInterface::class)
+        $serviceOptionMockBuilder = $this->getMockBuilder(ServiceOptionInterface::class)
+            ->disableOriginalConstructor()
+            ->disableOriginalClone()
+            ->disableArgumentCloning()
+            ->disallowMockingUnknownTypes();
+        $serviceOptionPriceMockBuilder = $this->getMockBuilder(ServiceOptionPriceInterface::class)
             ->disableOriginalConstructor()
             ->disableOriginalClone()
             ->disableArgumentCloning()
@@ -146,14 +153,20 @@ trait MocksContract
 
         $serviceMocks = [];
         foreach ($options as $option) {
-            $serviceMock = $serviceMockBuilder->getMock();
-            $serviceMock->method('getCurrency')
-                ->willReturn('EUR');
-            $serviceMock->method('getPrice')
-                ->willReturn($option['price']);
-            $serviceMock->method('getId')
+            $serviceOptionPriceMock = $serviceOptionPriceMockBuilder->getMock();
+            $serviceOptionMock = $serviceOptionMockBuilder->getMock();
+
+            $serviceOptionMock->method('getId')
                 ->willReturn($option['id']);
-            $serviceMocks[] = $serviceMock;
+
+            $serviceOptionPriceMock->method('getCurrency')
+                ->willReturn('EUR');
+            $serviceOptionPriceMock->method('getPrice')
+                ->willReturn($option['price']);
+            $serviceOptionPriceMock->method('getServiceOption')
+                ->willReturn($serviceOptionMock);
+
+            $serviceMocks[] = $serviceOptionPriceMock;
         }
 
         return $serviceMocks;

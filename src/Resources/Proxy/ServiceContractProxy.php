@@ -9,7 +9,7 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceGroupInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInsuranceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionPriceInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 use MyParcelCom\ApiSdk\Resources\Traits\ProxiesResource;
 
@@ -22,7 +22,7 @@ class ServiceContractProxy implements ServiceContractInterface, ResourceProxyInt
     private $id;
 
     /** @var string */
-    private $type = ResourceInterface::TYPE_SERVICE;
+    private $type = ResourceInterface::TYPE_SERVICE_CONTRACT;
 
     /**
      * @return string
@@ -120,7 +120,7 @@ class ServiceContractProxy implements ServiceContractInterface, ResourceProxyInt
     }
 
     /**
-     * @param ServiceOptionInterface[] $options
+     * @param ServiceOptionPriceInterface[] $options
      * @return $this
      */
     public function setServiceOptionPrices(array $options)
@@ -131,10 +131,10 @@ class ServiceContractProxy implements ServiceContractInterface, ResourceProxyInt
     }
 
     /**
-     * @param ServiceOptionInterface $option
+     * @param ServiceOptionPriceInterface $option
      * @return $this
      */
-    public function addServiceOptionPrice(ServiceOptionInterface $option)
+    public function addServiceOptionPrice(ServiceOptionPriceInterface $option)
     {
         $this->getResource()->addServiceOptionPrice($option);
 
@@ -142,7 +142,7 @@ class ServiceContractProxy implements ServiceContractInterface, ResourceProxyInt
     }
 
     /**
-     * @return ServiceOptionInterface[]
+     * @return ServiceOptionPriceInterface[]
      */
     public function getServiceOptionPrices()
     {

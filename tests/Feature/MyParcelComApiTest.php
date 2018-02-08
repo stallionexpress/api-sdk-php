@@ -87,8 +87,8 @@ class MyParcelComApiTest extends TestCase
         $shipment = $this->api->createShipment($shipment);
 
         $this->assertNotNull(
-            $shipment->getService(),
-            'When no service has been selected, the preferred service for given shipment should be used'
+            $shipment->getServiceContract(),
+            'When no service contract has been selected, the preferred service contract for given shipment should be used'
         );
         $this->assertNotNull(
             $shipment->getId(),

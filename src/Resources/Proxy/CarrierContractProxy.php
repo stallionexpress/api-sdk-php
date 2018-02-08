@@ -1,21 +1,19 @@
 <?php
 
-namespace MyParcelCom\ApiSdk\Resources;
+namespace MyParcelCom\ApiSdk\Resources\Proxy;
 
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
+use MyParcelCom\ApiSdk\Resources\Traits\ProxiesResource;
 
-class CarrierContract implements CarrierContractInterface
+class CarrierContractProxy implements CarrierContractInterface, ResourceProxyInterface
 {
     use JsonSerializable;
-
-    const ATTRIBUTE_CURRENCY = 'currency';
-
-    const RELATIONSHIP_CARRIER = 'carrier';
-    const RELATIONSHIP_SERVICE_CONTRACTS = 'service_contracts';
+    use ProxiesResource;
 
     /** @var string */
     private $id;
@@ -23,23 +21,25 @@ class CarrierContract implements CarrierContractInterface
     /** @var string */
     private $type = ResourceInterface::TYPE_CARRIER_CONTRACT;
 
-    /** @var array */
-    private $attributes = [
-        self::ATTRIBUTE_CURRENCY => null,
-    ];
-
-    /** @var array */
-    private $relationships = [
-        self::RELATIONSHIP_CARRIER           => [
-            'data' => null,
-        ],
-        self::RELATIONSHIP_SERVICE_CONTRACTS => [
-            'data' => [],
-        ],
-    ];
+    /**
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
     /**
-     * {@inheritdoc}
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $id
+     * @return $this
      */
     public function setId($id)
     {
@@ -49,28 +49,12 @@ class CarrierContract implements CarrierContractInterface
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
      * @param string $currency
      * @return $this
      */
     public function setCurrency($currency)
     {
-        $this->attributes[self::ATTRIBUTE_CURRENCY] = $currency;
+        $this->getResource()->setCurrency($currency);
 
         return $this;
     }
@@ -80,7 +64,7 @@ class CarrierContract implements CarrierContractInterface
      */
     public function getCurrency()
     {
-        return $this->attributes[self::ATTRIBUTE_CURRENCY];
+        return $this->getResource()->getCurrency();
     }
 
     /**
@@ -89,7 +73,7 @@ class CarrierContract implements CarrierContractInterface
      */
     public function setCarrier(CarrierInterface $carrier)
     {
-        $this->relationships[self::RELATIONSHIP_CARRIER]['data'] = $carrier;
+        $this->getResource()->setCarrier($carrier);
 
         return $this;
     }
@@ -99,7 +83,7 @@ class CarrierContract implements CarrierContractInterface
      */
     public function getCarrier()
     {
-        return $this->relationships[self::RELATIONSHIP_CARRIER]['data'];
+        return $this->getResource()->getCarrier();
     }
 
     /**
@@ -108,11 +92,7 @@ class CarrierContract implements CarrierContractInterface
      */
     public function setServiceContracts(array $serviceContracts)
     {
-        $this->relationships[self::RELATIONSHIP_SERVICE_CONTRACTS]['data'] = [];
-
-        array_walk($serviceContracts, function (ServiceContractInterface $serviceContract) {
-            $this->addServiceContract($serviceContract);
-        });
+        $this->getResource()->setServiceContracts($serviceContracts);
 
         return $this;
     }
@@ -123,7 +103,7 @@ class CarrierContract implements CarrierContractInterface
      */
     public function addServiceContract(ServiceContractInterface $serviceContract)
     {
-        $this->relationships[self::RELATIONSHIP_SERVICE_CONTRACTS]['data'][] = $serviceContract;
+        $this->getResource()->addServiceContract($serviceContract);
 
         return $this;
     }
@@ -133,6 +113,21 @@ class CarrierContract implements CarrierContractInterface
      */
     public function getServiceContracts()
     {
-        return $this->relationships[self::RELATIONSHIP_SERVICE_CONTRACTS]['data'];
+        return $this->getResource()->getServiceContracts();
+    }
+
+    /**
+     * This function puts all object properties in an array and returns it.
+     *
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        $values = get_object_vars($this);
+        unset($values['resource']);
+        unset($values['api']);
+        unset($values['uri']);
+
+        return $this->arrayValuesToArray($values);
     }
 }

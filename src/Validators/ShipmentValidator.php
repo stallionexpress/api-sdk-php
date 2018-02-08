@@ -39,7 +39,7 @@ class ShipmentValidator implements ValidatorInterface
      */
     protected function checkRequired()
     {
-        $required = ['weight', 'service', 'recipient_address', 'sender_address', 'shop', 'contract'];
+        $required = ['weight', 'service_contract', 'recipient_address', 'sender_address', 'shop'];
 
         array_walk($required, function ($required) {
             $getter = 'get' . StringUtils::snakeToPascalCase($required);

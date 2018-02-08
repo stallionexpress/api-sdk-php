@@ -45,6 +45,28 @@ class ShopProxyTest extends TestCase
     }
 
     /** @test */
+    public function testAccessors()
+    {
+        $now = new DateTime();
+        $this->assertEquals($now->getTimestamp(), $this->shopProxy->setCreatedAt($now)->getCreatedAt()->getTimestamp());
+        $this->assertEquals('One Stop Shop', $this->shopProxy->setName('One Stop Shop')->getName());
+        $this->assertEquals('an-id-for-a-shop', $this->shopProxy->setId('an-id-for-a-shop')->getId());
+
+        /** @var RegionInterface $region */
+        $region = $this->getMockBuilder(RegionInterface::class)->getMock();
+        $this->assertEquals($region, $this->shopProxy->setRegion($region)->getRegion());
+
+        $addressBuilder = $this->getMockBuilder(AddressInterface::class);
+        /** @var AddressInterface $billingAddress */
+        $billingAddress = $addressBuilder->getMock();
+        $this->assertEquals($billingAddress, $this->shopProxy->setBillingAddress($billingAddress)->getBillingAddress());
+
+        /** @var AddressInterface $returnAddress */
+        $returnAddress = $addressBuilder->getMock();
+        $this->assertEquals($returnAddress, $this->shopProxy->setReturnAddress($returnAddress)->getReturnAddress());
+    }
+
+    /** @test */
     public function testAttributes()
     {
         $this->assertEquals('shop-id-1', $this->shopProxy->getId());

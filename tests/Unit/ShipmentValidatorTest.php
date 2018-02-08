@@ -2,27 +2,24 @@
 
 namespace MyParcelCom\ApiSdk\Tests\Unit;
 
-use MyParcelCom\ApiSdk\Resources\Address;
-use MyParcelCom\ApiSdk\Resources\Contract;
-use MyParcelCom\ApiSdk\Resources\Service;
+use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\ApiSdk\Resources\Shipment;
-use MyParcelCom\ApiSdk\Resources\Shop;
 use MyParcelCom\ApiSdk\Utils\StringUtils;
 use MyParcelCom\ApiSdk\Validators\ShipmentValidator;
 use PHPUnit\Framework\TestCase;
 
 class ShipmentValidatorTest extends TestCase
 {
-    /** @var Service */
-    private $service;
-    /** @var Address */
+    /** @var AddressInterface */
     private $recipientAddress;
-    /** @var Address */
+    /** @var AddressInterface */
     private $senderAddress;
-    /** @var Shop */
+    /** @var ShopInterface */
     private $shop;
-    /** @var Contract */
-    private $contract;
+    /** @var ServiceContractInterface */
+    private $serviceContract;
     /** @var int */
     private $weight;
 
@@ -31,11 +28,10 @@ class ShipmentValidatorTest extends TestCase
         parent::setUp();
 
         $this->weight = 24;
-        $this->service = $this->getMockBuilder(Service::class)->getMock();
-        $this->recipientAddress = $this->getMockBuilder(Address::class)->getMock();
-        $this->senderAddress = $this->getMockBuilder(Address::class)->getMock();
-        $this->shop = $this->getMockBuilder(Shop::class)->getMock();
-        $this->contract = $this->getMockBuilder(Contract::class)->getMock();
+        $this->recipientAddress = $this->getMockBuilder(AddressInterface::class)->getMock();
+        $this->senderAddress = $this->getMockBuilder(AddressInterface::class)->getMock();
+        $this->shop = $this->getMockBuilder(ShopInterface::class)->getMock();
+        $this->serviceContract = $this->getMockBuilder(ServiceContractInterface::class)->getMock();
     }
 
     /** @test */
@@ -62,11 +58,10 @@ class ShipmentValidatorTest extends TestCase
     {
         $shipment = (new Shipment())
             ->setWeight($this->weight)
-            ->setService($this->service)
             ->setRecipientAddress($this->recipientAddress)
             ->setSenderAddress($this->senderAddress)
             ->setShop($this->shop)
-            ->setContract($this->contract);
+            ->setServiceContract($this->serviceContract);
 
         $validator = new ShipmentValidator($shipment);
 
@@ -77,16 +72,6 @@ class ShipmentValidatorTest extends TestCase
     public function testMissingWeight()
     {
         $shipment = $this->createShipmentWithoutProperty('weight');
-
-        $validator = new ShipmentValidator($shipment);
-
-        $this->assertFalse($validator->isValid());
-    }
-
-    /** @test */
-    public function testMissingService()
-    {
-        $shipment = $this->createShipmentWithoutProperty('service');
 
         $validator = new ShipmentValidator($shipment);
 
@@ -124,9 +109,9 @@ class ShipmentValidatorTest extends TestCase
     }
 
     /** @test */
-    public function testMissingContract()
+    public function testMissingServiceContract()
     {
-        $shipment = $this->createShipmentWithoutProperty('contract');
+        $shipment = $this->createShipmentWithoutProperty('service_contract');
 
         $validator = new ShipmentValidator($shipment);
 
@@ -138,11 +123,10 @@ class ShipmentValidatorTest extends TestCase
     {
         $shipment = (new Shipment())
             ->setWeight(-12512)
-            ->setService($this->service)
             ->setRecipientAddress($this->recipientAddress)
             ->setSenderAddress($this->senderAddress)
             ->setShop($this->shop)
-            ->setContract($this->contract);
+            ->setServiceContract($this->serviceContract);
 
         $validator = new ShipmentValidator($shipment);
 
@@ -160,7 +144,7 @@ class ShipmentValidatorTest extends TestCase
     {
         $missingProperty = StringUtils::snakeToCamelCase($missingProperty);
         $shipment = new Shipment();
-        $requiredProperties = ['weight', 'service', 'recipient_address', 'sender_address', 'shop', 'contract'];
+        $requiredProperties = ['weight', 'service_contract', 'recipient_address', 'sender_address', 'shop'];
 
         foreach ($requiredProperties as $requiredProperty) {
             $requiredProperty = StringUtils::snakeToCamelCase($requiredProperty);

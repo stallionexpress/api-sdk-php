@@ -3,9 +3,10 @@
 namespace MyParcelCom\ApiSdk\Shipments;
 
 use MyParcelCom\ApiSdk\Exceptions\ServiceMatchingException;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionPriceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 
 class ServiceMatcher
@@ -19,7 +20,7 @@ class ServiceMatcher
      */
     public function matches(ShipmentInterface $shipment, ServiceInterface $service)
     {
-        return ($weightContracts = $this->getMatchedWeightGroups($shipment, $service->getContracts()))
+        return ($weightContracts = $this->getMatchedWeightGroups($shipment, $service->getServiceContracts()))
             && ($optionContracts = $this->getMatchedOptions($shipment, $weightContracts))
             && $this->getMatchedInsurances($shipment, $optionContracts);
     }
@@ -28,11 +29,11 @@ class ServiceMatcher
      * Returns a subset of the given contracts that have weight groups that
      * match the weight of the shipment.
      *
-     * @param ShipmentInterface   $shipment
-     * @param ContractInterface[] $contracts
-     * @return ContractInterface[]
+     * @param ShipmentInterface          $shipment
+     * @param ServiceContractInterface[] $serviceContracts
+     * @return ServiceContractInterface[]
      */
-    public function getMatchedWeightGroups(ShipmentInterface $shipment, array $contracts)
+    public function getMatchedWeightGroups(ShipmentInterface $shipment, array $serviceContracts)
     {
         if ($shipment->getWeight() < 0) {
             throw new ServiceMatchingException(
@@ -41,14 +42,14 @@ class ServiceMatcher
         }
 
         $matches = [];
-        foreach ($contracts as $contract) {
-            foreach ($contract->getGroups() as $group) {
+        foreach ($serviceContracts as $serviceContract) {
+            foreach ($serviceContract->getServiceGroups() as $group) {
                 if (($group->getWeightMin() <= $shipment->getWeight()
                         && $group->getWeightMax() >= $shipment->getWeight())
                     // If weight can be added on top of the set weight group,
                     // this group matches.
                     || ($group->getStepPrice() && $group->getStepSize())) {
-                    $matches[] = $contract;
+                    $matches[] = $serviceContract;
                     continue 2;
                 }
             }
@@ -61,24 +62,24 @@ class ServiceMatcher
      * Returns a subset of the given contracts that have all the options that
      * the shipment requires.
      *
-     * @param ShipmentInterface   $shipment
-     * @param ContractInterface[] $contracts
-     * @return ContractInterface[]
+     * @param ShipmentInterface          $shipment
+     * @param ServiceContractInterface[] $serviceContracts
+     * @return ServiceContractInterface[]
      */
-    public function getMatchedOptions(ShipmentInterface $shipment, array $contracts)
+    public function getMatchedOptions(ShipmentInterface $shipment, array $serviceContracts)
     {
         $optionIds = array_map(function (ServiceOptionInterface $option) {
             return $option->getId();
         }, $shipment->getServiceOptions());
 
         $matches = [];
-        foreach ($contracts as $contract) {
-            $contractOptionIds = array_map(function (ServiceOptionInterface $option) use ($optionIds) {
-                return $option->getId();
-            }, $contract->getServiceOptions());
+        foreach ($serviceContracts as $serviceContract) {
+            $contractOptionIds = array_map(function (ServiceOptionPriceInterface $optionPrice) use ($optionIds) {
+                return $optionPrice->getServiceOption()->getId();
+            }, $serviceContract->getServiceOptionPrices());
 
             if (!array_diff($optionIds, $contractOptionIds)) {
-                $matches[] = $contract;
+                $matches[] = $serviceContract;
             }
         }
 
@@ -89,14 +90,14 @@ class ServiceMatcher
      * Returns a subset of the given contracts that can cover the desired
      * insurance of the shipment.
      *
-     * @param ShipmentInterface   $shipment
-     * @param ContractInterface[] $contracts
-     * @return ContractInterface[]
+     * @param ShipmentInterface          $shipment
+     * @param ServiceContractInterface[] $serviceContracts
+     * @return ServiceContractInterface[]
      */
-    public function getMatchedInsurances(ShipmentInterface $shipment, array $contracts)
+    public function getMatchedInsurances(ShipmentInterface $shipment, array $serviceContracts)
     {
         if (!$shipment->getInsuranceAmount()) {
-            return $contracts;
+            return $serviceContracts;
         }
 
         if ($shipment->getInsuranceAmount() < 0) {
@@ -105,8 +106,8 @@ class ServiceMatcher
             );
         }
 
-        return array_filter($contracts, function (ContractInterface $contract) use ($shipment) {
-            foreach ($contract->getInsurances() as $insurance) {
+        return array_filter($serviceContracts, function (ServiceContractInterface $serviceContract) use ($shipment) {
+            foreach ($serviceContract->getServiceInsurances() as $insurance) {
                 if ($shipment->getInsuranceAmount() <= $insurance->getCovered()) {
                     return true;
                 }

@@ -46,6 +46,24 @@ class ShipmentStatusProxyTest extends TestCase
     }
 
     /** @test */
+    public function testAccessors()
+    {
+        $now = new \DateTime();
+        $this->assertEquals($now->getTimestamp(), $this->shipmentStatusProxy->setCarrierTimestamp($now)->getCarrierTimestamp()->getTimestamp());
+        $this->assertEquals('A12', $this->shipmentStatusProxy->setCarrierStatusCode('A12')->getCarrierStatusCode());
+        $this->assertEquals('Something go wrongo', $this->shipmentStatusProxy->setCarrierStatusDescription('Something go wrongo')->getCarrierStatusDescription());
+        $this->assertEquals('an-id-for-a-shipment-status', $this->shipmentStatusProxy->setId('an-id-for-a-shipment-status')->getId());
+
+        /** @var ShipmentInterface $shipment */
+        $shipment = $this->getMockBuilder(ShipmentInterface::class)->getMock();
+        $this->assertEquals($shipment, $this->shipmentStatusProxy->setShipment($shipment)->getShipment());
+
+        /** @var StatusInterface $status */
+        $status = $this->getMockBuilder(StatusInterface::class)->getMock();
+        $this->assertEquals($status, $this->shipmentStatusProxy->setStatus($status)->getStatus());
+    }
+
+    /** @test */
     public function testAttributes()
     {
         $this->assertEquals('shipment-status-id-1', $this->shipmentStatusProxy->getId());

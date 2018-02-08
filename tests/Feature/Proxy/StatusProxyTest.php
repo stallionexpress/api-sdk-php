@@ -42,6 +42,16 @@ class StatusProxyTest extends TestCase
     }
 
     /** @test */
+    public function testAccessors()
+    {
+        $this->assertEquals('Sketch', $this->statusProxy->setName('Sketch')->getName());
+        $this->assertEquals('A sketch of a parcel', $this->statusProxy->setDescription('A sketch of a parcel')->getDescription());
+        $this->assertEquals('parcel-sketch', $this->statusProxy->setCode('parcel-sketch')->getCode());
+        $this->assertEquals('concept', $this->statusProxy->setLevel('concept')->getLevel());
+        $this->assertEquals('an-id-for-a-status', $this->statusProxy->setId('an-id-for-a-status')->getId());
+    }
+
+    /** @test */
     public function testAttributes()
     {
         $this->assertEquals('status-id-1', $this->statusProxy->getId());
@@ -88,7 +98,7 @@ class StatusProxyTest extends TestCase
             ->setId('status-id-1');
 
         $this->assertEquals([
-            'id' => 'status-id-1',
+            'id'   => 'status-id-1',
             'type' => ResourceInterface::TYPE_STATUS,
         ], $statusProxy->jsonSerialize());
     }

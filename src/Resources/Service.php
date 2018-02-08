@@ -34,6 +34,9 @@ class Service implements ServiceInterface
     /** @var ServiceContractInterface[] */
     private $serviceContracts = [];
 
+    /** @var callable */
+    private $serviceContractsCallback;
+
     /** @var array */
     private $attributes = [
         self::ATTRIBUTE_NAME            => null,
@@ -240,7 +243,22 @@ class Service implements ServiceInterface
      */
     public function getServiceContracts()
     {
+        if (!isset($this->statusHistory) && isset($this->statusHistoryCallback)) {
+            $this->setServiceContracts(call_user_func($this->serviceContractsCallback));
+        }
+
         return $this->serviceContracts;
+    }
+
+    /**
+     * @param callable $callback
+     * @return $this
+     */
+    public function setServiceContractsCallback(callable $callback)
+    {
+        $this->serviceContractsCallback = $callback;
+
+        return $this;
     }
 
     /**
@@ -299,7 +317,7 @@ class Service implements ServiceInterface
     public function jsonSerialize()
     {
         $values = get_object_vars($this);
-        unset($values['contracts']);
+        unset($values['serviceContracts']);
 
         $json = $this->arrayValuesToArray($values);
 

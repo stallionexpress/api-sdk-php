@@ -2,11 +2,11 @@
 
 namespace MyParcelCom\ApiSdk\Resources;
 
-use function GuzzleHttp\Psr7\stream_for;
 use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 use Psr\Http\Message\StreamInterface;
+use function GuzzleHttp\Psr7\stream_for;
 
 class File implements FileInterface
 {
@@ -254,9 +254,6 @@ class File implements FileInterface
 
         if (isset($json['attributes']) && $this->isEmpty($json['attributes'])) {
             unset($json['attributes']);
-        }
-        if (isset($json['relationships']) && $this->isEmpty($json['relationships'])) {
-            unset($json['relationships']);
         }
 
         return $json;
