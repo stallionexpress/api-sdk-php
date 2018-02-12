@@ -4,10 +4,10 @@ namespace MyParcelCom\ApiSdk;
 
 use GuzzleHttp\Promise\PromiseInterface;
 use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
+use MyParcelCom\ApiSdk\Collection\PromiseCollection;
 use MyParcelCom\ApiSdk\Exceptions\MyParcelComException;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\PickUpDropOffLocationInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
@@ -44,7 +44,7 @@ interface MyParcelComApiInterface
      *
      * @param string|null $countryCode
      * @param string|null $regionCode
-     * @return RegionInterface[]
+     * @return PromiseCollection
      */
     public function getRegions($countryCode = null, $regionCode = null);
 
@@ -112,12 +112,12 @@ interface MyParcelComApiInterface
     public function getServicesForCarrier(CarrierInterface $carrier);
 
     /**
-     * Get shipments for a given shop. Id no shop is given the default shop is
+     * Get shipments for a given shop. If no shop is given the default shop is
      * used.
      *
      * @param ShopInterface|null $shop
      * @throws MyParcelComException
-     * @return ShipmentInterface[]
+     * @return PromiseCollection
      */
     public function getShipments(ShopInterface $shop = null);
 

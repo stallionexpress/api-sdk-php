@@ -145,10 +145,10 @@ class MyParcelComApiTest extends TestCase
     {
         $carriers = $this->api->getCarriers();
 
-        $this->assertInternalType('array', $carriers);
-        array_walk($carriers, function ($carrier) {
+        $this->assertInstanceOf(PromiseCollection::class, $carriers);
+        foreach ($carriers as $carrier) {
             $this->assertInstanceOf(CarrierInterface::class, $carrier);
-        });
+        }
     }
 
     /** @test */
@@ -218,8 +218,7 @@ class MyParcelComApiTest extends TestCase
 
         $this->assertCount(count($carriers), $allPudoLocations);
         $this->assertArraySubset(
-            array_map(function ($carrier) {
-                /** @var CarrierInterface $carrier */
+            array_map(function (CarrierInterface $carrier) {
                 return $carrier->getId();
             }, $carriers),
             array_keys($allPudoLocations)
@@ -231,11 +230,12 @@ class MyParcelComApiTest extends TestCase
     {
         $regions = $this->api->getRegions();
 
-        $this->assertInternalType('array', $regions);
-        $this->assertCount(78, $regions);
-        array_walk($regions, function ($region) {
+        $this->assertInstanceOf(PromiseCollection::class, $regions);
+        $this->assertEquals(78, $regions->count());
+
+        foreach ($regions as $region) {
             $this->assertInstanceOf(RegionInterface::class, $region);
-        });
+        }
     }
 
     /** @test */
@@ -243,22 +243,22 @@ class MyParcelComApiTest extends TestCase
     {
         $regions = $this->api->getRegions('GB');
 
-        $this->assertInternalType('array', $regions);
-        $this->assertCount(5, $regions);
-        array_walk($regions, function ($region) {
+        $this->assertInstanceOf(PromiseCollection::class, $regions);
+        $this->assertEquals(9, $regions->count());
+        foreach ($regions as $region) {
             $this->assertInstanceOf(RegionInterface::class, $region);
             $this->assertEquals('GB', $region->getCountryCode());
-        });
+        }
 
         $ireland = $this->api->getRegions('GB', 'NIR');
 
-        $this->assertInternalType('array', $ireland);
-        $this->assertCount(1, $ireland);
-        array_walk($ireland, function ($region) {
+        $this->assertInstanceOf(PromiseCollection::class, $ireland);
+        $this->assertEquals(1, $ireland->count());
+        foreach ($ireland as $region) {
             $this->assertInstanceOf(RegionInterface::class, $region);
             $this->assertEquals('GB', $region->getCountryCode());
             $this->assertEquals('NIR', $region->getRegionCode());
-        });
+        }
     }
 
     /** @test */
@@ -331,11 +331,11 @@ class MyParcelComApiTest extends TestCase
     {
         $shops = $this->api->getShops();
 
-        array_walk($shops, function ($shop) {
+        foreach ($shops as $shop) {
             $shipments = $this->api->getShipments($shop);
 
-            $this->assertInternalType('array', $shipments);
-            array_walk($shipments, function ($shipment) use ($shop) {
+            $this->assertInstanceOf(PromiseCollection::class, $shipments);
+            foreach ($shipments as $shipment) {
                 $this->assertInstanceOf(ShipmentInterface::class, $shipment);
                 $this->assertEquals($shop->getId(), $shipment->getShop()->getId());
                 $this->assertEquals($shop->getType(), $shipment->getShop()->getType());
@@ -344,8 +344,8 @@ class MyParcelComApiTest extends TestCase
                 $this->assertEquals($shop->getReturnAddress(), $shipment->getShop()->getReturnAddress());
                 $this->assertEquals($shop->getName(), $shipment->getShop()->getName());
                 $this->assertEquals($shop->getRegion(), $shipment->getShop()->getRegion());
-            });
-        });
+            }
+        }
     }
 
     /** @test */

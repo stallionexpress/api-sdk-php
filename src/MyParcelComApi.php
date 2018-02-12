@@ -123,15 +123,17 @@ class MyParcelComApi implements MyParcelComApiInterface
      */
     public function getRegions($countryCode = null, $regionCode = null)
     {
-        // These resources can be stored for a week.
-        $regions = $this->getResourcesPromise($this->apiUri . self::PATH_REGIONS, self::TTL_WEEK)
-            ->wait();
+        $url = (new UrlBuilder($this->apiUri . self::PATH_REGIONS));
 
-        // For now, we need to manually filter the regions.
-        return array_values(array_filter($regions, function (RegionInterface $region) use ($countryCode, $regionCode) {
-            return ($countryCode === null || $countryCode === $region->getCountryCode())
-                && ($regionCode === null || $regionCode === $region->getRegionCode());
-        }));
+        if ($countryCode) {
+            $url->addQuery(['filter[country_code]' => $countryCode]);
+        }
+        if ($regionCode) {
+            $url->addQuery(['filter[region_code]' => $regionCode]);
+        }
+
+        // These resources can be stored for a week.
+        return $this->getResourceCollection($url->getUrl(), self::TTL_WEEK);
     }
 
     /**
@@ -140,8 +142,7 @@ class MyParcelComApi implements MyParcelComApiInterface
     public function getCarriers()
     {
         // These resources can be stored for a week.
-        return $this->getResourcesPromise($this->apiUri . self::PATH_CARRIERS, self::TTL_WEEK)
-            ->wait();
+        return $this->getResourceCollection($this->apiUri . self::PATH_CARRIERS, self::TTL_WEEK);
     }
 
     /**
@@ -207,8 +208,9 @@ class MyParcelComApi implements MyParcelComApiInterface
     {
         // These resources can be stored for a week. Or should be removed from
         // cache when updated
-        return $this->getResourcesPromise($this->apiUri . self::PATH_SHOPS, self::TTL_WEEK)
-            ->wait();
+//        return $this->getResourcesPromise($this->apiUri . self::PATH_SHOPS, self::TTL_WEEK)
+//            ->wait();
+        return $this->getResourceCollection($this->apiUri . self::PATH_SHOPS, self::TTL_WEEK);
     }
 
     /**
