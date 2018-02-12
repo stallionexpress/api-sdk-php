@@ -333,7 +333,7 @@ class MyParcelComApi implements MyParcelComApiInterface
         }
 
         // If no contract is set, select the cheapest one.
-        if ($shipment->getContract() === null) {
+        if ($shipment->getServiceContract() === null) {
             $this->determineContract($shipment);
         }
 
@@ -352,27 +352,19 @@ class MyParcelComApi implements MyParcelComApiInterface
     }
 
     /**
-     * Determine what contract (and service) to use for given shipment and
-     * update the shipment.
+     * Determine what service contract to use for given shipment and update the
+     * shipment.
      *
      * @param ShipmentInterface $shipment
      * @return $this
      */
     protected function determineContract(ShipmentInterface $shipment)
     {
-        if ($shipment->getService() !== null) {
-            $shipment->setContract((new ContractSelector())->selectCheapest(
-                $shipment,
-                $shipment->getService()->getContracts()
-            ));
-
-            return $this;
-        }
         $selector = new ContractSelector();
         $calculator = new PriceCalculator();
         $contracts = array_map(
             function (ServiceInterface $service) use ($selector, $calculator, $shipment) {
-                $contract = $selector->selectCheapest($shipment, $service->getContracts());
+                $contract = $selector->selectCheapest($shipment, $service->getServiceContracts());
 
                 return [
                     'price'    => $calculator->calculate($shipment, $contract),
@@ -388,8 +380,7 @@ class MyParcelComApi implements MyParcelComApiInterface
         });
 
         $cheapest = reset($contracts);
-        $shipment->setContract($cheapest['contract'])
-            ->setService($cheapest['service']);
+        $shipment->setServiceContract($cheapest['contract']);
 
         return $this;
     }

@@ -208,7 +208,6 @@ class FileTest extends TestCase
         $this->assertEquals($this->pathTestData, file_get_contents($filePath_A));
 
 
-
         // Using $this->getTemporaryFilePath() without giving a mime_type loops over the
         // file's formats and returns the first path it encounters.
         $filePath_B = $file

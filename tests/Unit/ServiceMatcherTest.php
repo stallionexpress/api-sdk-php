@@ -17,7 +17,7 @@ class ServiceMatcherTest extends TestCase
     public function testGetMatchedWeightGroups()
     {
         $contracts = [
-            $this->getMockedContract([
+            $this->getMockedServiceContract([
                 [
                     'weight_min' => 3500,
                     'weight_max' => 3600,
@@ -40,7 +40,7 @@ class ServiceMatcherTest extends TestCase
                     'step_price' => 0,
                 ],
             ]),
-            $this->getMockedContract([
+            $this->getMockedServiceContract([
                 [
                     'weight_min' => 0,
                     'weight_max' => 20,
@@ -49,7 +49,7 @@ class ServiceMatcherTest extends TestCase
                     'step_price' => 10,
                 ],
             ]),
-            $this->getMockedContract([
+            $this->getMockedServiceContract([
                 [
                     'weight_min' => 0,
                     'weight_max' => 5000,
@@ -109,7 +109,7 @@ class ServiceMatcherTest extends TestCase
     public function testGetMatchedInsurances()
     {
         $contracts = [
-            $this->getMockedContract([], [
+            $this->getMockedServiceContract([], [
                 [
                     'covered' => 500,
                     'price'   => 80,
@@ -127,13 +127,13 @@ class ServiceMatcherTest extends TestCase
                     'price'   => 989,
                 ],
             ]),
-            $this->getMockedContract([], [
+            $this->getMockedServiceContract([], [
                 [
                     'covered' => 5000,
                     'price'   => 823,
                 ],
             ]),
-            $this->getMockedContract([], [
+            $this->getMockedServiceContract([], [
                 [
                     'covered' => 10,
                     'price'   => 5,
@@ -143,7 +143,7 @@ class ServiceMatcherTest extends TestCase
                     'price'   => 50,
                 ],
             ]),
-            $this->getMockedContract([], [
+            $this->getMockedServiceContract([], [
                 [
                     'covered' => 500,
                     'price'   => 80,
@@ -224,28 +224,28 @@ class ServiceMatcherTest extends TestCase
     public function testGetMatchedOptions()
     {
         $contracts = [
-            $this->getMockedContract([], [], [
+            $this->getMockedServiceContract([], [], [
                 ['id' => 'option-id-1', 'price' => 1],
                 ['id' => 'option-id-2', 'price' => 23],
                 ['id' => 'option-id-4', 'price' => 112],
                 ['id' => 'option-id-7', 'price' => 10],
             ]),
-            $this->getMockedContract([], [], [
+            $this->getMockedServiceContract([], [], [
                 ['id' => 'option-id-1', 'price' => 124],
                 ['id' => 'option-id-3', 'price' => 5],
             ]),
-            $this->getMockedContract([], [], [
+            $this->getMockedServiceContract([], [], [
                 ['id' => 'option-id-1', 'price' => 89],
                 ['id' => 'option-id-3', 'price' => 44],
                 ['id' => 'option-id-4', 'price' => 546],
                 ['id' => 'option-id-6', 'price' => 3],
                 ['id' => 'option-id-7', 'price' => 2],
             ]),
-            $this->getMockedContract([], [], [
+            $this->getMockedServiceContract([], [], [
                 ['id' => 'option-id-4', 'price' => 15],
                 ['id' => 'option-id-8', 'price' => 2576],
             ]),
-            $this->getMockedContract([], [], []),
+            $this->getMockedServiceContract([], [], []),
         ];
 
         $matcher = new ServiceMatcher();
@@ -298,7 +298,7 @@ class ServiceMatcherTest extends TestCase
     {
 
         $contracts = [
-            $this->getMockedContract([
+            $this->getMockedServiceContract([
                 [
                     'weight_min' => 0,
                     'weight_max' => 5000,
@@ -324,7 +324,7 @@ class ServiceMatcherTest extends TestCase
                 ['id' => 'option-id-4', 'price' => 112],
                 ['id' => 'option-id-7', 'price' => 10],
             ]),
-            $this->getMockedContract([
+            $this->getMockedServiceContract([
                 [
                     'weight_min' => 0,
                     'weight_max' => 20,
@@ -338,7 +338,7 @@ class ServiceMatcherTest extends TestCase
                 ['id' => 'option-id-1', 'price' => 124],
                 ['id' => 'option-id-5', 'price' => 5],
             ]),
-            $this->getMockedContract([
+            $this->getMockedServiceContract([
                 [
                     'weight_min' => 3500,
                     'weight_max' => 3600,
@@ -367,7 +367,7 @@ class ServiceMatcherTest extends TestCase
                 ['id' => 'option-id-6', 'price' => 3],
                 ['id' => 'option-id-7', 'price' => 2],
             ]),
-            $this->getMockedContract([
+            $this->getMockedServiceContract([
                 [
                     'weight_min' => 0,
                     'weight_max' => 100,
@@ -396,7 +396,7 @@ class ServiceMatcherTest extends TestCase
                 ['id' => 'option-id-4', 'price' => 15],
                 ['id' => 'option-id-8', 'price' => 2576],
             ]),
-            $this->getMockedContract([
+            $this->getMockedServiceContract([
                 [
                     'weight_min' => 0,
                     'weight_max' => 5000,
@@ -432,13 +432,13 @@ class ServiceMatcherTest extends TestCase
         $serviceC = $serviceBuilder->getMock();
 
         $serviceA
-            ->method('getContracts')
+            ->method('getServiceContracts')
             ->willReturn([$contracts[0], $contracts[1], $contracts[2]]);
         $serviceB
-            ->method('getContracts')
+            ->method('getServiceContracts')
             ->willReturn([$contracts[0], $contracts[4]]);
         $serviceC
-            ->method('getContracts')
+            ->method('getServiceContracts')
             ->willReturn([$contracts[2], $contracts[3], $contracts[4]]);
 
         $matcher = new ServiceMatcher();

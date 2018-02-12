@@ -3,10 +3,10 @@
 namespace MyParcelCom\ApiSdk\Resources\Proxy;
 
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 use MyParcelCom\ApiSdk\Resources\Traits\ProxiesResource;
@@ -182,33 +182,33 @@ class ServiceProxy implements ServiceInterface, ResourceProxyInterface
     }
 
     /**
-     * @param ContractInterface[] $contracts
+     * @param ServiceContractInterface[] $serviceContracts
      * @return $this
      */
-    public function setContracts(array $contracts)
+    public function setServiceContracts(array $serviceContracts)
     {
-        $this->getResource()->setContracts($contracts);
+        $this->getResource()->setServiceContracts($serviceContracts);
 
         return $this;
     }
 
     /**
-     * @param ContractInterface $contract
+     * @param ServiceContractInterface $serviceContract
      * @return $this
      */
-    public function addContract(ContractInterface $contract)
+    public function addServiceContract(ServiceContractInterface $serviceContract)
     {
-        $this->getResource()->addContract($contract);
+        $this->getResource()->addServiceContract($serviceContract);
 
         return $this;
     }
 
     /**
-     * @return ContractInterface[]
+     * @return ServiceContractInterface[]
      */
-    public function getContracts()
+    public function getServiceContracts()
     {
-        return $this->getResource()->getContracts();
+        return $this->getResource()->getServiceContracts();
     }
 
     /**

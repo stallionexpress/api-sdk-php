@@ -29,20 +29,6 @@ class ServiceOptionTest extends TestCase
     }
 
     /** @test */
-    public function testPrice()
-    {
-        $option = new ServiceOption();
-        $this->assertEquals(55, $option->setPrice(55)->getPrice());
-    }
-
-    /** @test */
-    public function testCurrency()
-    {
-        $option = new ServiceOption();
-        $this->assertEquals('NOK', $option->setCurrency('NOK')->getCurrency());
-    }
-
-    /** @test */
     public function testCode()
     {
         $option = new ServiceOption();
@@ -62,8 +48,6 @@ class ServiceOptionTest extends TestCase
         $option = (new ServiceOption())
             ->setId('service-option-id')
             ->setName('Sign on delivery')
-            ->setPrice(55)
-            ->setCurrency('NOK')
             ->setCode('some-code')
             ->setCategory('some-category');
 
@@ -72,10 +56,6 @@ class ServiceOptionTest extends TestCase
             'type'       => 'service-options',
             'attributes' => [
                 'name'     => 'Sign on delivery',
-                'price'    => [
-                    'amount'   => 55,
-                    'currency' => 'NOK',
-                ],
                 'code'     => 'some-code',
                 'category' => 'some-category',
             ],

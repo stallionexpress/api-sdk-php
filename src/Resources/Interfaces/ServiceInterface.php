@@ -92,21 +92,21 @@ interface ServiceInterface extends ResourceInterface
     public function getRegionTo();
 
     /**
-     * @param ContractInterface[] $contracts
+     * @param ServiceContractInterface[] $serviceContracts
      * @return $this
      */
-    public function setContracts(array $contracts);
+    public function setServiceContracts(array $serviceContracts);
 
     /**
-     * @param ContractInterface $contract
+     * @param ServiceContractInterface $serviceContract
      * @return $this
      */
-    public function addContract(ContractInterface $contract);
+    public function addServiceContract(ServiceContractInterface $serviceContract);
 
     /**
-     * @return ContractInterface[]
+     * @return ServiceContractInterface[]
      */
-    public function getContracts();
+    public function getServiceContracts();
 
     /**
      * @param string $handoverMethod

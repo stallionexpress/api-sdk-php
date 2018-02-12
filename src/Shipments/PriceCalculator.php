@@ -3,7 +3,7 @@
 namespace MyParcelCom\ApiSdk\Shipments;
 
 use MyParcelCom\ApiSdk\Exceptions\CalculationException;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceGroupInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInsuranceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
@@ -15,14 +15,14 @@ class PriceCalculator
      * supplied for the price calculations. If no contract is given, the
      * contract on the shipment is used.
      *
-     * @param ShipmentInterface      $shipment
-     * @param ContractInterface|null $contract
+     * @param ShipmentInterface             $shipment
+     * @param ServiceContractInterface|null $contract
      * @return int
      */
-    public function calculate(ShipmentInterface $shipment, ContractInterface $contract = null)
+    public function calculate(ShipmentInterface $shipment, ServiceContractInterface $contract = null)
     {
         if ($contract === null) {
-            $contract = $shipment->getContract();
+            $contract = $shipment->getServiceContract();
         }
 
         if ($contract === null) {
@@ -41,14 +41,14 @@ class PriceCalculator
      * Optionally a contract can be supplied for the price calculations. If no
      * contract is given, the contract on the shipment is used.
      *
-     * @param ShipmentInterface      $shipment
-     * @param ContractInterface|null $contract
+     * @param ShipmentInterface             $shipment
+     * @param ServiceContractInterface|null $contract
      * @return int
      */
-    public function calculateGroupPrice(ShipmentInterface $shipment, ContractInterface $contract = null)
+    public function calculateGroupPrice(ShipmentInterface $shipment, ServiceContractInterface $contract = null)
     {
         if ($contract === null) {
-            $contract = $shipment->getContract();
+            $contract = $shipment->getServiceContract();
         }
 
         if ($contract === null) {
@@ -66,7 +66,7 @@ class PriceCalculator
         $price = 0;
 
         // Order all the groups to have the highest weight group last.
-        $groups = $contract->getGroups();
+        $groups = $contract->getServiceGroups();
         @usort($groups, function (ServiceGroupInterface $a, ServiceGroupInterface $b) {
             // Sort based on the min weight;
             $minDiff = $a->getWeightMin() - $b->getWeightMin();
@@ -122,14 +122,14 @@ class PriceCalculator
      * Optionally a contract can be supplied for the price calculations. If no
      * contract is given, the contract on the shipment is used.
      *
-     * @param ShipmentInterface      $shipment
-     * @param ContractInterface|null $contract
+     * @param ShipmentInterface             $shipment
+     * @param ServiceContractInterface|null $contract
      * @return int
      */
-    public function calculateOptionsPrice(ShipmentInterface $shipment, ContractInterface $contract = null)
+    public function calculateOptionsPrice(ShipmentInterface $shipment, ServiceContractInterface $contract = null)
     {
         if ($contract === null) {
-            $contract = $shipment->getContract();
+            $contract = $shipment->getServiceContract();
         }
 
         if ($contract === null) {
@@ -139,8 +139,8 @@ class PriceCalculator
         $price = 0;
 
         $optionPrices = [];
-        foreach ($contract->getServiceOptions() as $option) {
-            $optionPrices[$option->getId()] = $option->getPrice();
+        foreach ($contract->getServiceOptionPrices() as $option) {
+            $optionPrices[$option->getServiceOption()->getId()] = $option->getPrice();
         }
 
         foreach ($shipment->getServiceOptions() as $option) {
@@ -161,14 +161,14 @@ class PriceCalculator
      * Optionally a contract can be supplied for the price calculations. If no
      * contract is given, the contract on the shipment is used.
      *
-     * @param ShipmentInterface      $shipment
-     * @param ContractInterface|null $contract
+     * @param ShipmentInterface             $shipment
+     * @param ServiceContractInterface|null $contract
      * @return int
      */
-    public function calculateInsurancePrice(ShipmentInterface $shipment, ContractInterface $contract = null)
+    public function calculateInsurancePrice(ShipmentInterface $shipment, ServiceContractInterface $contract = null)
     {
         if ($contract === null) {
-            $contract = $shipment->getContract();
+            $contract = $shipment->getServiceContract();
         }
 
         if ($contract === null) {
@@ -185,7 +185,7 @@ class PriceCalculator
             );
         }
 
-        if (!($insurances = $contract->getInsurances())) {
+        if (!($insurances = $contract->getServiceInsurances())) {
             throw new CalculationException(
                 'Cannot calculate a price for given shipment; no insurances are available in contract'
             );

@@ -4,10 +4,10 @@ namespace MyParcelCom\ApiSdk\Tests\Unit;
 
 use MyParcelCom\ApiSdk\Exceptions\MyParcelComException;
 use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CustomsInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\PhysicalPropertiesInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentStatusInterface;
@@ -179,17 +179,6 @@ class ShipmentTest extends TestCase
     }
 
     /** @test */
-    public function testService()
-    {
-        $shipment = new Shipment();
-
-        $mock = $this->getMockClass(ServiceInterface::class);
-        $service = new $mock();
-
-        $this->assertEquals($service, $shipment->setService($service)->getService());
-    }
-
-    /** @test */
     public function testOptions()
     {
         $shipment = new Shipment();
@@ -214,14 +203,14 @@ class ShipmentTest extends TestCase
     }
 
     /** @test */
-    public function testContract()
+    public function testServiceContract()
     {
         $shipment = new Shipment();
 
-        $mock = $this->getMockClass(ContractInterface::class);
+        $mock = $this->getMockClass(ServiceContractInterface::class);
         $contract = new $mock();
 
-        $this->assertEquals($contract, $shipment->setContract($contract)->getContract());
+        $this->assertEquals($contract, $shipment->setServiceContract($contract)->getServiceContract());
     }
 
     /** @test */
@@ -452,7 +441,7 @@ class ShipmentTest extends TestCase
                 'type' => 'services',
             ]);
 
-        $contract = $this->getMockBuilder(ContractInterface::class)
+        $contract = $this->getMockBuilder(ServiceContractInterface::class)
             ->disableOriginalConstructor()
             ->disableOriginalClone()
             ->disableArgumentCloning()
@@ -461,7 +450,7 @@ class ShipmentTest extends TestCase
         $contract->method('jsonSerialize')
             ->willReturn([
                 'id'   => 'contract-id-1',
-                'type' => 'contracts',
+                'type' => 'service-contracts',
             ]);
 
         $shop = $this->getMockBuilder(ShopInterface::class)
@@ -558,10 +547,9 @@ class ShipmentTest extends TestCase
             ->setPhysicalProperties($physicalProperties)
             ->setPhysicalPropertiesVerified($physicalPropertiesVerified)
             ->setShop($shop)
-            ->setService($service)
             ->setServiceOptions([$option])
             ->setFiles([$file])
-            ->setContract($contract)
+            ->setServiceContract($contract)
             ->setStatus($status)
             ->setRecipientAddress($recipientAddress)
             ->setSenderAddress($senderAddress)
@@ -667,12 +655,11 @@ class ShipmentTest extends TestCase
                 ],
             ],
             'relationships' => [
-                'shop'            => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
-                'service'         => ['data' => ['id' => 'service-id-1', 'type' => 'services']],
-                'contract'        => ['data' => ['id' => 'contract-id-1', 'type' => 'contracts']],
-                'status'          => ['data' => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses']],
-                'service_options' => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
-                'files'           => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
+                'shop'             => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
+                'service_contract' => ['data' => ['id' => 'contract-id-1', 'type' => 'service-contracts']],
+                'status'           => ['data' => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses']],
+                'service_options'  => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
+                'files'            => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
             ],
         ], $shipment->jsonSerialize());
     }

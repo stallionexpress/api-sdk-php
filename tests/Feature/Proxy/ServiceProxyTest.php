@@ -7,9 +7,10 @@ use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
 use MyParcelCom\ApiSdk\MyParcelComApi;
 use MyParcelCom\ApiSdk\MyParcelComApiInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Proxy\ServiceProxy;
 use MyParcelCom\ApiSdk\Tests\Traits\MocksApiCommunication;
 use PHPUnit\Framework\TestCase;
@@ -45,33 +46,68 @@ class ServiceProxyTest extends TestCase
     }
 
     /** @test */
+    public function testAccessors()
+    {
+        $this->assertEquals('Super Service Plus', $this->serviceProxy->setName('Super Service Plus')->getName());
+        $this->assertEquals(ServiceInterface::PACKAGE_TYPE_LETTER, $this->serviceProxy->setPackageType(ServiceInterface::PACKAGE_TYPE_LETTER)->getPackageType());
+        $this->assertEquals(4, $this->serviceProxy->setTransitTimeMin(4)->getTransitTimeMin());
+        $this->assertEquals(12, $this->serviceProxy->setTransitTimeMax(12)->getTransitTimeMax());
+        $this->assertEquals('drop-off', $this->serviceProxy->setHandoverMethod('drop-off')->getHandoverMethod());
+        $this->assertEquals('an-id-for-a-service', $this->serviceProxy->setId('an-id-for-a-service')->getId());
+
+        $this->assertEquals(
+            ['Wednesday', 'Friday'],
+            $this->serviceProxy->setDeliveryDays(['Wednesday', 'Friday'])->getDeliveryDays()
+        );
+        $this->serviceProxy->addDeliveryDay('Tuesday');
+        $this->assertEquals(
+            ['Wednesday', 'Friday', 'Tuesday'],
+            $this->serviceProxy->getDeliveryDays()
+        );
+
+        /** @var CarrierInterface $carrier */
+        $carrier = $this->getMockBuilder(CarrierInterface::class)->getMock();
+        $this->assertEquals($carrier, $this->serviceProxy->setCarrier($carrier)->getCarrier());
+
+        $regionBuilder = $this->getMockBuilder(RegionInterface::class);
+        /** @var RegionInterface $regionTo */
+        $regionTo = $regionBuilder->getMock();
+        $this->assertEquals($regionTo, $this->serviceProxy->setRegionTo($regionTo)->getRegionTo());
+
+        /** @var RegionInterface $regionFrom */
+        $regionFrom = $regionBuilder->getMock();
+        $this->assertEquals($regionFrom, $this->serviceProxy->setRegionFrom($regionFrom)->getRegionFrom());
+
+        $serviceContractBuilder = $this->getMockBuilder(ServiceContractInterface::class);
+        /** @var ServiceContractInterface $serviceContractA */
+        $serviceContractA = $serviceContractBuilder->getMock();
+        $this->assertEquals([$serviceContractA], $this->serviceProxy->setServiceContracts([$serviceContractA])->getServiceContracts());
+        /** @var ServiceContractInterface $serviceContractB */
+        $serviceContractB = $serviceContractBuilder->getMock();
+        $this->assertEquals(
+            [$serviceContractA, $serviceContractB],
+            $this->serviceProxy->addServiceContract($serviceContractB)->getServiceContracts()
+        );
+    }
+
+    /** @test */
     public function testAttributes()
     {
         $this->assertEquals('433285bb-2e34-435c-9109-1120e7c4bce4', $this->serviceProxy->getId());
         $this->assertEquals(ResourceInterface::TYPE_SERVICE, $this->serviceProxy->getType());
         $this->assertEquals('Letterbox Test', $this->serviceProxy->getName());
         $this->assertEquals('letterbox', $this->serviceProxy->getPackageType());
-        $this->assertEquals(4, $this->serviceProxy->setTransitTimeMin(4)->getTransitTimeMin());
+        $this->assertEquals(2, $this->serviceProxy->getTransitTimeMin());
         $this->assertEquals(3, $this->serviceProxy->getTransitTimeMax());
         $this->assertEquals('collection', $this->serviceProxy->getHandoverMethod());
 
         $this->assertInternalType('array', $this->serviceProxy->getDeliveryDays());
+        $this->assertCount(4, $this->serviceProxy->getDeliveryDays());
         $this->assertEquals([
             'Monday',
             'Tuesday',
             'Wednesday',
             'Thursday',
-        ], $this->serviceProxy->getDeliveryDays());
-        $this->assertCount(4, $this->serviceProxy->getDeliveryDays());
-        $this->assertEquals([
-            'Wednesday',
-            'Friday',
-        ], $this->serviceProxy->setDeliveryDays(['Wednesday', 'Friday'])->getDeliveryDays());
-        $this->serviceProxy->addDeliveryDay('Tuesday');
-        $this->assertEquals([
-            'Wednesday',
-            'Friday',
-            'Tuesday',
         ], $this->serviceProxy->getDeliveryDays());
     }
 
@@ -103,38 +139,38 @@ class ServiceProxyTest extends TestCase
     }
 
     /** @test */
-    public function testContractRelationship()
+    public function testServiceContractRelationship()
     {
-        $contract_A = $this->createMock(ContractInterface::class);
+        $contract_A = $this->createMock(ServiceContractInterface::class);
         $contract_A
             ->method('getId')
             ->willReturn('contract-id-1');
-        $contract_B = $this->createMock(ContractInterface::class);
+        $contract_B = $this->createMock(ServiceContractInterface::class);
         $contract_B
             ->method('getId')
             ->willReturn('contract-id-2');
 
         $contracts = $this->serviceProxy
-            ->setContracts([$contract_A, $contract_B])
-            ->getContracts();
+            ->setServiceContracts([$contract_A, $contract_B])
+            ->getServiceContracts();
 
-        array_walk($contracts, function (ContractInterface $contract) {
-            $this->assertInstanceOf(ContractInterface::class, $contract);
+        array_walk($contracts, function (ServiceContractInterface $contract) {
+            $this->assertInstanceOf(ServiceContractInterface::class, $contract);
         });
-        $contractIds = array_map(function (ContractInterface $contract) {
+        $contractIds = array_map(function (ServiceContractInterface $contract) {
             return $contract->getId();
         }, $contracts);
         $this->assertArraySubset(['contract-id-1', 'contract-id-2'], $contractIds);
         $this->assertCount(2, $contracts);
 
-        $contract_C = $this->createMock(ContractInterface::class);
+        $contract_C = $this->createMock(ServiceContractInterface::class);
         $contract_C
             ->method('getId')
             ->willReturn('contract-id-3');
 
         $contracts = $this->serviceProxy
-            ->addContract($contract_C)
-            ->getContracts();
+            ->addServiceContract($contract_C)
+            ->getServiceContracts();
         $this->assertCount(3, $contracts);
     }
 
@@ -147,7 +183,7 @@ class ServiceProxyTest extends TestCase
         $firstProxy
             ->setMyParcelComApi($this->api)
             ->setId('433285bb-2e34-435c-9109-1120e7c4bce4');
-        $firstProxy->getContracts();
+        $firstProxy->getServiceContracts();
         $firstProxy->getRegionTo();
         $firstProxy->getDeliveryDays();
 

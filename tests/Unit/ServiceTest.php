@@ -3,8 +3,9 @@
 namespace MyParcelCom\ApiSdk\Tests\Unit;
 
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\CServiceontractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use MyParcelCom\ApiSdk\Resources\Service;
 use PHPUnit\Framework\TestCase;
 
@@ -90,16 +91,16 @@ class ServiceTest extends TestCase
     {
         $service = new Service();
 
-        $mock = $this->getMockClass(ContractInterface::class);
+        $mock = $this->getMockClass(ServiceContractInterface::class);
         $contracts = [new $mock(), new $mock(), new $mock()];
 
         $this->assertCount(3, $contracts);
-        $this->assertEquals($contracts, $service->setContracts($contracts)->getContracts());
+        $this->assertEquals($contracts, $service->setServiceContracts($contracts)->getServiceContracts());
 
         $contract = new $mock();
         $contracts[] = $contract;
         $this->assertCount(4, $contracts);
-        $this->assertEquals($contracts, $service->addContract($contract)->getContracts());
+        $this->assertEquals($contracts, $service->addServiceContract($contract)->getServiceContracts());
     }
 
     /** @test */

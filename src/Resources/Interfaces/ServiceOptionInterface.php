@@ -22,28 +22,6 @@ interface ServiceOptionInterface extends ResourceInterface
     public function getName();
 
     /**
-     * @param int $price
-     * @return $this
-     */
-    public function setPrice($price);
-
-    /**
-     * @return int
-     */
-    public function getPrice();
-
-    /**
-     * @param string $currency
-     * @return $this
-     */
-    public function setCurrency($currency);
-
-    /**
-     * @return string
-     */
-    public function getCurrency();
-
-    /**
      * @param string $code
      * @return $this
      */

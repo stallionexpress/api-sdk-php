@@ -18,10 +18,15 @@ class RegionProxyTest extends TestCase
 
     /** @var ClientInterface */
     private $client;
+
     /** @var AuthenticatorInterface */
     private $authenticator;
+
     /** @var MyParcelComApiInterface */
     private $api;
+
+    /** @var RegionProxy */
+    private $regionProxy;
 
     public function setUp()
     {
@@ -33,22 +38,31 @@ class RegionProxyTest extends TestCase
             ->setCache(new NullCache())
             ->setHttpClient($this->client)
             ->authenticate($this->authenticator);
+
+        $this->regionProxy = (new RegionProxy())
+            ->setMyParcelComApi($this->api)
+            ->setId('c1048135-db45-404e-adac-fdecd0c7134a');
+    }
+
+    /** @test */
+    public function testAccessors()
+    {
+        $this->assertEquals('NH', $this->regionProxy->setRegionCode('NH')->getRegionCode());
+        $this->assertEquals('NL', $this->regionProxy->setCountryCode('NL')->getCountryCode());
+        $this->assertEquals('Noord-Holland', $this->regionProxy->setName('Noord-Holland')->getName());
+        $this->assertEquals('EUR', $this->regionProxy->setCurrency('EUR')->getCurrency());
+        $this->assertEquals('an-id-for-a-region', $this->regionProxy->setId('an-id-for-a-region')->getId());
     }
 
     /** @test */
     public function testAttributes()
     {
-        $regionProxy = new RegionProxy();
-        $regionProxy
-            ->setMyParcelComApi($this->api)
-            ->setId('c1048135-db45-404e-adac-fdecd0c7134a');
-
-        $this->assertEquals('c1048135-db45-404e-adac-fdecd0c7134a', $regionProxy->getId());
-        $this->assertEquals(ResourceInterface::TYPE_REGION, $regionProxy->getType());
-        $this->assertEquals('GB', $regionProxy->getCountryCode());
-        $this->assertEquals('ENG', $regionProxy->getRegionCode());
-        $this->assertEquals('GBP', $regionProxy->setCurrency('GBP')->getCurrency());
-        $this->assertEquals('United Kingdom', $regionProxy->getName());
+        $this->assertEquals('c1048135-db45-404e-adac-fdecd0c7134a', $this->regionProxy->getId());
+        $this->assertEquals(ResourceInterface::TYPE_REGION, $this->regionProxy->getType());
+        $this->assertEquals('GB', $this->regionProxy->getCountryCode());
+        $this->assertEquals('ENG', $this->regionProxy->getRegionCode());
+        $this->assertEquals('GBP', $this->regionProxy->setCurrency('GBP')->getCurrency());
+        $this->assertEquals('United Kingdom', $this->regionProxy->getName());
     }
 
     /** @test */
