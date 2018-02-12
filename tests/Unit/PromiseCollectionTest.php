@@ -68,4 +68,48 @@ class PromiseCollectionTest extends TestCase
             $this->assertLessThanOrEqual(29, $resource->id);
         }
     }
+
+    /** @test */
+    public function testOffsetAndLimit()
+    {
+        $collection = new PromiseCollection($this->promiseCreator, $this->resourceCreator);
+
+        $resources = $collection->offset(73)->limit(6)->get();
+        $this->assertCount(6, $resources);
+
+        array_walk($resources, function ($resource) {
+            $this->assertGreaterThanOrEqual(73, $resource->id);
+            $this->assertLessThanOrEqual(78, $resource->id);
+        });
+    }
+
+    /** @test */
+    public function testCount()
+    {
+        $collection = new PromiseCollection($this->promiseCreator, $this->resourceCreator);
+
+        $this->assertEquals(123, $collection->count());
+    }
+
+    /** @test */
+    public function testValid()
+    {
+        $collection = new PromiseCollection($this->promiseCreator, $this->resourceCreator);
+
+        $this->assertTrue($collection->offset(65)->valid());
+        $this->assertFalse($collection->offset(1512312)->valid());
+    }
+
+    /** @test */
+    public function testKeyCurrentAndNext()
+    {
+        $collection = new PromiseCollection($this->promiseCreator, $this->resourceCreator);
+
+        $this->assertEquals(99, $collection->offset(99)->key());
+
+        $collection->next();
+        $this->assertEquals(100, $collection->current()->id);
+
+        $this->assertNull($collection->offset(123541243)->current());
+    }
 }

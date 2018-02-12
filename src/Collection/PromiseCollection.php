@@ -69,7 +69,6 @@ class PromiseCollection implements CollectionInterface
         $firstPage = ceil(($this->offset + 1) / 30);
         $secondPage = ceil(($this->offset + $this->limit) / 30);
 
-
         if (!isset($this->resources[$this->offset])) {
             $this->retrieveResources($firstPage);
         }
@@ -104,6 +103,7 @@ class PromiseCollection implements CollectionInterface
                 $resources = call_user_func($this->resourceCreator, $body['data']);
 
                 $resourceNumber = ($pageNumber - 1) * 30;
+
                 array_walk($resources, function ($resource) use ($pageNumber, &$resourceNumber) {
                     $this->resources[$resourceNumber] = $resource;
                     $resourceNumber++;
