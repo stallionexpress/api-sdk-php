@@ -295,7 +295,9 @@ class MyParcelComApi implements MyParcelComApiInterface
      */
     public function getShipments(ShopInterface $shop = null)
     {
-        $shipments = $this->getResourcesPromise($this->apiUri . self::PATH_SHIPMENTS)->wait();
+//        $shipments = $this->getResourcesPromise($this->apiUri . self::PATH_SHIPMENTS)->wait();
+
+        $shipments = $this->getResourceCollection($this->apiUri . self::PATH_SHIPMENTS);
 
         if ($shop === null) {
             return $shipments;
@@ -504,6 +506,21 @@ class MyParcelComApi implements MyParcelComApiInterface
                         return array_merge($resources, $nextResources);
                     });
             });
+    }
+
+    protected function getResourceCollection($uri, $ttl = self::TTL_10MIN)
+    {
+        return new PromiseCollection(
+            function ($pageNumber, $pageSize) use ($uri, $ttl) {
+                $url = (new UrlBuilder($uri))->addQuery([
+                    'page[number]' => $pageNumber,
+                    'page[size]'   => $pageSize,
+                ])->getUrl();
+
+                return $this->doRequest($url, 'get', [], [], $ttl);
+            }, function ($data) {
+            return $this->jsonToResources($data);
+        });
     }
 
     /**

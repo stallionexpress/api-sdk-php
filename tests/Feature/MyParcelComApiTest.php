@@ -5,6 +5,7 @@ namespace MyParcelCom\ApiSdk\Tests\Feature;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
 use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
+use MyParcelCom\ApiSdk\Collection\PromiseCollection;
 use MyParcelCom\ApiSdk\Exceptions\InvalidResourceException;
 use MyParcelCom\ApiSdk\MyParcelComApi;
 use MyParcelCom\ApiSdk\Resources\Address;
@@ -314,10 +315,15 @@ class MyParcelComApiTest extends TestCase
     {
         $shipments = $this->api->getShipments();
 
-        $this->assertInternalType('array', $shipments);
-        array_walk($shipments, function ($shipment) {
+//        $this->assertInternalType('array', $shipments);
+//        array_walk($shipments, function ($shipment) {
+//            $this->assertInstanceOf(ShipmentInterface::class, $shipment);
+//        });
+
+        $this->assertInstanceOf(PromiseCollection::class, $shipments);
+        foreach ($shipments as $shipment) {
             $this->assertInstanceOf(ShipmentInterface::class, $shipment);
-        });
+        }
     }
 
     /** @test */
