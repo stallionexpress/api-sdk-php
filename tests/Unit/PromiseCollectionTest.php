@@ -2,6 +2,7 @@
 
 namespace MyParcelCom\ApiSdk\Tests\Unit;
 
+use MyParcelCom\ApiSdk\Collection\CollectionInterface;
 use MyParcelCom\ApiSdk\Collection\PromiseCollection;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
@@ -9,11 +10,8 @@ use function GuzzleHttp\Promise\promise_for;
 
 class PromiseCollectionTest extends TestCase
 {
-    /** @var callable */
-    private $promiseCreator;
-
-    /** @var callable */
-    private $resourceCreator;
+    /** @var CollectionInterface */
+    private $collection;
 
     /** @var int */
     private $pageNumber;
@@ -25,7 +23,7 @@ class PromiseCollectionTest extends TestCase
     {
         parent::setUp();
 
-        $this->promiseCreator = function ($pageNumber, $pageSize) {
+        $promiseCreator = function ($pageNumber, $pageSize) {
             $this->pageNumber = $pageNumber;
             $this->pageSize = $pageSize;
 
@@ -35,7 +33,7 @@ class PromiseCollectionTest extends TestCase
             return promise_for($response);
         };
 
-        $this->resourceCreator = function ($data) {
+        $resourceCreator = function ($data) {
             $this->assertEquals('something something', $data);
 
             $start = ($this->pageNumber - 1) * $this->pageSize;
@@ -46,14 +44,14 @@ class PromiseCollectionTest extends TestCase
 
             return $resources;
         };
+
+        $this->collection = new PromiseCollection($promiseCreator, $resourceCreator);
     }
 
     /** @test */
     public function testGet()
     {
-        $collection = new PromiseCollection($this->promiseCreator, $this->resourceCreator);
-
-        $resources = $collection->offset(83)->limit(9)->get();
+        $resources = $this->collection->offset(83)->limit(9)->get();
         $this->assertCount(9, $resources);
         $this->assertEquals(85, $resources[85]->id);
     }
@@ -61,9 +59,7 @@ class PromiseCollectionTest extends TestCase
     /** @test */
     public function testForeach()
     {
-        $collection = new PromiseCollection($this->promiseCreator, $this->resourceCreator);
-
-        foreach ($collection as $resource) {
+        foreach ($this->collection as $resource) {
             $this->assertGreaterThanOrEqual(0, $resource->id);
             $this->assertLessThanOrEqual(29, $resource->id);
         }
@@ -72,9 +68,7 @@ class PromiseCollectionTest extends TestCase
     /** @test */
     public function testOffsetAndLimit()
     {
-        $collection = new PromiseCollection($this->promiseCreator, $this->resourceCreator);
-
-        $resources = $collection->offset(73)->limit(6)->get();
+        $resources = $this->collection->offset(73)->limit(6)->get();
         $this->assertCount(6, $resources);
 
         array_walk($resources, function ($resource) {
@@ -86,30 +80,24 @@ class PromiseCollectionTest extends TestCase
     /** @test */
     public function testCount()
     {
-        $collection = new PromiseCollection($this->promiseCreator, $this->resourceCreator);
-
-        $this->assertEquals(123, $collection->count());
+        $this->assertEquals(123, $this->collection->count());
     }
 
     /** @test */
     public function testValid()
     {
-        $collection = new PromiseCollection($this->promiseCreator, $this->resourceCreator);
-
-        $this->assertTrue($collection->offset(65)->valid());
-        $this->assertFalse($collection->offset(1512312)->valid());
+        $this->assertTrue($this->collection->offset(65)->valid());
+        $this->assertFalse($this->collection->offset(1512312)->valid());
     }
 
     /** @test */
     public function testKeyCurrentAndNext()
     {
-        $collection = new PromiseCollection($this->promiseCreator, $this->resourceCreator);
+        $this->assertEquals(99, $this->collection->offset(99)->key());
 
-        $this->assertEquals(99, $collection->offset(99)->key());
+        $this->collection->next();
+        $this->assertEquals(100, $this->collection->current()->id);
 
-        $collection->next();
-        $this->assertEquals(100, $collection->current()->id);
-
-        $this->assertNull($collection->offset(123541243)->current());
+        $this->assertNull($this->collection->offset(123541243)->current());
     }
 }
