@@ -8,6 +8,7 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\RequestOptions;
 use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
+use MyParcelCom\ApiSdk\Collection\ArrayCollection;
 use MyParcelCom\ApiSdk\Collection\PromiseCollection;
 use MyParcelCom\ApiSdk\Exceptions\InvalidResourceException;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
@@ -176,7 +177,7 @@ class MyParcelComApi implements MyParcelComApiInterface
             $uri->addQuery(['street_number' => $streetNumber]);
         }
 
-        $promises = [];
+        $pudoLocations = [];
 
         foreach ($carriers as $carrier) {
             $carrierUri = str_replace('{carrier_id}', $carrier->getId(), $uri->getUrl());
@@ -189,12 +190,14 @@ class MyParcelComApi implements MyParcelComApiInterface
             // When something fails while retrieving the locations
             // for a carrier, the locations of the other carriers should
             // still be returned. The failing carrier returns null.
-            $promises[$carrier->getId()] = $promise->otherwise(function () {
+            $promise->otherwise(function () {
                 return null;
             });
+
+            $pudoLocations[$carrier->getId()] = new ArrayCollection($promise->wait());
         };
 
-        return unwrap($promises);
+        return $pudoLocations;
     }
 
     /**

@@ -211,11 +211,11 @@ class MyParcelComApiTest extends TestCase
 
         $this->assertInternalType('array', $allPudoLocations);
         $this->assertNull($allPudoLocations[$failingCarrierId]);
-        $this->assertInternalType('array', $allPudoLocations[$normalCarrierId]);
+        $this->assertInstanceOf(CollectionInterface::class, $allPudoLocations[$normalCarrierId]);
 
-        array_walk($allPudoLocations[$normalCarrierId], function ($pudoLocation) {
+        foreach ($allPudoLocations[$normalCarrierId] as $pudoLocation) {
             $this->assertInstanceOf(PickUpDropOffLocationInterface::class, $pudoLocation);
-        });
+        }
 
         $this->assertCount(count($carriers), $allPudoLocations);
         $this->assertArraySubset(
