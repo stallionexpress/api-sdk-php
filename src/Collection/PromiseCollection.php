@@ -14,7 +14,7 @@ class PromiseCollection implements CollectionInterface
     protected $resourceCreator;
 
     /** @var ResourceInterface[] */
-    protected $resources;
+    protected $resources = [];
 
     /** @var int */
     protected $offset = 0;

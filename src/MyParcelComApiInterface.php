@@ -52,7 +52,7 @@ interface MyParcelComApiInterface
      * Get all the carriers from the API.
      *
      * @throws MyParcelComException
-     * @return CarrierInterface[]
+     * @return PromiseCollection
      */
     public function getCarriers();
 
@@ -65,7 +65,7 @@ interface MyParcelComApiInterface
      * @param string|null           $streetName
      * @param string|null           $streetNumber
      * @param CarrierInterface|null $specificCarrier
-     * @return PickUpDropOffLocationInterface[]
+     * @return PromiseCollection
      */
     public function getPickUpDropOffLocations(
         $countryCode,
@@ -79,7 +79,7 @@ interface MyParcelComApiInterface
      * Get the shops from the API.
      *
      * @throws MyParcelComException
-     * @return ShopInterface[]
+     * @return PromiseCollection
      */
     public function getShops();
 
@@ -88,7 +88,7 @@ interface MyParcelComApiInterface
      * no specific shop has been set.
      *
      * @throws MyParcelComException
-     * @return ShipmentInterface
+     * @return ShopInterface
      */
     public function getDefaultShop();
 
@@ -98,7 +98,7 @@ interface MyParcelComApiInterface
      *
      * @param ShipmentInterface|null $shipment
      * @throws MyParcelComException
-     * @return ServiceInterface[]
+     * @return PromiseCollection
      */
     public function getServices(ShipmentInterface $shipment = null);
 
@@ -107,7 +107,7 @@ interface MyParcelComApiInterface
      *
      * @param CarrierInterface $carrier
      * @throws MyParcelComException
-     * @return ServiceInterface[]
+     * @return PromiseCollection
      */
     public function getServicesForCarrier(CarrierInterface $carrier);
 

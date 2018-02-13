@@ -24,6 +24,7 @@ use MyParcelCom\ApiSdk\Shipments\PriceCalculator;
 use MyParcelCom\ApiSdk\Shipments\ServiceMatcher;
 use MyParcelCom\ApiSdk\Utils\UrlBuilder;
 use MyParcelCom\ApiSdk\Validators\ShipmentValidator;
+use phpDocumentor\Reflection\DocBlock\Tags\Reference\Url;
 use Psr\Http\Message\ResponseInterface;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Cache\Simple\FilesystemCache;
@@ -157,7 +158,7 @@ class MyParcelComApi implements MyParcelComApiInterface
     ) {
         $carriers = $specificCarrier ? [$specificCarrier] : $this->getCarriers();
 
-        $uri = $this->apiUri
+        $uri = new UrlBuilder($this->apiUri
             . str_replace(
                 [
                     '{country_code}',
@@ -168,22 +169,19 @@ class MyParcelComApi implements MyParcelComApiInterface
                     $postalCode,
                 ],
                 self::PATH_PUDO_LOCATIONS
-            );
+            ));
 
-        if ($streetName || $streetNumber) {
-            $uri .= '?';
-        }
         if ($streetName) {
-            $uri .= 'street=' . $streetName;
+            $uri->addQuery(['street' => $streetName]);
         }
         if ($streetNumber) {
-            $uri .= 'street_number=' . $streetNumber;
+            $uri->addQuery(['street_number' => $streetNumber]);
         }
 
         $promises = [];
 
         foreach ($carriers as $carrier) {
-            $carrierUri = str_replace('{carrier_id}', $carrier->getId(), $uri);
+            $carrierUri = str_replace('{carrier_id}', $carrier->getId(), $uri->getUrl());
 
             // These resources can be stored for a week.
             $promise = $this->getResourcesPromise($carrierUri, self::TTL_WEEK);
@@ -208,8 +206,6 @@ class MyParcelComApi implements MyParcelComApiInterface
     {
         // These resources can be stored for a week. Or should be removed from
         // cache when updated
-//        return $this->getResourcesPromise($this->apiUri . self::PATH_SHOPS, self::TTL_WEEK)
-//            ->wait();
         return $this->getResourceCollection($this->apiUri . self::PATH_SHOPS, self::TTL_WEEK);
     }
 
@@ -218,9 +214,10 @@ class MyParcelComApi implements MyParcelComApiInterface
      */
     public function getDefaultShop()
     {
-        $shops = $this->getShops();
+        $shops = $this->getResourcesPromise($this->apiUri . self::PATH_SHOPS, self::TTL_WEEK)
+            ->wait();
 
-        // For now the oldest shop shop will be the default shop.
+        // For now the oldest shop will be the default shop.
         usort($shops, function (ShopInterface $shopA, ShopInterface $shopB) {
             return $shopA->getCreatedAt()->getTimestamp() - $shopB->getCreatedAt()->getTimestamp();
         });
@@ -236,8 +233,7 @@ class MyParcelComApi implements MyParcelComApiInterface
         $url = new UrlBuilder($this->apiUri . self::PATH_SERVICES);
 
         if ($shipment === null) {
-            return $this->getResourcesPromise($url->getUrl(), self::TTL_WEEK)
-                ->wait();
+            return $this->getResourceCollection($url->getUrl(), self::TTL_WEEK);
         }
 
         if ($shipment->getSenderAddress() === null) {
@@ -258,11 +254,11 @@ class MyParcelComApi implements MyParcelComApiInterface
         $regionsFrom = $this->getRegions(
             $shipment->getSenderAddress()->getCountryCode(),
             $shipment->getSenderAddress()->getRegionCode()
-        );
+        )->get();
         $regionsTo = $this->getRegions(
-            $shipment->getSenderAddress()->getCountryCode(),
-            $shipment->getSenderAddress()->getRegionCode()
-        );
+            $shipment->getRecipientAddress()->getCountryCode(),
+            $shipment->getRecipientAddress()->getRegionCode()
+        )->get();
 
         $url->addQuery([
             'filter[region_from]' => reset($regionsFrom)->getId(),
@@ -286,10 +282,10 @@ class MyParcelComApi implements MyParcelComApiInterface
      */
     public function getServicesForCarrier(CarrierInterface $carrier)
     {
-        // For now, we need to manually filter the services
-        return array_values(array_filter($this->getServices(), function (ServiceInterface $service) use ($carrier) {
-            return $service->getCarrier()->getId() === $carrier->getId();
-        }));
+        $url = new UrlBuilder($this->apiUri . self::PATH_SERVICES);
+        $url->addQuery(['filter[carrier]' => $carrier->getId()]);
+
+        return $this->getResourceCollection($url->getUrl(), self::TTL_WEEK);
     }
 
     /**
@@ -297,18 +293,13 @@ class MyParcelComApi implements MyParcelComApiInterface
      */
     public function getShipments(ShopInterface $shop = null)
     {
-//        $shipments = $this->getResourcesPromise($this->apiUri . self::PATH_SHIPMENTS)->wait();
+        $url = new UrlBuilder($this->apiUri . self::PATH_SHIPMENTS);
 
-        $shipments = $this->getResourceCollection($this->apiUri . self::PATH_SHIPMENTS);
-
-        if ($shop === null) {
-            return $shipments;
+        if (isset($shop)) {
+            $url->addQuery(['filter[shop]' => $shop->getId()]);
         }
 
-        // For now filter manually.
-        return array_values(array_filter($shipments, function (ShipmentInterface $shipment) use ($shop) {
-            return $shipment->getShop()->getId() === $shop->getId();
-        }));
+        return $this->getResourceCollection($url->getUrl(), self::TTL_WEEK);
     }
 
     /**
