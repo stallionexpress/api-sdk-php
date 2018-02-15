@@ -28,7 +28,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Cache\Simple\FilesystemCache;
 use function GuzzleHttp\Promise\promise_for;
-use function GuzzleHttp\Promise\unwrap;
 use function GuzzleHttp\Psr7\parse_response;
 use function GuzzleHttp\Psr7\str;
 
@@ -187,14 +186,18 @@ class MyParcelComApi implements MyParcelComApiInterface
             if ($specificCarrier) {
                 return $promise->wait();
             }
+
             // When something fails while retrieving the locations
             // for a carrier, the locations of the other carriers should
             // still be returned. The failing carrier returns null.
-            $promise->otherwise(function () {
-                return null;
-            });
-
-            $pudoLocations[$carrier->getId()] = new ArrayCollection($promise->wait());
+            $pudoLocations[$carrier->getId()] = $promise
+                ->then(function ($response) {
+                    return new ArrayCollection($response);
+                })
+                ->otherwise(function () {
+                    return null;
+                })
+                ->wait();
         };
 
         return $pudoLocations;
@@ -275,7 +278,7 @@ class MyParcelComApi implements MyParcelComApiInterface
             return $matcher->matches($shipment, $service);
         }));
 
-        return $services;
+        return new ArrayCollection($services);
     }
 
     /**
@@ -359,6 +362,13 @@ class MyParcelComApi implements MyParcelComApiInterface
     {
         $selector = new ContractSelector();
         $calculator = new PriceCalculator();
+
+        $allServices = [];
+        $collection = $this->getServices($shipment);
+        for ($offset = 0; $offset < $collection->count(); $offset += 30) {
+            $allServices = array_merge($allServices, $collection->offset($offset)->get());
+        }
+
         $contracts = array_map(
             function (ServiceInterface $service) use ($selector, $calculator, $shipment) {
                 $contract = $selector->selectCheapest($shipment, $service->getServiceContracts());
@@ -369,7 +379,7 @@ class MyParcelComApi implements MyParcelComApiInterface
                     'service'  => $service,
                 ];
             },
-            $this->getServices($shipment)
+            $allServices
         );
 
         usort($contracts, function ($a, $b) {

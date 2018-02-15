@@ -290,10 +290,10 @@ class MyParcelComApiTest extends TestCase
 
         $services = $this->api->getServices($shipment);
 
-        $this->assertInternalType('array', $services);
-        array_walk($services, function ($service) {
+        $this->assertInstanceOf(CollectionInterface::class, $services);
+        foreach ($services as $service) {
             $this->assertInstanceOf(ServiceInterface::class, $service);
-        });
+        }
     }
 
     /** @test */
