@@ -47,7 +47,7 @@ class PromiseCollection implements CollectionInterface
      */
     public function count()
     {
-        if (!isset ($this->count)) {
+        if (!isset($this->count)) {
             $this->get();
         }
 
@@ -66,6 +66,10 @@ class PromiseCollection implements CollectionInterface
             return [];
         }
 
+        // Retrieving the resources from the api is done by page.
+        // A maximum of 30 resources per page can be retrieved at once.
+        // We need to specify which page should be retrieved from the api,
+        // or which pages if the set offset and limit overlaps two pages.
         $firstPage = ceil(($this->offset + 1) / 30);
         $secondPage = ceil(($this->offset + $this->limit) / 30);
 
@@ -131,7 +135,6 @@ class PromiseCollection implements CollectionInterface
      *
      * @param int $limit
      * @return $this
-     * @throws \Exception
      */
     public function limit($limit = 30)
     {

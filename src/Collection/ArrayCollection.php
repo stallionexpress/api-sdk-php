@@ -26,7 +26,7 @@ class ArrayCollection implements CollectionInterface
      *
      * @param ResourceInterface[] $resources
      */
-    public function __construct($resources)
+    public function __construct(array $resources)
     {
         $this->resources = $resources;
     }

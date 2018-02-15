@@ -9,6 +9,7 @@ use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\RequestOptions;
 use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
 use MyParcelCom\ApiSdk\Collection\ArrayCollection;
+use MyParcelCom\ApiSdk\Collection\CollectionInterface;
 use MyParcelCom\ApiSdk\Collection\PromiseCollection;
 use MyParcelCom\ApiSdk\Exceptions\InvalidResourceException;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
@@ -512,17 +513,25 @@ class MyParcelComApi implements MyParcelComApiInterface
             });
     }
 
+    /**
+     * Get a collection of resources requested from the given uri.
+     * A time-to-live can be specified for how long this request
+     * should be cached (defaults to 10 minutes).
+     *
+     * @param string $uri
+     * @param int    $ttl
+     * @return CollectionInterface
+     */
     protected function getResourceCollection($uri, $ttl = self::TTL_10MIN)
     {
-        return new PromiseCollection(
-            function ($pageNumber, $pageSize) use ($uri, $ttl) {
-                $url = (new UrlBuilder($uri))->addQuery([
-                    'page[number]' => $pageNumber,
-                    'page[size]'   => $pageSize,
-                ])->getUrl();
+        return new PromiseCollection(function ($pageNumber, $pageSize) use ($uri, $ttl) {
+            $url = (new UrlBuilder($uri))->addQuery([
+                'page[number]' => $pageNumber,
+                'page[size]'   => $pageSize,
+            ])->getUrl();
 
-                return $this->doRequest($url, 'get', [], [], $ttl);
-            }, function ($data) {
+            return $this->doRequest($url, 'get', [], [], $ttl);
+        }, function ($data) {
             return $this->jsonToResources($data);
         });
     }
@@ -530,10 +539,8 @@ class MyParcelComApi implements MyParcelComApiInterface
     /**
      * {@inheritdoc}
      */
-    public
-    function doRequest(
-        $uri, $method = 'get', array $body = [], array $headers = [], $ttl = self::TTL_10MIN
-    ) {
+    public function doRequest($uri, $method = 'get', array $body = [], array $headers = [], $ttl = self::TTL_10MIN)
+    {
         if (strpos($uri, $this->apiUri) !== 0) {
             $uri = $this->apiUri . $uri;
         }
@@ -569,10 +576,8 @@ class MyParcelComApi implements MyParcelComApiInterface
      * @param array $json
      * @return array
      */
-    protected
-    function jsonToResources(
-        array $json
-    ) {
+    protected function jsonToResources(array $json)
+    {
         $resources = [];
 
         if (isset($json['type'])) {
@@ -595,10 +600,8 @@ class MyParcelComApi implements MyParcelComApiInterface
      * @param array $resourceData
      * @return array
      */
-    private
-    function flattenResourceData(
-        array $resourceData
-    ) {
+    private function flattenResourceData(array $resourceData)
+    {
         $data = [
             'id'   => $resourceData['id'],
             'type' => $resourceData['type'],
@@ -626,10 +629,8 @@ class MyParcelComApi implements MyParcelComApiInterface
      * @param array $relationship
      * @return array
      */
-    private
-    function flattenRelationship(
-        array $relationship
-    ) {
+    private function flattenRelationship(array $relationship)
+    {
         $data = isset($relationship['data'])
             ? $relationship['data']
             : [];
@@ -644,10 +645,8 @@ class MyParcelComApi implements MyParcelComApiInterface
      * @param RequestException $exception
      * @return PromiseInterface
      */
-    protected
-    function handleRequestException(
-        RequestException $exception
-    ) {
+    protected function handleRequestException(RequestException $exception)
+    {
         $response = $exception->getResponse();
 
         if ($response->getStatusCode() !== 401 || $this->authRetry) {
@@ -680,10 +679,8 @@ class MyParcelComApi implements MyParcelComApiInterface
      * @param string $id
      * @return ResourceInterface
      */
-    public
-    function getResourceById(
-        $resourceType, $id
-    ) {
+    public function getResourceById($resourceType, $id)
+    {
         $resources = $this->getResourcesPromise(
             $this->getResourceUri($resourceType, $id)
         )->wait();
@@ -694,10 +691,8 @@ class MyParcelComApi implements MyParcelComApiInterface
     /**
      * {@inheritdoc}
      */
-    public
-    function getResourcesFromUri(
-        $uri
-    ) {
+    public function getResourcesFromUri($uri)
+    {
         return $this->getResourcesPromise($uri)->wait();
     }
 
@@ -707,10 +702,8 @@ class MyParcelComApi implements MyParcelComApiInterface
      * @param ResourceInterface $resource
      * @return ResourceInterface|null
      */
-    protected
-    function postResource(
-        ResourceInterface $resource
-    ) {
+    protected function postResource(ResourceInterface $resource)
+    {
         $promise = $this->getHttpClient()->requestAsync(
             'post',
             $this->getResourceUri($resource->getType()),
@@ -738,10 +731,8 @@ class MyParcelComApi implements MyParcelComApiInterface
      * @param string|null $id
      * @return string
      */
-    protected
-    function getResourceUri(
-        $resourceType, $id = null
-    ) {
+    protected function getResourceUri($resourceType, $id = null)
+    {
         return implode(
             '/',
             array_filter([

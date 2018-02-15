@@ -4,12 +4,11 @@ namespace MyParcelCom\ApiSdk;
 
 use GuzzleHttp\Promise\PromiseInterface;
 use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
+use MyParcelCom\ApiSdk\Collection\CollectionInterface;
 use MyParcelCom\ApiSdk\Collection\PromiseCollection;
 use MyParcelCom\ApiSdk\Exceptions\MyParcelComException;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\PickUpDropOffLocationInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 
@@ -44,7 +43,7 @@ interface MyParcelComApiInterface
      *
      * @param string|null $countryCode
      * @param string|null $regionCode
-     * @return PromiseCollection
+     * @return CollectionInterface
      */
     public function getRegions($countryCode = null, $regionCode = null);
 
@@ -52,7 +51,7 @@ interface MyParcelComApiInterface
      * Get all the carriers from the API.
      *
      * @throws MyParcelComException
-     * @return PromiseCollection
+     * @return CollectionInterface
      */
     public function getCarriers();
 
@@ -65,7 +64,7 @@ interface MyParcelComApiInterface
      * @param string|null           $streetName
      * @param string|null           $streetNumber
      * @param CarrierInterface|null $specificCarrier
-     * @return PromiseCollection
+     * @return CollectionInterface
      */
     public function getPickUpDropOffLocations(
         $countryCode,
@@ -79,7 +78,7 @@ interface MyParcelComApiInterface
      * Get the shops from the API.
      *
      * @throws MyParcelComException
-     * @return PromiseCollection
+     * @return CollectionInterface
      */
     public function getShops();
 
@@ -98,7 +97,7 @@ interface MyParcelComApiInterface
      *
      * @param ShipmentInterface|null $shipment
      * @throws MyParcelComException
-     * @return PromiseCollection
+     * @return CollectionInterface
      */
     public function getServices(ShipmentInterface $shipment = null);
 
@@ -107,7 +106,7 @@ interface MyParcelComApiInterface
      *
      * @param CarrierInterface $carrier
      * @throws MyParcelComException
-     * @return PromiseCollection
+     * @return CollectionInterface
      */
     public function getServicesForCarrier(CarrierInterface $carrier);
 
@@ -117,7 +116,7 @@ interface MyParcelComApiInterface
      *
      * @param ShopInterface|null $shop
      * @throws MyParcelComException
-     * @return PromiseCollection
+     * @return CollectionInterface
      */
     public function getShipments(ShopInterface $shop = null);
 

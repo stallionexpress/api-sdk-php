@@ -316,11 +316,6 @@ class MyParcelComApiTest extends TestCase
     {
         $shipments = $this->api->getShipments();
 
-//        $this->assertInternalType('array', $shipments);
-//        array_walk($shipments, function ($shipment) {
-//            $this->assertInstanceOf(ShipmentInterface::class, $shipment);
-//        });
-
         $this->assertInstanceOf(CollectionInterface::class, $shipments);
         foreach ($shipments as $shipment) {
             $this->assertInstanceOf(ShipmentInterface::class, $shipment);
