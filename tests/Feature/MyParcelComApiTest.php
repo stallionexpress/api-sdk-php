@@ -168,10 +168,10 @@ class MyParcelComApiTest extends TestCase
             $carrier
         );
 
-        $this->assertInternalType('array', $normalCarrierPudoLocations);
-        array_walk($normalCarrierPudoLocations, function ($pudoLocation) {
+        $this->assertInstanceOf(CollectionInterface::class, $normalCarrierPudoLocations);
+        foreach ($normalCarrierPudoLocations as $pudoLocation) {
             $this->assertInstanceOf(PickUpDropOffLocationInterface::class, $pudoLocation);
-        });
+        }
     }
 
     /** @test */
@@ -229,14 +229,19 @@ class MyParcelComApiTest extends TestCase
     /** @test */
     public function testGetRegions()
     {
-        $regions = $this->api->getRegions();
-
-        $this->assertInstanceOf(CollectionInterface::class, $regions);
-        $this->assertEquals(78, $regions->count());
-
-        foreach ($regions as $region) {
-            $this->assertInstanceOf(RegionInterface::class, $region);
+        $collection = $this->api->getRegions();
+        $allRegions = [];
+        for ($offset = 0; $offset < $collection->count(); $offset += 30) {
+            $allRegions = array_merge($allRegions, $collection->offset($offset)->get());
         }
+
+        $this->assertInstanceOf(CollectionInterface::class, $collection);
+        $this->assertEquals(78, $collection->count());
+        $this->assertCount(78, $allRegions);
+
+        array_walk($allRegions, function ($region) {
+            $this->assertInstanceOf(RegionInterface::class, $region);
+        });
     }
 
     /** @test */

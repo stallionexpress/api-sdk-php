@@ -16,9 +16,6 @@ class ArrayCollection implements CollectionInterface
     protected $limit = 30;
 
     /** @var int */
-    protected $count;
-
-    /** @var int */
     protected $currentResourceNumber = 0;
 
     /**

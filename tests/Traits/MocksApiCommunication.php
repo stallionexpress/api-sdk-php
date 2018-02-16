@@ -36,8 +36,6 @@ trait MocksApiCommunication
                     $filePath = preg_replace('/.json/', '.txt', $filePath);
                 }
 
-                $filePath = preg_replace('/\-page\-(number|size)\-\-[0-9]*/', '', $filePath);
-
                 if (!file_exists($filePath)) {
                     throw new \RuntimeException(sprintf(
                         'File with path `%s` does not exist, please create this file with valid response data',

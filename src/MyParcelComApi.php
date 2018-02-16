@@ -185,7 +185,7 @@ class MyParcelComApi implements MyParcelComApiInterface
             // These resources can be stored for a week.
             $promise = $this->getResourcesPromise($carrierUri, self::TTL_WEEK);
             if ($specificCarrier) {
-                return $promise->wait();
+                return new ArrayCollection($promise->wait());
             }
 
             // When something fails while retrieving the locations
