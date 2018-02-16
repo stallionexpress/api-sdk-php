@@ -8,12 +8,12 @@ use MyParcelCom\ApiSdk\MyParcelComApi;
 use MyParcelCom\ApiSdk\MyParcelComApiInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CustomsInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\CustomsItemInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\PhysicalPropertiesInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentItemInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentStatusInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\ApiSdk\Resources\Proxy\ShipmentProxy;
@@ -186,10 +186,11 @@ class ShipmentProxyTest extends TestCase
         $customs = $this->shipmentProxy->getCustoms();
         $this->assertInstanceOf(CustomsInterface::class, $customs);
         $this->assertEquals(CustomsInterface::CONTENT_TYPE_DOCUMENTS, $customs->getContentType());
-        $this->assertInternalType('array', $customs->getItems());
-        $items = $customs->getItems();
+
+        $items = $this->shipmentProxy->getItems();
+        $this->assertInternalType('array', $items);
         array_walk($items, function ($item) {
-            $this->assertInstanceOf(CustomsItemInterface::class, $item);
+            $this->assertInstanceOf(ShipmentItemInterface::class, $item);
         });
         $this->assertEquals('123456789', $items[0]->getSku());
         $this->assertEquals('OnePlus One', $items[1]->getDescription());

@@ -2,7 +2,7 @@
 
 namespace MyParcelCom\ApiSdk\Resources\Interfaces;
 
-interface CustomsItemInterface extends \JsonSerializable
+interface ShipmentItemInterface extends \JsonSerializable
 {
     /**
      * @param string $sku

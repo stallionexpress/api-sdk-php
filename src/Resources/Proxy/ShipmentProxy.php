@@ -11,6 +11,7 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentItemInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentStatusInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
@@ -477,6 +478,36 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
     public function getStatusHistory()
     {
         return $this->getResource()->getStatusHistory();
+    }
+
+    /**
+     * @param ShipmentItemInterface[] $items
+     * @return $this
+     */
+    public function setItems(array $items)
+    {
+        $this->getResource()->setItems($items);
+
+        return $this;
+    }
+
+    /**
+     * @param ShipmentItemInterface $item
+     * @return $this
+     */
+    public function addItem(ShipmentItemInterface $item)
+    {
+        $this->getResource()->addItem($item);
+
+        return $this;
+    }
+
+    /**
+     * @return ShipmentItemInterface[]
+     */
+    public function getItems()
+    {
+        return $this->getResource()->getItems();
     }
 
     /**

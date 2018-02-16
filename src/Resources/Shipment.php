@@ -10,6 +10,7 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentItemInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentStatusInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
@@ -35,6 +36,7 @@ class Shipment implements ShipmentInterface
     const ATTRIBUTE_PICKUP_CODE = 'code';
     const ATTRIBUTE_PICKUP_ADDRESS = 'address';
     const ATTRIBUTE_CUSTOMS = 'customs';
+    const ATTRIBUTE_ITEMS = 'items';
 
     const RELATIONSHIP_SERVICE_CONTRACT = 'service_contract';
     const RELATIONSHIP_FILES = 'files';
@@ -60,6 +62,7 @@ class Shipment implements ShipmentInterface
         self::ATTRIBUTE_SENDER_ADDRESS               => null,
         self::ATTRIBUTE_PICKUP                       => null,
         self::ATTRIBUTE_CUSTOMS                      => null,
+        self::ATTRIBUTE_ITEMS                        => null,
     ];
 
     private $relationships = [
@@ -551,5 +554,37 @@ class Shipment implements ShipmentInterface
     public function getCustoms()
     {
         return $this->attributes[self::ATTRIBUTE_CUSTOMS];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getItems()
+    {
+        return $this->attributes[self::ATTRIBUTE_ITEMS];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addItem(ShipmentItemInterface $item)
+    {
+        $this->attributes[self::ATTRIBUTE_ITEMS][] = $item;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setItems(array $items)
+    {
+        $this->attributes[self::ATTRIBUTE_ITEMS] = [];
+
+        array_walk($items, function (ShipmentItemInterface $item) {
+            $this->addItem($item);
+        });
+
+        return $this;
     }
 }
