@@ -8,9 +8,11 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\RequestOptions;
 use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
+use MyParcelCom\ApiSdk\Collection\ArrayCollection;
+use MyParcelCom\ApiSdk\Collection\CollectionInterface;
+use MyParcelCom\ApiSdk\Collection\PromiseCollection;
 use MyParcelCom\ApiSdk\Exceptions\InvalidResourceException;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceFactoryInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
@@ -27,7 +29,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Cache\Simple\FilesystemCache;
 use function GuzzleHttp\Promise\promise_for;
-use function GuzzleHttp\Promise\unwrap;
 use function GuzzleHttp\Psr7\parse_response;
 use function GuzzleHttp\Psr7\str;
 
@@ -122,15 +123,17 @@ class MyParcelComApi implements MyParcelComApiInterface
      */
     public function getRegions($countryCode = null, $regionCode = null)
     {
-        // These resources can be stored for a week.
-        $regions = $this->getResourcesPromise($this->apiUri . self::PATH_REGIONS, self::TTL_WEEK)
-            ->wait();
+        $url = (new UrlBuilder($this->apiUri . self::PATH_REGIONS));
 
-        // For now, we need to manually filter the regions.
-        return array_values(array_filter($regions, function (RegionInterface $region) use ($countryCode, $regionCode) {
-            return ($countryCode === null || $countryCode === $region->getCountryCode())
-                && ($regionCode === null || $regionCode === $region->getRegionCode());
-        }));
+        if ($countryCode) {
+            $url->addQuery(['filter[country_code]' => $countryCode]);
+        }
+        if ($regionCode) {
+            $url->addQuery(['filter[region_code]' => $regionCode]);
+        }
+
+        // These resources can be stored for a week.
+        return $this->getResourceCollection($url->getUrl(), self::TTL_WEEK);
     }
 
     /**
@@ -139,8 +142,7 @@ class MyParcelComApi implements MyParcelComApiInterface
     public function getCarriers()
     {
         // These resources can be stored for a week.
-        return $this->getResourcesPromise($this->apiUri . self::PATH_CARRIERS, self::TTL_WEEK)
-            ->wait();
+        return $this->getResourceCollection($this->apiUri . self::PATH_CARRIERS, self::TTL_WEEK);
     }
 
     /**
@@ -155,7 +157,7 @@ class MyParcelComApi implements MyParcelComApiInterface
     ) {
         $carriers = $specificCarrier ? [$specificCarrier] : $this->getCarriers();
 
-        $uri = $this->apiUri
+        $uri = new UrlBuilder($this->apiUri
             . str_replace(
                 [
                     '{country_code}',
@@ -166,37 +168,40 @@ class MyParcelComApi implements MyParcelComApiInterface
                     $postalCode,
                 ],
                 self::PATH_PUDO_LOCATIONS
-            );
+            ));
 
-        if ($streetName || $streetNumber) {
-            $uri .= '?';
-        }
         if ($streetName) {
-            $uri .= 'street=' . $streetName;
+            $uri->addQuery(['street' => $streetName]);
         }
         if ($streetNumber) {
-            $uri .= 'street_number=' . $streetNumber;
+            $uri->addQuery(['street_number' => $streetNumber]);
         }
 
-        $promises = [];
+        $pudoLocations = [];
 
         foreach ($carriers as $carrier) {
-            $carrierUri = str_replace('{carrier_id}', $carrier->getId(), $uri);
+            $carrierUri = str_replace('{carrier_id}', $carrier->getId(), $uri->getUrl());
 
             // These resources can be stored for a week.
             $promise = $this->getResourcesPromise($carrierUri, self::TTL_WEEK);
             if ($specificCarrier) {
-                return $promise->wait();
+                return new ArrayCollection($promise->wait());
             }
+
             // When something fails while retrieving the locations
             // for a carrier, the locations of the other carriers should
             // still be returned. The failing carrier returns null.
-            $promises[$carrier->getId()] = $promise->otherwise(function () {
-                return null;
-            });
+            $pudoLocations[$carrier->getId()] = $promise
+                ->then(function ($response) {
+                    return new ArrayCollection($response);
+                })
+                ->otherwise(function () {
+                    return null;
+                })
+                ->wait();
         };
 
-        return unwrap($promises);
+        return $pudoLocations;
     }
 
     /**
@@ -206,8 +211,7 @@ class MyParcelComApi implements MyParcelComApiInterface
     {
         // These resources can be stored for a week. Or should be removed from
         // cache when updated
-        return $this->getResourcesPromise($this->apiUri . self::PATH_SHOPS, self::TTL_WEEK)
-            ->wait();
+        return $this->getResourceCollection($this->apiUri . self::PATH_SHOPS, self::TTL_WEEK);
     }
 
     /**
@@ -215,9 +219,10 @@ class MyParcelComApi implements MyParcelComApiInterface
      */
     public function getDefaultShop()
     {
-        $shops = $this->getShops();
+        $shops = $this->getResourcesPromise($this->apiUri . self::PATH_SHOPS, self::TTL_WEEK)
+            ->wait();
 
-        // For now the oldest shop shop will be the default shop.
+        // For now the oldest shop will be the default shop.
         usort($shops, function (ShopInterface $shopA, ShopInterface $shopB) {
             return $shopA->getCreatedAt()->getTimestamp() - $shopB->getCreatedAt()->getTimestamp();
         });
@@ -233,8 +238,7 @@ class MyParcelComApi implements MyParcelComApiInterface
         $url = new UrlBuilder($this->apiUri . self::PATH_SERVICES);
 
         if ($shipment === null) {
-            return $this->getResourcesPromise($url->getUrl(), self::TTL_WEEK)
-                ->wait();
+            return $this->getResourceCollection($url->getUrl(), self::TTL_WEEK);
         }
 
         if ($shipment->getSenderAddress() === null) {
@@ -255,11 +259,11 @@ class MyParcelComApi implements MyParcelComApiInterface
         $regionsFrom = $this->getRegions(
             $shipment->getSenderAddress()->getCountryCode(),
             $shipment->getSenderAddress()->getRegionCode()
-        );
+        )->get();
         $regionsTo = $this->getRegions(
-            $shipment->getSenderAddress()->getCountryCode(),
-            $shipment->getSenderAddress()->getRegionCode()
-        );
+            $shipment->getRecipientAddress()->getCountryCode(),
+            $shipment->getRecipientAddress()->getRegionCode()
+        )->get();
 
         $url->addQuery([
             'filter[region_from]' => reset($regionsFrom)->getId(),
@@ -275,7 +279,7 @@ class MyParcelComApi implements MyParcelComApiInterface
             return $matcher->matches($shipment, $service);
         }));
 
-        return $services;
+        return new ArrayCollection($services);
     }
 
     /**
@@ -283,10 +287,10 @@ class MyParcelComApi implements MyParcelComApiInterface
      */
     public function getServicesForCarrier(CarrierInterface $carrier)
     {
-        // For now, we need to manually filter the services
-        return array_values(array_filter($this->getServices(), function (ServiceInterface $service) use ($carrier) {
-            return $service->getCarrier()->getId() === $carrier->getId();
-        }));
+        $url = new UrlBuilder($this->apiUri . self::PATH_SERVICES);
+        $url->addQuery(['filter[carrier]' => $carrier->getId()]);
+
+        return $this->getResourceCollection($url->getUrl(), self::TTL_WEEK);
     }
 
     /**
@@ -294,16 +298,13 @@ class MyParcelComApi implements MyParcelComApiInterface
      */
     public function getShipments(ShopInterface $shop = null)
     {
-        $shipments = $this->getResourcesPromise($this->apiUri . self::PATH_SHIPMENTS)->wait();
+        $url = new UrlBuilder($this->apiUri . self::PATH_SHIPMENTS);
 
-        if ($shop === null) {
-            return $shipments;
+        if (isset($shop)) {
+            $url->addQuery(['filter[shop]' => $shop->getId()]);
         }
 
-        // For now filter manually.
-        return array_values(array_filter($shipments, function (ShipmentInterface $shipment) use ($shop) {
-            return $shipment->getShop()->getId() === $shop->getId();
-        }));
+        return $this->getResourceCollection($url->getUrl(), self::TTL_WEEK);
     }
 
     /**
@@ -362,6 +363,13 @@ class MyParcelComApi implements MyParcelComApiInterface
     {
         $selector = new ContractSelector();
         $calculator = new PriceCalculator();
+
+        $allServices = [];
+        $collection = $this->getServices($shipment);
+        for ($offset = 0; $offset < $collection->count(); $offset += 30) {
+            $allServices = array_merge($allServices, $collection->offset($offset)->get());
+        }
+
         $contracts = array_map(
             function (ServiceInterface $service) use ($selector, $calculator, $shipment) {
                 $contract = $selector->selectCheapest($shipment, $service->getServiceContracts());
@@ -372,7 +380,7 @@ class MyParcelComApi implements MyParcelComApiInterface
                     'service'  => $service,
                 ];
             },
-            $this->getServices($shipment)
+            $allServices
         );
 
         usort($contracts, function ($a, $b) {
@@ -503,6 +511,29 @@ class MyParcelComApi implements MyParcelComApiInterface
                         return array_merge($resources, $nextResources);
                     });
             });
+    }
+
+    /**
+     * Get a collection of resources requested from the given uri.
+     * A time-to-live can be specified for how long this request
+     * should be cached (defaults to 10 minutes).
+     *
+     * @param string $uri
+     * @param int    $ttl
+     * @return CollectionInterface
+     */
+    protected function getResourceCollection($uri, $ttl = self::TTL_10MIN)
+    {
+        return new PromiseCollection(function ($pageNumber, $pageSize) use ($uri, $ttl) {
+            $url = (new UrlBuilder($uri))->addQuery([
+                'page[number]' => $pageNumber,
+                'page[size]'   => $pageSize,
+            ])->getUrl();
+
+            return $this->doRequest($url, 'get', [], [], $ttl);
+        }, function ($data) {
+            return $this->jsonToResources($data);
+        });
     }
 
     /**

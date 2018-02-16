@@ -5,6 +5,8 @@ namespace MyParcelCom\ApiSdk\Tests\Feature;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
 use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
+use MyParcelCom\ApiSdk\Collection\CollectionInterface;
+use MyParcelCom\ApiSdk\Collection\PromiseCollection;
 use MyParcelCom\ApiSdk\Exceptions\InvalidResourceException;
 use MyParcelCom\ApiSdk\MyParcelComApi;
 use MyParcelCom\ApiSdk\Resources\Address;
@@ -144,10 +146,10 @@ class MyParcelComApiTest extends TestCase
     {
         $carriers = $this->api->getCarriers();
 
-        $this->assertInternalType('array', $carriers);
-        array_walk($carriers, function ($carrier) {
+        $this->assertInstanceOf(CollectionInterface::class, $carriers);
+        foreach ($carriers as $carrier) {
             $this->assertInstanceOf(CarrierInterface::class, $carrier);
-        });
+        }
     }
 
     /** @test */
@@ -166,10 +168,10 @@ class MyParcelComApiTest extends TestCase
             $carrier
         );
 
-        $this->assertInternalType('array', $normalCarrierPudoLocations);
-        array_walk($normalCarrierPudoLocations, function ($pudoLocation) {
+        $this->assertInstanceOf(CollectionInterface::class, $normalCarrierPudoLocations);
+        foreach ($normalCarrierPudoLocations as $pudoLocation) {
             $this->assertInstanceOf(PickUpDropOffLocationInterface::class, $pudoLocation);
-        });
+        }
     }
 
     /** @test */
@@ -195,7 +197,7 @@ class MyParcelComApiTest extends TestCase
     /** @test */
     public function testGetPickUpDropOffLocations()
     {
-        $carriers = $this->api->getCarriers();
+        $carriers = $this->api->getCarriers()->get();
 
         array_walk($carriers, function (CarrierInterface $carrier) use (&$failingCarrierId, &$normalCarrierId) {
             if ($carrier->getId() === '4a78637a-5d81-4e71-9b18-c338968f72fa') {
@@ -209,16 +211,15 @@ class MyParcelComApiTest extends TestCase
 
         $this->assertInternalType('array', $allPudoLocations);
         $this->assertNull($allPudoLocations[$failingCarrierId]);
-        $this->assertInternalType('array', $allPudoLocations[$normalCarrierId]);
+        $this->assertInstanceOf(CollectionInterface::class, $allPudoLocations[$normalCarrierId]);
 
-        array_walk($allPudoLocations[$normalCarrierId], function ($pudoLocation) {
+        foreach ($allPudoLocations[$normalCarrierId] as $pudoLocation) {
             $this->assertInstanceOf(PickUpDropOffLocationInterface::class, $pudoLocation);
-        });
+        }
 
         $this->assertCount(count($carriers), $allPudoLocations);
         $this->assertArraySubset(
-            array_map(function ($carrier) {
-                /** @var CarrierInterface $carrier */
+            array_map(function (CarrierInterface $carrier) {
                 return $carrier->getId();
             }, $carriers),
             array_keys($allPudoLocations)
@@ -228,11 +229,17 @@ class MyParcelComApiTest extends TestCase
     /** @test */
     public function testGetRegions()
     {
-        $regions = $this->api->getRegions();
+        $collection = $this->api->getRegions();
+        $allRegions = [];
+        for ($offset = 0; $offset < $collection->count(); $offset += 30) {
+            $allRegions = array_merge($allRegions, $collection->offset($offset)->get());
+        }
 
-        $this->assertInternalType('array', $regions);
-        $this->assertCount(78, $regions);
-        array_walk($regions, function ($region) {
+        $this->assertInstanceOf(CollectionInterface::class, $collection);
+        $this->assertEquals(78, $collection->count());
+        $this->assertCount(78, $allRegions);
+
+        array_walk($allRegions, function ($region) {
             $this->assertInstanceOf(RegionInterface::class, $region);
         });
     }
@@ -242,22 +249,22 @@ class MyParcelComApiTest extends TestCase
     {
         $regions = $this->api->getRegions('GB');
 
-        $this->assertInternalType('array', $regions);
-        $this->assertCount(5, $regions);
-        array_walk($regions, function ($region) {
+        $this->assertInstanceOf(CollectionInterface::class, $regions);
+        $this->assertEquals(9, $regions->count());
+        foreach ($regions as $region) {
             $this->assertInstanceOf(RegionInterface::class, $region);
             $this->assertEquals('GB', $region->getCountryCode());
-        });
+        }
 
         $ireland = $this->api->getRegions('GB', 'NIR');
 
-        $this->assertInternalType('array', $ireland);
-        $this->assertCount(1, $ireland);
-        array_walk($ireland, function ($region) {
+        $this->assertInstanceOf(CollectionInterface::class, $ireland);
+        $this->assertEquals(1, $ireland->count());
+        foreach ($ireland as $region) {
             $this->assertInstanceOf(RegionInterface::class, $region);
             $this->assertEquals('GB', $region->getCountryCode());
             $this->assertEquals('NIR', $region->getRegionCode());
-        });
+        }
     }
 
     /** @test */
@@ -265,10 +272,10 @@ class MyParcelComApiTest extends TestCase
     {
         $services = $this->api->getServices();
 
-        $this->assertInternalType('array', $services);
-        array_walk($services, function ($service) {
+        $this->assertInstanceOf(CollectionInterface::class, $services);
+        foreach ($services as $service) {
             $this->assertInstanceOf(ServiceInterface::class, $service);
-        });
+        }
     }
 
     /** @test */
@@ -288,10 +295,10 @@ class MyParcelComApiTest extends TestCase
 
         $services = $this->api->getServices($shipment);
 
-        $this->assertInternalType('array', $services);
-        array_walk($services, function ($service) {
+        $this->assertInstanceOf(CollectionInterface::class, $services);
+        foreach ($services as $service) {
             $this->assertInstanceOf(ServiceInterface::class, $service);
-        });
+        }
     }
 
     /** @test */
@@ -299,14 +306,14 @@ class MyParcelComApiTest extends TestCase
     {
         $carriers = $this->api->getCarriers();
 
-        array_walk($carriers, function ($carrier) {
+        foreach ($carriers as $carrier) {
             $services = $this->api->getServicesForCarrier($carrier);
 
-            array_walk($services, function ($service) use ($carrier) {
+            foreach ($services as $service) {
                 $this->assertInstanceOf(ServiceInterface::class, $service);
                 $this->assertEquals($carrier->getId(), $service->getCarrier()->getId());
-            });
-        });
+            }
+        }
     }
 
     /** @test */
@@ -314,10 +321,10 @@ class MyParcelComApiTest extends TestCase
     {
         $shipments = $this->api->getShipments();
 
-        $this->assertInternalType('array', $shipments);
-        array_walk($shipments, function ($shipment) {
+        $this->assertInstanceOf(CollectionInterface::class, $shipments);
+        foreach ($shipments as $shipment) {
             $this->assertInstanceOf(ShipmentInterface::class, $shipment);
-        });
+        }
     }
 
     /** @test */
@@ -325,11 +332,11 @@ class MyParcelComApiTest extends TestCase
     {
         $shops = $this->api->getShops();
 
-        array_walk($shops, function ($shop) {
+        foreach ($shops as $shop) {
             $shipments = $this->api->getShipments($shop);
 
-            $this->assertInternalType('array', $shipments);
-            array_walk($shipments, function ($shipment) use ($shop) {
+            $this->assertInstanceOf(CollectionInterface::class, $shipments);
+            foreach ($shipments as $shipment) {
                 $this->assertInstanceOf(ShipmentInterface::class, $shipment);
                 $this->assertEquals($shop->getId(), $shipment->getShop()->getId());
                 $this->assertEquals($shop->getType(), $shipment->getShop()->getType());
@@ -338,8 +345,8 @@ class MyParcelComApiTest extends TestCase
                 $this->assertEquals($shop->getReturnAddress(), $shipment->getShop()->getReturnAddress());
                 $this->assertEquals($shop->getName(), $shipment->getShop()->getName());
                 $this->assertEquals($shop->getRegion(), $shipment->getShop()->getRegion());
-            });
-        });
+            }
+        }
     }
 
     /** @test */
@@ -347,9 +354,9 @@ class MyParcelComApiTest extends TestCase
     {
         $shipments = $this->api->getShipments();
 
-        array_walk($shipments, function ($shipment) {
+        foreach ($shipments as $shipment) {
             $this->assertEquals($shipment, $this->api->getShipment($shipment->getId()));
-        });
+        }
     }
 
     /** @test */
@@ -455,10 +462,10 @@ class MyParcelComApiTest extends TestCase
     {
         $shops = $this->api->getShops();
 
-        $this->assertInternalType('array', $shops);
-        array_walk($shops, function ($shop) {
+        $this->assertInstanceOf(CollectionInterface::class, $shops);
+        foreach ($shops as $shop) {
             $this->assertInstanceOf(ShopInterface::class, $shop);
-        });
+        }
     }
 
     /** @test */
