@@ -2,10 +2,10 @@
 
 namespace MyParcelCom\ApiSdk\Resources;
 
-use MyParcelCom\ApiSdk\Resources\Interfaces\CustomsItemInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentItemInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 
-class CustomsItem implements CustomsItemInterface
+class ShipmentItem implements ShipmentItemInterface
 {
     use JsonSerializable;
 

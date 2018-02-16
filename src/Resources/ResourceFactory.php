@@ -8,7 +8,7 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CustomsInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\CustomsItemInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentItemInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\OpeningHourInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\PhysicalPropertiesInterface;
@@ -84,7 +84,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         $serviceOptionPriceFactory = [$this, 'serviceOptionPriceFactory'];
         $serviceInsuranceFactory = [$this, 'serviceInsuranceFactory'];
         $fileFactory = [$this, 'fileFactory'];
-        $customsItemFactory = [$this, 'customsItemFactory'];
+        $shipmentItemFactory = [$this, 'shipmentItemFactory'];
 
         $this->setFactoryForType(ResourceInterface::TYPE_CARRIER_CONTRACT, $carrierContractFactory);
         $this->setFactoryForType(CarrierContractInterface::class, $carrierContractFactory);
@@ -113,7 +113,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         $this->setFactoryForType(ResourceInterface::TYPE_FILE, $fileFactory);
         $this->setFactoryForType(FileInterface::class, $fileFactory);
 
-        $this->setFactoryForType(CustomsItemInterface::class, $customsItemFactory);
+        $this->setFactoryForType(ShipmentItemInterface::class, $shipmentItemFactory);
     }
 
     /**
@@ -541,15 +541,15 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
     }
 
     /**
-     * Factory for creating a customs item.
+     * Factory for creating a shipment item.
      *
      * @param $type
      * @param $attributes
-     * @return CustomsItem
+     * @return ShipmentItem
      */
-    protected function customsItemFactory($type, &$attributes)
+    protected function shipmentItemFactory($type, &$attributes)
     {
-        $item = new CustomsItem();
+        $item = new ShipmentItem();
 
         if (isset($attributes['item_value']['amount'])) {
             $item->setItemValue($attributes['item_value']['amount']);

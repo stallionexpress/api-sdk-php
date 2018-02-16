@@ -259,4 +259,21 @@ interface ShipmentInterface extends ResourceInterface
      * @return CustomsInterface
      */
     public function getCustoms();
+
+    /**
+     * @param ShipmentItemInterface[] $items
+     * @return $this
+     */
+    public function setItems(array $items);
+
+    /**
+     * @param ShipmentItemInterface $item
+     * @return $this
+     */
+    public function addItem(ShipmentItemInterface $item);
+
+    /**
+     * @return ShipmentItemInterface[]
+     */
+    public function getItems();
 }

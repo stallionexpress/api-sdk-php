@@ -10,6 +10,7 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\PhysicalPropertiesInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentItemInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentStatusInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\ApiSdk\Resources\Shipment;
@@ -248,6 +249,27 @@ class ShipmentTest extends TestCase
         $customs = new $mock();
 
         $this->assertEquals($customs, $shipment->setCustoms($customs)->getCustoms());
+    }
+
+    /** @test */
+    public function testItems()
+    {
+        $shipment = new Shipment();
+
+        $this->assertEmpty($shipment->getItems());
+
+        $mock = $this->getMockClass(ShipmentItemInterface::class);
+        $items = [new $mock(), new $mock()];
+
+        $shipment->setItems($items);
+        $this->assertCount(2, $shipment->getItems());
+        $this->assertEquals($items, $shipment->getItems());
+
+        $item = new $mock();
+        $items[] = $item;
+        $shipment->addItem($item);
+        $this->assertCount(3, $shipment->getItems());
+        $this->assertEquals($items, $shipment->getItems());
     }
 
     /** @test */
@@ -517,21 +539,27 @@ class ShipmentTest extends TestCase
             ->willReturn([
                 'content_type'   => 'documents',
                 'invoice_number' => 'NO.5',
-                'items'          => [
-                    [
-                        'sku'                 => '123456789',
-                        'description'         => 'OnePlus X',
-                        'item_value'          => [
-                            'amount'   => 100,
-                            'currency' => 'EUR',
-                        ],
-                        'quantity'            => 2,
-                        'hs_code'             => '8517.12.00',
-                        'origin_country_code' => 'GB',
-                    ],
-                ],
                 'non_delivery'   => 'return',
                 'incoterm'       => 'DDU',
+            ]);
+
+        $item = $this->getMockBuilder(ShipmentItemInterface::class)
+            ->disableOriginalConstructor()
+            ->disableOriginalClone()
+            ->disableArgumentCloning()
+            ->disallowMockingUnknownTypes()
+            ->getMock();
+        $item->method('jsonSerialize')
+            ->willReturn([
+                'sku'                 => '123456789',
+                'description'         => 'OnePlus X',
+                'item_value'          => [
+                    'amount'   => 100,
+                    'currency' => 'EUR',
+                ],
+                'quantity'            => 2,
+                'hs_code'             => '8517.12.00',
+                'origin_country_code' => 'GB',
             ]);
 
         $shipment = (new Shipment())
@@ -554,7 +582,8 @@ class ShipmentTest extends TestCase
             ->setRecipientAddress($recipientAddress)
             ->setSenderAddress($senderAddress)
             ->setPickupLocationAddress($pudoAddress)
-            ->setCustoms($customs);
+            ->setCustoms($customs)
+            ->setItems([$item]);
 
         $this->assertEquals([
             'id'            => 'shipment-id',
@@ -634,22 +663,22 @@ class ShipmentTest extends TestCase
                         'phone_number'         => '+31 (0)234 567 890',
                     ],
                 ],
+                'items'                        => [
+                    [
+                        'sku'                 => '123456789',
+                        'description'         => 'OnePlus X',
+                        'item_value'          => [
+                            'amount'   => 100,
+                            'currency' => 'EUR',
+                        ],
+                        'quantity'            => 2,
+                        'hs_code'             => '8517.12.00',
+                        'origin_country_code' => 'GB',
+                    ],
+                ],
                 'customs'                      => [
                     'content_type'   => 'documents',
                     'invoice_number' => 'NO.5',
-                    'items'          => [
-                        [
-                            'sku'                 => '123456789',
-                            'description'         => 'OnePlus X',
-                            'item_value'          => [
-                                'amount'   => 100,
-                                'currency' => 'EUR',
-                            ],
-                            'quantity'            => 2,
-                            'hs_code'             => '8517.12.00',
-                            'origin_country_code' => 'GB',
-                        ],
-                    ],
                     'non_delivery'   => 'return',
                     'incoterm'       => 'DDU',
                 ],
