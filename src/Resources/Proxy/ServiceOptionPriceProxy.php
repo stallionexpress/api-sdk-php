@@ -88,6 +88,25 @@ class ServiceOptionPriceProxy implements ServiceOptionPriceInterface, ResourcePr
     }
 
     /**
+     * @param bool $required
+     * @return $this
+     */
+    public function setRequired($required)
+    {
+        $this->getResource()->setRequired($required);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRequired()
+    {
+        return $this->getResource()->isRequired();
+    }
+
+    /**
      * @param ServiceContractInterface $serviceContract
      * @return $this
      */

@@ -33,6 +33,17 @@ interface ServiceOptionPriceInterface extends ResourceInterface
     public function getCurrency();
 
     /**
+     * @param bool $required
+     * @return $this
+     */
+    public function setRequired($required);
+
+    /**
+     * @return bool
+     */
+    public function isRequired();
+
+    /**
      * @param ServiceContractInterface $serviceContract
      * @return $this
      */

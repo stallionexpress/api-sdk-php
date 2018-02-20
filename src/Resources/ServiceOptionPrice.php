@@ -15,6 +15,7 @@ class ServiceOptionPrice implements ServiceOptionPriceInterface
     const ATTRIBUTE_CURRENCY = 'currency';
     const ATTRIBUTE_AMOUNT = 'amount';
     const ATTRIBUTE_PRICE = 'price';
+    const ATTRIBUTE_REQUIRED = 'required';
 
     const RELATIONSHIP_SERVICE_CONTRACT = 'service_contract';
     const RELATIONSHIP_SERVICE_OPTION = 'service_option';
@@ -103,6 +104,26 @@ class ServiceOptionPrice implements ServiceOptionPriceInterface
     {
         return isset($this->attributes[self::ATTRIBUTE_PRICE][self::ATTRIBUTE_CURRENCY])
             ? $this->attributes[self::ATTRIBUTE_PRICE][self::ATTRIBUTE_CURRENCY]
+            : null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setRequired($required)
+    {
+        $this->attributes[self::ATTRIBUTE_REQUIRED] = $required;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isRequired()
+    {
+        return isset($this->attributes[self::ATTRIBUTE_REQUIRED])
+            ? $this->attributes[self::ATTRIBUTE_REQUIRED]
             : null;
     }
 

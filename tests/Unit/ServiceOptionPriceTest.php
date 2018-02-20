@@ -38,6 +38,14 @@ class ServiceOptionPriceTest extends TestCase
     }
 
     /** @test */
+    public function testRequired()
+    {
+        $optionPrice = new ServiceOptionPrice();
+        $this->assertEquals(true, $optionPrice->setRequired(true)->isRequired());
+        $this->assertEquals(false, $optionPrice->setRequired(false)->isRequired());
+    }
+
+    /** @test */
     public function testServiceContract()
     {
         $optionPrice = new ServiceOptionPrice();
