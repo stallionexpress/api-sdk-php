@@ -6,7 +6,8 @@
       "price": {
         "amount": 100,
         "currency": "EUR"
-      }
+      },
+      "required": false
     },
     "relationships": {
       "service_option": {

@@ -48,6 +48,7 @@ class ServiceOptionPriceProxyTest extends TestCase
     {
         $this->assertEquals('JPY', $this->serviceOptionPriceProxy->setCurrency('JPY')->getCurrency());
         $this->assertEquals(1100, $this->serviceOptionPriceProxy->setPrice(1100)->getPrice());
+        $this->assertFalse($this->serviceOptionPriceProxy->setRequired(false)->isRequired());
         $this->assertEquals('an-id-for-an-insurance', $this->serviceOptionPriceProxy->setId('an-id-for-an-insurance')->getId());
 
         /** @var ServiceContractInterface $serviceContract */
@@ -64,6 +65,7 @@ class ServiceOptionPriceProxyTest extends TestCase
     {
         $this->assertEquals('EUR', $this->serviceOptionPriceProxy->getCurrency());
         $this->assertEquals(250, $this->serviceOptionPriceProxy->getPrice());
+        $this->assertTrue($this->serviceOptionPriceProxy->isRequired());
         $this->assertEquals('a6e63d46-5395-49a2-9111-df80f15b35de', $this->serviceOptionPriceProxy->getId());
     }
 
@@ -101,6 +103,7 @@ class ServiceOptionPriceProxyTest extends TestCase
             ->setId('a6e63d46-5395-49a2-9111-df80f15b35de');
         $firstProxy->getCurrency();
         $firstProxy->getPrice();
+        $firstProxy->isRequired();
 
         $this->assertEquals(1, $this->clientCalls['https://api/v1/service-option-prices/a6e63d46-5395-49a2-9111-df80f15b35de']);
 

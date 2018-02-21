@@ -500,6 +500,7 @@ class ResourceFactoryTest extends TestCase
                 'id'   => 'service-contract-id',
                 'type' => 'service-contracts',
             ],
+            'required' => true,
         ]);
 
         $this->assertInstanceOf(ServiceOptionPriceInterface::class, $serviceOption);
@@ -510,6 +511,7 @@ class ResourceFactoryTest extends TestCase
                     'amount'   => 55,
                     'currency' => 'NOK',
                 ],
+                'required' => true,
             ],
             'relationships' => [
                 'service_option'   => [
