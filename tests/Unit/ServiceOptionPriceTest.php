@@ -41,8 +41,8 @@ class ServiceOptionPriceTest extends TestCase
     public function testRequired()
     {
         $optionPrice = new ServiceOptionPrice();
-        $this->assertEquals(true, $optionPrice->setRequired(true)->isRequired());
-        $this->assertEquals(false, $optionPrice->setRequired(false)->isRequired());
+        $this->assertTrue($optionPrice->setRequired(true)->isRequired());
+        $this->assertFalse($optionPrice->setRequired(false)->isRequired());
     }
 
     /** @test */
