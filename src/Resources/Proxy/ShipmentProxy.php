@@ -95,6 +95,25 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
     }
 
     /**
+     * @param AddressInterface $returnAddress
+     * @return $this
+     */
+    public function setReturnAddress(AddressInterface $returnAddress)
+    {
+        $this->getResource()->setReturnAddress($returnAddress);
+
+        return $this;
+    }
+
+    /**
+     * @return AddressInterface
+     */
+    public function getReturnAddress()
+    {
+        return $this->getResource()->getReturnAddress();
+    }
+
+    /**
      * @param string $pickupLocationCode
      * @return $this
      */

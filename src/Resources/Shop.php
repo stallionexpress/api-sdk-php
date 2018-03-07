@@ -15,6 +15,7 @@ class Shop implements ShopInterface
 
     const ATTRIBUTE_NAME = 'name';
     const ATTRIBUTE_BILLING_ADDRESS = 'billing_address';
+    const ATTRIBUTE_SENDER_ADDRESS = 'sender_address';
     const ATTRIBUTE_RETURN_ADDRESS = 'return_address';
     const ATTRIBUTE_CREATED_AT = 'created_at';
 
@@ -25,6 +26,7 @@ class Shop implements ShopInterface
     private $attributes = [
         self::ATTRIBUTE_NAME            => null,
         self::ATTRIBUTE_BILLING_ADDRESS => null,
+        self::ATTRIBUTE_SENDER_ADDRESS  => null,
         self::ATTRIBUTE_RETURN_ADDRESS  => null,
         self::ATTRIBUTE_CREATED_AT      => null,
     ];
@@ -94,6 +96,24 @@ class Shop implements ShopInterface
     public function getBillingAddress()
     {
         return $this->attributes[self::ATTRIBUTE_BILLING_ADDRESS];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setSenderAddress(AddressInterface $senderAddress)
+    {
+        $this->attributes[self::ATTRIBUTE_SENDER_ADDRESS] = $senderAddress;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSenderAddress()
+    {
+        return $this->attributes[self::ATTRIBUTE_SENDER_ADDRESS];
     }
 
     /**

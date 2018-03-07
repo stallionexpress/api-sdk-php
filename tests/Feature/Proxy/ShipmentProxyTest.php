@@ -100,6 +100,10 @@ class ShipmentProxyTest extends TestCase
         $recipientAddress = $this->getMockBuilder(AddressInterface::class)->getMock();
         $this->assertEquals($recipientAddress, $this->shipmentProxy->setRecipientAddress($recipientAddress)->getRecipientAddress());
 
+        /** @var AddressInterface $returnAddress */
+        $returnAddress = $this->getMockBuilder(AddressInterface::class)->getMock();
+        $this->assertEquals($returnAddress, $this->shipmentProxy->setReturnAddress($returnAddress)->getReturnAddress());
+
         $shipmentStatusBuilder = $this->getMockBuilder(ShipmentStatusInterface::class);
         /** @var ShipmentStatusInterface $shipmentStatusA */
         $shipmentStatusA = $shipmentStatusBuilder->getMock();

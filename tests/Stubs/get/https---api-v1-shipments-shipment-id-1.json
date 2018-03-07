@@ -33,6 +33,21 @@
         "email": "john@doe.com",
         "phone_number": "+31 234 567 890"
       },
+      "return_address": {
+        "street_1": "Some road",
+        "street_2": "Room 3",
+        "street_number": 17,
+        "street_number_suffix": "A",
+        "postal_code": "1GL HF1",
+        "city": "Cardiff",
+        "region_code": "CRF",
+        "country_code": "GB",
+        "first_name": "John",
+        "last_name": "Doe",
+        "company": "Acme Jewelry Co.",
+        "email": "john@doe.com",
+        "phone_number": "+31 234 567 890"
+      },
       "pickup_location": {
         "code": "123456",
         "address": {

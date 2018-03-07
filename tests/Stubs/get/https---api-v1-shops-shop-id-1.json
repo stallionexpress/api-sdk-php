@@ -16,6 +16,18 @@
         "email": "info@myparcel.com",
         "phone_number": "+31 85 208 5997"
       },
+      "sender_address": {
+        "street_1": "Hoofdweg",
+        "street_number": 679,
+        "postal_code": "1AA BB2",
+        "city": "London",
+        "country_code": "GB",
+        "first_name": "Mister",
+        "last_name": "Return",
+        "company": "MyParcel.com",
+        "email": "info@myparcel.com",
+        "phone_number": "+31 85 208 5997"
+      },
       "return_address": {
         "street_1": "Hoofdweg",
         "street_number": 679,
