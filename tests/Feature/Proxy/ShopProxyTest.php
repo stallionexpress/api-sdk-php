@@ -66,7 +66,7 @@ class ShopProxyTest extends TestCase
         $this->assertEquals($returnAddress, $this->shopProxy->setReturnAddress($returnAddress)->getReturnAddress());
 
         /** @var AddressInterface $senderAddress */
-        $senderAddress = $this->getMockBuilder(AddressInterface::class)->getMock();
+        $senderAddress = $addressBuilder->getMock();
         $this->assertEquals($senderAddress, $this->shopProxy->setSenderAddress($senderAddress)->getSenderAddress());
     }
 
