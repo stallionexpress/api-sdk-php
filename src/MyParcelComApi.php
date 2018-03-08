@@ -325,16 +325,22 @@ class MyParcelComApi implements MyParcelComApiInterface
             $shipment->setShop($this->getDefaultShop());
         }
 
-        // If no sender or return address has been set, default to the shop's
-        // addresses.
+        // If no sender address is set use one of the addresses in the following
+        // order: shop sender > shipment return > shop return
+        $shop = $shipment->getShop();
         if ($shipment->getSenderAddress() === null) {
             $shipment->setSenderAddress(
-                $shipment->getShop()->getSenderAddress()
+                $shop->getSenderAddress()
+                    ?: $shipment->getReturnAddress()
+                    ?: $shop->getReturnAddress()
             );
         }
+        // If no return address is set use the return address of the shop or the
+        // sender address on the shipment.
         if ($shipment->getReturnAddress() === null) {
-            $shipment->setSenderAddress(
-                $shipment->getShop()->getReturnAddress()
+            $shipment->setReturnAddress(
+                $shop->getReturnAddress()
+                    ?: $shipment->getSenderAddress()
             );
         }
 
