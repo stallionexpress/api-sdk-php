@@ -1,12 +1,12 @@
 <?php
 
-namespace MyParcelCom\Sdk\Resources\Proxy;
+namespace MyParcelCom\ApiSdk\Resources\Proxy;
 
-use MyParcelCom\Sdk\Resources\Interfaces\FileInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ResourceInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ResourceProxyInterface;
-use MyParcelCom\Sdk\Resources\Traits\JsonSerializable;
-use MyParcelCom\Sdk\Resources\Traits\ProxiesResource;
+use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
+use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
+use MyParcelCom\ApiSdk\Resources\Traits\ProxiesResource;
 use Psr\Http\Message\StreamInterface;
 
 class FileProxy implements FileInterface, ResourceProxyInterface
@@ -201,6 +201,7 @@ class FileProxy implements FileInterface, ResourceProxyInterface
         $values = get_object_vars($this);
         unset($values['resource']);
         unset($values['api']);
+        unset($values['uri']);
 
         return $this->arrayValuesToArray($values);
     }

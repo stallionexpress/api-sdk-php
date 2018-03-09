@@ -1,26 +1,27 @@
 <?php
 
-namespace MyParcelCom\Sdk\Resources;
+namespace MyParcelCom\ApiSdk\Resources;
 
-use MyParcelCom\Sdk\Exceptions\MyParcelComException;
-use MyParcelCom\Sdk\Resources\Interfaces\AddressInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ContractInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\CustomsInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\FileInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\PhysicalPropertiesInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ResourceInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ServiceInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ServiceOptionInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ShipmentInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ShopInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\StatusInterface;
-use MyParcelCom\Sdk\Resources\Traits\JsonSerializable;
+use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\CustomsInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\PhysicalPropertiesInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentItemInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentStatusInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
+use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 
 class Shipment implements ShipmentInterface
 {
     use JsonSerializable;
 
     const ATTRIBUTE_BARCODE = 'barcode';
+    const ATTRIBUTE_TRACKING_CODE = 'tracking_code';
+    const ATTRIBUTE_TRACKING_URL = 'tracking_url';
     const ATTRIBUTE_DESCRIPTION = 'description';
     const ATTRIBUTE_AMOUNT = 'amount';
     const ATTRIBUTE_PRICE = 'price';
@@ -28,61 +29,60 @@ class Shipment implements ShipmentInterface
     const ATTRIBUTE_CURRENCY = 'currency';
     const ATTRIBUTE_WEIGHT = 'weight';
     const ATTRIBUTE_PHYSICAL_PROPERTIES = 'physical_properties';
+    const ATTRIBUTE_PHYSICAL_PROPERTIES_VERIFIED = 'physical_properties_verified';
     const ATTRIBUTE_RECIPIENT_ADDRESS = 'recipient_address';
     const ATTRIBUTE_SENDER_ADDRESS = 'sender_address';
+    const ATTRIBUTE_RETURN_ADDRESS = 'return_address';
     const ATTRIBUTE_PICKUP = 'pickup_location';
     const ATTRIBUTE_PICKUP_CODE = 'code';
     const ATTRIBUTE_PICKUP_ADDRESS = 'address';
     const ATTRIBUTE_CUSTOMS = 'customs';
+    const ATTRIBUTE_ITEMS = 'items';
 
-    const RELATIONSHIP_CONTRACT = 'contract';
+    const RELATIONSHIP_SERVICE_CONTRACT = 'service_contract';
     const RELATIONSHIP_FILES = 'files';
-    const RELATIONSHIP_OPTIONS = 'options';
-    const RELATIONSHIP_SERVICE = 'service';
+    const RELATIONSHIP_SERVICE_OPTIONS = 'service_options';
     const RELATIONSHIP_SHOP = 'shop';
     const RELATIONSHIP_STATUS = 'status';
 
     private $id;
     private $type = ResourceInterface::TYPE_SHIPMENT;
+    private $statusHistory;
+    private $statusHistoryCallback;
     private $attributes = [
-        self::ATTRIBUTE_BARCODE             => null,
-        self::ATTRIBUTE_DESCRIPTION         => null,
-        self::ATTRIBUTE_PRICE               => null,
-        self::ATTRIBUTE_INSURANCE           => null,
-        self::ATTRIBUTE_WEIGHT              => null,
-        self::ATTRIBUTE_PHYSICAL_PROPERTIES => null,
-        self::ATTRIBUTE_RECIPIENT_ADDRESS   => null,
-        self::ATTRIBUTE_SENDER_ADDRESS      => null,
-        self::ATTRIBUTE_PICKUP              => null,
-        self::ATTRIBUTE_CUSTOMS             => null,
-    ];
-    private $relationships = [
-        self::RELATIONSHIP_SHOP     => [
-            'data' => null,
-        ],
-        self::RELATIONSHIP_SERVICE  => [
-            'data' => null,
-        ],
-        self::RELATIONSHIP_CONTRACT => [
-            'data' => null,
-        ],
-        self::RELATIONSHIP_STATUS   => [
-            'data' => null,
-        ],
-        self::RELATIONSHIP_OPTIONS  => [
-            'data' => [],
-        ],
-        self::RELATIONSHIP_FILES    => [
-            'data' => [],
-        ],
+        self::ATTRIBUTE_BARCODE                      => null,
+        self::ATTRIBUTE_TRACKING_CODE                => null,
+        self::ATTRIBUTE_TRACKING_URL                 => null,
+        self::ATTRIBUTE_DESCRIPTION                  => null,
+        self::ATTRIBUTE_PRICE                        => null,
+        self::ATTRIBUTE_INSURANCE                    => null,
+        self::ATTRIBUTE_WEIGHT                       => null,
+        self::ATTRIBUTE_PHYSICAL_PROPERTIES          => null,
+        self::ATTRIBUTE_PHYSICAL_PROPERTIES_VERIFIED => null,
+        self::ATTRIBUTE_RECIPIENT_ADDRESS            => null,
+        self::ATTRIBUTE_SENDER_ADDRESS               => null,
+        self::ATTRIBUTE_RETURN_ADDRESS               => null,
+        self::ATTRIBUTE_PICKUP                       => null,
+        self::ATTRIBUTE_CUSTOMS                      => null,
+        self::ATTRIBUTE_ITEMS                        => null,
     ];
 
-    private static $unitConversion = [
-        self::WEIGHT_GRAM     => 1,
-        self::WEIGHT_KILOGRAM => 1000,
-        self::WEIGHT_POUND    => 453.59237,
-        self::WEIGHT_OUNCE    => 28.349523125,
-        self::WEIGHT_STONE    => 6350.29318,
+    private $relationships = [
+        self::RELATIONSHIP_SHOP             => [
+            'data' => null,
+        ],
+        self::RELATIONSHIP_SERVICE_CONTRACT => [
+            'data' => null,
+        ],
+        self::RELATIONSHIP_STATUS           => [
+            'data' => null,
+        ],
+        self::RELATIONSHIP_SERVICE_OPTIONS  => [
+            'data' => [],
+        ],
+        self::RELATIONSHIP_FILES            => [
+            'data' => [],
+        ],
     ];
 
     /**
@@ -145,6 +145,25 @@ class Shipment implements ShipmentInterface
     public function getSenderAddress()
     {
         return $this->attributes[self::ATTRIBUTE_SENDER_ADDRESS];
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setReturnAddress(AddressInterface $returnAddress)
+    {
+        $this->attributes[self::ATTRIBUTE_RETURN_ADDRESS] = $returnAddress;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getReturnAddress()
+    {
+        return $this->attributes[self::ATTRIBUTE_RETURN_ADDRESS];
     }
 
     /**
@@ -287,13 +306,9 @@ class Shipment implements ShipmentInterface
     /**
      * {@inheritdoc}
      */
-    public function setWeight($weight, $unit = self::WEIGHT_GRAM)
+    public function setTrackingCode($trackingCode)
     {
-        if (!isset(self::$unitConversion[$unit])) {
-            throw new MyParcelComException('invalid unit: ' . $unit);
-        }
-
-        $this->attributes[self::ATTRIBUTE_WEIGHT] = (int)round($weight * self::$unitConversion[$unit]);
+        $this->attributes[self::ATTRIBUTE_TRACKING_CODE] = $trackingCode;
 
         return $this;
     }
@@ -301,13 +316,52 @@ class Shipment implements ShipmentInterface
     /**
      * {@inheritdoc}
      */
-    public function getWeight($unit = self::WEIGHT_GRAM)
+    public function getTrackingCode()
     {
-        if (!isset(self::$unitConversion[$unit])) {
-            throw new MyParcelComException('invalid unit: ' . $unit);
+        return $this->attributes[self::ATTRIBUTE_TRACKING_CODE];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setTrackingUrl($trackingUrl)
+    {
+        $this->attributes[self::ATTRIBUTE_TRACKING_URL] = $trackingUrl;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTrackingUrl()
+    {
+        return $this->attributes[self::ATTRIBUTE_TRACKING_URL];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setWeight($weight, $unit = PhysicalPropertiesInterface::WEIGHT_GRAM)
+    {
+        if ($this->getPhysicalProperties() === null) {
+            $this->setPhysicalProperties(new PhysicalProperties());
+        }
+        $this->getPhysicalProperties()->setWeight($weight, $unit);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getWeight($unit = PhysicalPropertiesInterface::WEIGHT_GRAM)
+    {
+        if ($this->getPhysicalProperties() === null) {
+            $this->setPhysicalProperties(new PhysicalProperties());
         }
 
-        return (int)round($this->attributes[self::ATTRIBUTE_WEIGHT] / self::$unitConversion[$unit]);
+        return $this->getPhysicalProperties()->getWeight($unit);
     }
 
     /**
@@ -331,6 +385,24 @@ class Shipment implements ShipmentInterface
     /**
      * {@inheritdoc}
      */
+    public function setPhysicalPropertiesVerified(PhysicalPropertiesInterface $physicalProperties)
+    {
+        $this->attributes[self::ATTRIBUTE_PHYSICAL_PROPERTIES_VERIFIED] = $physicalProperties;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPhysicalPropertiesVerified()
+    {
+        return $this->attributes[self::ATTRIBUTE_PHYSICAL_PROPERTIES_VERIFIED];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function setShop(ShopInterface $shop)
     {
         $this->relationships[self::RELATIONSHIP_SHOP]['data'] = $shop;
@@ -349,30 +421,12 @@ class Shipment implements ShipmentInterface
     /**
      * {@inheritdoc}
      */
-    public function setService(ServiceInterface $service)
+    public function setServiceOptions(array $options)
     {
-        $this->relationships[self::RELATIONSHIP_SERVICE]['data'] = $service;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getService()
-    {
-        return $this->relationships[self::RELATIONSHIP_SERVICE]['data'];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setOptions(array $options)
-    {
-        $this->relationships[self::RELATIONSHIP_OPTIONS]['data'] = [];
+        $this->relationships[self::RELATIONSHIP_SERVICE_OPTIONS]['data'] = [];
 
         array_walk($options, function ($option) {
-            $this->addOption($option);
+            $this->addServiceOption($option);
         });
 
         return $this;
@@ -381,9 +435,9 @@ class Shipment implements ShipmentInterface
     /**
      * {@inheritdoc}
      */
-    public function addOption(ServiceOptionInterface $option)
+    public function addServiceOption(ServiceOptionInterface $option)
     {
-        $this->relationships[self::RELATIONSHIP_OPTIONS]['data'][] = $option;
+        $this->relationships[self::RELATIONSHIP_SERVICE_OPTIONS]['data'][] = $option;
 
         return $this;
     }
@@ -391,9 +445,9 @@ class Shipment implements ShipmentInterface
     /**
      * {@inheritdoc}
      */
-    public function getOptions()
+    public function getServiceOptions()
     {
-        return $this->relationships[self::RELATIONSHIP_OPTIONS]['data'];
+        return $this->relationships[self::RELATIONSHIP_SERVICE_OPTIONS]['data'];
     }
 
     /**
@@ -437,7 +491,7 @@ class Shipment implements ShipmentInterface
     /**
      * {@inheritdoc}
      */
-    public function setStatus(StatusInterface $status)
+    public function setStatus(ShipmentStatusInterface $status)
     {
         $this->relationships[self::RELATIONSHIP_STATUS]['data'] = $status;
 
@@ -455,9 +509,9 @@ class Shipment implements ShipmentInterface
     /**
      * {@inheritdoc}
      */
-    public function setContract(ContractInterface $contract)
+    public function setStatusHistory(array $statuses)
     {
-        $this->relationships[self::RELATIONSHIP_CONTRACT]['data'] = $contract;
+        $this->statusHistory = $statuses;
 
         return $this;
     }
@@ -465,9 +519,44 @@ class Shipment implements ShipmentInterface
     /**
      * {@inheritdoc}
      */
-    public function getContract()
+    public function getStatusHistory()
     {
-        return $this->relationships[self::RELATIONSHIP_CONTRACT]['data'];
+        if (!isset($this->statusHistory) && isset($this->statusHistoryCallback)) {
+            $this->setStatusHistory(call_user_func($this->statusHistoryCallback));
+        }
+
+        return $this->statusHistory;
+    }
+
+    /**
+     * Set the callback to use when retrieving the status history.
+     *
+     * @param callable $callback
+     * @return $this
+     */
+    public function setStatusHistoryCallback(callable $callback)
+    {
+        $this->statusHistoryCallback = $callback;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setServiceContract(ServiceContractInterface $serviceContract)
+    {
+        $this->relationships[self::RELATIONSHIP_SERVICE_CONTRACT]['data'] = $serviceContract;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getServiceContract()
+    {
+        return $this->relationships[self::RELATIONSHIP_SERVICE_CONTRACT]['data'];
     }
 
     /**
@@ -486,5 +575,37 @@ class Shipment implements ShipmentInterface
     public function getCustoms()
     {
         return $this->attributes[self::ATTRIBUTE_CUSTOMS];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getItems()
+    {
+        return $this->attributes[self::ATTRIBUTE_ITEMS];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addItem(ShipmentItemInterface $item)
+    {
+        $this->attributes[self::ATTRIBUTE_ITEMS][] = $item;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setItems(array $items)
+    {
+        $this->attributes[self::ATTRIBUTE_ITEMS] = [];
+
+        array_walk($items, function (ShipmentItemInterface $item) {
+            $this->addItem($item);
+        });
+
+        return $this;
     }
 }

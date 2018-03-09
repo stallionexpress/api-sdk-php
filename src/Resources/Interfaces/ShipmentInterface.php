@@ -1,15 +1,9 @@
 <?php
 
-namespace MyParcelCom\Sdk\Resources\Interfaces;
+namespace MyParcelCom\ApiSdk\Resources\Interfaces;
 
 interface ShipmentInterface extends ResourceInterface
 {
-    const WEIGHT_GRAM = 'grams';
-    const WEIGHT_KILOGRAM = 'kilograms';
-    const WEIGHT_POUND = 'pounds';
-    const WEIGHT_OUNCE = 'ounces';
-    const WEIGHT_STONE = 'stones';
-
     /**
      * @param string $id
      * @return $this
@@ -37,6 +31,17 @@ interface ShipmentInterface extends ResourceInterface
      * @return AddressInterface
      */
     public function getSenderAddress();
+
+    /**
+     * @param AddressInterface $returnAddress
+     * @return $this
+     */
+    public function setReturnAddress(AddressInterface $returnAddress);
+
+    /**
+     * @return AddressInterface
+     */
+    public function getReturnAddress();
 
     /**
      * @param string $pickupLocationCode
@@ -116,17 +121,43 @@ interface ShipmentInterface extends ResourceInterface
     public function getBarcode();
 
     /**
+     * @param string $trackingCode
+     * @return $this
+     */
+    public function setTrackingCode($trackingCode);
+
+    /**
+     * @return string
+     */
+    public function getTrackingCode();
+
+    /**
+     * @param string $trackingUrl
+     * @return $this
+     */
+    public function setTrackingUrl($trackingUrl);
+
+    /**
+     * @return string
+     */
+    public function getTrackingUrl();
+
+    /**
+     * @deprecated Use Shipment::getPhysicalProperties()->setWeight() instead.
+     *
      * @param int    $weight
      * @param string $unit
      * @return $this
      */
-    public function setWeight($weight, $unit = self::WEIGHT_GRAM);
+    public function setWeight($weight, $unit = PhysicalPropertiesInterface::WEIGHT_GRAM);
 
     /**
+     * @deprecated Use Shipment::getPhysicalProperties()->getWeight() instead.
+     *
      * @param string $unit
      * @return int
      */
-    public function getWeight($unit = self::WEIGHT_GRAM);
+    public function getWeight($unit = PhysicalPropertiesInterface::WEIGHT_GRAM);
 
     /**
      * @param ShopInterface $shop
@@ -140,43 +171,32 @@ interface ShipmentInterface extends ResourceInterface
     public function getShop();
 
     /**
-     * @param ServiceInterface $service
+     * @param ServiceContractInterface $serviceContract
      * @return $this
      */
-    public function setService(ServiceInterface $service);
+    public function setServiceContract(ServiceContractInterface $serviceContract);
 
     /**
-     * @return ServiceInterface
+     * @return ServiceContractInterface
      */
-    public function getService();
-
-    /**
-     * @param ContractInterface $contract
-     * @return $this
-     */
-    public function setContract(ContractInterface $contract);
-
-    /**
-     * @return ContractInterface
-     */
-    public function getContract();
+    public function getServiceContract();
 
     /**
      * @param ServiceOptionInterface[] $options
      * @return $this
      */
-    public function setOptions(array $options);
+    public function setServiceOptions(array $options);
 
     /**
      * @param ServiceOptionInterface $option
      * @return $this
      */
-    public function addOption(ServiceOptionInterface $option);
+    public function addServiceOption(ServiceOptionInterface $option);
 
     /**
      * @return ServiceOptionInterface[]
      */
-    public function getOptions();
+    public function getServiceOptions();
 
     /**
      * @param PhysicalPropertiesInterface $physicalProperties
@@ -188,6 +208,17 @@ interface ShipmentInterface extends ResourceInterface
      * @return PhysicalPropertiesInterface|null
      */
     public function getPhysicalProperties();
+
+    /**
+     * @param PhysicalPropertiesInterface $physicalProperties
+     * @return $this
+     */
+    public function setPhysicalPropertiesVerified(PhysicalPropertiesInterface $physicalProperties);
+
+    /**
+     * @return PhysicalPropertiesInterface|null
+     */
+    public function getPhysicalPropertiesVerified();
 
     /**
      * @param FileInterface[] $files
@@ -208,15 +239,26 @@ interface ShipmentInterface extends ResourceInterface
     public function getFiles($type = null);
 
     /**
-     * @param StatusInterface $status
+     * @param ShipmentStatusInterface $status
      * @return $this
      */
-    public function setStatus(StatusInterface $status);
+    public function setStatus(ShipmentStatusInterface $status);
 
     /**
-     * @return StatusInterface
+     * @return ShipmentStatusInterface
      */
     public function getStatus();
+
+    /**
+     * @param ShipmentStatusInterface[] $statuses
+     * @return $this
+     */
+    public function setStatusHistory(array $statuses);
+
+    /**
+     * @return ShipmentStatusInterface[]
+     */
+    public function getStatusHistory();
 
     /**
      * @param CustomsInterface $customs
@@ -228,4 +270,21 @@ interface ShipmentInterface extends ResourceInterface
      * @return CustomsInterface
      */
     public function getCustoms();
+
+    /**
+     * @param ShipmentItemInterface[] $items
+     * @return $this
+     */
+    public function setItems(array $items);
+
+    /**
+     * @param ShipmentItemInterface $item
+     * @return $this
+     */
+    public function addItem(ShipmentItemInterface $item);
+
+    /**
+     * @return ShipmentItemInterface[]
+     */
+    public function getItems();
 }

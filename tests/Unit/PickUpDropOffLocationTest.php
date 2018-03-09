@@ -1,11 +1,11 @@
 <?php
 
-namespace MyParcelCom\Sdk\Tests\Unit;
+namespace MyParcelCom\ApiSdk\Tests\Unit;
 
-use MyParcelCom\Sdk\Resources\Interfaces\AddressInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\OpeningHourInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\PositionInterface;
-use MyParcelCom\Sdk\Resources\PickUpDropOffLocation;
+use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\OpeningHourInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\PositionInterface;
+use MyParcelCom\ApiSdk\Resources\PickUpDropOffLocation;
 use PHPUnit\Framework\TestCase;
 
 class PickUpDropOffLocationTest extends TestCase
@@ -123,7 +123,6 @@ class PickUpDropOffLocationTest extends TestCase
                 'latitude'  => 1.2345,
                 'longitude' => 2.34567,
                 'distance'  => 5000,
-                'unit'      => 'meters',
             ]);
 
         $pudoLocation = (new PickUpDropOffLocation())
@@ -162,7 +161,6 @@ class PickUpDropOffLocationTest extends TestCase
                     'latitude'  => 1.2345,
                     'longitude' => 2.34567,
                     'distance'  => 5000,
-                    'unit'      => 'meters',
                 ],
             ],
         ], $pudoLocation->jsonSerialize());

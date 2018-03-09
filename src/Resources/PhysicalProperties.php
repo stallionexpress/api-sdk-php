@@ -1,9 +1,10 @@
 <?php
 
-namespace MyParcelCom\Sdk\Resources;
+namespace MyParcelCom\ApiSdk\Resources;
 
-use MyParcelCom\Sdk\Resources\Interfaces\PhysicalPropertiesInterface;
-use MyParcelCom\Sdk\Resources\Traits\JsonSerializable;
+use MyParcelCom\ApiSdk\Exceptions\MyParcelComException;
+use MyParcelCom\ApiSdk\Resources\Interfaces\PhysicalPropertiesInterface;
+use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 
 class PhysicalProperties implements PhysicalPropertiesInterface
 {
@@ -19,6 +20,14 @@ class PhysicalProperties implements PhysicalPropertiesInterface
     private $height;
     /** @var int */
     private $width;
+
+    private static $unitConversion = [
+        self::WEIGHT_GRAM     => 1,
+        self::WEIGHT_KILOGRAM => 1000,
+        self::WEIGHT_POUND    => 453.59237,
+        self::WEIGHT_OUNCE    => 28.349523125,
+        self::WEIGHT_STONE    => 6350.29318,
+    ];
 
     /**
      * {@inheritdoc}
@@ -77,9 +86,13 @@ class PhysicalProperties implements PhysicalPropertiesInterface
     /**
      * {@inheritdoc}
      */
-    public function setWeight($weight)
+    public function setWeight($weight, $unit = self::WEIGHT_GRAM)
     {
-        $this->weight = (int)$weight;
+        if (!isset(self::$unitConversion[$unit])) {
+            throw new MyParcelComException('invalid unit: ' . $unit);
+        }
+
+        $this->weight = (int)round($weight * self::$unitConversion[$unit]);
 
         return $this;
     }
@@ -87,9 +100,13 @@ class PhysicalProperties implements PhysicalPropertiesInterface
     /**
      * {@inheritdoc}
      */
-    public function getWeight()
+    public function getWeight($unit = self::WEIGHT_GRAM)
     {
-        return $this->weight;
+        if (!isset(self::$unitConversion[$unit])) {
+            throw new MyParcelComException('invalid unit: ' . $unit);
+        }
+
+        return (int)round($this->weight / self::$unitConversion[$unit]);
     }
 
     /**

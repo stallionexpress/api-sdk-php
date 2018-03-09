@@ -1,8 +1,8 @@
 <?php
 
-namespace MyParcelCom\Sdk\Tests\Unit;
+namespace MyParcelCom\ApiSdk\Tests\Unit;
 
-use MyParcelCom\Sdk\Resources\ServiceOption;
+use MyParcelCom\ApiSdk\Resources\ServiceOption;
 use PHPUnit\Framework\TestCase;
 
 class ServiceOptionTest extends TestCase
@@ -29,17 +29,17 @@ class ServiceOptionTest extends TestCase
     }
 
     /** @test */
-    public function testPrice()
+    public function testCode()
     {
         $option = new ServiceOption();
-        $this->assertEquals(55, $option->setPrice(55)->getPrice());
+        $this->assertEquals('some-code', $option->setCode('some-code')->getCode());
     }
 
     /** @test */
-    public function testCurrency()
+    public function testCategory()
     {
         $option = new ServiceOption();
-        $this->assertEquals('NOK', $option->setCurrency('NOK')->getCurrency());
+        $this->assertEquals('some-category', $option->setCategory('some-category')->getCategory());
     }
 
     /** @test */
@@ -48,18 +48,16 @@ class ServiceOptionTest extends TestCase
         $option = (new ServiceOption())
             ->setId('service-option-id')
             ->setName('Sign on delivery')
-            ->setPrice(55)
-            ->setCurrency('NOK');
+            ->setCode('some-code')
+            ->setCategory('some-category');
 
         $this->assertEquals([
             'id'         => 'service-option-id',
             'type'       => 'service-options',
             'attributes' => [
-                'name'  => 'Sign on delivery',
-                'price' => [
-                    'amount'   => 55,
-                    'currency' => 'NOK',
-                ],
+                'name'     => 'Sign on delivery',
+                'code'     => 'some-code',
+                'category' => 'some-category',
             ],
         ], $option->jsonSerialize());
     }

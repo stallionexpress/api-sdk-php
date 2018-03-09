@@ -1,10 +1,9 @@
 <?php
 
-namespace MyParcelCom\Sdk\Resources;
+namespace MyParcelCom\ApiSdk\Resources;
 
-use MyParcelCom\Sdk\Resources\Interfaces\CustomsInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\CustomsItemInterface;
-use MyParcelCom\Sdk\Resources\Traits\JsonSerializable;
+use MyParcelCom\ApiSdk\Resources\Interfaces\CustomsInterface;
+use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 
 class Customs implements CustomsInterface
 {
@@ -14,8 +13,6 @@ class Customs implements CustomsInterface
     private $contentType;
     /** @var string */
     private $invoiceNumber;
-    /** @var CustomsItemInterface[] */
-    private $items = [];
     /** @var string */
     private $nonDelivery;
     /** @var string */
@@ -53,38 +50,6 @@ class Customs implements CustomsInterface
     public function setInvoiceNumber($invoiceNumber)
     {
         $this->invoiceNumber = $invoiceNumber;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getItems()
-    {
-        return $this->items;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addItem(CustomsItemInterface $item)
-    {
-        $this->items[] = $item;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setItems(array $items)
-    {
-        $this->items = [];
-
-        array_walk($items, function (CustomsItemInterface $item) {
-            $this->addItem($item);
-        });
 
         return $this;
     }

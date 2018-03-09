@@ -1,8 +1,8 @@
 <?php
 
-namespace MyParcelCom\Sdk\Resources\Proxy;
+namespace MyParcelCom\ApiSdk\Resources\Proxy;
 
-use MyParcelCom\Sdk\MyParcelComApiInterface;
+use MyParcelCom\ApiSdk\MyParcelComApiInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 

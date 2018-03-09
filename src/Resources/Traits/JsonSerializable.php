@@ -1,8 +1,8 @@
 <?php
 
-namespace MyParcelCom\Sdk\Resources\Traits;
+namespace MyParcelCom\ApiSdk\Resources\Traits;
 
-use MyParcelCom\Sdk\Utils\StringUtils;
+use MyParcelCom\ApiSdk\Utils\StringUtils;
 
 trait JsonSerializable
 {

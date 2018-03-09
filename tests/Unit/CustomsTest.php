@@ -1,10 +1,9 @@
 <?php
 
-namespace MyParcelCom\Sdk\Tests\Unit;
+namespace MyParcelCom\ApiSdk\Tests\Unit;
 
-use MyParcelCom\Sdk\Resources\Customs;
-use MyParcelCom\Sdk\Resources\Interfaces\CustomsInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\CustomsItemInterface;
+use MyParcelCom\ApiSdk\Resources\Customs;
+use MyParcelCom\ApiSdk\Resources\Interfaces\CustomsInterface;
 use PHPUnit\Framework\TestCase;
 
 class CustomsTest extends TestCase
@@ -24,27 +23,6 @@ class CustomsTest extends TestCase
     }
 
     /** @test */
-    public function testItems()
-    {
-        $customs = new Customs();
-
-        $this->assertEmpty($customs->getItems());
-
-        $mock = $this->getMockClass(CustomsItemInterface::class);
-        $items = [new $mock(), new $mock()];
-
-        $customs->setItems($items);
-        $this->assertCount(2, $customs->getItems());
-        $this->assertEquals($items, $customs->getItems());
-
-        $item = new $mock();
-        $items[] = $item;
-        $customs->addItem($item);
-        $this->assertCount(3, $customs->getItems());
-        $this->assertEquals($items, $customs->getItems());
-    }
-
-    /** @test */
     public function testNonDelivery()
     {
         $customs = new Customs();
@@ -61,27 +39,7 @@ class CustomsTest extends TestCase
     /** @test */
     public function testJsonSerialize()
     {
-        $item = $this->getMockBuilder(CustomsItemInterface::class)
-            ->disableOriginalConstructor()
-            ->disableOriginalClone()
-            ->disableArgumentCloning()
-            ->disallowMockingUnknownTypes()
-            ->getMock();
-        $item->method('jsonSerialize')
-            ->willReturn([
-                'sku'                 => '123456789',
-                'description'         => 'OnePlus X',
-                'item_value'          => [
-                    'amount'   => 100,
-                    'currency' => 'EUR',
-                ],
-                'quantity'            => 2,
-                'hs_code'             => '8517.12.00',
-                'origin_country_code' => 'GB',
-            ]);
-
         $customs = (new Customs())
-            ->setItems([$item])
             ->setIncoterm(CustomsInterface::INCOTERM_DDU)
             ->setNonDelivery(CustomsInterface::NON_DELIVERY_RETURN)
             ->setInvoiceNumber('NO.5')
@@ -90,19 +48,6 @@ class CustomsTest extends TestCase
         $this->assertEquals([
             'content_type'   => 'documents',
             'invoice_number' => 'NO.5',
-            'items'          => [
-                [
-                    'sku'                 => '123456789',
-                    'description'         => 'OnePlus X',
-                    'item_value'          => [
-                        'amount'   => 100,
-                        'currency' => 'EUR',
-                    ],
-                    'quantity'            => 2,
-                    'hs_code'             => '8517.12.00',
-                    'origin_country_code' => 'GB',
-                ],
-            ],
             'non_delivery'   => 'return',
             'incoterm'       => 'DDU',
         ], $customs->jsonSerialize());

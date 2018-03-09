@@ -1,6 +1,6 @@
 <?php
 
-namespace MyParcelCom\Sdk\Resources\Interfaces;
+namespace MyParcelCom\ApiSdk\Resources\Interfaces;
 
 use DateTime;
 
@@ -33,6 +33,17 @@ interface ShopInterface extends ResourceInterface
      * @return AddressInterface
      */
     public function getBillingAddress();
+
+    /**
+     * @param AddressInterface $senderAddress
+     * @return $this
+     */
+    public function setSenderAddress(AddressInterface $senderAddress);
+
+    /**
+     * @return AddressInterface
+     */
+    public function getSenderAddress();
 
     /**
      * @param AddressInterface $returnAddress

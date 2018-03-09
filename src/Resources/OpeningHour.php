@@ -1,10 +1,10 @@
 <?php
 
-namespace MyParcelCom\Sdk\Resources;
+namespace MyParcelCom\ApiSdk\Resources;
 
 use DateTime;
-use MyParcelCom\Sdk\Resources\Interfaces\OpeningHourInterface;
-use MyParcelCom\Sdk\Resources\Traits\JsonSerializable;
+use MyParcelCom\ApiSdk\Resources\Interfaces\OpeningHourInterface;
+use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 
 class OpeningHour implements OpeningHourInterface
 {

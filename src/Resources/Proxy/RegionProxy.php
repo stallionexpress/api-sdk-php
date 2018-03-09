@@ -1,12 +1,12 @@
 <?php
 
-namespace MyParcelCom\Sdk\Resources\Proxy;
+namespace MyParcelCom\ApiSdk\Resources\Proxy;
 
-use MyParcelCom\Sdk\Resources\Interfaces\RegionInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ResourceInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ResourceProxyInterface;
-use MyParcelCom\Sdk\Resources\Traits\JsonSerializable;
-use MyParcelCom\Sdk\Resources\Traits\ProxiesResource;
+use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
+use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
+use MyParcelCom\ApiSdk\Resources\Traits\ProxiesResource;
 
 class RegionProxy implements RegionInterface, ResourceProxyInterface
 {
@@ -59,7 +59,7 @@ class RegionProxy implements RegionInterface, ResourceProxyInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getCountryCode()
     {
@@ -78,7 +78,7 @@ class RegionProxy implements RegionInterface, ResourceProxyInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getRegionCode()
     {
@@ -97,7 +97,7 @@ class RegionProxy implements RegionInterface, ResourceProxyInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getCurrency()
     {
@@ -134,6 +134,7 @@ class RegionProxy implements RegionInterface, ResourceProxyInterface
         $values = get_object_vars($this);
         unset($values['resource']);
         unset($values['api']);
+        unset($values['uri']);
 
         return $this->arrayValuesToArray($values);
     }

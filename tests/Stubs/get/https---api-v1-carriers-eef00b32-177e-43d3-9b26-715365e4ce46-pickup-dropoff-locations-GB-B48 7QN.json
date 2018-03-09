@@ -54,8 +54,7 @@
         "position": {
           "latitude": 52.3032936742545,
           "longitude": 4.69476214016944,
-          "distance": 318,
-          "unit": "meters"
+          "distance": 318
         }
       },
       "relationships": {
@@ -124,8 +123,7 @@
         "position": {
           "latitude": 52.3089878674629,
           "longitude": 4.68188672729443,
-          "distance": 764,
-          "unit": "meters"
+          "distance": 764
         }
       },
       "relationships": {
@@ -195,8 +193,7 @@
         "position": {
           "latitude": 52.3143764678125,
           "longitude": 4.69640792135398,
-          "distance": 1137,
-          "unit": "meters"
+          "distance": 1137
         }
       },
       "relationships": {
@@ -266,8 +263,7 @@
         "position": {
           "latitude": 52.3155020752417,
           "longitude": 4.69523182366827,
-          "distance": 1233,
-          "unit": "meters"
+          "distance": 1233
         }
       },
       "relationships": {
@@ -336,8 +332,7 @@
         "position": {
           "latitude": 52.3094281618872,
           "longitude": 4.67139513180198,
-          "distance": 1413,
-          "unit": "meters"
+          "distance": 1413
         }
       },
       "relationships": {
@@ -406,8 +401,7 @@
         "position": {
           "latitude": 52.3013913423774,
           "longitude": 4.66375416731004,
-          "distance": 1872,
-          "unit": "meters"
+          "distance": 1872
         }
       },
       "relationships": {
@@ -476,8 +470,7 @@
         "position": {
           "latitude": 52.2864669620795,
           "longitude": 4.68239055845954,
-          "distance": 2110,
-          "unit": "meters"
+          "distance": 2110
         }
       },
       "relationships": {
@@ -546,8 +539,7 @@
         "position": {
           "latitude": 52.3147095499762,
           "longitude": 4.65903497807609,
-          "distance": 2422,
-          "unit": "meters"
+          "distance": 2422
         }
       },
       "relationships": {
@@ -616,8 +608,7 @@
         "position": {
           "latitude": 52.3066891744711,
           "longitude": 4.63838904899413,
-          "distance": 3565,
-          "unit": "meters"
+          "distance": 3565
         }
       },
       "relationships": {
@@ -686,8 +677,7 @@
         "position": {
           "latitude": 52.3569768014508,
           "longitude": 5.15416255988611,
-          "distance": 32019,
-          "unit": "meters"
+          "distance": 32019
         }
       },
       "relationships": {

@@ -1,13 +1,13 @@
 <?php
 
-namespace MyParcelCom\Sdk\Resources;
+namespace MyParcelCom\ApiSdk\Resources;
 
-use MyParcelCom\Sdk\Resources\Interfaces\CarrierInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ContractInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\RegionInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ResourceInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ServiceInterface;
-use MyParcelCom\Sdk\Resources\Traits\JsonSerializable;
+use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
+use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 
 class Service implements ServiceInterface
 {
@@ -15,6 +15,11 @@ class Service implements ServiceInterface
 
     const ATTRIBUTE_NAME = 'name';
     const ATTRIBUTE_PACKAGE_TYPE = 'package_type';
+    const ATTRIBUTE_TRANSIT_TIME = 'transit_time';
+    const ATTRIBUTE_DELIVERY_DAYS = 'delivery_days';
+    const ATTRIBUTE_TRANSIT_TIME_MIN = 'min';
+    const ATTRIBUTE_TRANSIT_TIME_MAX = 'max';
+    const ATTRIBUTE_HANDOVER_METHOD = 'handover_method';
 
     const RELATIONSHIP_CARRIER = 'carrier';
     const RELATIONSHIP_REGION_FROM = 'region_from';
@@ -22,15 +27,28 @@ class Service implements ServiceInterface
 
     /** @var string */
     private $id;
+
     /** @var string */
     private $type = ResourceInterface::TYPE_SERVICE;
-    /** @var ContractInterface[] */
-    private $contracts = [];
+
+    /** @var ServiceContractInterface[] */
+    private $serviceContracts = [];
+
+    /** @var callable */
+    private $serviceContractsCallback;
+
     /** @var array */
     private $attributes = [
-        self::ATTRIBUTE_NAME         => null,
-        self::ATTRIBUTE_PACKAGE_TYPE => null,
+        self::ATTRIBUTE_NAME            => null,
+        self::ATTRIBUTE_PACKAGE_TYPE    => null,
+        self::ATTRIBUTE_TRANSIT_TIME    => [
+            self::ATTRIBUTE_TRANSIT_TIME_MIN => null,
+            self::ATTRIBUTE_TRANSIT_TIME_MAX => null,
+        ],
+        self::ATTRIBUTE_HANDOVER_METHOD => null,
+        self::ATTRIBUTE_DELIVERY_DAYS   => [],
     ];
+
     /** @var array */
     private $relationships = [
         self::RELATIONSHIP_CARRIER     => [
@@ -109,6 +127,42 @@ class Service implements ServiceInterface
     /**
      * {@inheritdoc}
      */
+    public function getTransitTimeMin()
+    {
+        return $this->attributes[self::ATTRIBUTE_TRANSIT_TIME][self::ATTRIBUTE_TRANSIT_TIME_MIN];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setTransitTimeMin($transitTimeMin)
+    {
+        $this->attributes[self::ATTRIBUTE_TRANSIT_TIME][self::ATTRIBUTE_TRANSIT_TIME_MIN] = $transitTimeMin;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTransitTimeMax()
+    {
+        return $this->attributes[self::ATTRIBUTE_TRANSIT_TIME][self::ATTRIBUTE_TRANSIT_TIME_MAX];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setTransitTimeMax($transitTimeMax)
+    {
+        $this->attributes[self::ATTRIBUTE_TRANSIT_TIME][self::ATTRIBUTE_TRANSIT_TIME_MAX] = $transitTimeMax;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function setCarrier(CarrierInterface $carrier)
     {
         $this->relationships[self::RELATIONSHIP_CARRIER]['data'] = $carrier;
@@ -163,12 +217,12 @@ class Service implements ServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function setContracts(array $contracts)
+    public function setServiceContracts(array $serviceServiceContracts)
     {
-        $this->contracts = [];
+        $this->serviceContracts = [];
 
-        array_walk($contracts, function ($contract) {
-            $this->addContract($contract);
+        array_walk($serviceServiceContracts, function ($contract) {
+            $this->addServiceContract($contract);
         });
 
         return $this;
@@ -177,9 +231,9 @@ class Service implements ServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function addContract(ContractInterface $contract)
+    public function addServiceContract(ServiceContractInterface $serviceServiceContract)
     {
-        $this->contracts[] = $contract;
+        $this->serviceContracts[] = $serviceServiceContract;
 
         return $this;
     }
@@ -187,9 +241,74 @@ class Service implements ServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function getContracts()
+    public function getServiceContracts()
     {
-        return $this->contracts;
+        if (!isset($this->statusHistory) && isset($this->statusHistoryCallback)) {
+            $this->setServiceContracts(call_user_func($this->serviceContractsCallback));
+        }
+
+        return $this->serviceContracts;
+    }
+
+    /**
+     * @param callable $callback
+     * @return $this
+     */
+    public function setServiceContractsCallback(callable $callback)
+    {
+        $this->serviceContractsCallback = $callback;
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setHandoverMethod($handoverMethod)
+    {
+        $this->attributes[self::ATTRIBUTE_HANDOVER_METHOD] = $handoverMethod;
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getHandoverMethod()
+    {
+        return $this->attributes[self::ATTRIBUTE_HANDOVER_METHOD];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDeliveryDays(array $deliveryDays)
+    {
+        $this->attributes[self::ATTRIBUTE_DELIVERY_DAYS] = [];
+
+        array_walk($deliveryDays, function ($deliveryDay) {
+            $this->addDeliveryDay($deliveryDay);
+        });
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addDeliveryDay($deliveryDay)
+    {
+        $this->attributes[self::ATTRIBUTE_DELIVERY_DAYS][] = $deliveryDay;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDeliveryDays()
+    {
+        return $this->attributes[self::ATTRIBUTE_DELIVERY_DAYS];
     }
 
     /**
@@ -198,7 +317,7 @@ class Service implements ServiceInterface
     public function jsonSerialize()
     {
         $values = get_object_vars($this);
-        unset($values['contracts']);
+        unset($values['serviceContracts']);
 
         $json = $this->arrayValuesToArray($values);
 

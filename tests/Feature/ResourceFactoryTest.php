@@ -1,24 +1,29 @@
 <?php
 
-namespace MyParcelCom\Sdk\Tests\Feature;
+namespace MyParcelCom\ApiSdk\Tests\Feature;
 
-use MyParcelCom\Sdk\MyParcelComApiInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\CarrierInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ContractInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\FileInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\PickUpDropOffLocationInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\RegionInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ServiceGroupInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ServiceInsuranceInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ServiceInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ServiceOptionInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ShipmentInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ShopInterface;
-use MyParcelCom\Sdk\Resources\ResourceFactory;
+use MyParcelCom\ApiSdk\MyParcelComApiInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierContractInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\PickUpDropOffLocationInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceGroupInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInsuranceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionPriceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
+use MyParcelCom\ApiSdk\Resources\ResourceFactory;
+use MyParcelCom\ApiSdk\Tests\Traits\MocksApiCommunication;
 use PHPUnit\Framework\TestCase;
 
 class ResourceFactoryTest extends TestCase
 {
+    use MocksApiCommunication;
+
     /** @test */
     public function testCreateEmptyCarrier()
     {
@@ -48,108 +53,153 @@ class ResourceFactoryTest extends TestCase
         ], $carrier->jsonSerialize());
     }
 
+    public function testCreateCarrierConract()
+    {
+        $resourceFactory = new ResourceFactory();
+        $carrierContract = $resourceFactory->create(
+            'carrier-contracts',
+            [
+                'id'                => 'carrier-id',
+                'currency'          => 'JPY',
+                'carrier'           => [
+                    'type' => 'carriers',
+                    'id'   => 'carrier-id',
+                ],
+                'service_contracts' => [
+                    [
+                        'type' => 'service-contracts',
+                        'id'   => 'service-contract-id-1',
+                    ],
+                    [
+                        'type' => 'service-contracts',
+                        'id'   => 'service-contract-id-2',
+                    ],
+                    [
+                        'type' => 'service-contracts',
+                        'id'   => 'service-contract-id-3',
+                    ],
+                ],
+            ]
+        );
+
+        $this->assertInstanceOf(CarrierContractInterface::class, $carrierContract);
+        $this->assertEquals([
+            'id'            => 'carrier-id',
+            'type'          => 'carrier-contracts',
+            'attributes'    => [
+                'currency' => 'JPY',
+            ],
+            'relationships' => [
+                'carrier'           => [
+                    'data' => [
+                        'type' => 'carriers',
+                        'id'   => 'carrier-id',
+                    ],
+                ],
+                'service_contracts' => [
+                    'data' => [
+                        [
+                            'type' => 'service-contracts',
+                            'id'   => 'service-contract-id-1',
+                        ],
+                        [
+                            'type' => 'service-contracts',
+                            'id'   => 'service-contract-id-2',
+                        ],
+                        [
+                            'type' => 'service-contracts',
+                            'id'   => 'service-contract-id-3',
+                        ],
+                    ],
+                ],
+            ],
+        ], $carrierContract->jsonSerialize());
+    }
+
     /** @test */
     public function testCreateEmptyContract()
     {
         $resourceFactory = new ResourceFactory();
-        $contract = $resourceFactory->create('contracts');
+        $contract = $resourceFactory->create('service-contracts');
 
-        $this->assertInstanceOf(ContractInterface::class, $contract);
+        $this->assertInstanceOf(ServiceContractInterface::class, $contract);
         $this->assertEquals([
-            'type' => 'contracts',
+            'type' => 'service-contracts',
         ], $contract->jsonSerialize());
     }
 
     /** @test */
-    public function testCreateContract()
+    public function testCreateServiceContract()
     {
         $contractAttributes = [
-            'groups'     => [
+            'service'               => [
+                'type' => 'services',
+                'id'   => 'service-id',
+            ],
+            'carrier_contract'      => [
+                'type' => 'carrier-contracts',
+                'id'   => 'carrier-contract-id',
+            ],
+            'service_groups'        => [
                 [
-                    'type'       => 'service-groups',
-                    'id'         => 'service-group-id',
-                    'weight_min' => 0,
-                    'weight_max' => 20,
-                    'price'      => 100,
-                    'currency'   => 'EUR',
-                    'step_price' => 100,
-                    'step_size'  => 1,
+                    'type' => 'service-groups',
+                    'id'   => 'service-group-id',
                 ],
             ],
-            'options'    => [
+            'service_option_prices' => [
                 [
-                    'type'     => 'service-options',
-                    'id'       => 'service-option-id',
-                    'name'     => 'signature',
-                    'price'    => 100,
-                    'currency' => 'EUR',
+                    'type' => 'service-options',
+                    'id'   => 'service-option-id',
                 ],
             ],
-            'insurances' => [
+            'service_insurances'    => [
                 [
-                    'type'     => 'service-insurances',
-                    'id'       => 'service-insurance-id',
-                    'covered'  => 100,
-                    'currency' => 'EUR',
-                    'price'    => 100,
+                    'type' => 'service-insurances',
+                    'id'   => 'service-insurance-id',
                 ],
             ],
         ];
 
         $resourceFactory = new ResourceFactory();
-        $contract = $resourceFactory->create('contracts', $contractAttributes);
+        $contract = $resourceFactory->create('service-contracts', $contractAttributes);
 
-        $this->assertInstanceOf(ContractInterface::class, $contract);
+        $this->assertInstanceOf(ServiceContractInterface::class, $contract);
         $this->assertEquals([
-            'type'       => 'contracts',
-            'attributes' => [
-                'groups'     => [
-                    [
-                        'type'       => 'service-groups',
-                        'id'         => 'service-group-id',
-                        'attributes' => [
-                            'weight'     => [
-                                'min' => 0,
-                                'max' => 20,
-                            ],
-                            'price'      => [
-                                'amount'   => 100,
-                                'currency' => 'EUR',
-                            ],
-                            'step_price' => [
-                                'amount'   => 100,
-                                'currency' => 'EUR',
-                            ],
-                            'step_size'  => 1,
+            'type'          => 'service-contracts',
+            'relationships' => [
+                'service'               => [
+                    'data' => [
+                        'type' => 'services',
+                        'id'   => 'service-id',
+                    ],
+                ],
+                'carrier_contract'      => [
+                    'data' => [
+                        'type' => 'carrier-contracts',
+                        'id'   => 'carrier-contract-id',
+                    ],
+                ],
+                'service_groups'        => [
+                    'data' => [
+                        [
+                            'type' => 'service-groups',
+                            'id'   => 'service-group-id',
                         ],
                     ],
                 ],
-                'options'    => [
-                    [
-                        'type'       => 'service-options',
-                        'id'         => 'service-option-id',
-                        'attributes' => [
-                            'name'  => 'signature',
-                            'price' => [
-                                'amount'   => 100,
-                                'currency' => 'EUR',
-                            ],
+                'service_option_prices' => [
+                    'data' => [
+                        [
+                            'type' => 'service-option-prices',
+                            'id'   => 'service-option-id',
                         ],
                     ],
                 ],
-                'insurances' => [
-                    [
-                        'type'       => 'service-insurances',
-                        'id'         => 'service-insurance-id',
-                        'attributes' => [
-                            'covered' => [
-                                'amount'   => 100,
-                                'currency' => 'EUR',
-                            ],
-                            'price'   => [
-                                'amount'   => 100,
-                                'currency' => 'EUR',
-                            ],
+                'service_insurances'    => [
+                    'data' => [
+                        [
+                            'type' => 'service-insurances',
+                            'id'   => 'service-insurance-id',
                         ],
                     ],
                 ],
@@ -229,7 +279,6 @@ class ResourceFactoryTest extends TestCase
                 'latitude'  => 1.2345,
                 'longitude' => 2.34567,
                 'distance'  => 5000,
-                'unit'      => 'meters',
             ],
         ];
 
@@ -292,25 +341,47 @@ class ResourceFactoryTest extends TestCase
     {
         $resourceFactory = new ResourceFactory();
         $service = $resourceFactory->create('services', [
-            'name'         => 'Easy Delivery Service',
-            'package_type' => ServiceInterface::PACKAGE_TYPE_PARCEL,
-            'carrier'      => [
+            'id'              => 'service-id-9001',
+            'name'            => 'Easy Delivery Service',
+            'package_type'    => ServiceInterface::PACKAGE_TYPE_PARCEL,
+            'transit_time'    => [
+                'min' => 2,
+                'max' => 5,
+            ],
+            'handover_method' => 'drop-off',
+            'delivery_days'   => [
+                'Monday',
+                'Wednesday',
+                'Friday',
+            ],
+            'carrier'         => [
                 'id' => 'carrier-id-1',
             ],
-            'region_from'  => [
+            'region_from'     => [
                 'id' => 'region-id-1',
             ],
-            'region_to'    => [
+            'region_to'       => [
                 'id' => 'region-id-2',
             ],
         ]);
 
         $this->assertInstanceOf(ServiceInterface::class, $service);
         $this->assertEquals([
+            'id'            => 'service-id-9001',
             'type'          => 'services',
             'attributes'    => [
-                'name'         => 'Easy Delivery Service',
-                'package_type' => ServiceInterface::PACKAGE_TYPE_PARCEL,
+                'name'            => 'Easy Delivery Service',
+                'package_type'    => ServiceInterface::PACKAGE_TYPE_PARCEL,
+                'transit_time'    => [
+                    'min' => 2,
+                    'max' => 5,
+                ],
+                'handover_method' => 'drop-off',
+                'delivery_days'   => [
+                    'Monday',
+                    'Wednesday',
+                    'Friday',
+                ],
             ],
             'relationships' => [
                 'carrier'     => [
@@ -399,18 +470,61 @@ class ResourceFactoryTest extends TestCase
         $resourceFactory = new ResourceFactory();
         $serviceOption = $resourceFactory->create('service-options', [
             'name'     => 'Sign on delivery',
-            'price'    => 55,
-            'currency' => 'NOK',
+            'code'     => 'some-code',
+            'category' => 'some-category',
         ]);
 
         $this->assertInstanceOf(ServiceOptionInterface::class, $serviceOption);
         $this->assertEquals([
             'type'       => 'service-options',
             'attributes' => [
-                'name'  => 'Sign on delivery',
+                'name'     => 'Sign on delivery',
+                'code'     => 'some-code',
+                'category' => 'some-category',
+            ],
+        ], $serviceOption->jsonSerialize());
+    }
+
+    /** @test */
+    public function testCreateServiceOptionPrice()
+    {
+        $resourceFactory = new ResourceFactory();
+        $serviceOption = $resourceFactory->create('service-option-prices', [
+            'price'            => 55,
+            'currency'         => 'NOK',
+            'service_option'   => [
+                'id'   => 'service-option-id',
+                'type' => 'service-options',
+            ],
+            'service_contract' => [
+                'id'   => 'service-contract-id',
+                'type' => 'service-contracts',
+            ],
+            'required' => true,
+        ]);
+
+        $this->assertInstanceOf(ServiceOptionPriceInterface::class, $serviceOption);
+        $this->assertEquals([
+            'type'          => 'service-option-prices',
+            'attributes'    => [
                 'price' => [
                     'amount'   => 55,
                     'currency' => 'NOK',
+                ],
+                'required' => true,
+            ],
+            'relationships' => [
+                'service_option'   => [
+                    'data' => [
+                        'id'   => 'service-option-id',
+                        'type' => 'service-options',
+                    ],
+                ],
+                'service_contract' => [
+                    'data' => [
+                        'id'   => 'service-contract-id',
+                        'type' => 'service-contracts',
+                    ],
                 ],
             ],
         ], $serviceOption->jsonSerialize());
@@ -433,9 +547,14 @@ class ResourceFactoryTest extends TestCase
     {
         $resourceFactory = new ResourceFactory();
         $serviceInsurance = $resourceFactory->create('service-insurances', [
-            'covered'  => 10000,
-            'price'    => 500,
-            'currency' => 'EUR',
+            'covered' => [
+                'amount'   => 10000,
+                'currency' => 'EUR',
+            ],
+            'price'   => [
+                'amount'   => 500,
+                'currency' => 'EUR',
+            ],
         ]);
 
         $this->assertInstanceOf(ServiceInsuranceInterface::class, $serviceInsurance);
@@ -471,20 +590,31 @@ class ResourceFactoryTest extends TestCase
     {
         $resourceFactory = new ResourceFactory();
         $shipment = $resourceFactory->create('shipments', [
-            'barcode'                 => 'S3BARCODE',
-            'description'             => 'order #012ASD',
-            'price'                   => 99,
-            'currency'                => 'USD',
-            'insurance_amount'        => 50,
-            'weight'                  => 8000,
-            'physical_properties'     => [
+            'barcode'                      => 'S3BARCODE',
+            'description'                  => 'order #012ASD',
+            'price'                        => [
+                'amount'   => 99,
+                'currency' => 'USD',
+            ],
+            'insurance'                    => [
+                'amount'   => 50,
+                'currency' => 'USD',
+            ],
+            'physical_properties'          => [
                 'weight' => 1000,
                 'length' => 1100,
-                'volume' => 1200,
                 'height' => 1300,
                 'width'  => 1400,
+                'volume' => 2002,
             ],
-            'recipient_address'       => [
+            'physical_properties_verified' => [
+                'weight' => 100,
+                'length' => 110,
+                'height' => 130,
+                'width'  => 140,
+                'volume' => 2.002,
+            ],
+            'recipient_address'            => [
                 'street_1'             => 'Diagonally',
                 'street_2'             => 'Apartment 4',
                 'street_number'        => '1',
@@ -499,7 +629,7 @@ class ResourceFactoryTest extends TestCase
                 'email'                => 'rob@tables.com',
                 'phone_number'         => '+31 (0)234 567 890',
             ],
-            'sender_address'          => [
+            'sender_address'               => [
                 'street_1'             => 'Diagonally',
                 'street_2'             => 'Apartment 9',
                 'street_number'        => '4',
@@ -514,8 +644,8 @@ class ResourceFactoryTest extends TestCase
                 'email'                => 'rob@tables.com',
                 'phone_number'         => '+31 (0)234 567 890',
             ],
-            'pickup_location_code'    => 'CODE123',
-            'pickup_location_address' => [
+            'pickup_location_code'         => 'CODE123',
+            'pickup_location_address'      => [
                 'street_1'             => 'Diagonally',
                 'street_2'             => 'Apartment 41',
                 'street_number'        => '2',
@@ -530,37 +660,43 @@ class ResourceFactoryTest extends TestCase
                 'email'                => 'rob@tables.com',
                 'phone_number'         => '+31 (0)234 567 890',
             ],
-            'shop'                    => ['id' => 'shop-id-1', 'type' => 'shops'],
-            'service'                 => ['id' => 'service-id-1', 'type' => 'services'],
-            'contract'                => ['id' => 'contract-id-1', 'type' => 'contracts'],
-            'status'                  => ['id' => 'status-id-1', 'type' => 'statuses'],
-            'options'                 => [['id' => 'option-id-1', 'type' => 'service-options']],
-            'files'                   => [['id' => 'file-id-1', 'type' => 'files']],
+            'shop'                         => ['id' => 'shop-id-1', 'type' => 'shops'],
+            'service_contract'             => ['id' => 'service-contract-id-1', 'type' => 'service_contracts'],
+            'contract'                     => ['id' => 'contract-id-1', 'type' => 'contracts'],
+            'status'                       => ['id' => 'shipment-status-id-1', 'type' => 'statuses'],
+            'service_options'              => [['id' => 'option-id-1', 'type' => 'service-options']],
+            'files'                        => [['id' => 'file-id-1', 'type' => 'files']],
         ]);
 
         $this->assertInstanceOf(ShipmentInterface::class, $shipment);
         $this->assertEquals([
             'type'          => 'shipments',
             'attributes'    => [
-                'barcode'             => 'S3BARCODE',
-                'description'         => 'order #012ASD',
-                'price'               => [
+                'barcode'                      => 'S3BARCODE',
+                'description'                  => 'order #012ASD',
+                'price'                        => [
                     'amount'   => 99,
                     'currency' => 'USD',
                 ],
-                'insurance'           => [
+                'insurance'                    => [
                     'amount'   => 50,
                     'currency' => 'USD',
                 ],
-                'weight'              => 8000,
-                'physical_properties' => [
+                'physical_properties'          => [
                     'weight' => 1000,
                     'length' => 1100,
-                    'volume' => 1200,
                     'height' => 1300,
                     'width'  => 1400,
+                    'volume' => 2002,
                 ],
-                'recipient_address'   => [
+                'physical_properties_verified' => [
+                    'weight' => 100,
+                    'length' => 110,
+                    'height' => 130,
+                    'width'  => 140,
+                    'volume' => 2.002,
+                ],
+                'recipient_address'            => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 4',
                     'street_number'        => '1',
@@ -575,7 +711,7 @@ class ResourceFactoryTest extends TestCase
                     'email'                => 'rob@tables.com',
                     'phone_number'         => '+31 (0)234 567 890',
                 ],
-                'sender_address'      => [
+                'sender_address'               => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 9',
                     'street_number'        => '4',
@@ -590,7 +726,7 @@ class ResourceFactoryTest extends TestCase
                     'email'                => 'rob@tables.com',
                     'phone_number'         => '+31 (0)234 567 890',
                 ],
-                'pickup_location'     => [
+                'pickup_location'              => [
                     'code'    => 'CODE123',
                     'address' => [
                         'street_1'             => 'Diagonally',
@@ -610,35 +746,40 @@ class ResourceFactoryTest extends TestCase
                 ],
             ],
             'relationships' => [
-                'shop'     => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
-                'service'  => ['data' => ['id' => 'service-id-1', 'type' => 'services']],
-                'contract' => ['data' => ['id' => 'contract-id-1', 'type' => 'contracts']],
-                'status'   => ['data' => ['id' => 'status-id-1', 'type' => 'statuses']],
-                'options'  => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
-                'files'    => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
+                'shop'             => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
+                'service_contract' => ['data' => ['id' => 'service-contract-id-1', 'type' => 'service-contracts']],
+                'status'           => ['data' => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses']],
+                'service_options'  => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
+                'files'            => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
             ],
         ], $shipment->jsonSerialize());
     }
 
     /** @test */
-    public function testCreateShipmentWitCustoms()
+    public function testCreateShipmentWithCustoms()
     {
         $resourceFactory = new ResourceFactory();
         $shipment = $resourceFactory->create('shipments', [
-            'barcode'                 => 'S3BARCODE',
-            'description'             => 'order #012ASD',
-            'price'                   => 99,
-            'currency'                => 'USD',
-            'insurance_amount'        => 50,
-            'weight'                  => 8000,
-            'physical_properties'     => [
+            'barcode'                      => 'S3BARCODE',
+            'description'                  => 'order #012ASD',
+            'price'                        => 99,
+            'currency'                     => 'USD',
+            'insurance_amount'             => 50,
+            'physical_properties'          => [
                 'weight' => 1000,
                 'length' => 1100,
-                'volume' => 1200,
                 'height' => 1300,
                 'width'  => 1400,
+                'volume' => 2002,
             ],
-            'recipient_address'       => [
+            'physical_properties_verified' => [
+                'weight' => 100,
+                'length' => 110,
+                'height' => 130,
+                'width'  => 140,
+                'volume' => 2.002,
+            ],
+            'recipient_address'            => [
                 'street_1'             => 'Diagonally',
                 'street_2'             => 'Apartment 4',
                 'street_number'        => '1',
@@ -652,7 +793,7 @@ class ResourceFactoryTest extends TestCase
                 'email'                => 'rob@tables.com',
                 'phone_number'         => '+31 (0)234 567 890',
             ],
-            'sender_address'          => [
+            'sender_address'               => [
                 'street_1'             => 'Diagonally',
                 'street_2'             => 'Apartment 9',
                 'street_number'        => '4',
@@ -666,8 +807,8 @@ class ResourceFactoryTest extends TestCase
                 'email'                => 'rob@tables.com',
                 'phone_number'         => '+31 (0)234 567 890',
             ],
-            'pickup_location_code'    => 'CODE123',
-            'pickup_location_address' => [
+            'pickup_location_code'         => 'CODE123',
+            'pickup_location_address'      => [
                 'street_1'             => 'Diagonally',
                 'street_2'             => 'Apartment 41',
                 'street_number'        => '2',
@@ -681,72 +822,77 @@ class ResourceFactoryTest extends TestCase
                 'email'                => 'rob@tables.com',
                 'phone_number'         => '+31 (0)234 567 890',
             ],
-            'customs'                 => [
+            'items'                        => [
+                [
+                    'sku'                 => '123456789',
+                    'description'         => 'OnePlus X',
+                    'item_value'          => 100,
+                    'currency'            => 'GBP',
+                    'quantity'            => 2,
+                    'hs_code'             => '8517.12.00',
+                    'origin_country_code' => 'GB',
+                ],
+                [
+                    'sku'                 => '213425',
+                    'description'         => 'OnePlus One',
+                    'item_value'          => 200,
+                    'currency'            => 'GBP',
+                    'quantity'            => 3,
+                    'hs_code'             => '8517.12.00',
+                    'origin_country_code' => 'GB',
+                ],
+                [
+                    'sku'                 => '6876',
+                    'description'         => 'OnePlus Two',
+                    'item_value'          => 300,
+                    'currency'            => 'GBP',
+                    'quantity'            => 1,
+                    'hs_code'             => '8517.12.00',
+                    'origin_country_code' => 'GB',
+                ],
+            ],
+            'customs'                      => [
                 'content_type'   => 'documents',
                 'invoice_number' => 'NO.5',
-                'items'          => [
-                    [
-                        'sku'                 => '123456789',
-                        'description'         => 'OnePlus X',
-                        'item_value'          => 100,
-                        'currency'            => 'GBP',
-                        'quantity'            => 2,
-                        'hs_code'             => '8517.12.00',
-                        'origin_country_code' => 'GB',
-                    ],
-                    [
-                        'sku'                 => '213425',
-                        'description'         => 'OnePlus One',
-                        'item_value'          => 200,
-                        'currency'            => 'GBP',
-                        'quantity'            => 3,
-                        'hs_code'             => '8517.12.00',
-                        'origin_country_code' => 'GB',
-                    ],
-                    [
-                        'sku'                 => '6876',
-                        'description'         => 'OnePlus Two',
-                        'item_value'          => 300,
-                        'currency'            => 'GBP',
-                        'quantity'            => 1,
-                        'hs_code'             => '8517.12.00',
-                        'origin_country_code' => 'GB',
-                    ],
-                ],
                 'non_delivery'   => 'return',
                 'incoterm'       => 'DDU',
             ],
-            'shop'                    => ['id' => 'shop-id-1', 'type' => 'shops'],
-            'service'                 => ['id' => 'service-id-1', 'type' => 'services'],
-            'contract'                => ['id' => 'contract-id-1', 'type' => 'contracts'],
-            'status'                  => ['id' => 'status-id-1', 'type' => 'statuses'],
-            'options'                 => [['id' => 'option-id-1', 'type' => 'service-options']],
-            'files'                   => [['id' => 'file-id-1', 'type' => 'files']],
+            'shop'                         => ['id' => 'shop-id-1', 'type' => 'shops'],
+            'service_contract'             => ['id' => 'service-contract-id-1', 'type' => 'service-contracts'],
+            'status'                       => ['id' => 'shipment-status-id-1', 'type' => 'statuses'],
+            'service_options'              => [['id' => 'option-id-1', 'type' => 'service-options']],
+            'files'                        => [['id' => 'file-id-1', 'type' => 'files']],
         ]);
 
         $this->assertInstanceOf(ShipmentInterface::class, $shipment);
         $this->assertEquals([
             'type'          => 'shipments',
             'attributes'    => [
-                'barcode'             => 'S3BARCODE',
-                'description'         => 'order #012ASD',
-                'price'               => [
+                'barcode'                      => 'S3BARCODE',
+                'description'                  => 'order #012ASD',
+                'price'                        => [
                     'amount'   => 99,
                     'currency' => 'USD',
                 ],
-                'insurance'           => [
+                'insurance'                    => [
                     'amount'   => 50,
                     'currency' => 'USD',
                 ],
-                'weight'              => 8000,
-                'physical_properties' => [
+                'physical_properties'          => [
                     'weight' => 1000,
                     'length' => 1100,
-                    'volume' => 1200,
                     'height' => 1300,
                     'width'  => 1400,
+                    'volume' => 2002,
                 ],
-                'recipient_address'   => [
+                'physical_properties_verified' => [
+                    'weight' => 100,
+                    'length' => 110,
+                    'height' => 130,
+                    'width'  => 140,
+                    'volume' => 2.002,
+                ],
+                'recipient_address'            => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 4',
                     'street_number'        => '1',
@@ -760,7 +906,7 @@ class ResourceFactoryTest extends TestCase
                     'email'                => 'rob@tables.com',
                     'phone_number'         => '+31 (0)234 567 890',
                 ],
-                'sender_address'      => [
+                'sender_address'               => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 9',
                     'street_number'        => '4',
@@ -774,7 +920,7 @@ class ResourceFactoryTest extends TestCase
                     'email'                => 'rob@tables.com',
                     'phone_number'         => '+31 (0)234 567 890',
                 ],
-                'pickup_location'     => [
+                'pickup_location'              => [
                     'code'    => 'CODE123',
                     'address' => [
                         'street_1'             => 'Diagonally',
@@ -791,55 +937,54 @@ class ResourceFactoryTest extends TestCase
                         'phone_number'         => '+31 (0)234 567 890',
                     ],
                 ],
-                'customs'             => [
+                'items'                        => [
+                    [
+                        'sku'                 => '123456789',
+                        'description'         => 'OnePlus X',
+                        'item_value'          => [
+                            'amount'   => 100,
+                            'currency' => 'GBP',
+                        ],
+                        'quantity'            => 2,
+                        'hs_code'             => '8517.12.00',
+                        'origin_country_code' => 'GB',
+                    ],
+                    [
+                        'sku'                 => '213425',
+                        'description'         => 'OnePlus One',
+                        'item_value'          => [
+                            'amount'   => 200,
+                            'currency' => 'GBP',
+                        ],
+                        'quantity'            => 3,
+                        'hs_code'             => '8517.12.00',
+                        'origin_country_code' => 'GB',
+                    ],
+                    [
+                        'sku'                 => '6876',
+                        'description'         => 'OnePlus Two',
+                        'item_value'          => [
+                            'amount'   => 300,
+                            'currency' => 'GBP',
+                        ],
+                        'quantity'            => 1,
+                        'hs_code'             => '8517.12.00',
+                        'origin_country_code' => 'GB',
+                    ],
+                ],
+                'customs'                      => [
                     'content_type'   => 'documents',
                     'invoice_number' => 'NO.5',
-                    'items'          => [
-                        [
-                            'sku'                 => '123456789',
-                            'description'         => 'OnePlus X',
-                            'item_value'          => [
-                                'amount'   => 100,
-                                'currency' => 'GBP',
-                            ],
-                            'quantity'            => 2,
-                            'hs_code'             => '8517.12.00',
-                            'origin_country_code' => 'GB',
-                        ],
-                        [
-                            'sku'                 => '213425',
-                            'description'         => 'OnePlus One',
-                            'item_value'          => [
-                                'amount'   => 200,
-                                'currency' => 'GBP',
-                            ],
-                            'quantity'            => 3,
-                            'hs_code'             => '8517.12.00',
-                            'origin_country_code' => 'GB',
-                        ],
-                        [
-                            'sku'                 => '6876',
-                            'description'         => 'OnePlus Two',
-                            'item_value'          => [
-                                'amount'   => 300,
-                                'currency' => 'GBP',
-                            ],
-                            'quantity'            => 1,
-                            'hs_code'             => '8517.12.00',
-                            'origin_country_code' => 'GB',
-                        ],
-                    ],
                     'non_delivery'   => 'return',
                     'incoterm'       => 'DDU',
                 ],
             ],
             'relationships' => [
-                'shop'     => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
-                'service'  => ['data' => ['id' => 'service-id-1', 'type' => 'services']],
-                'contract' => ['data' => ['id' => 'contract-id-1', 'type' => 'contracts']],
-                'status'   => ['data' => ['id' => 'status-id-1', 'type' => 'statuses']],
-                'options'  => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
-                'files'    => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
+                'shop'             => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
+                'service_contract' => ['data' => ['id' => 'service-contract-id-1', 'type' => 'service-contracts']],
+                'status'           => ['data' => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses']],
+                'service_options'  => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
+                'files'            => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
             ],
         ], $shipment->jsonSerialize());
     }

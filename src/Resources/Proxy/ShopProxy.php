@@ -1,15 +1,15 @@
 <?php
 
-namespace MyParcelCom\Sdk\Resources\Proxy;
+namespace MyParcelCom\ApiSdk\Resources\Proxy;
 
 use DateTime;
-use MyParcelCom\Sdk\Resources\Interfaces\AddressInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\RegionInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ResourceInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ResourceProxyInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ShopInterface;
-use MyParcelCom\Sdk\Resources\Traits\JsonSerializable;
-use MyParcelCom\Sdk\Resources\Traits\ProxiesResource;
+use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
+use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
+use MyParcelCom\ApiSdk\Resources\Traits\ProxiesResource;
 
 class ShopProxy implements ShopInterface, ResourceProxyInterface
 {
@@ -89,6 +89,25 @@ class ShopProxy implements ShopInterface, ResourceProxyInterface
     }
 
     /**
+     * @param AddressInterface $senderAddress
+     * @return $this
+     */
+    public function setSenderAddress(AddressInterface $senderAddress)
+    {
+        $this->getResource()->setSenderAddress($senderAddress);
+
+        return $this;
+    }
+
+    /**
+     * @return AddressInterface
+     */
+    public function getSenderAddress()
+    {
+        return $this->getResource()->getSenderAddress();
+    }
+
+    /**
      * @param AddressInterface $returnAddress
      * @return $this
      */
@@ -155,6 +174,7 @@ class ShopProxy implements ShopInterface, ResourceProxyInterface
         $values = get_object_vars($this);
         unset($values['resource']);
         unset($values['api']);
+        unset($values['uri']);
 
         return $this->arrayValuesToArray($values);
     }

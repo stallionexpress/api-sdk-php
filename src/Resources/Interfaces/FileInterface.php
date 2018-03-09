@@ -1,13 +1,13 @@
 <?php
 
-namespace MyParcelCom\Sdk\Resources\Interfaces;
+namespace MyParcelCom\ApiSdk\Resources\Interfaces;
 
 use Psr\Http\Message\StreamInterface;
 
 /**
  * Interface FileInterface
  *
- * @package MyParcelCom\Sdk\Resources\Interfaces
+ * @package MyParcelCom\ApiSdk\Resources\Interfaces
  */
 interface FileInterface extends ResourceInterface
 {

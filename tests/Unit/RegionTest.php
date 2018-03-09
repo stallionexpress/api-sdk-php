@@ -1,8 +1,8 @@
 <?php
 
-namespace MyParcelCom\Sdk\Tests\Unit;
+namespace MyParcelCom\ApiSdk\Tests\Unit;
 
-use MyParcelCom\Sdk\Resources\Region;
+use MyParcelCom\ApiSdk\Resources\Region;
 use PHPUnit\Framework\TestCase;
 
 class RegionTest extends TestCase

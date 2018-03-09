@@ -1,10 +1,11 @@
 <?php
 
-namespace MyParcelCom\Sdk\Tests\Unit;
+namespace MyParcelCom\ApiSdk\Tests\Unit;
 
-use MyParcelCom\Sdk\LabelCombiner;
-use MyParcelCom\Sdk\LabelCombinerInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\FileInterface;
+use MyParcelCom\ApiSdk\Exceptions\LabelCombinerException;
+use MyParcelCom\ApiSdk\LabelCombiner;
+use MyParcelCom\ApiSdk\LabelCombinerInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
 use PHPUnit\Framework\TestCase;
 
 class LabelCombinerTest extends TestCase
@@ -189,5 +190,14 @@ class LabelCombinerTest extends TestCase
                 FileInterface::FORMAT_EXTENSION => 'pdf',
             ],
         ], $file->getFormats());
+    }
+
+    /** @test */
+    public function testLabelsPerPageException()
+    {
+        $combiner = new LabelCombiner();
+
+        $this->expectException(LabelCombinerException::class);
+        $combiner->combineLabels([], null);
     }
 }

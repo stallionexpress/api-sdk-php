@@ -1,6 +1,6 @@
 <?php
 
-namespace MyParcelCom\Sdk\Resources\Interfaces;
+namespace MyParcelCom\ApiSdk\Resources\Interfaces;
 
 interface CustomsInterface extends \JsonSerializable
 {
@@ -37,23 +37,6 @@ interface CustomsInterface extends \JsonSerializable
      * @return string
      */
     public function getInvoiceNumber();
-
-    /**
-     * @param CustomsItemInterface[] $items
-     * @return $this
-     */
-    public function setItems(array $items);
-
-    /**
-     * @param CustomsItemInterface $item
-     * @return $this
-     */
-    public function addItem(CustomsItemInterface $item);
-
-    /**
-     * @return CustomsItemInterface[]
-     */
-    public function getItems();
 
     /**
      * @param string $nonDelivery

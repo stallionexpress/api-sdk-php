@@ -1,10 +1,10 @@
 <?php
 
-namespace MyParcelCom\Sdk\Resources;
+namespace MyParcelCom\ApiSdk\Resources;
 
-use MyParcelCom\Sdk\Exceptions\MyParcelComException;
-use MyParcelCom\Sdk\Resources\Interfaces\PositionInterface;
-use MyParcelCom\Sdk\Resources\Traits\JsonSerializable;
+use MyParcelCom\ApiSdk\Exceptions\MyParcelComException;
+use MyParcelCom\ApiSdk\Resources\Interfaces\PositionInterface;
+use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 
 class Position implements PositionInterface
 {
@@ -13,7 +13,6 @@ class Position implements PositionInterface
     private $latitude;
     private $longitude;
     private $distance;
-    private $unit = self::UNIT_METER;
 
     private static $unitConversion = [
         self::UNIT_METER     => 1,

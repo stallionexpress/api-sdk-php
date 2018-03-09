@@ -1,17 +1,16 @@
 <?php
 
-namespace MyParcelCom\Sdk;
+namespace MyParcelCom\ApiSdk;
 
 use GuzzleHttp\Promise\PromiseInterface;
-use MyParcelCom\Sdk\Authentication\AuthenticatorInterface;
-use MyParcelCom\Sdk\Exceptions\MyParcelComException;
-use MyParcelCom\Sdk\Resources\Interfaces\CarrierInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\PickUpDropOffLocationInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\RegionInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ResourceInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ServiceInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ShipmentInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ShopInterface;
+use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
+use MyParcelCom\ApiSdk\Collection\CollectionInterface;
+use MyParcelCom\ApiSdk\Collection\PromiseCollection;
+use MyParcelCom\ApiSdk\Exceptions\MyParcelComException;
+use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 
 interface MyParcelComApiInterface
 {
@@ -20,7 +19,9 @@ interface MyParcelComApiInterface
     const PATH_PUDO_LOCATIONS = '/v1/carriers/{carrier_id}/pickup-dropoff-locations/{country_code}/{postal_code}';
     const PATH_REGIONS = '/v1/regions';
     const PATH_SERVICES = '/v1/services';
+    const PATH_SERVICE_CONTRACTS = '/v1/services/{service_id}/contracts';
     const PATH_SHIPMENTS = '/v1/shipments';
+    const PATH_SHIPMENT_STATUSES = '/v1/shipments/{shipment_id}/statuses';
     const PATH_SHOPS = '/v1/shops';
 
     const TTL_10MIN = 600;
@@ -42,7 +43,7 @@ interface MyParcelComApiInterface
      *
      * @param string|null $countryCode
      * @param string|null $regionCode
-     * @return RegionInterface[]
+     * @return CollectionInterface
      */
     public function getRegions($countryCode = null, $regionCode = null);
 
@@ -50,7 +51,7 @@ interface MyParcelComApiInterface
      * Get all the carriers from the API.
      *
      * @throws MyParcelComException
-     * @return CarrierInterface[]
+     * @return CollectionInterface
      */
     public function getCarriers();
 
@@ -62,22 +63,22 @@ interface MyParcelComApiInterface
      * @param string                $postalCode
      * @param string|null           $streetName
      * @param string|null           $streetNumber
-     * @param CarrierInterface|null $carrier
-     * @return PickUpDropOffLocationInterface[]
+     * @param CarrierInterface|null $specificCarrier
+     * @return CollectionInterface
      */
     public function getPickUpDropOffLocations(
         $countryCode,
         $postalCode,
         $streetName = null,
         $streetNumber = null,
-        CarrierInterface $carrier = null
+        CarrierInterface $specificCarrier = null
     );
 
     /**
      * Get the shops from the API.
      *
      * @throws MyParcelComException
-     * @return ShopInterface[]
+     * @return CollectionInterface
      */
     public function getShops();
 
@@ -86,7 +87,7 @@ interface MyParcelComApiInterface
      * no specific shop has been set.
      *
      * @throws MyParcelComException
-     * @return ShipmentInterface
+     * @return ShopInterface
      */
     public function getDefaultShop();
 
@@ -96,7 +97,7 @@ interface MyParcelComApiInterface
      *
      * @param ShipmentInterface|null $shipment
      * @throws MyParcelComException
-     * @return ServiceInterface[]
+     * @return CollectionInterface
      */
     public function getServices(ShipmentInterface $shipment = null);
 
@@ -105,17 +106,17 @@ interface MyParcelComApiInterface
      *
      * @param CarrierInterface $carrier
      * @throws MyParcelComException
-     * @return ServiceInterface[]
+     * @return CollectionInterface
      */
     public function getServicesForCarrier(CarrierInterface $carrier);
 
     /**
-     * Get shipments for a given shop. Id no shop is given the default shop is
+     * Get shipments for a given shop. If no shop is given the default shop is
      * used.
      *
      * @param ShopInterface|null $shop
      * @throws MyParcelComException
-     * @return ShipmentInterface[]
+     * @return CollectionInterface
      */
     public function getShipments(ShopInterface $shop = null);
 

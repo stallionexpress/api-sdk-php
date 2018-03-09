@@ -1,11 +1,11 @@
 <?php
 
-namespace MyParcelCom\Sdk;
+namespace MyParcelCom\ApiSdk;
 
-use MyParcelCom\Sdk\Exceptions\LabelCombinerException;
-use MyParcelCom\Sdk\Exceptions\MyParcelComException;
-use MyParcelCom\Sdk\Resources\File;
-use MyParcelCom\Sdk\Resources\Interfaces\FileInterface;
+use MyParcelCom\ApiSdk\Exceptions\LabelCombinerException;
+use MyParcelCom\ApiSdk\Exceptions\MyParcelComException;
+use MyParcelCom\ApiSdk\Resources\File;
+use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
 use setasign\Fpdi\Fpdi;
 
 class LabelCombiner implements LabelCombinerInterface
@@ -140,7 +140,7 @@ class LabelCombiner implements LabelCombinerInterface
      * Return the start position, 0 being top left and 3 being bottom right.
      *
      * @param string $pageSize
-     * @param int $startLocation
+     * @param int    $startLocation
      * @return int
      */
     private function getStartPosition($pageSize, $startLocation)

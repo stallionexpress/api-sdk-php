@@ -1,8 +1,9 @@
 <?php
 
-namespace MyParcelCom\Sdk\Tests\Unit;
+namespace MyParcelCom\ApiSdk\Tests\Unit;
 
-use MyParcelCom\Sdk\Resources\PhysicalProperties;
+use MyParcelCom\ApiSdk\Resources\Interfaces\PhysicalPropertiesInterface;
+use MyParcelCom\ApiSdk\Resources\PhysicalProperties;
 use PHPUnit\Framework\TestCase;
 
 class PhysicalPropertiesTest extends TestCase
@@ -12,7 +13,17 @@ class PhysicalPropertiesTest extends TestCase
     public function testWeight()
     {
         $physicalProperties = new PhysicalProperties();
-        $this->assertEquals(1000, $physicalProperties->setWeight(1000)->getWeight());
+        $this->assertEquals(8000, $physicalProperties->setWeight(8000)->getWeight());
+        $this->assertEquals(500, $physicalProperties->setWeight(500, PhysicalPropertiesInterface::WEIGHT_GRAM)->getWeight());
+        $this->assertEquals(3000, $physicalProperties->setWeight(3, PhysicalPropertiesInterface::WEIGHT_KILOGRAM)->getWeight());
+        $this->assertEquals(1701, $physicalProperties->setWeight(60, PhysicalPropertiesInterface::WEIGHT_OUNCE)->getWeight());
+        $this->assertEquals(2268, $physicalProperties->setWeight(5, PhysicalPropertiesInterface::WEIGHT_POUND)->getWeight());
+        $this->assertEquals(12701, $physicalProperties->setWeight(2, PhysicalPropertiesInterface::WEIGHT_STONE)->getWeight());
+        $this->assertEquals(500, $physicalProperties->setWeight(500)->getWeight(PhysicalPropertiesInterface::WEIGHT_GRAM));
+        $this->assertEquals(3, $physicalProperties->setWeight(3000)->getWeight(PhysicalPropertiesInterface::WEIGHT_KILOGRAM));
+        $this->assertEquals(60, $physicalProperties->setWeight(1701)->getWeight(PhysicalPropertiesInterface::WEIGHT_OUNCE));
+        $this->assertEquals(5, $physicalProperties->setWeight(2268)->getWeight(PhysicalPropertiesInterface::WEIGHT_POUND));
+        $this->assertEquals(2, $physicalProperties->setWeight(12701)->getWeight(PhysicalPropertiesInterface::WEIGHT_STONE));
     }
 
     /** @test */

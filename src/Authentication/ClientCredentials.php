@@ -1,12 +1,12 @@
 <?php
 
-namespace MyParcelCom\Sdk\Authentication;
+namespace MyParcelCom\ApiSdk\Authentication;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\RequestOptions;
-use MyParcelCom\Sdk\Exceptions\AuthenticationException;
+use MyParcelCom\ApiSdk\Exceptions\AuthenticationException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Cache\Simple\FilesystemCache;
@@ -114,7 +114,7 @@ class ClientCredentials implements AuthenticatorInterface
             $data = \GuzzleHttp\json_decode((string)$response->getBody(), true);
 
             $header = [
-                self::HEADER_AUTH   => $data['token_type'] . ' ' . $data['access_token'],
+                self::HEADER_AUTH => $data['token_type'] . ' ' . $data['access_token'],
             ];
 
             $this->setAuthenticating(false);
@@ -147,6 +147,18 @@ class ClientCredentials implements AuthenticatorInterface
     protected function setCachedHeader(array $header, $ttl)
     {
         $this->cache->set(self::CACHE_TOKEN, $header, $ttl - self::TTL_MARGIN);
+
+        return $this;
+    }
+
+    /**
+     * Clear the cached resources.
+     *
+     * @return $this
+     */
+    public function clearCache()
+    {
+        $this->cache->clear();
 
         return $this;
     }
@@ -187,8 +199,16 @@ class ClientCredentials implements AuthenticatorInterface
      */
     protected function handleRequestException(RequestException $exception)
     {
+        if (empty($exception->getResponse())) {
+            throw new AuthenticationException(
+                'The authentication server could not be reached, please check if the uri is correct',
+                404,
+                $exception
+            );
+        }
+
         $response = json_decode((string)$exception->getResponse()->getBody(), true);
-        $message = 'An unknown error occured while authenticating with the oauth2 server';
+        $message = 'An unknown error occurred while authenticating with the oauth2 server';
 
         if (!empty($response['errors'])) {
             $errors = $response['errors'];

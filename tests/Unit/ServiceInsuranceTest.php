@@ -1,8 +1,8 @@
 <?php
 
-namespace MyParcelCom\Sdk\Tests\Unit;
+namespace MyParcelCom\ApiSdk\Tests\Unit;
 
-use MyParcelCom\Sdk\Resources\ServiceInsurance;
+use MyParcelCom\ApiSdk\Resources\ServiceInsurance;
 use PHPUnit\Framework\TestCase;
 
 class ServiceInsuranceTest extends TestCase

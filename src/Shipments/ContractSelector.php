@@ -1,27 +1,27 @@
 <?php
 
-namespace MyParcelCom\Sdk\Shipments;
+namespace MyParcelCom\ApiSdk\Shipments;
 
-use MyParcelCom\Sdk\Resources\Interfaces\ContractInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ShipmentInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 
 class ContractSelector
 {
     /**
      * Choose the cheapest contract for given shipment.
      *
-     * @param ShipmentInterface   $shipment
-     * @param ContractInterface[] $contracts
-     * @return ContractInterface
+     * @param ShipmentInterface          $shipment
+     * @param ServiceContractInterface[] $serviceContracts
+     * @return ServiceContractInterface
      */
-    public function selectCheapest(ShipmentInterface $shipment, array $contracts)
+    public function selectCheapest(ShipmentInterface $shipment, array $serviceContracts)
     {
         $prices = [];
 
         $matcher = new ServiceMatcher();
         $matchingContracts = $matcher->getMatchedOptions(
             $shipment,
-            $matcher->getMatchedWeightGroups($shipment, $contracts)
+            $matcher->getMatchedWeightGroups($shipment, $serviceContracts)
         );
 
         $calculator = new PriceCalculator();

@@ -1,27 +1,33 @@
 <?php
 
-namespace MyParcelCom\Sdk\Tests\Feature;
+namespace MyParcelCom\ApiSdk\Tests\Feature;
 
 use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Psr7\Response;
-use MyParcelCom\Sdk\Authentication\AuthenticatorInterface;
-use MyParcelCom\Sdk\Exceptions\InvalidResourceException;
-use MyParcelCom\Sdk\MyParcelComApi;
-use MyParcelCom\Sdk\Resources\Address;
-use MyParcelCom\Sdk\Resources\Interfaces\CarrierInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\FileInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\PickUpDropOffLocationInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\RegionInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ResourceInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ServiceInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ShipmentInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ShopInterface;
-use MyParcelCom\Sdk\Resources\Shipment;
+use GuzzleHttp\Exception\RequestException;
+use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
+use MyParcelCom\ApiSdk\Collection\CollectionInterface;
+use MyParcelCom\ApiSdk\Collection\PromiseCollection;
+use MyParcelCom\ApiSdk\Exceptions\InvalidResourceException;
+use MyParcelCom\ApiSdk\MyParcelComApi;
+use MyParcelCom\ApiSdk\Resources\Address;
+use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\PickUpDropOffLocationInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentStatusInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\StatusInterface;
+use MyParcelCom\ApiSdk\Resources\Shipment;
+use MyParcelCom\ApiSdk\Tests\Traits\MocksApiCommunication;
 use PHPUnit\Framework\TestCase;
-use function GuzzleHttp\Promise\promise_for;
 
 class MyParcelComApiTest extends TestCase
 {
+    use MocksApiCommunication;
+
     /** @var AuthenticatorInterface */
     private $authenticator;
     /** @var MyParcelComApi */
@@ -31,60 +37,9 @@ class MyParcelComApiTest extends TestCase
 
     public function setUp()
     {
-        $this->authenticator = $this->getMockBuilder(AuthenticatorInterface::class)
-            ->disableOriginalConstructor()
-            ->disableOriginalClone()
-            ->disableArgumentCloning()
-            ->disallowMockingUnknownTypes()
-            ->getMock();
+        $this->authenticator = $this->getAuthenticatorMock();
 
-        $this->authenticator->method('getAuthorizationHeader')
-            ->willReturn(['Authorization' => 'Bearer test-api-token']);
-
-        $this->client = $this->getMockBuilder(ClientInterface::class)
-            ->disableOriginalConstructor()
-            ->disableOriginalClone()
-            ->disableArgumentCloning()
-            ->disallowMockingUnknownTypes()
-            ->getMock();
-        $this->client
-            ->method('requestAsync')
-            ->willReturnCallback(function ($method, $uri, $options) {
-                $filePath = implode(DIRECTORY_SEPARATOR, [
-                        dirname(dirname(__FILE__)),
-                        'Stubs',
-                        $method,
-                        str_replace([':', '{', '}', '(', ')', '/', '\\', '@', '?', '[', ']', '=', '&'], '-', $uri),
-                    ]) . '.json';
-
-                if (!file_exists($filePath)) {
-                    throw new \RuntimeException(sprintf(
-                        'File with path `%s` does not exist, please create this file with valid response data',
-                        $filePath
-                    ));
-                }
-
-                $returnJson = file_get_contents($filePath);
-                if ($method === 'post') {
-                    // Any post will have the data from the stub added to the
-                    // original request. This simulates the api creating the
-                    // resource and returning it with added attributes.
-                    $returnJson = \GuzzleHttp\json_encode(
-                        array_merge_recursive(
-                            \GuzzleHttp\json_decode($returnJson, true),
-                            // You may wonder why we would encode and then
-                            // decode this, but it is possible that the json in
-                            // the options array is not an associative array,
-                            // which we need to be able to merge.
-                            \GuzzleHttp\json_decode(\GuzzleHttp\json_encode($options['json']), true)
-                        )
-                    );
-                }
-
-                $response = new Response(200, [], $returnJson);
-
-                return promise_for($response);
-            });
+        $this->client = $this->getClientMock();
 
         $this->api = (new MyParcelComApi('https://api'))
             ->setHttpClient($this->client)
@@ -134,8 +89,8 @@ class MyParcelComApiTest extends TestCase
         $shipment = $this->api->createShipment($shipment);
 
         $this->assertNotNull(
-            $shipment->getService(),
-            'When no service has been selected, the preferred service for given shipment should be used'
+            $shipment->getServiceContract(),
+            'When no service contract has been selected, the preferred service contract for given shipment should be used'
         );
         $this->assertNotNull(
             $shipment->getId(),
@@ -158,12 +113,30 @@ class MyParcelComApiTest extends TestCase
     }
 
     /** @test */
-    public function testCreateInvalidShipment()
+    public function testCreateInvalidShipmentMissingRecipient()
     {
         $shipment = new Shipment();
 
-        // Shipments with no recipient and weight, should cause the api to throw
-        // an exception.
+        // Shipments with no recipient and weight, should cause the api to throw an exception.
+        $this->expectException(InvalidResourceException::class);
+        $this->api->createShipment($shipment);
+    }
+
+    /** @test */
+    public function testCreateInvalidShipmentMissingWeight()
+    {
+        $recipient = (new Address())
+            ->setFirstName('Bobby')
+            ->setLastName('Tables')
+            ->setCity('Birmingham')
+            ->setStreet1('Newbourne Hill')
+            ->setStreetNumber(12)
+            ->setPostalCode('B48 7QN')
+            ->setCountryCode('GB');
+        $shipment = (new Shipment())
+            ->setRecipientAddress($recipient);
+
+        // add recipient to test the exception in createShipment
         $this->expectException(InvalidResourceException::class);
         $this->api->createShipment($shipment);
     }
@@ -173,31 +146,100 @@ class MyParcelComApiTest extends TestCase
     {
         $carriers = $this->api->getCarriers();
 
-        $this->assertInternalType('array', $carriers);
-        array_walk($carriers, function ($carrier) {
+        $this->assertInstanceOf(CollectionInterface::class, $carriers);
+        foreach ($carriers as $carrier) {
             $this->assertInstanceOf(CarrierInterface::class, $carrier);
-        });
+        }
+    }
+
+    /** @test */
+    public function testGetPickUpDropOffLocationsForCarrier()
+    {
+        $carrier = $this->createMock(CarrierInterface::class);
+        $carrier
+            ->method('getId')
+            ->willReturn('eef00b32-177e-43d3-9b26-715365e4ce46');
+
+        $normalCarrierPudoLocations = $this->api->getPickUpDropOffLocations(
+            'GB',
+            'B48 7QN',
+            null,
+            null,
+            $carrier
+        );
+
+        $this->assertInstanceOf(CollectionInterface::class, $normalCarrierPudoLocations);
+        foreach ($normalCarrierPudoLocations as $pudoLocation) {
+            $this->assertInstanceOf(PickUpDropOffLocationInterface::class, $pudoLocation);
+        }
+    }
+
+    /** @test */
+    public function testGetPickUpDropOffLocationsForFailingCarrier()
+    {
+        // This carrier does not have pickup points and thus returns an error.
+        // An exception should be thrown.
+        $failingCarrier = $this->createMock(CarrierInterface::class);
+        $failingCarrier
+            ->method('getId')
+            ->willReturn('4a78637a-5d81-4e71-9b18-c338968f72fa');
+
+        $this->expectException(RequestException::class);
+        $this->api->getPickUpDropOffLocations(
+            'GB',
+            'B48 7QN',
+            null,
+            null,
+            $failingCarrier
+        );
     }
 
     /** @test */
     public function testGetPickUpDropOffLocations()
     {
-        $pudoLocations = $this->api->getPickUpDropOffLocations('GB', 'B48 7QN');
+        $carriers = $this->api->getCarriers()->get();
 
-        $this->assertInternalType('array', $pudoLocations);
-        array_walk($pudoLocations, function ($pudoLocation) {
-            $this->assertInstanceOf(PickUpDropOffLocationInterface::class, $pudoLocation);
+        array_walk($carriers, function (CarrierInterface $carrier) use (&$failingCarrierId, &$normalCarrierId) {
+            if ($carrier->getId() === '4a78637a-5d81-4e71-9b18-c338968f72fa') {
+                $failingCarrierId = $carrier->getId();
+            } elseif ($carrier->getId() === 'eef00b32-177e-43d3-9b26-715365e4ce46') {
+                $normalCarrierId = $carrier->getId();
+            }
         });
+
+        $allPudoLocations = $this->api->getPickUpDropOffLocations('GB', 'B48 7QN');
+
+        $this->assertInternalType('array', $allPudoLocations);
+        $this->assertNull($allPudoLocations[$failingCarrierId]);
+        $this->assertInstanceOf(CollectionInterface::class, $allPudoLocations[$normalCarrierId]);
+
+        foreach ($allPudoLocations[$normalCarrierId] as $pudoLocation) {
+            $this->assertInstanceOf(PickUpDropOffLocationInterface::class, $pudoLocation);
+        }
+
+        $this->assertCount(count($carriers), $allPudoLocations);
+        $this->assertArraySubset(
+            array_map(function (CarrierInterface $carrier) {
+                return $carrier->getId();
+            }, $carriers),
+            array_keys($allPudoLocations)
+        );
     }
 
     /** @test */
     public function testGetRegions()
     {
-        $regions = $this->api->getRegions();
+        $collection = $this->api->getRegions();
+        $allRegions = [];
+        for ($offset = 0; $offset < $collection->count(); $offset += 30) {
+            $allRegions = array_merge($allRegions, $collection->offset($offset)->get());
+        }
 
-        $this->assertInternalType('array', $regions);
-        $this->assertCount(78, $regions);
-        array_walk($regions, function ($region) {
+        $this->assertInstanceOf(CollectionInterface::class, $collection);
+        $this->assertEquals(78, $collection->count());
+        $this->assertCount(78, $allRegions);
+
+        array_walk($allRegions, function ($region) {
             $this->assertInstanceOf(RegionInterface::class, $region);
         });
     }
@@ -207,22 +249,22 @@ class MyParcelComApiTest extends TestCase
     {
         $regions = $this->api->getRegions('GB');
 
-        $this->assertInternalType('array', $regions);
-        $this->assertCount(5, $regions);
-        array_walk($regions, function ($region) {
+        $this->assertInstanceOf(CollectionInterface::class, $regions);
+        $this->assertEquals(9, $regions->count());
+        foreach ($regions as $region) {
             $this->assertInstanceOf(RegionInterface::class, $region);
             $this->assertEquals('GB', $region->getCountryCode());
-        });
+        }
 
         $ireland = $this->api->getRegions('GB', 'NIR');
 
-        $this->assertInternalType('array', $ireland);
-        $this->assertCount(1, $ireland);
-        array_walk($ireland, function ($region) {
+        $this->assertInstanceOf(CollectionInterface::class, $ireland);
+        $this->assertEquals(1, $ireland->count());
+        foreach ($ireland as $region) {
             $this->assertInstanceOf(RegionInterface::class, $region);
             $this->assertEquals('GB', $region->getCountryCode());
             $this->assertEquals('NIR', $region->getRegionCode());
-        });
+        }
     }
 
     /** @test */
@@ -230,10 +272,10 @@ class MyParcelComApiTest extends TestCase
     {
         $services = $this->api->getServices();
 
-        $this->assertInternalType('array', $services);
-        array_walk($services, function ($service) {
+        $this->assertInstanceOf(CollectionInterface::class, $services);
+        foreach ($services as $service) {
             $this->assertInstanceOf(ServiceInterface::class, $service);
-        });
+        }
     }
 
     /** @test */
@@ -253,10 +295,10 @@ class MyParcelComApiTest extends TestCase
 
         $services = $this->api->getServices($shipment);
 
-        $this->assertInternalType('array', $services);
-        array_walk($services, function ($service) {
+        $this->assertInstanceOf(CollectionInterface::class, $services);
+        foreach ($services as $service) {
             $this->assertInstanceOf(ServiceInterface::class, $service);
-        });
+        }
     }
 
     /** @test */
@@ -264,14 +306,14 @@ class MyParcelComApiTest extends TestCase
     {
         $carriers = $this->api->getCarriers();
 
-        array_walk($carriers, function ($carrier) {
+        foreach ($carriers as $carrier) {
             $services = $this->api->getServicesForCarrier($carrier);
 
-            array_walk($services, function ($service) use ($carrier) {
+            foreach ($services as $service) {
                 $this->assertInstanceOf(ServiceInterface::class, $service);
                 $this->assertEquals($carrier->getId(), $service->getCarrier()->getId());
-            });
-        });
+            }
+        }
     }
 
     /** @test */
@@ -279,10 +321,10 @@ class MyParcelComApiTest extends TestCase
     {
         $shipments = $this->api->getShipments();
 
-        $this->assertInternalType('array', $shipments);
-        array_walk($shipments, function ($shipment) {
+        $this->assertInstanceOf(CollectionInterface::class, $shipments);
+        foreach ($shipments as $shipment) {
             $this->assertInstanceOf(ShipmentInterface::class, $shipment);
-        });
+        }
     }
 
     /** @test */
@@ -290,11 +332,11 @@ class MyParcelComApiTest extends TestCase
     {
         $shops = $this->api->getShops();
 
-        array_walk($shops, function ($shop) {
+        foreach ($shops as $shop) {
             $shipments = $this->api->getShipments($shop);
 
-            $this->assertInternalType('array', $shipments);
-            array_walk($shipments, function ($shipment) use ($shop) {
+            $this->assertInstanceOf(CollectionInterface::class, $shipments);
+            foreach ($shipments as $shipment) {
                 $this->assertInstanceOf(ShipmentInterface::class, $shipment);
                 $this->assertEquals($shop->getId(), $shipment->getShop()->getId());
                 $this->assertEquals($shop->getType(), $shipment->getShop()->getType());
@@ -303,8 +345,8 @@ class MyParcelComApiTest extends TestCase
                 $this->assertEquals($shop->getReturnAddress(), $shipment->getShop()->getReturnAddress());
                 $this->assertEquals($shop->getName(), $shipment->getShop()->getName());
                 $this->assertEquals($shop->getRegion(), $shipment->getShop()->getRegion());
-            });
-        });
+            }
+        }
     }
 
     /** @test */
@@ -312,9 +354,107 @@ class MyParcelComApiTest extends TestCase
     {
         $shipments = $this->api->getShipments();
 
-        array_walk($shipments, function ($shipment) {
+        foreach ($shipments as $shipment) {
             $this->assertEquals($shipment, $this->api->getShipment($shipment->getId()));
-        });
+        }
+    }
+
+    /** @test */
+    public function testGetShipmentStatus()
+    {
+        $shipment = $this->api->getShipment('shipment-id-1');
+
+        $shipmentStatus = $shipment->getStatus();
+
+        $this->assertInstanceOf(ShipmentStatusInterface::class, $shipmentStatus);
+        $this->assertEquals('9001', $shipmentStatus->getCarrierStatusCode());
+        $this->assertEquals('Confirmed at destination', $shipmentStatus->getCarrierStatusDescription());
+        $this->assertEquals(1504801719, $shipmentStatus->getCarrierTimestamp()->getTimestamp());
+
+        $status = $shipmentStatus->getStatus();
+
+        $this->assertInstanceOf(StatusInterface::class, $status);
+        $this->assertEquals('shipment_delivered', $status->getCode());
+        $this->assertEquals('success', $status->getLevel());
+        $this->assertEquals('Delivered', $status->getName());
+        $this->assertEquals('The shipment has been delivered', $status->getDescription());
+    }
+
+    public function testGetShipmentStatusHistory()
+    {
+        $shipment = $this->api->getShipment('shipment-id-1');
+
+        $shipmentStatuses = $shipment->getStatusHistory();
+
+        /** @var ShipmentStatusInterface $shipmentStatus */
+        $shipmentStatus = reset($shipmentStatuses);
+        $this->assertInstanceOf(ShipmentStatusInterface::class, $shipmentStatus);
+        $this->assertEquals('9001', $shipmentStatus->getCarrierStatusCode());
+        $this->assertEquals('Confirmed at destination', $shipmentStatus->getCarrierStatusDescription());
+        $this->assertEquals(1504801719, $shipmentStatus->getCarrierTimestamp()->getTimestamp());
+
+        $status = $shipmentStatus->getStatus();
+        $this->assertInstanceOf(StatusInterface::class, $status);
+        $this->assertEquals('shipment_delivered', $status->getCode());
+        $this->assertEquals('success', $status->getLevel());
+        $this->assertEquals('Delivered', $status->getName());
+        $this->assertEquals('The shipment has been delivered', $status->getDescription());
+
+
+        $shipmentStatus = next($shipmentStatuses);
+        $this->assertInstanceOf(ShipmentStatusInterface::class, $shipmentStatus);
+        $this->assertEquals('4567', $shipmentStatus->getCarrierStatusCode());
+        $this->assertEquals('Delivery on it\'s way', $shipmentStatus->getCarrierStatusDescription());
+        $this->assertEquals(1504701719, $shipmentStatus->getCarrierTimestamp()->getTimestamp());
+
+        $status = $shipmentStatus->getStatus();
+        $this->assertInstanceOf(StatusInterface::class, $status);
+        $this->assertEquals('shipment_at_courier', $status->getCode());
+        $this->assertEquals('success', $status->getLevel());
+        $this->assertEquals('At courier', $status->getName());
+        $this->assertEquals('The shipment is at the courier', $status->getDescription());
+
+
+        $shipmentStatus = next($shipmentStatuses);
+        $this->assertInstanceOf(ShipmentStatusInterface::class, $shipmentStatus);
+        $this->assertEquals('10001', $shipmentStatus->getCarrierStatusCode());
+        $this->assertEquals('Parcel received', $shipmentStatus->getCarrierStatusDescription());
+        $this->assertEquals(1504501719, $shipmentStatus->getCarrierTimestamp()->getTimestamp());
+
+        $status = $shipmentStatus->getStatus();
+        $this->assertInstanceOf(StatusInterface::class, $status);
+        $this->assertEquals('shipment_at_carrier', $status->getCode());
+        $this->assertEquals('success', $status->getLevel());
+        $this->assertEquals('At carrier', $status->getName());
+        $this->assertEquals('The shipment is at the carrier', $status->getDescription());
+
+
+        $shipmentStatus = next($shipmentStatuses);
+        $this->assertInstanceOf(ShipmentStatusInterface::class, $shipmentStatus);
+        $this->assertNull($shipmentStatus->getCarrierStatusCode());
+        $this->assertNull($shipmentStatus->getCarrierStatusDescription());
+        $this->assertEquals(1504101719, $shipmentStatus->getCarrierTimestamp()->getTimestamp());
+
+        $status = $shipmentStatus->getStatus();
+        $this->assertInstanceOf(StatusInterface::class, $status);
+        $this->assertEquals('shipment_registered', $status->getCode());
+        $this->assertEquals('success', $status->getLevel());
+        $this->assertEquals('Registered', $status->getName());
+        $this->assertEquals('The shipment has been registered at the carrier', $status->getDescription());
+
+
+        $shipmentStatus = next($shipmentStatuses);
+        $this->assertInstanceOf(ShipmentStatusInterface::class, $shipmentStatus);
+        $this->assertNull($shipmentStatus->getCarrierStatusCode());
+        $this->assertNull($shipmentStatus->getCarrierStatusDescription());
+        $this->assertEquals(1504001719, $shipmentStatus->getCarrierTimestamp()->getTimestamp());
+
+        $status = $shipmentStatus->getStatus();
+        $this->assertInstanceOf(StatusInterface::class, $status);
+        $this->assertEquals('shipment_concept', $status->getCode());
+        $this->assertEquals('concept', $status->getLevel());
+        $this->assertEquals('Concept', $status->getName());
+        $this->assertEquals('The shipment is a concept', $status->getDescription());
     }
 
     /** @test */
@@ -322,10 +462,10 @@ class MyParcelComApiTest extends TestCase
     {
         $shops = $this->api->getShops();
 
-        $this->assertInternalType('array', $shops);
-        array_walk($shops, function ($shop) {
+        $this->assertInstanceOf(CollectionInterface::class, $shops);
+        foreach ($shops as $shop) {
             $this->assertInstanceOf(ShopInterface::class, $shop);
-        });
+        }
     }
 
     /** @test */

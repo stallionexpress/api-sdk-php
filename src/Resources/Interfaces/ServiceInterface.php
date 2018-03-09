@@ -1,6 +1,6 @@
 <?php
 
-namespace MyParcelCom\Sdk\Resources\Interfaces;
+namespace MyParcelCom\ApiSdk\Resources\Interfaces;
 
 interface ServiceInterface extends ResourceInterface
 {
@@ -37,6 +37,28 @@ interface ServiceInterface extends ResourceInterface
     public function getPackageType();
 
     /**
+     * @return int|null
+     */
+    public function getTransitTimeMin();
+
+    /**
+     * @param int|null $transitTimeMin
+     * @return $this
+     */
+    public function setTransitTimeMin($transitTimeMin);
+
+    /**
+     * @return int|null
+     */
+    public function getTransitTimeMax();
+
+    /**
+     * @param int|null $transitTimeMax
+     * @return $this
+     */
+    public function setTransitTimeMax($transitTimeMax);
+
+    /**
      * @param CarrierInterface $carrier
      * @return $this
      */
@@ -70,19 +92,47 @@ interface ServiceInterface extends ResourceInterface
     public function getRegionTo();
 
     /**
-     * @param ContractInterface[] $contracts
+     * @param ServiceContractInterface[] $serviceContracts
      * @return $this
      */
-    public function setContracts(array $contracts);
+    public function setServiceContracts(array $serviceContracts);
 
     /**
-     * @param ContractInterface $contract
+     * @param ServiceContractInterface $serviceContract
      * @return $this
      */
-    public function addContract(ContractInterface $contract);
+    public function addServiceContract(ServiceContractInterface $serviceContract);
 
     /**
-     * @return ContractInterface[]
+     * @return ServiceContractInterface[]
      */
-    public function getContracts();
+    public function getServiceContracts();
+
+    /**
+     * @param string $handoverMethod
+     * @return $this
+     */
+    public function setHandoverMethod($handoverMethod);
+
+    /**
+     * @return string
+     */
+    public function getHandoverMethod();
+
+    /**
+     * @param string[] $deliveryDays
+     * @return $this
+     */
+    public function setDeliveryDays(array $deliveryDays);
+
+    /**
+     * @param string $deliveryDay
+     * @return $this
+     */
+    public function addDeliveryDay($deliveryDay);
+
+    /**
+     * @return string[]
+     */
+    public function getDeliveryDays();
 }

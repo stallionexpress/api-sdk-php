@@ -1,6 +1,6 @@
 <?php
 
-namespace MyParcelCom\Sdk\Resources\Interfaces;
+namespace MyParcelCom\ApiSdk\Resources\Interfaces;
 
 interface ServiceOptionInterface extends ResourceInterface
 {
@@ -22,24 +22,24 @@ interface ServiceOptionInterface extends ResourceInterface
     public function getName();
 
     /**
-     * @param int $price
+     * @param string $code
      * @return $this
      */
-    public function setPrice($price);
-
-    /**
-     * @return int
-     */
-    public function getPrice();
-
-    /**
-     * @param string $currency
-     * @return $this
-     */
-    public function setCurrency($currency);
+    public function setCode($code);
 
     /**
      * @return string
      */
-    public function getCurrency();
+    public function getCode();
+
+    /**
+     * @param null|string $category
+     * @return $this
+     */
+    public function setCategory($category);
+
+    /**
+     * @return null|string
+     */
+    public function getCategory();
 }

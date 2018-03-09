@@ -1,10 +1,10 @@
 <?php
 
-namespace MyParcelCom\Sdk\Resources;
+namespace MyParcelCom\ApiSdk\Resources;
 
-use MyParcelCom\Sdk\Resources\Interfaces\ResourceInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\StatusInterface;
-use MyParcelCom\Sdk\Resources\Traits\JsonSerializable;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\StatusInterface;
+use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 
 class Status implements StatusInterface
 {
@@ -27,13 +27,6 @@ class Status implements StatusInterface
         self::ATTRIBUTE_LEVEL       => null,
         self::ATTRIBUTE_NAME        => null,
         self::ATTRIBUTE_DESCRIPTION => null,
-    ];
-    private $meta = [
-        self::META_RESOURCE_DATA => [
-            self::META_CODE        => null,
-            self::META_DESCRIPTION => null,
-            self::META_TIMESTAMP   => null,
-        ],
     ];
 
     /**
@@ -137,66 +130,5 @@ class Status implements StatusInterface
     public function getDescription()
     {
         return $this->attributes[self::ATTRIBUTE_DESCRIPTION];
-    }
-
-    /**
-     * @param string $code
-     * @return $this
-     */
-    public function setCarrierStatusCode($code)
-    {
-        $this->meta[self::META_RESOURCE_DATA][self::META_CODE] = $code;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCarrierStatusCode()
-    {
-        return $this->meta[self::META_RESOURCE_DATA][self::META_CODE];
-    }
-
-    /**
-     * @param string $description
-     * @return $this
-     */
-    public function setCarrierStatusDescription($description)
-    {
-        $this->meta[self::META_RESOURCE_DATA][self::META_DESCRIPTION] = $description;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCarrierStatusDescription()
-    {
-        return $this->meta[self::META_RESOURCE_DATA][self::META_DESCRIPTION];
-    }
-
-    /**
-     * @param int|\DateTime $timestamp
-     * @return $this
-     */
-    public function setCarrierTimestamp($timestamp)
-    {
-        if (is_int($timestamp)) {
-            $this->meta[self::META_RESOURCE_DATA][self::META_TIMESTAMP] = $timestamp;
-        } elseif ($timestamp instanceof \DateTime) {
-            $this->meta[self::META_RESOURCE_DATA][self::META_TIMESTAMP] = $timestamp->getTimestamp();
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getCarrierTimestamp()
-    {
-        return (new \DateTime())->setTimestamp($this->meta[self::META_RESOURCE_DATA][self::META_TIMESTAMP]);
     }
 }

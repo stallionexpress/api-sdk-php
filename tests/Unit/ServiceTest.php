@@ -1,11 +1,12 @@
 <?php
 
-namespace MyParcelCom\Sdk\Tests\Unit;
+namespace MyParcelCom\ApiSdk\Tests\Unit;
 
-use MyParcelCom\Sdk\Resources\Interfaces\CarrierInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ContractInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\RegionInterface;
-use MyParcelCom\Sdk\Resources\Service;
+use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\CServiceontractInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
+use MyParcelCom\ApiSdk\Resources\Service;
 use PHPUnit\Framework\TestCase;
 
 class ServiceTest extends TestCase
@@ -36,6 +37,20 @@ class ServiceTest extends TestCase
     {
         $service = new Service();
         $this->assertEquals(Service::PACKAGE_TYPE_PARCEL, $service->setPackageType(Service::PACKAGE_TYPE_PARCEL)->getPackageType());
+    }
+
+    /** @test */
+    public function testTransitTimeMin()
+    {
+        $service = new Service();
+        $this->assertEquals(5, $service->setTransitTimeMin(5)->getTransitTimeMin());
+    }
+
+    /** @test */
+    public function testTransitTimeMax()
+    {
+        $service = new Service();
+        $this->assertEquals(576, $service->setTransitTimeMax(576)->getTransitTimeMax());
     }
 
     /** @test */
@@ -76,16 +91,43 @@ class ServiceTest extends TestCase
     {
         $service = new Service();
 
-        $mock = $this->getMockClass(ContractInterface::class);
+        $mock = $this->getMockClass(ServiceContractInterface::class);
         $contracts = [new $mock(), new $mock(), new $mock()];
 
         $this->assertCount(3, $contracts);
-        $this->assertEquals($contracts, $service->setContracts($contracts)->getContracts());
+        $this->assertEquals($contracts, $service->setServiceContracts($contracts)->getServiceContracts());
 
         $contract = new $mock();
         $contracts[] = $contract;
         $this->assertCount(4, $contracts);
-        $this->assertEquals($contracts, $service->addContract($contract)->getContracts());
+        $this->assertEquals($contracts, $service->addServiceContract($contract)->getServiceContracts());
+    }
+
+    /** @test */
+    public function testHandoverMethod()
+    {
+        $service = new Service();
+
+        $this->assertEquals('drop-off', $service->setHandoverMethod('drop-off')->getHandoverMethod());
+    }
+
+    /** @test */
+    public function testDeliveryDays()
+    {
+        $service = new Service();
+
+        $this->assertEmpty($service->getDeliveryDays());
+
+        $this->assertEquals(['Thursday'], $service->addDeliveryDay('Thursday')->getDeliveryDays());
+        $this->assertEquals(['Tuesday', 'Friday'], $service->setDeliveryDays(['Tuesday', 'Friday'])->getDeliveryDays());
+        $this->assertEquals(
+            ['Monday', 'Tuesday', 'Friday'],
+            $service->addDeliveryDay('Monday')->getDeliveryDays(),
+            'Monday should have been added to already existing Tuesday and Friday',
+            0.0,
+            10,
+            true // Order doesn't matter
+        );
     }
 
     /** @test */
@@ -131,6 +173,10 @@ class ServiceTest extends TestCase
             ->setId('service-id')
             ->setName('Easy Delivery Service')
             ->setPackageType(Service::PACKAGE_TYPE_PARCEL)
+            ->setTransitTimeMin(7)
+            ->setTransitTimeMax(14)
+            ->setHandoverMethod('drop-off')
+            ->setDeliveryDays(['Monday'])
             ->setCarrier($carrier)
             ->setRegionFrom($regionFrom)
             ->setRegionTo($regionTo);
@@ -139,8 +185,16 @@ class ServiceTest extends TestCase
             'id'            => 'service-id',
             'type'          => 'services',
             'attributes'    => [
-                'name'         => 'Easy Delivery Service',
-                'package_type' => Service::PACKAGE_TYPE_PARCEL,
+                'name'            => 'Easy Delivery Service',
+                'package_type'    => Service::PACKAGE_TYPE_PARCEL,
+                'transit_time'    => [
+                    'min' => 7,
+                    'max' => 14,
+                ],
+                'handover_method' => 'drop-off',
+                'delivery_days'   => [
+                    'Monday',
+                ],
             ],
             'relationships' => [
                 'carrier'     => [

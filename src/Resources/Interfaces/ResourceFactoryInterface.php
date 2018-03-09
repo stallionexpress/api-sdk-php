@@ -1,8 +1,8 @@
 <?php
 
-namespace MyParcelCom\Sdk\Resources\Interfaces;
+namespace MyParcelCom\ApiSdk\Resources\Interfaces;
 
-use MyParcelCom\Sdk\Exceptions\MyParcelComException;
+use MyParcelCom\ApiSdk\Exceptions\MyParcelComException;
 
 /**
  * A class implementing this interface should create resources based on the

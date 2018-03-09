@@ -1,10 +1,10 @@
 <?php
 
-namespace MyParcelCom\Sdk\Validators;
+namespace MyParcelCom\ApiSdk\Validators;
 
-use MyParcelCom\Sdk\Resources\Interfaces\ShipmentInterface;
-use MyParcelCom\Sdk\Traits\HasErrors;
-use MyParcelCom\Sdk\Utils\StringUtils;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
+use MyParcelCom\ApiSdk\Traits\HasErrors;
+use MyParcelCom\ApiSdk\Utils\StringUtils;
 
 class ShipmentValidator implements ValidatorInterface
 {
@@ -26,6 +26,8 @@ class ShipmentValidator implements ValidatorInterface
 
         $this->checkRequired();
 
+        $this->checkWeight();
+
         return !$this->hasErrors();
     }
 
@@ -37,7 +39,7 @@ class ShipmentValidator implements ValidatorInterface
      */
     protected function checkRequired()
     {
-        $required = ['weight', 'service', 'recipient_address', 'sender_address', 'shop', 'contract'];
+        $required = ['weight', 'service_contract', 'recipient_address', 'sender_address', 'shop'];
 
         array_walk($required, function ($required) {
             $getter = 'get' . StringUtils::snakeToPascalCase($required);
@@ -46,5 +48,17 @@ class ShipmentValidator implements ValidatorInterface
                 $this->addError(sprintf('Required property `%s` is empty', $required));
             }
         });
+    }
+
+    /**
+     * Check whether the weight property is not an invalid value.
+     *
+     * @return void
+     */
+    protected function checkWeight()
+    {
+        if ($this->shipment->getWeight() < 0) {
+            $this->addError('Negative weight is not allowed');
+        }
     }
 }

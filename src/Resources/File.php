@@ -1,11 +1,12 @@
 <?php
 
-namespace MyParcelCom\Sdk\Resources;
+namespace MyParcelCom\ApiSdk\Resources;
 
-use MyParcelCom\Sdk\Resources\Interfaces\FileInterface;
-use MyParcelCom\Sdk\Resources\Interfaces\ResourceInterface;
-use MyParcelCom\Sdk\Resources\Traits\JsonSerializable;
+use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
+use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 use Psr\Http\Message\StreamInterface;
+use function GuzzleHttp\Psr7\stream_for;
 
 class File implements FileInterface
 {
@@ -142,9 +143,15 @@ class File implements FileInterface
             return null;
         }
 
-        return isset($this->streams[$mimeType])
-            ? $this->streams[$mimeType]
-            : null;
+        if (isset($this->streams[$mimeType])) {
+            return $this->streams[$mimeType];
+        }
+        if (isset($this->base64Data[$mimeType])) {
+            return stream_for(base64_decode($this->base64Data[$mimeType]));
+        }
+        if (isset($this->paths[$mimeType])) {
+            return stream_for(fopen($this->paths[$mimeType], 'r'));
+        }
     }
 
     /**
@@ -224,8 +231,8 @@ class File implements FileInterface
             return $this->paths[$mimeType] = $path;
         }
         if (isset($this->streams[$mimeType])) {
-            $path = tempnam(sys_get_temp_dir(), 'myparcelcom_file');
-            file_put_contents($path, (string)$this->streams[$mimeType]);
+            $path = tempnam(sys_get_temp_dir(), 'myparcelcom_file') . '.' . $extension;
+            file_put_contents($path, $this->streams[$mimeType]->getContents());
 
             return $this->paths[$mimeType] = $path;
         }
@@ -247,9 +254,6 @@ class File implements FileInterface
 
         if (isset($json['attributes']) && $this->isEmpty($json['attributes'])) {
             unset($json['attributes']);
-        }
-        if (isset($json['relationships']) && $this->isEmpty($json['relationships'])) {
-            unset($json['relationships']);
         }
 
         return $json;
