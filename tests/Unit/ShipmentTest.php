@@ -55,6 +55,17 @@ class ShipmentTest extends TestCase
     }
 
     /** @test */
+    public function testReturnAddress()
+    {
+        $shipment = new Shipment();
+
+        $mock = $this->getMockClass(AddressInterface::class);
+        $address = new $mock();
+
+        $this->assertEquals($address, $shipment->setReturnAddress($address)->getReturnAddress());
+    }
+
+    /** @test */
     public function testPickupLocationCode()
     {
         $shipment = new Shipment();
@@ -404,6 +415,29 @@ class ShipmentTest extends TestCase
                 'phone_number'         => '+31 (0)234 567 890',
             ]);
 
+        $returnAddress = $this->getMockBuilder(AddressInterface::class)
+            ->disableOriginalConstructor()
+            ->disableOriginalClone()
+            ->disableArgumentCloning()
+            ->disallowMockingUnknownTypes()
+            ->getMock();
+        $returnAddress->method('jsonSerialize')
+            ->willReturn([
+                'street_1'             => 'Diagonally',
+                'street_2'             => 'Apartment 4',
+                'street_number'        => '2',
+                'street_number_suffix' => 'A',
+                'postal_code'          => '1AR BR2',
+                'city'                 => 'London',
+                'region_code'          => 'NH',
+                'country_code'         => 'AF',
+                'first_name'           => 'Robert',
+                'last_name'            => 'Drop Tables',
+                'company'              => 'ACME co.',
+                'email'                => 'rob@tables.com',
+                'phone_number'         => '+31 (0)234 567 890',
+            ]);
+
         $pudoAddress = $this->getMockBuilder(AddressInterface::class)
             ->disableOriginalConstructor()
             ->disableOriginalClone()
@@ -581,6 +615,7 @@ class ShipmentTest extends TestCase
             ->setStatus($status)
             ->setRecipientAddress($recipientAddress)
             ->setSenderAddress($senderAddress)
+            ->setReturnAddress($returnAddress)
             ->setPickupLocationAddress($pudoAddress)
             ->setCustoms($customs)
             ->setItems([$item]);
@@ -631,6 +666,21 @@ class ShipmentTest extends TestCase
                     'phone_number'         => '+31 (0)234 567 890',
                 ],
                 'sender_address'               => [
+                    'street_1'             => 'Diagonally',
+                    'street_2'             => 'Apartment 4',
+                    'street_number'        => '2',
+                    'street_number_suffix' => 'A',
+                    'postal_code'          => '1AR BR2',
+                    'city'                 => 'London',
+                    'region_code'          => 'NH',
+                    'country_code'         => 'AF',
+                    'first_name'           => 'Robert',
+                    'last_name'            => 'Drop Tables',
+                    'company'              => 'ACME co.',
+                    'email'                => 'rob@tables.com',
+                    'phone_number'         => '+31 (0)234 567 890',
+                ],
+                'return_address'               => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 4',
                     'street_number'        => '2',

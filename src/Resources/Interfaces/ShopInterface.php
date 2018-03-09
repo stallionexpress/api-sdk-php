@@ -35,6 +35,17 @@ interface ShopInterface extends ResourceInterface
     public function getBillingAddress();
 
     /**
+     * @param AddressInterface $senderAddress
+     * @return $this
+     */
+    public function setSenderAddress(AddressInterface $senderAddress);
+
+    /**
+     * @return AddressInterface
+     */
+    public function getSenderAddress();
+
+    /**
      * @param AddressInterface $returnAddress
      * @return $this
      */

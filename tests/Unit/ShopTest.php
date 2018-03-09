@@ -99,6 +99,29 @@ class ShopTest extends TestCase
                 'phone_number'         => '+31 (0)234 567 890',
             ]);
 
+        $senderAddress = $this->getMockBuilder(AddressInterface::class)
+            ->disableOriginalConstructor()
+            ->disableOriginalClone()
+            ->disableArgumentCloning()
+            ->disallowMockingUnknownTypes()
+            ->getMock();
+        $senderAddress->method('jsonSerialize')
+            ->willReturn([
+                'street_1'             => 'Diagonally',
+                'street_2'             => 'Apartment 4',
+                'street_number'        => '2',
+                'street_number_suffix' => 'A',
+                'postal_code'          => '1AR BR2',
+                'city'                 => 'London',
+                'region_code'          => 'NH',
+                'country_code'         => 'AF',
+                'first_name'           => 'Robert',
+                'last_name'            => 'Drop Tables',
+                'company'              => 'ACME co.',
+                'email'                => 'rob@tables.com',
+                'phone_number'         => '+31 (0)234 567 890',
+            ]);
+
         $billingAddress = $this->getMockBuilder(AddressInterface::class)
             ->disableOriginalConstructor()
             ->disableOriginalClone()
@@ -139,6 +162,7 @@ class ShopTest extends TestCase
             ->setName('MyParcel.com Test Shop')
             ->setRegion($region)
             ->setReturnAddress($returnAddress)
+            ->setSenderAddress($senderAddress)
             ->setBillingAddress($billingAddress)
             ->setCreatedAt(1509001337);
 
@@ -151,6 +175,21 @@ class ShopTest extends TestCase
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 4',
                     'street_number'        => '4',
+                    'street_number_suffix' => 'A',
+                    'postal_code'          => '1AR BR2',
+                    'city'                 => 'London',
+                    'region_code'          => 'NH',
+                    'country_code'         => 'AF',
+                    'first_name'           => 'Robert',
+                    'last_name'            => 'Drop Tables',
+                    'company'              => 'ACME co.',
+                    'email'                => 'rob@tables.com',
+                    'phone_number'         => '+31 (0)234 567 890',
+                ],
+                'sender_address'  => [
+                    'street_1'             => 'Diagonally',
+                    'street_2'             => 'Apartment 4',
+                    'street_number'        => '2',
                     'street_number_suffix' => 'A',
                     'postal_code'          => '1AR BR2',
                     'city'                 => 'London',

@@ -89,6 +89,25 @@ class ShopProxy implements ShopInterface, ResourceProxyInterface
     }
 
     /**
+     * @param AddressInterface $senderAddress
+     * @return $this
+     */
+    public function setSenderAddress(AddressInterface $senderAddress)
+    {
+        $this->getResource()->setSenderAddress($senderAddress);
+
+        return $this;
+    }
+
+    /**
+     * @return AddressInterface
+     */
+    public function getSenderAddress()
+    {
+        return $this->getResource()->getSenderAddress();
+    }
+
+    /**
      * @param AddressInterface $returnAddress
      * @return $this
      */

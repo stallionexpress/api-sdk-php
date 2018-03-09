@@ -33,6 +33,17 @@ interface ShipmentInterface extends ResourceInterface
     public function getSenderAddress();
 
     /**
+     * @param AddressInterface $returnAddress
+     * @return $this
+     */
+    public function setReturnAddress(AddressInterface $returnAddress);
+
+    /**
+     * @return AddressInterface
+     */
+    public function getReturnAddress();
+
+    /**
      * @param string $pickupLocationCode
      * @return $this
      */

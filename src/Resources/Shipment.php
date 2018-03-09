@@ -32,6 +32,7 @@ class Shipment implements ShipmentInterface
     const ATTRIBUTE_PHYSICAL_PROPERTIES_VERIFIED = 'physical_properties_verified';
     const ATTRIBUTE_RECIPIENT_ADDRESS = 'recipient_address';
     const ATTRIBUTE_SENDER_ADDRESS = 'sender_address';
+    const ATTRIBUTE_RETURN_ADDRESS = 'return_address';
     const ATTRIBUTE_PICKUP = 'pickup_location';
     const ATTRIBUTE_PICKUP_CODE = 'code';
     const ATTRIBUTE_PICKUP_ADDRESS = 'address';
@@ -60,6 +61,7 @@ class Shipment implements ShipmentInterface
         self::ATTRIBUTE_PHYSICAL_PROPERTIES_VERIFIED => null,
         self::ATTRIBUTE_RECIPIENT_ADDRESS            => null,
         self::ATTRIBUTE_SENDER_ADDRESS               => null,
+        self::ATTRIBUTE_RETURN_ADDRESS               => null,
         self::ATTRIBUTE_PICKUP                       => null,
         self::ATTRIBUTE_CUSTOMS                      => null,
         self::ATTRIBUTE_ITEMS                        => null,
@@ -143,6 +145,25 @@ class Shipment implements ShipmentInterface
     public function getSenderAddress()
     {
         return $this->attributes[self::ATTRIBUTE_SENDER_ADDRESS];
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setReturnAddress(AddressInterface $returnAddress)
+    {
+        $this->attributes[self::ATTRIBUTE_RETURN_ADDRESS] = $returnAddress;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getReturnAddress()
+    {
+        return $this->attributes[self::ATTRIBUTE_RETURN_ADDRESS];
     }
 
     /**
