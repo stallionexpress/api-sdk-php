@@ -161,7 +161,7 @@ class MyParcelComApiTest extends TestCase
         $this->assertEquals(
             'new patched description',
             $shipment->getDescription(),
-            'patch returned a shipment with a new description'
+            'patch dit not return a shipment with a new description'
         );
     }
 

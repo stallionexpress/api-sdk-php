@@ -384,7 +384,7 @@ class MyParcelComApi implements MyParcelComApiInterface
 
         if (!$validator->isValid()) {
             $exception = new InvalidResourceException(
-                'Could not create shipment, shipment was invalid or incomplete'
+                'Could not update shipment, shipment was invalid or incomplete'
             );
             $exception->setErrors($validator->getErrors());
 
@@ -761,7 +761,7 @@ class MyParcelComApi implements MyParcelComApiInterface
     }
 
     /**
-     * Post given resource and return the resource that was returned.
+     * Send given resource to the API and return the resource that was returned.
      *
      * @param ResourceInterface $resource
      * @param string            $method

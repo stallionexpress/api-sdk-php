@@ -130,7 +130,7 @@ interface MyParcelComApiInterface
     public function getShipment($id);
 
     /**
-     * Creates a given shipment or updates it depending on it already has an id set.
+     * Creates a given shipment or updates it depending on if the id is already set.
      * It returns the just created or updated version of the shipment.
      * When certain properties for a new shipment are not set, defaults should be
      * used. When no default value is available, an exception should be thrown.
@@ -142,7 +142,7 @@ interface MyParcelComApiInterface
     public function saveShipment(ShipmentInterface $shipment);
 
     /**
-     * Update a given shipment and returns the that updated version of the shipment.
+     * Update the given shipment and returns the updated version of the shipment.
      *
      * @param ShipmentInterface $shipment
      * @throws MyParcelComException
@@ -151,7 +151,7 @@ interface MyParcelComApiInterface
     public function updateShipment(ShipmentInterface $shipment);
 
     /**
-     * Creates a given shipment and returns the that created version of the shipment.
+     * Creates a given shipment and returns the created version of the shipment.
      * When certain properties on the shipment are not set, defaults should be
      * used. When no default value is available, an exception should be thrown.
      *
