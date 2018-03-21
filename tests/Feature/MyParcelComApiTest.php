@@ -115,7 +115,7 @@ class MyParcelComApiTest extends TestCase
     /** @test */
     public function testSaveShipment()
     {
-        $recipient = (new Address())
+        $initialAddress = (new Address())
             ->setFirstName('Bobby')
             ->setLastName('Tables')
             ->setCity('Birmingham')
@@ -128,7 +128,8 @@ class MyParcelComApiTest extends TestCase
         // other data should be filled with defaults.
         $shipment = (new Shipment())
             ->setWeight(500)
-            ->setRecipientAddress($recipient);
+            ->setRecipientAddress($initialAddress)
+            ->setReturnAddress($initialAddress);
 
         $shipment = $this->api->saveShipment($shipment);
 
@@ -150,18 +151,35 @@ class MyParcelComApiTest extends TestCase
             'The shipment\'s sender address should default to the default shop\'s return address'
         );
         $this->assertEquals(
-            $recipient,
+            $initialAddress,
             $shipment->getRecipientAddress(),
             'The shipment\'s recipient address should not have changed'
         );
+
+        $patchRecipient = (new Address())
+            ->setFirstName('Schmidt')
+            ->setLastName('Jenko')
+            ->setCity('Funkytown')
+            ->setStreet1('Jump street')
+            ->setStreetNumber(21)
+            ->setPostalCode('A48 7QN')
+            ->setCountryCode('GB');
+
+        $shipment->setRecipientAddress($patchRecipient);
 
         // Save an existing shipment should patch it
         $shipment = $this->api->saveShipment($shipment);
 
         $this->assertEquals(
-            'new patched description',
-            $shipment->getDescription(),
-            'patch dit not return a shipment with a new description'
+            $patchRecipient,
+            $shipment->getRecipientAddress(),
+            'patch did not replace the recipient address'
+        );
+
+        $this->assertEquals(
+            $initialAddress,
+            $shipment->getReturnAddress(),
+            'patch should not have replaced the return address'
         );
     }
 
