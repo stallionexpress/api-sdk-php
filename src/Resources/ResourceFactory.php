@@ -317,7 +317,9 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
 
         if (isset($attributes['price']['amount'])) {
             $shipment->setPrice($attributes['price']['amount']);
-            $shipment->setCurrency($attributes['price']['currency']);
+            if (isset($attributes['price']['currency'])) {
+                $shipment->setCurrency($attributes['price']['currency']);
+            }
 
             unset($attributes['price']);
         }

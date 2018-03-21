@@ -44,6 +44,7 @@ trait MocksApiCommunication
                 }
 
                 $returnJson = file_get_contents($filePath);
+
                 if ($method === 'post') {
                     // Any post will have the data from the stub added to the
                     // original request. This simulates the api creating the
@@ -55,6 +56,17 @@ trait MocksApiCommunication
                             // decode this, but it is possible that the json in
                             // the options array is not an associative array,
                             // which we need to be able to merge.
+                            \GuzzleHttp\json_decode(\GuzzleHttp\json_encode($options['json']), true)
+                        )
+                    );
+                }
+                if ($method === 'patch') {
+                    // Any patch will have the data from the stub merged with the
+                    // original request data. This simulates the api updating the
+                    // resource and returning it with merged attributes.
+                    $returnJson = \GuzzleHttp\json_encode(
+                        array_replace_recursive(
+                            \GuzzleHttp\json_decode($returnJson, true),
                             \GuzzleHttp\json_decode(\GuzzleHttp\json_encode($options['json']), true)
                         )
                     );
