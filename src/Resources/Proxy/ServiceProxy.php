@@ -18,6 +18,7 @@ class ServiceProxy implements ServiceInterface, ResourceProxyInterface
 
     /** @var string */
     private $id;
+
     /** @var string */
     private $type = ResourceInterface::TYPE_SERVICE;
 

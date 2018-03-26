@@ -15,6 +15,7 @@ class RegionProxy implements RegionInterface, ResourceProxyInterface
 
     /** @var string */
     private $id;
+
     /** @var string */
     private $type = ResourceInterface::TYPE_REGION;
 

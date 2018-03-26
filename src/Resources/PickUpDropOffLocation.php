@@ -20,8 +20,10 @@ class PickUpDropOffLocation implements PickUpDropOffLocationInterface
 
     /** @var string */
     private $id;
+
     /** @var string */
     private $type = ResourceInterface::TYPE_PUDO_LOCATION;
+
     /** @var array */
     private $attributes = [
         self::ATTRIBUTE_CODE          => null,

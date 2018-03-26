@@ -17,8 +17,10 @@ class File implements FileInterface
 
     /** @var string */
     private $id;
+
     /** @var string */
     private $type = ResourceInterface::TYPE_FILE;
+
     /** @var array */
     private $attributes = [
         self::ATTRIBUTE_FORMATS       => [],
@@ -27,8 +29,10 @@ class File implements FileInterface
 
     /** @var StreamInterface[] */
     private $streams = [];
+
     /** @var string[] */
     private $base64Data = [];
+
     /** @var string[] */
     private $paths = [];
 

@@ -17,6 +17,7 @@ class ServiceOptionPriceProxy implements ServiceOptionPriceInterface, ResourcePr
 
     /** @var string */
     private $id;
+
     /** @var string */
     private $type = ResourceInterface::TYPE_SERVICE_OPTION_PRICE;
 

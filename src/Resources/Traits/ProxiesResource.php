@@ -10,8 +10,10 @@ trait ProxiesResource
 {
     /** @var ResourceInterface */
     private $resource;
+
     /** @var MyParcelComApiInterface */
     private $api;
+
     /** @var string */
     private $uri;
 

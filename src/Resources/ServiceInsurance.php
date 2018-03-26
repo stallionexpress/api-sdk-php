@@ -15,8 +15,13 @@ class ServiceInsurance implements ServiceInsuranceInterface
     const ATTRIBUTE_COVERED = 'covered';
     const ATTRIBUTE_PRICE = 'price';
 
+    /** @var string */
     private $id;
+
+    /** @var string */
     private $type = ResourceInterface::TYPE_SERVICE_INSURANCE;
+
+    /** @var array */
     private $attributes = [
         self::ATTRIBUTE_COVERED => [],
         self::ATTRIBUTE_PRICE   => [],

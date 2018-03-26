@@ -9,28 +9,40 @@ class Address implements AddressInterface
 {
     /** @var string */
     private $street1;
+
     /** @var string */
     private $street2;
+
     /** @var int */
     private $streetNumber;
+
     /** @var string */
     private $streetNumberSuffix;
+
     /** @var string */
     private $postalCode;
+
     /** @var string */
     private $city;
+
     /** @var string */
     private $regionCode;
+
     /** @var string */
     private $countryCode;
+
     /** @var string */
     private $firstName;
+
     /** @var string */
     private $lastName;
+
     /** @var string */
     private $company;
+
     /** @var string */
     private $email;
+
     /** @var string */
     private $phoneNumber;
 

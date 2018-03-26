@@ -38,15 +38,19 @@ class MyParcelComApi implements MyParcelComApiInterface
 
     /** @var string */
     protected $apiUri;
+
     /** @var CacheInterface */
     protected $cache;
+
     /** @var ResourceFactoryInterface */
     protected $resourceFactory;
+
     /** @var AuthenticatorInterface */
     protected $authenticator;
 
     /** @var ClientInterface */
     private $client;
+
     /** @var bool */
     private $authRetry = false;
 
@@ -244,7 +248,6 @@ class MyParcelComApi implements MyParcelComApiInterface
         if ($shipment->getSenderAddress() === null) {
             $shipment->setSenderAddress($this->getDefaultShop()->getReturnAddress());
         }
-
         if ($shipment->getRecipientAddress() === null) {
             throw new InvalidResourceException(
                 'Missing `recipient_address` on `shipments` resource'

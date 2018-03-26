@@ -21,8 +21,13 @@ class Shop implements ShopInterface
 
     const RELATIONSHIP_REGION = 'region';
 
+    /** @var string */
     private $id;
+
+    /** @var string */
     private $type = ResourceInterface::TYPE_SHOP;
+
+    /** @var array */
     private $attributes = [
         self::ATTRIBUTE_NAME            => null,
         self::ATTRIBUTE_BILLING_ADDRESS => null,
@@ -30,6 +35,8 @@ class Shop implements ShopInterface
         self::ATTRIBUTE_RETURN_ADDRESS  => null,
         self::ATTRIBUTE_CREATED_AT      => null,
     ];
+
+    /** @var array */
     private $relationships = [
         self::RELATIONSHIP_REGION => [
             'data' => null,

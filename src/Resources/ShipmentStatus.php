@@ -19,14 +19,20 @@ class ShipmentStatus implements ShipmentStatusInterface
     const RELATIONSHIP_STATUS = 'status';
     const RELATIONSHIP_SHIPMENT = 'shipment';
 
+    /** @var string */
     private $id;
+
+    /** @var string */
     private $type = ResourceInterface::TYPE_SHIPMENT_STATUS;
+
+    /** @var array */
     private $attributes = [
         self::ATTRIBUTE_CARRIER_CODE        => null,
         self::ATTRIBUTE_CARRIER_DESCRIPTION => null,
         self::ATTRIBUTE_CARRIER_TIMESTAMP   => null,
     ];
 
+    /** @var array */
     private $relationships = [
         self::RELATIONSHIP_STATUS   => [
             'data' => null,

@@ -15,6 +15,7 @@ class ServiceOptionProxy implements ServiceOptionInterface, ResourceProxyInterfa
 
     /** @var string */
     private $id;
+
     /** @var string */
     private $type = ResourceInterface::TYPE_SERVICE_OPTION;
 

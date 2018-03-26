@@ -12,8 +12,13 @@ class Carrier implements CarrierInterface
 
     const ATTRIBUTE_NAME = 'name';
 
+    /** @var string */
     private $id;
+
+    /** @var string */
     private $type = ResourceInterface::TYPE_CARRIER;
+
+    /** @var array */
     private $attributes = [
         self::ATTRIBUTE_NAME => null,
     ];

@@ -48,6 +48,7 @@ use ReflectionParameter;
 
 class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterface
 {
+    /** @var array */
     private $typeFactory = [
         ResourceInterface::TYPE_CARRIER        => Carrier::class,
         ResourceInterface::TYPE_PUDO_LOCATION  => PickUpDropOffLocation::class,

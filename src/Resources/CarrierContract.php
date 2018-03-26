@@ -17,6 +17,7 @@ class CarrierContract implements CarrierContractInterface
     const RELATIONSHIP_CARRIER = 'carrier';
     const RELATIONSHIP_SERVICE_CONTRACTS = 'service_contracts';
 
+    /** @var callable */
     private $serviceContractsCallback;
 
     /** @var string */
