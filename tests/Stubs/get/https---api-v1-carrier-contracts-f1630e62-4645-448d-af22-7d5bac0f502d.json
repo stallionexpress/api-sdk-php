@@ -14,7 +14,7 @@
       },
       "service_contracts": {
         "links": {
-          "related": "localhost:9443/service-contracts?filter[carrier_contract]=f1630e62-4645-448d-af22-7d5bac0f502d"
+          "related": "https://api/v1/service-contracts?filter[carrier_contract]=f1630e62-4645-448d-af22-7d5bac0f502d"
         }
       }
     }
