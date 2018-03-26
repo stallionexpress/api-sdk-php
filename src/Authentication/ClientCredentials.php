@@ -20,12 +20,16 @@ class ClientCredentials implements AuthenticatorInterface
 
     /** @var string */
     protected $clientSecret;
+
     /** @var string */
     protected $clientId;
+
     /** @var string */
     protected $authUri;
+
     /** @var CacheInterface */
     private $cache;
+
     /** @var ClientInterface */
     private $httpClient;
 

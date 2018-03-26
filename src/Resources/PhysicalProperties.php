@@ -12,15 +12,20 @@ class PhysicalProperties implements PhysicalPropertiesInterface
 
     /** @var int */
     private $weight;
+
     /** @var int */
     private $length;
+
     /** @var int */
     private $volume;
+
     /** @var int */
     private $height;
+
     /** @var int */
     private $width;
 
+    /** @var array */
     private static $unitConversion = [
         self::WEIGHT_GRAM     => 1,
         self::WEIGHT_KILOGRAM => 1000,

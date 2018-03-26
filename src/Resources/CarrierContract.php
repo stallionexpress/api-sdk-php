@@ -17,6 +17,9 @@ class CarrierContract implements CarrierContractInterface
     const RELATIONSHIP_CARRIER = 'carrier';
     const RELATIONSHIP_SERVICE_CONTRACTS = 'service_contracts';
 
+    /** @var callable */
+    private $serviceContractsCallback;
+
     /** @var string */
     private $id;
 
@@ -65,8 +68,7 @@ class CarrierContract implements CarrierContractInterface
     }
 
     /**
-     * @param string $currency
-     * @return $this
+     * {@inheritdoc}
      */
     public function setCurrency($currency)
     {
@@ -84,8 +86,7 @@ class CarrierContract implements CarrierContractInterface
     }
 
     /**
-     * @param CarrierInterface $carrier
-     * @return $this
+     * {@inheritdoc}
      */
     public function setCarrier(CarrierInterface $carrier)
     {
@@ -95,7 +96,7 @@ class CarrierContract implements CarrierContractInterface
     }
 
     /**
-     * @return CarrierInterface
+     * {@inheritdoc}
      */
     public function getCarrier()
     {
@@ -103,8 +104,20 @@ class CarrierContract implements CarrierContractInterface
     }
 
     /**
-     * @param ServiceContractInterface[] $serviceContracts
+     * Set the callback to use when retrieving the service contracts.
+     *
+     * @param callable $callback
      * @return $this
+     */
+    public function setServiceContractsCallback(callable $callback)
+    {
+        $this->serviceContractsCallback = $callback;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function setServiceContracts(array $serviceContracts)
     {
@@ -118,8 +131,7 @@ class CarrierContract implements CarrierContractInterface
     }
 
     /**
-     * @param ServiceContractInterface $serviceContract
-     * @return $this
+     * {@inheritdoc}
      */
     public function addServiceContract(ServiceContractInterface $serviceContract)
     {
@@ -129,10 +141,14 @@ class CarrierContract implements CarrierContractInterface
     }
 
     /**
-     * @return ServiceContractInterface[]
+     * {@inheritdoc}
      */
     public function getServiceContracts()
     {
+        if (!isset($this->statusHistory) && isset($this->statusHistoryCallback)) {
+            $this->setServiceContracts(call_user_func($this->serviceContractsCallback));
+        }
+
         return $this->relationships[self::RELATIONSHIP_SERVICE_CONTRACTS]['data'];
     }
 }

@@ -15,6 +15,7 @@ class StatusProxy implements StatusInterface, ResourceProxyInterface
 
     /** @var string */
     private $id;
+
     /** @var string */
     private $type = ResourceInterface::TYPE_STATUS;
 

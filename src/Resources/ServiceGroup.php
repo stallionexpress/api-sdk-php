@@ -19,8 +19,13 @@ class ServiceGroup implements ServiceGroupInterface
     const ATTRIBUTE_WEIGHT_MAX = 'max';
     const ATTRIBUTE_WEIGHT_MIN = 'min';
 
+    /** @var string */
     private $id;
+
+    /** @var string */
     private $type = ResourceInterface::TYPE_SERVICE_GROUP;
+
+    /** @var array */
     private $attributes = [
         self::ATTRIBUTE_PRICE      => [],
         self::ATTRIBUTE_STEP_PRICE => [],

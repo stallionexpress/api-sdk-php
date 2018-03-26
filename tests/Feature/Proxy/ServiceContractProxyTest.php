@@ -136,23 +136,6 @@ class ServiceContractProxyTest extends TestCase
     }
 
     /** @test */
-    public function testCarrierContractRelationship()
-    {
-        $carrierContract = $this->serviceContractProxy->getCarrierContract();
-
-        $this->assertInstanceOf(CarrierContractInterface::class, $carrierContract);
-        $this->assertInstanceOf(CarrierInterface::class, $carrierContract->getCarrier());
-        $this->assertEquals('carrier-contracts', $carrierContract->getType());
-        $this->assertEquals('f1630e62-4645-448d-af22-7d5bac0f502d', $carrierContract->getId());
-        $this->assertEquals('EUR', $carrierContract->getCurrency());
-        $this->assertCount(4, $carrierContract->getServiceContracts());
-        $serviceContracts = $carrierContract->getServiceContracts();
-        array_walk($serviceContracts, function ($serviceContract) {
-            $this->assertInstanceOf(ServiceContractInterface::class, $serviceContract);
-        });
-    }
-
-    /** @test */
     public function testClientCalls()
     {
         // Check if the uri has been called only once

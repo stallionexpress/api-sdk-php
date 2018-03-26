@@ -75,28 +75,6 @@ class CarrierContractProxyTest extends TestCase
     }
 
     /** @test */
-    public function testServiceContractsRelationship()
-    {
-        $serviceContracts = $this->carrierContractProxy->getServiceContracts();
-
-        $this->assertCount(4, $serviceContracts);
-        array_walk($serviceContracts, function ($serviceContract) {
-            /** @var $serviceContract ServiceContractInterface */
-            $this->assertInstanceOf(ServiceContractInterface::class, $serviceContract);
-            $this->assertEquals('service-contracts', $serviceContract->getType());
-            $this->assertContains(
-                $serviceContract->getId(),
-                [
-                    'a3057e77-005b-4945-a41c-20ddbe4dab08',
-                    '48533f26-8502-43f4-a83a-ebbadc238024',
-                    'f94dda81-c418-4077-ba7c-87ddf9076c28',
-                    'e7108aba-bd2a-4f30-b1f7-50f359c955f2',
-                ]
-            );
-        });
-    }
-
-    /** @test */
     public function testCarrierRelationship()
     {
         $carrier = $this->carrierContractProxy->getCarrier();

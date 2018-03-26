@@ -15,6 +15,7 @@ class CarrierProxy implements CarrierInterface, ResourceProxyInterface
 
     /** @var string */
     private $id;
+
     /** @var string */
     private $type = ResourceInterface::TYPE_CARRIER;
 

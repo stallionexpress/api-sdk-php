@@ -10,7 +10,7 @@
         "currency": "GBP"
       },
       "links": {
-        "self": "https://localhost:9443/v1/regions/59f129d1-23fa-427e-b0d3-50a498a99044"
+        "self": "https://api/v1/regions/59f129d1-23fa-427e-b0d3-50a498a99044"
       },
       "relationships": {
         "parent": {
@@ -19,7 +19,7 @@
             "type": "regions"
           },
           "links": {
-            "related": "https://localhost:9443/v1/regions/4e433f7b-96a7-4bcd-b0e2-d6ef7322bab2"
+            "related": "https://api/v1/regions/4e433f7b-96a7-4bcd-b0e2-d6ef7322bab2"
           }
         }
       }
@@ -34,7 +34,7 @@
         "currency": "GBP"
       },
       "links": {
-        "self": "https://localhost:9443/v1/regions/aa67ef5a-e4c2-4154-9e36-eb50c6149b0b"
+        "self": "https://api/v1/regions/aa67ef5a-e4c2-4154-9e36-eb50c6149b0b"
       },
       "relationships": {
         "parent": {
@@ -43,7 +43,7 @@
             "type": "regions"
           },
           "links": {
-            "related": "https://localhost:9443/v1/regions/4e433f7b-96a7-4bcd-b0e2-d6ef7322bab2"
+            "related": "https://api/v1/regions/4e433f7b-96a7-4bcd-b0e2-d6ef7322bab2"
           }
         }
       }
@@ -58,7 +58,7 @@
         "currency": "GBP"
       },
       "links": {
-        "self": "https://localhost:9443/v1/regions/567ca2f5-0706-4983-bfae-30c1f59cd16f"
+        "self": "https://api/v1/regions/567ca2f5-0706-4983-bfae-30c1f59cd16f"
       },
       "relationships": {
         "parent": {
@@ -67,7 +67,7 @@
             "type": "regions"
           },
           "links": {
-            "related": "https://localhost:9443/v1/regions/4e433f7b-96a7-4bcd-b0e2-d6ef7322bab2"
+            "related": "https://api/v1/regions/4e433f7b-96a7-4bcd-b0e2-d6ef7322bab2"
           }
         }
       }
@@ -82,7 +82,7 @@
         "currency": "GBP"
       },
       "links": {
-        "self": "https://localhost:9443/v1/regions/86b33370-1991-402d-81ca-66c6d4aafd6c"
+        "self": "https://api/v1/regions/86b33370-1991-402d-81ca-66c6d4aafd6c"
       },
       "relationships": {
         "parent": {
@@ -91,7 +91,7 @@
             "type": "regions"
           },
           "links": {
-            "related": "https://localhost:9443/v1/regions/567ca2f5-0706-4983-bfae-30c1f59cd16f"
+            "related": "https://api/v1/regions/567ca2f5-0706-4983-bfae-30c1f59cd16f"
           }
         }
       }
@@ -106,7 +106,7 @@
         "currency": "GBP"
       },
       "links": {
-        "self": "https://localhost:9443/v1/regions/b9420638-6da7-4765-a10c-b1ee8741aa8a"
+        "self": "https://api/v1/regions/b9420638-6da7-4765-a10c-b1ee8741aa8a"
       },
       "relationships": {
         "parent": {
@@ -115,7 +115,7 @@
             "type": "regions"
           },
           "links": {
-            "related": "https://localhost:9443/v1/regions/567ca2f5-0706-4983-bfae-30c1f59cd16f"
+            "related": "https://api/v1/regions/567ca2f5-0706-4983-bfae-30c1f59cd16f"
           }
         }
       }
@@ -130,7 +130,7 @@
         "currency": "GBP"
       },
       "links": {
-        "self": "https://localhost:9443/v1/regions/036b46e4-9fa4-4967-ae7a-1512401bc200"
+        "self": "https://api/v1/regions/036b46e4-9fa4-4967-ae7a-1512401bc200"
       },
       "relationships": {
         "parent": {
@@ -139,7 +139,7 @@
             "type": "regions"
           },
           "links": {
-            "related": "https://localhost:9443/v1/regions/567ca2f5-0706-4983-bfae-30c1f59cd16f"
+            "related": "https://api/v1/regions/567ca2f5-0706-4983-bfae-30c1f59cd16f"
           }
         }
       }
@@ -154,7 +154,7 @@
         "currency": "GBP"
       },
       "links": {
-        "self": "https://localhost:9443/v1/regions/32b12008-8117-4bbc-9820-ffb5db2949cb"
+        "self": "https://api/v1/regions/32b12008-8117-4bbc-9820-ffb5db2949cb"
       },
       "relationships": {
         "parent": {
@@ -163,7 +163,7 @@
             "type": "regions"
           },
           "links": {
-            "related": "https://localhost:9443/v1/regions/4e433f7b-96a7-4bcd-b0e2-d6ef7322bab2"
+            "related": "https://api/v1/regions/4e433f7b-96a7-4bcd-b0e2-d6ef7322bab2"
           }
         }
       }
@@ -178,7 +178,7 @@
         "currency": "GBP"
       },
       "links": {
-        "self": "https://localhost:9443/v1/regions/8ddec904-aaad-48db-abae-70eaa73e28bf"
+        "self": "https://api/v1/regions/8ddec904-aaad-48db-abae-70eaa73e28bf"
       },
       "relationships": {
         "parent": {
@@ -187,7 +187,7 @@
             "type": "regions"
           },
           "links": {
-            "related": "https://localhost:9443/v1/regions/4e433f7b-96a7-4bcd-b0e2-d6ef7322bab2"
+            "related": "https://api/v1/regions/4e433f7b-96a7-4bcd-b0e2-d6ef7322bab2"
           }
         }
       }
@@ -201,7 +201,7 @@
         "currency": "GBP"
       },
       "links": {
-        "self": "https://localhost:9443/v1/regions/4e433f7b-96a7-4bcd-b0e2-d6ef7322bab2"
+        "self": "https://api/v1/regions/4e433f7b-96a7-4bcd-b0e2-d6ef7322bab2"
       },
       "relationships": {
         "parent": {
@@ -210,7 +210,7 @@
             "type": "regions"
           },
           "links": {
-            "related": "https://localhost:9443/v1/regions/824c7cc4-b3e4-4bd0-a811-cffc0cde4886"
+            "related": "https://api/v1/regions/824c7cc4-b3e4-4bd0-a811-cffc0cde4886"
           }
         }
       }
@@ -221,8 +221,8 @@
     "total_records": 9
   },
   "links": {
-    "self": "https://localhost:9443/v1/regions?filter[country_code]=GB&page[size]=30&page[number]=1",
-    "first": "https://localhost:9443/v1/regions?filter[country_code]=GB&page[size]=30&page[number]=1",
-    "last": "https://localhost:9443/v1/regions?filter[country_code]=GB&page[size]=30&page[number]=1"
+    "self": "https://api/v1/regions?filter[country_code]=GB&page[size]=30&page[number]=1",
+    "first": "https://api/v1/regions?filter[country_code]=GB&page[size]=30&page[number]=1",
+    "last": "https://api/v1/regions?filter[country_code]=GB&page[size]=30&page[number]=1"
   }
 }

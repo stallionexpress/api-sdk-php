@@ -13,24 +13,9 @@
         }
       },
       "service_contracts": {
-        "data": [
-          {
-            "id": "a3057e77-005b-4945-a41c-20ddbe4dab08",
-            "type": "service-contracts"
-          },
-          {
-            "id": "48533f26-8502-43f4-a83a-ebbadc238024",
-            "type": "service-contracts"
-          },
-          {
-            "id": "f94dda81-c418-4077-ba7c-87ddf9076c28",
-            "type": "service-contracts"
-          },
-          {
-            "id": "e7108aba-bd2a-4f30-b1f7-50f359c955f2",
-            "type": "service-contracts"
-          }
-        ]
+        "links": {
+          "related": "https://api/v1/service-contracts?filter[carrier_contract]=f1630e62-4645-448d-af22-7d5bac0f502d"
+        }
       }
     }
   }

@@ -45,10 +45,19 @@ class Shipment implements ShipmentInterface
     const RELATIONSHIP_SHOP = 'shop';
     const RELATIONSHIP_STATUS = 'status';
 
+    /** @var string */
     private $id;
+
+    /** @var string */
     private $type = ResourceInterface::TYPE_SHIPMENT;
+
+    /** @var ShipmentStatusInterface[] */
     private $statusHistory;
+
+    /** @var callable */
     private $statusHistoryCallback;
+
+    /** @var array */
     private $attributes = [
         self::ATTRIBUTE_BARCODE                      => null,
         self::ATTRIBUTE_TRACKING_CODE                => null,
@@ -67,6 +76,7 @@ class Shipment implements ShipmentInterface
         self::ATTRIBUTE_ITEMS                        => null,
     ];
 
+    /** @var array */
     private $relationships = [
         self::RELATIONSHIP_SHOP             => [
             'data' => null,

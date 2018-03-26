@@ -10,10 +10,13 @@ class FileStreamProxy implements StreamInterface
 {
     /** @var StreamInterface */
     private $stream;
+
     /** @var MyParcelComApiInterface */
     private $api;
+
     /** @var string */
     private $mimeType;
+
     /** @var string */
     private $id;
 
@@ -28,7 +31,6 @@ class FileStreamProxy implements StreamInterface
         $this->api = $api;
         $this->mimeType = $mimeType;
     }
-
 
     /**
      * @return StreamInterface
@@ -54,7 +56,6 @@ class FileStreamProxy implements StreamInterface
             return $response->getBody();
         })->wait();
     }
-
 
     /**
      * Reads all data from the stream into a string, from the beginning to end.

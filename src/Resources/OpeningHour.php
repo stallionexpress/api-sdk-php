@@ -12,12 +12,16 @@ class OpeningHour implements OpeningHourInterface
 
     /** @var string */
     private $day;
+
     /** @var string */
     private $open;
+
     /** @var DateTime */
     private $openDateTime;
+
     /** @var string */
     private $closed;
+
     /** @var DateTime */
     private $closedDateTime;
 

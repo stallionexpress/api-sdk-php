@@ -11,10 +11,13 @@ class Customs implements CustomsInterface
 
     /** @var string */
     private $contentType;
+
     /** @var string */
     private $invoiceNumber;
+
     /** @var string */
     private $nonDelivery;
+
     /** @var string */
     private $incoterm;
 
