@@ -262,6 +262,25 @@ class ServiceProxy implements ServiceInterface, ResourceProxyInterface
     }
 
     /**
+     * @return string
+     */
+    public function getDeliveryMethod()
+    {
+        return $this->getResource()->getDeliveryMethod();
+    }
+
+    /**
+     * @param string $deliveryMethod
+     * @return $this
+     */
+    public function setDeliveryMethod($deliveryMethod)
+    {
+        $this->getResource()->setDeliveryMethod($deliveryMethod);
+
+        return $this;
+    }
+
+    /**
      * This function puts all object properties in an array and returns it.
      *
      * @return array

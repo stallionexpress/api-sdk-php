@@ -131,6 +131,14 @@ class ServiceTest extends TestCase
     }
 
     /** @test */
+    public function testDeliveryMethod()
+    {
+        $service = new Service();
+
+        $this->assertEquals('pick-up', $service->setDeliveryMethod('pick-up')->getDeliveryMethod());
+    }
+
+    /** @test */
     public function testJsonSerialize()
     {
         $carrier = $this->getMockBuilder(CarrierInterface::class)
