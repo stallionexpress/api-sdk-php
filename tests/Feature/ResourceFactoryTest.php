@@ -354,6 +354,7 @@ class ResourceFactoryTest extends TestCase
                 'Wednesday',
                 'Friday',
             ],
+            'delivery_method' => 'delivery',
             'carrier'         => [
                 'id' => 'carrier-id-1',
             ],
@@ -382,6 +383,7 @@ class ResourceFactoryTest extends TestCase
                     'Wednesday',
                     'Friday',
                 ],
+                'delivery_method' => 'delivery',
             ],
             'relationships' => [
                 'carrier'     => [
@@ -500,14 +502,14 @@ class ResourceFactoryTest extends TestCase
                 'id'   => 'service-contract-id',
                 'type' => 'service-contracts',
             ],
-            'required' => true,
+            'required'         => true,
         ]);
 
         $this->assertInstanceOf(ServiceOptionPriceInterface::class, $serviceOption);
         $this->assertEquals([
             'type'          => 'service-option-prices',
             'attributes'    => [
-                'price' => [
+                'price'    => [
                     'amount'   => 55,
                     'currency' => 'NOK',
                 ],
