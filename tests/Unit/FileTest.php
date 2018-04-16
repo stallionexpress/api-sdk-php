@@ -25,7 +25,6 @@ class FileTest extends TestCase
     /** @var string */
     private $pathTestData;
 
-
     public function setUp()
     {
         parent::setUp();

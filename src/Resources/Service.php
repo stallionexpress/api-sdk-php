@@ -245,7 +245,7 @@ class Service implements ServiceInterface
      */
     public function getServiceContracts()
     {
-        if (!isset($this->statusHistory) && isset($this->statusHistoryCallback)) {
+        if (empty($this->serviceContracts) && isset($this->serviceContractsCallback)) {
             $this->setServiceContracts(call_user_func($this->serviceContractsCallback));
         }
 

@@ -2,7 +2,9 @@
 
 namespace MyParcelCom\ApiSdk\Tests\Unit;
 
+use MyParcelCom\ApiSdk\Resources\Carrier;
 use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\OpeningHourInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\PositionInterface;
 use MyParcelCom\ApiSdk\Resources\PickUpDropOffLocation;
@@ -71,6 +73,17 @@ class PickUpDropOffLocationTest extends TestCase
         $position = new $mock();
 
         $this->assertEquals($position, $pudoLocation->setPosition($position)->getPosition());
+    }
+
+    /** @test */
+    public function testCarrier()
+    {
+        $pudoLocation = new PickUpDropOffLocation();
+
+        $mock = $this->getMockClass(CarrierInterface::class);
+        $carrier = new $mock();
+
+        $this->assertEquals($carrier, $pudoLocation->setCarrier($carrier)->getCarrier());
     }
 
     /** @test */

@@ -145,7 +145,7 @@ class CarrierContract implements CarrierContractInterface
      */
     public function getServiceContracts()
     {
-        if (!isset($this->statusHistory) && isset($this->statusHistoryCallback)) {
+        if (empty($this->relationships[self::RELATIONSHIP_SERVICE_CONTRACTS]['data']) && isset($this->serviceContractsCallback)) {
             $this->setServiceContracts(call_user_func($this->serviceContractsCallback));
         }
 
