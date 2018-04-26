@@ -436,7 +436,7 @@ class MyParcelComApiTest extends TestCase
     {
         $shipment = $this->api->getShipment('shipment-id-1');
 
-        $shipmentStatus = $shipment->getStatus();
+        $shipmentStatus = $shipment->getShipmentStatus();
 
         $this->assertInstanceOf(ShipmentStatusInterface::class, $shipmentStatus);
         $this->assertEquals('9001', $shipmentStatus->getCarrierStatusCode());

@@ -303,15 +303,16 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
             unset($attributes['service_contract']);
         }
 
-        if (isset($attributes['status']['related'])) {
-            $shipment->setStatus(
+        if (isset($attributes['shipment_status']['related'])) {
+
+            $shipment->setShipmentStatus(
                 (new ShipmentStatusProxy())
-                    ->setId($attributes['status']['id'])
+                    ->setId($attributes['shipment_status']['id'])
                     ->setMyParcelComApi($this->api)
-                    ->setResourceUri($attributes['status']['related'])
+                    ->setResourceUri($attributes['shipment_status']['related'])
             );
 
-            unset($attributes['status']);
+            unset($attributes['shipment_status']);
         }
 
         if (isset($attributes['price']['amount'])) {

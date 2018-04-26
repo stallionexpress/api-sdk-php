@@ -43,7 +43,7 @@ class Shipment implements ShipmentInterface
     const RELATIONSHIP_FILES = 'files';
     const RELATIONSHIP_SERVICE_OPTIONS = 'service_options';
     const RELATIONSHIP_SHOP = 'shop';
-    const RELATIONSHIP_STATUS = 'status';
+    const RELATIONSHIP_STATUS = 'shipment_status';
 
     /** @var string */
     private $id;
@@ -501,7 +501,7 @@ class Shipment implements ShipmentInterface
     /**
      * {@inheritdoc}
      */
-    public function setStatus(ShipmentStatusInterface $status)
+    public function setShipmentStatus(ShipmentStatusInterface $status)
     {
         $this->relationships[self::RELATIONSHIP_STATUS]['data'] = $status;
 
@@ -511,7 +511,7 @@ class Shipment implements ShipmentInterface
     /**
      * {@inheritdoc}
      */
-    public function getStatus()
+    public function getShipmentStatus()
     {
         return $this->relationships[self::RELATIONSHIP_STATUS]['data'];
     }

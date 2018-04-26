@@ -665,7 +665,7 @@ class ResourceFactoryTest extends TestCase
             'shop'                         => ['id' => 'shop-id-1', 'type' => 'shops'],
             'service_contract'             => ['id' => 'service-contract-id-1', 'type' => 'service_contracts'],
             'contract'                     => ['id' => 'contract-id-1', 'type' => 'contracts'],
-            'status'                       => ['id' => 'shipment-status-id-1', 'type' => 'statuses'],
+            'shipment_status'              => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses'],
             'service_options'              => [['id' => 'option-id-1', 'type' => 'service-options']],
             'files'                        => [['id' => 'file-id-1', 'type' => 'files']],
         ]);
@@ -750,7 +750,7 @@ class ResourceFactoryTest extends TestCase
             'relationships' => [
                 'shop'             => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
                 'service_contract' => ['data' => ['id' => 'service-contract-id-1', 'type' => 'service-contracts']],
-                'status'           => ['data' => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses']],
+                'shipment_status'  => ['data' => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses']],
                 'service_options'  => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
                 'files'            => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
             ],
@@ -861,7 +861,7 @@ class ResourceFactoryTest extends TestCase
             ],
             'shop'                         => ['id' => 'shop-id-1', 'type' => 'shops'],
             'service_contract'             => ['id' => 'service-contract-id-1', 'type' => 'service-contracts'],
-            'status'                       => ['id' => 'shipment-status-id-1', 'type' => 'statuses'],
+            'shipment_status'              => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses'],
             'service_options'              => [['id' => 'option-id-1', 'type' => 'service-options']],
             'files'                        => [['id' => 'file-id-1', 'type' => 'files']],
         ]);
@@ -984,7 +984,7 @@ class ResourceFactoryTest extends TestCase
             'relationships' => [
                 'shop'             => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
                 'service_contract' => ['data' => ['id' => 'service-contract-id-1', 'type' => 'service-contracts']],
-                'status'           => ['data' => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses']],
+                'shipment_status'  => ['data' => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses']],
                 'service_options'  => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
                 'files'            => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
             ],
