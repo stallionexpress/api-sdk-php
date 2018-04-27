@@ -8,7 +8,6 @@ use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
 use MyParcelCom\ApiSdk\MyParcelComApi;
 use MyParcelCom\ApiSdk\MyParcelComApiInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Proxy\ShopProxy;
 use MyParcelCom\ApiSdk\Tests\Traits\MocksApiCommunication;
@@ -52,10 +51,6 @@ class ShopProxyTest extends TestCase
         $this->assertEquals('One Stop Shop', $this->shopProxy->setName('One Stop Shop')->getName());
         $this->assertEquals('an-id-for-a-shop', $this->shopProxy->setId('an-id-for-a-shop')->getId());
 
-        /** @var RegionInterface $region */
-        $region = $this->getMockBuilder(RegionInterface::class)->getMock();
-        $this->assertEquals($region, $this->shopProxy->setRegion($region)->getRegion());
-
         $addressBuilder = $this->getMockBuilder(AddressInterface::class);
         /** @var AddressInterface $billingAddress */
         $billingAddress = $addressBuilder->getMock();
@@ -91,15 +86,6 @@ class ShopProxyTest extends TestCase
 
         $this->assertInstanceOf(DateTime::class, $this->shopProxy->getCreatedAt());
         $this->assertEquals(1509378904, $this->shopProxy->getCreatedAt()->getTimestamp());
-    }
-
-    /** @test */
-    public function testRegionRelationship()
-    {
-        $region = $this->shopProxy->getRegion();
-        $this->assertInstanceOf(RegionInterface::class, $region);
-        $this->assertEquals(ResourceInterface::TYPE_REGION, $region->getType());
-        $this->assertEquals('c1048135-db45-404e-adac-fdecd0c7134a', $region->getId());
     }
 
     /** @test */

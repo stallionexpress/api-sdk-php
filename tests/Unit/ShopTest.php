@@ -3,7 +3,6 @@
 namespace MyParcelCom\ApiSdk\Tests\Unit;
 
 use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
 use MyParcelCom\ApiSdk\Resources\Shop;
 use PHPUnit\Framework\TestCase;
 
@@ -50,17 +49,6 @@ class ShopTest extends TestCase
         $address = new $mock();
 
         $this->assertEquals($address, $shop->setReturnAddress($address)->getReturnAddress());
-    }
-
-    /** @test */
-    public function testRegion()
-    {
-        $shop = new Shop();
-
-        $mock = $this->getMockClass(RegionInterface::class);
-        $region = new $mock();
-
-        $this->assertEquals($region, $shop->setRegion($region)->getRegion());
     }
 
     /** @test */
@@ -145,22 +133,9 @@ class ShopTest extends TestCase
                 'phone_number'         => '+31 (0)234 567 890',
             ]);
 
-        $region = $this->getMockBuilder(RegionInterface::class)
-            ->disableOriginalConstructor()
-            ->disableOriginalClone()
-            ->disableArgumentCloning()
-            ->disallowMockingUnknownTypes()
-            ->getMock();
-        $region->method('jsonSerialize')
-            ->willReturn([
-                'id'   => 'region-id-1',
-                'type' => 'regions',
-            ]);
-
         $shop = (new Shop())
             ->setId('shop-id')
             ->setName('MyParcel.com Test Shop')
-            ->setRegion($region)
             ->setReturnAddress($returnAddress)
             ->setSenderAddress($senderAddress)
             ->setBillingAddress($billingAddress)
@@ -217,9 +192,6 @@ class ShopTest extends TestCase
                     'phone_number'         => '+31 (0)234 567 890',
                 ],
                 'created_at'      => 1509001337,
-            ],
-            'relationships' => [
-                'region' => ['data' => ['id' => 'region-id-1', 'type' => 'regions']],
             ],
         ], $shop->jsonSerialize());
     }

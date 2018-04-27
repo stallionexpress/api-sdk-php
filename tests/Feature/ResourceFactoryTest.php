@@ -1039,7 +1039,6 @@ class ResourceFactoryTest extends TestCase
                 'email'                => 'rob@tables.com',
                 'phone_number'         => '+31 (0)234 567 890',
             ],
-            'region'          => ['id' => 'region-id-1', 'type' => 'regions'],
         ]);
 
         $this->assertInstanceOf(ShopInterface::class, $shop);
@@ -1077,9 +1076,6 @@ class ResourceFactoryTest extends TestCase
                     'email'                => 'rob@tables.com',
                     'phone_number'         => '+31 (0)234 567 890',
                 ],
-            ],
-            'relationships' => [
-                'region' => ['data' => ['id' => 'region-id-1', 'type' => 'regions']],
             ],
         ], $shop->jsonSerialize());
     }

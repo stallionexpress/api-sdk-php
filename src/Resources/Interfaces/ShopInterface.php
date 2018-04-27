@@ -57,17 +57,6 @@ interface ShopInterface extends ResourceInterface
     public function getReturnAddress();
 
     /**
-     * @param RegionInterface $region
-     * @return $this
-     */
-    public function setRegion(RegionInterface $region);
-
-    /**
-     * @return RegionInterface
-     */
-    public function getRegion();
-
-    /**
      * @param int|DateTime $time
      * @return $this
      */

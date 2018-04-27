@@ -416,7 +416,6 @@ class MyParcelComApiTest extends TestCase
                 $this->assertEquals($shop->getBillingAddress(), $shipment->getShop()->getBillingAddress());
                 $this->assertEquals($shop->getReturnAddress(), $shipment->getShop()->getReturnAddress());
                 $this->assertEquals($shop->getName(), $shipment->getShop()->getName());
-                $this->assertEquals($shop->getRegion(), $shipment->getShop()->getRegion());
             }
         }
     }

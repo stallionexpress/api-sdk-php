@@ -4,7 +4,6 @@ namespace MyParcelCom\ApiSdk\Resources;
 
 use DateTime;
 use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
@@ -18,8 +17,6 @@ class Shop implements ShopInterface
     const ATTRIBUTE_SENDER_ADDRESS = 'sender_address';
     const ATTRIBUTE_RETURN_ADDRESS = 'return_address';
     const ATTRIBUTE_CREATED_AT = 'created_at';
-
-    const RELATIONSHIP_REGION = 'region';
 
     /** @var string */
     private $id;
@@ -37,11 +34,7 @@ class Shop implements ShopInterface
     ];
 
     /** @var array */
-    private $relationships = [
-        self::RELATIONSHIP_REGION => [
-            'data' => null,
-        ],
-    ];
+    private $relationships = [];
 
     /**
      * {@inheritdoc}
@@ -139,24 +132,6 @@ class Shop implements ShopInterface
     public function getReturnAddress()
     {
         return $this->attributes[self::ATTRIBUTE_RETURN_ADDRESS];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setRegion(RegionInterface $region)
-    {
-        $this->relationships[self::RELATIONSHIP_REGION]['data'] = $region;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getRegion()
-    {
-        return $this->relationships[self::RELATIONSHIP_REGION]['data'];
     }
 
     /**
