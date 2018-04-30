@@ -70,7 +70,7 @@ class ShipmentProxyTest extends TestCase
 
         /** @var ShipmentStatusInterface $shipmentStatus */
         $shipmentStatus = $this->getMockBuilder(ShipmentStatusInterface::class)->getMock();
-        $this->assertEquals($shipmentStatus, $this->shipmentProxy->setStatus($shipmentStatus)->getStatus());
+        $this->assertEquals($shipmentStatus, $this->shipmentProxy->setShipmentStatus($shipmentStatus)->getShipmentStatus());
 
         /** @var PhysicalPropertiesInterface $physicalProperties */
         $physicalProperties = $this->getMockBuilder(PhysicalPropertiesInterface::class)->getMock();
@@ -312,7 +312,7 @@ class ShipmentProxyTest extends TestCase
     /** @test */
     public function testStatusRelationship()
     {
-        $status = $this->shipmentProxy->getStatus();
+        $status = $this->shipmentProxy->getShipmentStatus();
         $this->assertInstanceOf(ShipmentStatusInterface::class, $status);
         $this->assertEquals(ResourceInterface::TYPE_SHIPMENT_STATUS, $status->getType());
         $this->assertEquals('shipment-status-id-1', $status->getId());
