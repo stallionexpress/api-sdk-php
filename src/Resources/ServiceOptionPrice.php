@@ -23,7 +23,7 @@ class ServiceOptionPrice implements ServiceOptionPriceInterface
     /** @var string */
     private $id;
 
-    /** @var string string */
+    /** @var string */
     private $type = ResourceInterface::TYPE_SERVICE_OPTION_PRICE;
 
     /** @var array */

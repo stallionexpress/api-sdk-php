@@ -4,7 +4,6 @@ namespace MyParcelCom\ApiSdk\Resources\Proxy;
 
 use DateTime;
 use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
@@ -18,6 +17,7 @@ class ShopProxy implements ShopInterface, ResourceProxyInterface
 
     /** @var string */
     private $id;
+
     /** @var string */
     private $type = ResourceInterface::TYPE_SHOP;
 
@@ -124,25 +124,6 @@ class ShopProxy implements ShopInterface, ResourceProxyInterface
     public function getReturnAddress()
     {
         return $this->getResource()->getReturnAddress();
-    }
-
-    /**
-     * @param RegionInterface $region
-     * @return $this
-     */
-    public function setRegion(RegionInterface $region)
-    {
-        $this->getResource()->setRegion($region);
-
-        return $this;
-    }
-
-    /**
-     * @return RegionInterface
-     */
-    public function getRegion()
-    {
-        return $this->getResource()->getRegion();
     }
 
     /**

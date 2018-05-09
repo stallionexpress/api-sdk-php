@@ -135,4 +135,15 @@ interface ServiceInterface extends ResourceInterface
      * @return string[]
      */
     public function getDeliveryDays();
+
+    /**
+     * @return string
+     */
+    public function getDeliveryMethod();
+
+    /**
+     * @param string $deliveryMethod
+     * @return $this
+     */
+    public function setDeliveryMethod($deliveryMethod);
 }

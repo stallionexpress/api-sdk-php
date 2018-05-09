@@ -3,6 +3,7 @@
 namespace MyParcelCom\ApiSdk\Resources;
 
 use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\OpeningHourInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\PickUpDropOffLocationInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\PositionInterface;
@@ -18,16 +19,27 @@ class PickUpDropOffLocation implements PickUpDropOffLocationInterface
     const ATTRIBUTE_OPENING_HOURS = 'openingHours';
     const ATTRIBUTE_POSITION = 'position';
 
+    const RELATIONSHIP_CARRIER = 'carrier';
+
     /** @var string */
     private $id;
+
     /** @var string */
     private $type = ResourceInterface::TYPE_PUDO_LOCATION;
+
     /** @var array */
     private $attributes = [
         self::ATTRIBUTE_CODE          => null,
         self::ATTRIBUTE_ADDRESS       => null,
         self::ATTRIBUTE_OPENING_HOURS => [],
         self::ATTRIBUTE_POSITION      => null,
+    ];
+
+    /** @var array */
+    private $relationships = [
+        self::RELATIONSHIP_CARRIER => [
+            'data' => null,
+        ],
     ];
 
     /**
@@ -140,5 +152,23 @@ class PickUpDropOffLocation implements PickUpDropOffLocationInterface
     public function getPosition()
     {
         return $this->attributes[self::ATTRIBUTE_POSITION];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setCarrier(CarrierInterface $carrier)
+    {
+        $this->relationships[self::RELATIONSHIP_CARRIER]['data'] = $carrier;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCarrier()
+    {
+        return $this->relationships[self::RELATIONSHIP_CARRIER]['data'];
     }
 }

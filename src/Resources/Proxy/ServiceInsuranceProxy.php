@@ -15,6 +15,7 @@ class ServiceInsuranceProxy implements ServiceInsuranceInterface, ResourceProxyI
 
     /** @var string */
     private $id;
+
     /** @var string */
     private $type = ResourceInterface::TYPE_SERVICE_INSURANCE;
 

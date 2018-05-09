@@ -4,6 +4,7 @@ namespace MyParcelCom\ApiSdk\Traits;
 
 trait HasErrors
 {
+    /** @var array */
     protected $errors = [];
 
     /**

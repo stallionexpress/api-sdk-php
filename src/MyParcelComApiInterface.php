@@ -5,7 +5,6 @@ namespace MyParcelCom\ApiSdk;
 use GuzzleHttp\Promise\PromiseInterface;
 use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
 use MyParcelCom\ApiSdk\Collection\CollectionInterface;
-use MyParcelCom\ApiSdk\Collection\PromiseCollection;
 use MyParcelCom\ApiSdk\Exceptions\MyParcelComException;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
@@ -20,6 +19,7 @@ interface MyParcelComApiInterface
     const PATH_REGIONS = '/v1/regions';
     const PATH_SERVICES = '/v1/services';
     const PATH_SERVICE_CONTRACTS = '/v1/services/{service_id}/contracts';
+    const PATH_CARRIER_SERVICE_CONTRACTS = '/v1/service-contracts/?filter[carrier_contract]={carrier_contract_id}';
     const PATH_SHIPMENTS = '/v1/shipments';
     const PATH_SHIPMENT_STATUSES = '/v1/shipments/{shipment_id}/statuses';
     const PATH_SHOPS = '/v1/shops';
@@ -130,7 +130,28 @@ interface MyParcelComApiInterface
     public function getShipment($id);
 
     /**
-     * Creates given shipment and returns an updated version of the shipment.
+     * Creates a given shipment or updates it depending on if the id is already set.
+     * It returns the just created or updated version of the shipment.
+     * When certain properties for a new shipment are not set, defaults should be
+     * used. When no default value is available, an exception should be thrown.
+     *
+     * @param ShipmentInterface $shipment
+     * @throws MyParcelComException
+     * @return ShipmentInterface
+     */
+    public function saveShipment(ShipmentInterface $shipment);
+
+    /**
+     * Update the given shipment and returns the updated version of the shipment.
+     *
+     * @param ShipmentInterface $shipment
+     * @throws MyParcelComException
+     * @return ShipmentInterface
+     */
+    public function updateShipment(ShipmentInterface $shipment);
+
+    /**
+     * Creates a given shipment and returns the created version of the shipment.
      * When certain properties on the shipment are not set, defaults should be
      * used. When no default value is available, an exception should be thrown.
      *

@@ -164,7 +164,7 @@
           "related": "https://api/v1/shops/shop-id-1"
         }
       },
-      "status": {
+      "shipment_status": {
         "data": {
           "type": "shipment-statuses",
           "id": "shipment-status-id-1"

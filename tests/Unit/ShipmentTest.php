@@ -230,12 +230,12 @@ class ShipmentTest extends TestCase
     {
         $shipment = new Shipment();
 
-        $this->assertEmpty($shipment->getStatus());
+        $this->assertEmpty($shipment->getShipmentStatus());
 
         $mock = $this->getMockClass(ShipmentStatusInterface::class);
         $status = new $mock();
 
-        $this->assertEquals($status, $shipment->setStatus($status)->getStatus());
+        $this->assertEquals($status, $shipment->setShipmentStatus($status)->getShipmentStatus());
     }
 
     /** @test */
@@ -612,7 +612,7 @@ class ShipmentTest extends TestCase
             ->setServiceOptions([$option])
             ->setFiles([$file])
             ->setServiceContract($contract)
-            ->setStatus($status)
+            ->setShipmentStatus($status)
             ->setRecipientAddress($recipientAddress)
             ->setSenderAddress($senderAddress)
             ->setReturnAddress($returnAddress)
@@ -736,7 +736,7 @@ class ShipmentTest extends TestCase
             'relationships' => [
                 'shop'             => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
                 'service_contract' => ['data' => ['id' => 'contract-id-1', 'type' => 'service-contracts']],
-                'status'           => ['data' => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses']],
+                'shipment_status'  => ['data' => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses']],
                 'service_options'  => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
                 'files'            => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
             ],

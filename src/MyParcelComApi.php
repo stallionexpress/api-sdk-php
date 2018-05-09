@@ -38,15 +38,19 @@ class MyParcelComApi implements MyParcelComApiInterface
 
     /** @var string */
     protected $apiUri;
+
     /** @var CacheInterface */
     protected $cache;
+
     /** @var ResourceFactoryInterface */
     protected $resourceFactory;
+
     /** @var AuthenticatorInterface */
     protected $authenticator;
 
     /** @var ClientInterface */
     private $client;
+
     /** @var bool */
     private $authRetry = false;
 
@@ -244,7 +248,6 @@ class MyParcelComApi implements MyParcelComApiInterface
         if ($shipment->getSenderAddress() === null) {
             $shipment->setSenderAddress($this->getDefaultShop()->getReturnAddress());
         }
-
         if ($shipment->getRecipientAddress() === null) {
             throw new InvalidResourceException(
                 'Missing `recipient_address` on `shipments` resource'
@@ -318,6 +321,18 @@ class MyParcelComApi implements MyParcelComApiInterface
     /**
      * {@inheritdoc}
      */
+    public function saveShipment(ShipmentInterface $shipment)
+    {
+        if ($shipment->getId()) {
+            return $this->updateShipment($shipment);
+        } else {
+            return $this->createShipment($shipment);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function createShipment(ShipmentInterface $shipment)
     {
         // If no shop is set, use the default shop.
@@ -361,6 +376,25 @@ class MyParcelComApi implements MyParcelComApiInterface
         }
 
         return $this->postResource($shipment);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function updateShipment(ShipmentInterface $shipment)
+    {
+        $validator = new ShipmentValidator($shipment);
+
+        if (!$validator->isValid()) {
+            $exception = new InvalidResourceException(
+                'Could not update shipment, shipment was invalid or incomplete'
+            );
+            $exception->setErrors($validator->getErrors());
+
+            throw $exception;
+        }
+
+        return $this->patchResource($shipment);
     }
 
     /**
@@ -708,16 +742,39 @@ class MyParcelComApi implements MyParcelComApiInterface
     }
 
     /**
-     * Post given resource and return the resource that was returned.
+     * Patch given resource and return the resource that was returned by the request.
+     *
+     * @param ResourceInterface $resource
+     * @return ResourceInterface|null
+     */
+    protected function patchResource(ResourceInterface $resource)
+    {
+        return $this->sendResource($resource, 'patch');
+    }
+
+    /**
+     * Post given resource and return the resource that was returned by the request.
      *
      * @param ResourceInterface $resource
      * @return ResourceInterface|null
      */
     protected function postResource(ResourceInterface $resource)
     {
+        return $this->sendResource($resource);
+    }
+
+    /**
+     * Send given resource to the API and return the resource that was returned.
+     *
+     * @param ResourceInterface $resource
+     * @param string            $method
+     * @return ResourceInterface|null
+     */
+    protected function sendResource(ResourceInterface $resource, $method = 'post')
+    {
         $promise = $this->getHttpClient()->requestAsync(
-            'post',
-            $this->getResourceUri($resource->getType()),
+            $method,
+            $this->getResourceUri($resource->getType(), $resource->getId()),
             [
                 RequestOptions::HEADERS => $this->authenticator->getAuthorizationHeader() + [
                         AuthenticatorInterface::HEADER_ACCEPT => AuthenticatorInterface::MIME_TYPE_JSONAPI,

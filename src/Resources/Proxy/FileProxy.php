@@ -16,6 +16,7 @@ class FileProxy implements FileInterface, ResourceProxyInterface
 
     /** @var string */
     private $id;
+
     /** @var string */
     private $type = ResourceInterface::TYPE_FILE;
 

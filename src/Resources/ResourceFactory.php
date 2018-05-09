@@ -48,6 +48,7 @@ use ReflectionParameter;
 
 class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterface
 {
+    /** @var array */
     private $typeFactory = [
         ResourceInterface::TYPE_CARRIER        => Carrier::class,
         ResourceInterface::TYPE_PUDO_LOCATION  => PickUpDropOffLocation::class,
@@ -246,18 +247,16 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
             unset($attributes['carrier']);
         }
 
-        if (!empty($attributes['service_contracts'])) {
-            array_walk($attributes['service_contracts'], function ($serviceContract) use ($carrierContract) {
-                if (empty($serviceContract['id'])) {
-                    return;
-                }
-
-                $carrierContract->addServiceContract(
-                    (new ServiceContractProxy())->setMyParcelComApi($this->api)->setId($serviceContract['id'])
+        if (isset($attributes['id'])) {
+            $carrierContract->setServiceContractsCallback(function () use ($attributes) {
+                return $this->api->getResourcesFromUri(
+                    str_replace(
+                        '{carrier_contract_id}',
+                        $attributes['id'],
+                        MyParcelComApiInterface::PATH_CARRIER_SERVICE_CONTRACTS
+                    )
                 );
             });
-
-            unset($attributes['service_contracts']);
         }
 
         return $carrierContract;
@@ -304,20 +303,23 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
             unset($attributes['service_contract']);
         }
 
-        if (isset($attributes['status']['related'])) {
-            $shipment->setStatus(
+        if (isset($attributes['shipment_status']['related'])) {
+
+            $shipment->setShipmentStatus(
                 (new ShipmentStatusProxy())
-                    ->setId($attributes['status']['id'])
+                    ->setId($attributes['shipment_status']['id'])
                     ->setMyParcelComApi($this->api)
-                    ->setResourceUri($attributes['status']['related'])
+                    ->setResourceUri($attributes['shipment_status']['related'])
             );
 
-            unset($attributes['status']);
+            unset($attributes['shipment_status']);
         }
 
         if (isset($attributes['price']['amount'])) {
             $shipment->setPrice($attributes['price']['amount']);
-            $shipment->setCurrency($attributes['price']['currency']);
+            if (isset($attributes['price']['currency'])) {
+                $shipment->setCurrency($attributes['price']['currency']);
+            }
 
             unset($attributes['price']);
         }

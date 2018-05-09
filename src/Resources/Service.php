@@ -20,6 +20,7 @@ class Service implements ServiceInterface
     const ATTRIBUTE_TRANSIT_TIME_MIN = 'min';
     const ATTRIBUTE_TRANSIT_TIME_MAX = 'max';
     const ATTRIBUTE_HANDOVER_METHOD = 'handover_method';
+    const ATTRIBUTE_DELIVERY_METHOD = 'delivery_method';
 
     const RELATIONSHIP_CARRIER = 'carrier';
     const RELATIONSHIP_REGION_FROM = 'region_from';
@@ -47,6 +48,7 @@ class Service implements ServiceInterface
         ],
         self::ATTRIBUTE_HANDOVER_METHOD => null,
         self::ATTRIBUTE_DELIVERY_DAYS   => [],
+        self::ATTRIBUTE_DELIVERY_METHOD => null,
     ];
 
     /** @var array */
@@ -243,7 +245,7 @@ class Service implements ServiceInterface
      */
     public function getServiceContracts()
     {
-        if (!isset($this->statusHistory) && isset($this->statusHistoryCallback)) {
+        if (empty($this->serviceContracts) && isset($this->serviceContractsCallback)) {
             $this->setServiceContracts(call_user_func($this->serviceContractsCallback));
         }
 
@@ -309,6 +311,24 @@ class Service implements ServiceInterface
     public function getDeliveryDays()
     {
         return $this->attributes[self::ATTRIBUTE_DELIVERY_DAYS];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getDeliveryMethod()
+    {
+        return $this->attributes[self::ATTRIBUTE_DELIVERY_METHOD];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setDeliveryMethod($deliveryMethod)
+    {
+        $this->attributes[self::ATTRIBUTE_DELIVERY_METHOD] = $deliveryMethod;
+
+        return $this;
     }
 
     /**

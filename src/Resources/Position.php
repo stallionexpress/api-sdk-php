@@ -10,10 +10,16 @@ class Position implements PositionInterface
 {
     use JsonSerializable;
 
+    /** @var float */
     private $latitude;
+
+    /** @var float */
     private $longitude;
+
+    /** @var int */
     private $distance;
 
+    /** @var array */
     private static $unitConversion = [
         self::UNIT_METER     => 1,
         self::UNIT_KILOMETER => 1000,

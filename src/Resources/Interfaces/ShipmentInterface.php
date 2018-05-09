@@ -242,12 +242,12 @@ interface ShipmentInterface extends ResourceInterface
      * @param ShipmentStatusInterface $status
      * @return $this
      */
-    public function setStatus(ShipmentStatusInterface $status);
+    public function setShipmentStatus(ShipmentStatusInterface $status);
 
     /**
      * @return ShipmentStatusInterface
      */
-    public function getStatus();
+    public function getShipmentStatus();
 
     /**
      * @param ShipmentStatusInterface[] $statuses

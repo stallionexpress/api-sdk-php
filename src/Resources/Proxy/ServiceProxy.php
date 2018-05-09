@@ -18,6 +18,7 @@ class ServiceProxy implements ServiceInterface, ResourceProxyInterface
 
     /** @var string */
     private $id;
+
     /** @var string */
     private $type = ResourceInterface::TYPE_SERVICE;
 
@@ -258,6 +259,25 @@ class ServiceProxy implements ServiceInterface, ResourceProxyInterface
     public function getDeliveryDays()
     {
         return $this->getResource()->getDeliveryDays();
+    }
+
+    /**
+     * @return string
+     */
+    public function getDeliveryMethod()
+    {
+        return $this->getResource()->getDeliveryMethod();
+    }
+
+    /**
+     * @param string $deliveryMethod
+     * @return $this
+     */
+    public function setDeliveryMethod($deliveryMethod)
+    {
+        $this->getResource()->setDeliveryMethod($deliveryMethod);
+
+        return $this;
     }
 
     /**

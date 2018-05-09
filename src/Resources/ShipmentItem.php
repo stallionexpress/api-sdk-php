@@ -14,17 +14,22 @@ class ShipmentItem implements ShipmentItemInterface
 
     /** @var string */
     private $sku;
+
     /** @var string */
     private $description;
+
     /** @var string */
     private $hsCode;
+
     /** @var int */
     private $quantity;
+
     /** @var array */
     private $itemValue = [
         self::AMOUNT   => null,
         self::CURRENCY => null,
     ];
+
     /** @var string */
     private $originCountryCode;
 

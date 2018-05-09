@@ -24,6 +24,7 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
 
     /** @var string */
     private $id;
+
     /** @var string */
     private $type = ResourceInterface::TYPE_SHIPMENT;
 
@@ -446,9 +447,9 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
      * @param ShipmentStatusInterface $status
      * @return $this
      */
-    public function setStatus(ShipmentStatusInterface $status)
+    public function setShipmentStatus(ShipmentStatusInterface $status)
     {
-        $this->getResource()->setStatus($status);
+        $this->getResource()->setShipmentStatus($status);
 
         return $this;
     }
@@ -456,9 +457,9 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
     /**
      * @return ShipmentStatusInterface
      */
-    public function getStatus()
+    public function getShipmentStatus()
     {
-        return $this->getResource()->getStatus();
+        return $this->getResource()->getShipmentStatus();
     }
 
     /**

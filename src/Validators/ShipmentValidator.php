@@ -10,6 +10,7 @@ class ShipmentValidator implements ValidatorInterface
 {
     use HasErrors;
 
+    /** @var ShipmentInterface */
     protected $shipment;
 
     public function __construct(ShipmentInterface $shipment)

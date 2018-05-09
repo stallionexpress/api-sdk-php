@@ -42,7 +42,7 @@ class ShipmentStatusProxyTest extends TestCase
         $this->shipmentStatusProxy = (new ShipmentProxy())
             ->setMyParcelComApi($this->api)
             ->setId('shipment-id-1')
-            ->getStatus();
+            ->getShipmentStatus();
     }
 
     /** @test */
@@ -99,7 +99,7 @@ class ShipmentStatusProxyTest extends TestCase
         $firstProxy = (new ShipmentProxy())
             ->setMyParcelComApi($this->api)
             ->setId('shipment-id-1')
-            ->getStatus();
+            ->getShipmentStatus();
 
         $firstProxy->getCarrierTimestamp();
         $firstProxy->getCarrierStatusDescription();
@@ -115,7 +115,7 @@ class ShipmentStatusProxyTest extends TestCase
         $secondProxy = (new ShipmentProxy())
             ->setMyParcelComApi($this->api)
             ->setId('shipment-id-1')
-            ->getStatus();
+            ->getShipmentStatus();
 
         $secondProxy->getStatus();
 
@@ -131,7 +131,7 @@ class ShipmentStatusProxyTest extends TestCase
         $shipmentStatusProxy = (new ShipmentProxy())
             ->setMyParcelComApi($this->api)
             ->setId('shipment-id-1')
-            ->getStatus();
+            ->getShipmentStatus();
 
         $this->assertEquals([
             'id'   => 'shipment-status-id-1',

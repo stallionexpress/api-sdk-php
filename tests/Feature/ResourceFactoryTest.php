@@ -148,8 +148,8 @@ class ResourceFactoryTest extends TestCase
             ],
             'service_option_prices' => [
                 [
-                    'type' => 'service-options',
-                    'id'   => 'service-option-id',
+                    'type' => 'service-option-prices',
+                    'id'   => 'service-option-price-id',
                 ],
             ],
             'service_insurances'    => [
@@ -191,7 +191,7 @@ class ResourceFactoryTest extends TestCase
                     'data' => [
                         [
                             'type' => 'service-option-prices',
-                            'id'   => 'service-option-id',
+                            'id'   => 'service-option-price-id',
                         ],
                     ],
                 ],
@@ -354,6 +354,7 @@ class ResourceFactoryTest extends TestCase
                 'Wednesday',
                 'Friday',
             ],
+            'delivery_method' => 'delivery',
             'carrier'         => [
                 'id' => 'carrier-id-1',
             ],
@@ -382,6 +383,7 @@ class ResourceFactoryTest extends TestCase
                     'Wednesday',
                     'Friday',
                 ],
+                'delivery_method' => 'delivery',
             ],
             'relationships' => [
                 'carrier'     => [
@@ -500,14 +502,14 @@ class ResourceFactoryTest extends TestCase
                 'id'   => 'service-contract-id',
                 'type' => 'service-contracts',
             ],
-            'required' => true,
+            'required'         => true,
         ]);
 
         $this->assertInstanceOf(ServiceOptionPriceInterface::class, $serviceOption);
         $this->assertEquals([
             'type'          => 'service-option-prices',
             'attributes'    => [
-                'price' => [
+                'price'    => [
                     'amount'   => 55,
                     'currency' => 'NOK',
                 ],
@@ -661,9 +663,9 @@ class ResourceFactoryTest extends TestCase
                 'phone_number'         => '+31 (0)234 567 890',
             ],
             'shop'                         => ['id' => 'shop-id-1', 'type' => 'shops'],
-            'service_contract'             => ['id' => 'service-contract-id-1', 'type' => 'service_contracts'],
+            'service_contract'             => ['id' => 'service-contract-id-1', 'type' => 'service-contracts'],
             'contract'                     => ['id' => 'contract-id-1', 'type' => 'contracts'],
-            'status'                       => ['id' => 'shipment-status-id-1', 'type' => 'statuses'],
+            'shipment_status'              => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses'],
             'service_options'              => [['id' => 'option-id-1', 'type' => 'service-options']],
             'files'                        => [['id' => 'file-id-1', 'type' => 'files']],
         ]);
@@ -748,7 +750,7 @@ class ResourceFactoryTest extends TestCase
             'relationships' => [
                 'shop'             => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
                 'service_contract' => ['data' => ['id' => 'service-contract-id-1', 'type' => 'service-contracts']],
-                'status'           => ['data' => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses']],
+                'shipment_status'  => ['data' => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses']],
                 'service_options'  => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
                 'files'            => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
             ],
@@ -859,7 +861,7 @@ class ResourceFactoryTest extends TestCase
             ],
             'shop'                         => ['id' => 'shop-id-1', 'type' => 'shops'],
             'service_contract'             => ['id' => 'service-contract-id-1', 'type' => 'service-contracts'],
-            'status'                       => ['id' => 'shipment-status-id-1', 'type' => 'statuses'],
+            'shipment_status'              => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses'],
             'service_options'              => [['id' => 'option-id-1', 'type' => 'service-options']],
             'files'                        => [['id' => 'file-id-1', 'type' => 'files']],
         ]);
@@ -982,7 +984,7 @@ class ResourceFactoryTest extends TestCase
             'relationships' => [
                 'shop'             => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
                 'service_contract' => ['data' => ['id' => 'service-contract-id-1', 'type' => 'service-contracts']],
-                'status'           => ['data' => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses']],
+                'shipment_status'  => ['data' => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses']],
                 'service_options'  => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
                 'files'            => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
             ],
@@ -1037,7 +1039,6 @@ class ResourceFactoryTest extends TestCase
                 'email'                => 'rob@tables.com',
                 'phone_number'         => '+31 (0)234 567 890',
             ],
-            'region'          => ['id' => 'region-id-1', 'type' => 'regions'],
         ]);
 
         $this->assertInstanceOf(ShopInterface::class, $shop);
@@ -1075,9 +1076,6 @@ class ResourceFactoryTest extends TestCase
                     'email'                => 'rob@tables.com',
                     'phone_number'         => '+31 (0)234 567 890',
                 ],
-            ],
-            'relationships' => [
-                'region' => ['data' => ['id' => 'region-id-1', 'type' => 'regions']],
             ],
         ], $shop->jsonSerialize());
     }

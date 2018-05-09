@@ -18,8 +18,10 @@ class Region implements RegionInterface
 
     /** @var string */
     private $id;
+
     /** @var string */
     private $type = ResourceInterface::TYPE_REGION;
+
     /** @var array */
     private $attributes = [
         self::ATTRIBUTE_COUNTRY_CODE => null,

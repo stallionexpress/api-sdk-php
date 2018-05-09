@@ -20,8 +20,13 @@ class Status implements StatusInterface
     const META_TIMESTAMP = 'carrier_timestamp';
     const META_RESOURCE_DATA = 'resource_data';
 
+    /** @var string */
     private $id;
+
+    /** @var string */
     private $type = ResourceInterface::TYPE_STATUS;
+
+    /** @var array */
     private $attributes = [
         self::ATTRIBUTE_CODE        => null,
         self::ATTRIBUTE_LEVEL       => null,
