@@ -3,7 +3,10 @@
     "type": "carrier-contracts",
     "id": "f1630e62-4645-448d-af22-7d5bac0f502d",
     "attributes": {
-      "currency": "EUR"
+      "currency": "EUR",
+      "status": "verified",
+      "name": "My Custom contract",
+      "active": true
     },
     "relationships": {
       "carrier": {
