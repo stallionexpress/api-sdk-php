@@ -376,12 +376,13 @@ class ShipmentTest extends TestCase
             $shipment->setRegisterAt(1337)->getRegisterAt()->getTimestamp()
         );
         $this->assertEquals(
-            (new \DateTime('+1 year'))->getTimestamp(),
-            $shipment->setRegisterAt('+1 year')->getRegisterAt()->getTimestamp()
+            (new \DateTime('2019-11-04'))->getTimestamp(),
+            $shipment->setRegisterAt('2019-11-04')->getRegisterAt()->getTimestamp()
         );
+        $now = time();
         $this->assertEquals(
-            time(),
-            $shipment->setRegisterAt(new \DateTime())->getRegisterAt()->getTimestamp()
+            $now,
+            $shipment->setRegisterAt((new \DateTime())->setTimestamp($now))->getRegisterAt()->getTimestamp()
         );
 
         $this->expectException(\InvalidArgumentException::class);

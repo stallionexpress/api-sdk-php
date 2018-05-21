@@ -376,12 +376,13 @@ class ShipmentProxyTest extends TestCase
             $this->shipmentProxy->setRegisterAt(1337)->getRegisterAt()->getTimestamp()
         );
         $this->assertEquals(
-            (new \DateTime('+1 year'))->getTimestamp(),
-            $this->shipmentProxy->setRegisterAt('+1 year')->getRegisterAt()->getTimestamp()
+            (new \DateTime('2019-11-04'))->getTimestamp(),
+            $this->shipmentProxy->setRegisterAt('2019-11-04')->getRegisterAt()->getTimestamp()
         );
+        $now = time();
         $this->assertEquals(
-            time(),
-            $this->shipmentProxy->setRegisterAt(new \DateTime())->getRegisterAt()->getTimestamp()
+            $now,
+            $this->shipmentProxy->setRegisterAt((new \DateTime())->setTimestamp($now))->getRegisterAt()->getTimestamp()
         );
 
         $this->expectException(\InvalidArgumentException::class);

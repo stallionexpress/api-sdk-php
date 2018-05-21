@@ -629,22 +629,30 @@ class Shipment implements ShipmentInterface
     {
         if (is_int($registerAt)) {
             $this->attributes[self::ATTRIBUTE_REGISTER_AT] = $registerAt;
-        } elseif (is_string($registerAt)) {
-            $this->attributes[self::ATTRIBUTE_REGISTER_AT] = (new DateTime($registerAt))->getTimestamp();
-        } elseif ($registerAt instanceof DateTime) {
-            $this->attributes[self::ATTRIBUTE_REGISTER_AT] = $registerAt->getTimestamp();
-        } else {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    '$registerAt must be an instance of DateTime, string or integer, %s given',
-                    gettype($registerAt) === 'object'
-                        ? get_class($registerAt)
-                        : gettype($registerAt)
-                )
-            );
+
+            return $this;
         }
 
-        return $this;
+        if (is_string($registerAt)) {
+            $this->attributes[self::ATTRIBUTE_REGISTER_AT] = (new DateTime($registerAt))->getTimestamp();
+
+            return $this;
+        }
+
+        if ($registerAt instanceof DateTime) {
+            $this->attributes[self::ATTRIBUTE_REGISTER_AT] = $registerAt->getTimestamp();
+
+            return $this;
+        }
+
+        throw new \InvalidArgumentException(
+            sprintf(
+                '$registerAt must be an instance of DateTime, string or integer, %s given',
+                gettype($registerAt) === 'object'
+                    ? get_class($registerAt)
+                    : gettype($registerAt)
+            )
+        );
     }
 
     /**
