@@ -662,6 +662,7 @@ class ResourceFactoryTest extends TestCase
                 'email'                => 'rob@tables.com',
                 'phone_number'         => '+31 (0)234 567 890',
             ],
+            'register_at'                  => 1526913941,
             'shop'                         => ['id' => 'shop-id-1', 'type' => 'shops'],
             'service_contract'             => ['id' => 'service-contract-id-1', 'type' => 'service-contracts'],
             'contract'                     => ['id' => 'contract-id-1', 'type' => 'contracts'],
@@ -746,6 +747,7 @@ class ResourceFactoryTest extends TestCase
                         'phone_number'         => '+31 (0)234 567 890',
                     ],
                 ],
+                'register_at'                  => 1526913941,
             ],
             'relationships' => [
                 'shop'             => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
@@ -859,6 +861,7 @@ class ResourceFactoryTest extends TestCase
                 'non_delivery'   => 'return',
                 'incoterm'       => 'DDU',
             ],
+            'register_at'                  => 1526913941,
             'shop'                         => ['id' => 'shop-id-1', 'type' => 'shops'],
             'service_contract'             => ['id' => 'service-contract-id-1', 'type' => 'service-contracts'],
             'shipment_status'              => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses'],
@@ -980,6 +983,7 @@ class ResourceFactoryTest extends TestCase
                     'non_delivery'   => 'return',
                     'incoterm'       => 'DDU',
                 ],
+                'register_at'                  => 1526913941,
             ],
             'relationships' => [
                 'shop'             => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
@@ -1043,8 +1047,8 @@ class ResourceFactoryTest extends TestCase
 
         $this->assertInstanceOf(ShopInterface::class, $shop);
         $this->assertEquals([
-            'type'          => 'shops',
-            'attributes'    => [
+            'type'       => 'shops',
+            'attributes' => [
                 'name'            => 'MyParcel.com Test Shop',
                 'billing_address' => [
                     'street_1'             => 'Diagonally',

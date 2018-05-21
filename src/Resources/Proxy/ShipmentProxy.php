@@ -2,6 +2,7 @@
 
 namespace MyParcelCom\ApiSdk\Resources\Proxy;
 
+use DateTime;
 use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CustomsInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
@@ -528,6 +529,25 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
     public function getItems()
     {
         return $this->getResource()->getItems();
+    }
+
+    /**
+     * @param DateTime|int|string $registerAt
+     * @return $this
+     */
+    public function setRegisterAt($registerAt)
+    {
+        $this->getResource()->setRegisterAt($registerAt);
+
+        return $this;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getRegisterAt()
+    {
+        return $this->getResource()->getRegisterAt();
     }
 
     /**

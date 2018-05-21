@@ -367,6 +367,29 @@ class ShipmentTest extends TestCase
     }
 
     /** @test */
+    public function testRegisterAt()
+    {
+        $shipment = new Shipment();
+
+        $this->assertEquals(
+            1337,
+            $shipment->setRegisterAt(1337)->getRegisterAt()->getTimestamp()
+        );
+        $this->assertEquals(
+            (new \DateTime('2019-11-04'))->getTimestamp(),
+            $shipment->setRegisterAt('2019-11-04')->getRegisterAt()->getTimestamp()
+        );
+        $now = time();
+        $this->assertEquals(
+            $now,
+            $shipment->setRegisterAt((new \DateTime())->setTimestamp($now))->getRegisterAt()->getTimestamp()
+        );
+
+        $this->expectException(\InvalidArgumentException::class);
+        $shipment->setRegisterAt(new \stdClass());
+    }
+
+    /** @test */
     public function testJsonSerialize()
     {
         $recipientAddress = $this->getMockBuilder(AddressInterface::class)
@@ -618,7 +641,8 @@ class ShipmentTest extends TestCase
             ->setReturnAddress($returnAddress)
             ->setPickupLocationAddress($pudoAddress)
             ->setCustoms($customs)
-            ->setItems([$item]);
+            ->setItems([$item])
+            ->setRegisterAt(9001);
 
         $this->assertEquals([
             'id'            => 'shipment-id',
@@ -732,6 +756,7 @@ class ShipmentTest extends TestCase
                     'non_delivery'   => 'return',
                     'incoterm'       => 'DDU',
                 ],
+                'register_at'                  => 9001,
             ],
             'relationships' => [
                 'shop'             => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
