@@ -369,6 +369,26 @@ class ShipmentProxyTest extends TestCase
     }
 
     /** @test */
+    public function testRegisterAt()
+    {
+        $this->assertEquals(
+            1337,
+            $this->shipmentProxy->setRegisterAt(1337)->getRegisterAt()->getTimestamp()
+        );
+        $this->assertEquals(
+            (new \DateTime('+1 year'))->getTimestamp(),
+            $this->shipmentProxy->setRegisterAt('+1 year')->getRegisterAt()->getTimestamp()
+        );
+        $this->assertEquals(
+            time(),
+            $this->shipmentProxy->setRegisterAt(new \DateTime())->getRegisterAt()->getTimestamp()
+        );
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->shipmentProxy->setRegisterAt(new \stdClass());
+    }
+
+    /** @test */
     public function testJsonSerialize()
     {
         $shipmentProxy = new ShipmentProxy();
