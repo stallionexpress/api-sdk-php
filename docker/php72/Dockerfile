@@ -16,7 +16,7 @@ RUN apt-get update \
     && apt-get install -y curl zip unzip software-properties-common gettext-base iproute \
     && add-apt-repository -y ppa:ondrej/php \
     && apt-get update \
-    && apt-get install -y php5.6-cli php5.6-xdebug php5.6-dom php5.6-mbstring php5.6-curl \
+    && apt-get install -y php7.2-cli php7.2-xdebug php7.2-dom php7.2-mbstring php7.2-curl \
     && php -r "readfile('http://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer \
     && composer global require hirak/prestissimo \
     && mkdir /run/php \
@@ -26,9 +26,9 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Enable xdebug
-COPY conf/xdebug.ini /etc/php/5.6/mods-available/xdebug.ini.template
-RUN ln -sf /etc/php/5.6/mods-available/xdebug.ini /etc/php/5.6/cli/conf.d/20-xdebug.ini \
-    && sed -e 's/error_reporting = E_ALL \& \~E_DEPRECATED \& \~E_STRICT/error_reporting = E_ALL/' -i /etc/php/5.6/cli/php.ini
+COPY conf/xdebug.ini /etc/php/7.2/mods-available/xdebug.ini.template
+RUN ln -sf /etc/php/7.2/mods-available/xdebug.ini /etc/php/7.2/cli/conf.d/20-xdebug.ini \
+    && sed -e 's/error_reporting = E_ALL \& \~E_DEPRECATED \& \~E_STRICT/error_reporting = E_ALL/' -i /etc/php/7.2/cli/php.ini
 
 # Copy entrypoint script.
 COPY entrypoint.sh /bin/entrypoint.sh
