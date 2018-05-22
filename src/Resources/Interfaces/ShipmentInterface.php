@@ -2,6 +2,8 @@
 
 namespace MyParcelCom\ApiSdk\Resources\Interfaces;
 
+use DateTime;
+
 interface ShipmentInterface extends ResourceInterface
 {
     /**
@@ -287,4 +289,21 @@ interface ShipmentInterface extends ResourceInterface
      * @return ShipmentItemInterface[]
      */
     public function getItems();
+
+    /**
+     * Set the date and time that this shipment should be registered at.
+     * This can either be a datetime string as specified by PHP, a unix timestamp
+     * integer or a DateTime object.
+     *
+     * @see http://php.net/manual/en/datetime.formats.php
+     *
+     * @param DateTime|string|int $registerAt
+     * @return $this
+     */
+    public function setRegisterAt($registerAt);
+
+    /**
+     * @return DateTime
+     */
+    public function getRegisterAt();
 }

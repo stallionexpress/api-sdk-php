@@ -2,6 +2,7 @@
 
 namespace MyParcelCom\ApiSdk\Resources;
 
+use DateTime;
 use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CustomsInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
@@ -38,6 +39,7 @@ class Shipment implements ShipmentInterface
     const ATTRIBUTE_PICKUP_ADDRESS = 'address';
     const ATTRIBUTE_CUSTOMS = 'customs';
     const ATTRIBUTE_ITEMS = 'items';
+    const ATTRIBUTE_REGISTER_AT = 'register_at';
 
     const RELATIONSHIP_SERVICE_CONTRACT = 'service_contract';
     const RELATIONSHIP_FILES = 'files';
@@ -74,6 +76,7 @@ class Shipment implements ShipmentInterface
         self::ATTRIBUTE_PICKUP                       => null,
         self::ATTRIBUTE_CUSTOMS                      => null,
         self::ATTRIBUTE_ITEMS                        => null,
+        self::ATTRIBUTE_REGISTER_AT                  => null,
     ];
 
     /** @var array */
@@ -617,5 +620,48 @@ class Shipment implements ShipmentInterface
         });
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setRegisterAt($registerAt)
+    {
+        if (is_int($registerAt)) {
+            $this->attributes[self::ATTRIBUTE_REGISTER_AT] = $registerAt;
+
+            return $this;
+        }
+
+        if (is_string($registerAt)) {
+            $this->attributes[self::ATTRIBUTE_REGISTER_AT] = (new DateTime($registerAt))->getTimestamp();
+
+            return $this;
+        }
+
+        if ($registerAt instanceof DateTime) {
+            $this->attributes[self::ATTRIBUTE_REGISTER_AT] = $registerAt->getTimestamp();
+
+            return $this;
+        }
+
+        throw new \InvalidArgumentException(
+            sprintf(
+                '$registerAt must be an instance of DateTime, string or integer, %s given',
+                gettype($registerAt) === 'object'
+                    ? get_class($registerAt)
+                    : gettype($registerAt)
+            )
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRegisterAt()
+    {
+        return isset($this->attributes[self::ATTRIBUTE_REGISTER_AT])
+            ? (new DateTime())->setTimestamp($this->attributes[self::ATTRIBUTE_REGISTER_AT])
+            : null;
     }
 }
