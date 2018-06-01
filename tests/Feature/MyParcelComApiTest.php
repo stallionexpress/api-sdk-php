@@ -6,7 +6,6 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
 use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
 use MyParcelCom\ApiSdk\Collection\CollectionInterface;
-use MyParcelCom\ApiSdk\Collection\PromiseCollection;
 use MyParcelCom\ApiSdk\Exceptions\InvalidResourceException;
 use MyParcelCom\ApiSdk\MyParcelComApi;
 use MyParcelCom\ApiSdk\Resources\Address;
@@ -336,6 +335,19 @@ class MyParcelComApiTest extends TestCase
             $this->assertInstanceOf(RegionInterface::class, $region);
             $this->assertEquals('GB', $region->getCountryCode());
             $this->assertEquals('NIR', $region->getRegionCode());
+        }
+    }
+
+    /** @test */
+    public function testGetRegionsWithNonExistingRegionCode()
+    {
+        $regions = $this->api->getRegions('NL', 'NH');
+
+        $this->assertInstanceOf(CollectionInterface::class, $regions);
+        $this->assertEquals(1, $regions->count());
+        foreach ($regions as $region) {
+            $this->assertInstanceOf(RegionInterface::class, $region);
+            $this->assertEquals('NL', $region->getCountryCode());
         }
     }
 
