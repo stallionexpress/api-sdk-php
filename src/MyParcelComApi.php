@@ -137,6 +137,15 @@ class MyParcelComApi implements MyParcelComApiInterface
         }
 
         // These resources can be stored for a week.
+        $regions = $this->getResourceCollection($url->getUrl(), self::TTL_WEEK);
+
+        if ($regions->count() > 0 || $regionCode === null) {
+            return $regions;
+        }
+
+        // Fallback to the country if the specific region is not in the API.
+        $url->addQuery(['filter[region_code]' => null]);
+
         return $this->getResourceCollection($url->getUrl(), self::TTL_WEEK);
     }
 
