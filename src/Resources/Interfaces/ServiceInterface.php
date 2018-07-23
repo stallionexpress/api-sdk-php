@@ -8,6 +8,9 @@ interface ServiceInterface extends ResourceInterface
     const PACKAGE_TYPE_LETTER = 'letter';
     const PACKAGE_TYPE_LETTERBOX = 'letterbox';
 
+    const DELIVERY_METHOD_DELIVERY = 'delivery';
+    const DELIVERY_METHOD_PICKUP = 'pick-up';
+
     /**
      * @param string $id
      * @return $this

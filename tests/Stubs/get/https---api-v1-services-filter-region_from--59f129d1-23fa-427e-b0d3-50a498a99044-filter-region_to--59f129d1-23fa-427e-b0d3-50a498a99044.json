@@ -15,7 +15,8 @@
           "Monday",
           "Wednesday",
           "Saturday"
-        ]
+        ],
+        "delivery_method": "delivery"
       },
       "links": {
         "self": "https://api/v1/services/a3057e77-005b-4945-a41c-20ddbe4dab08",

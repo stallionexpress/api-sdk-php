@@ -110,7 +110,7 @@ class ServiceProxyTest extends TestCase
             'Thursday',
         ], $this->serviceProxy->getDeliveryDays());
 
-        $this->assertEquals('pick-up', $this->serviceProxy->getDeliveryMethod());
+        $this->assertEquals('delivery', $this->serviceProxy->getDeliveryMethod());
     }
 
     /** @test */
