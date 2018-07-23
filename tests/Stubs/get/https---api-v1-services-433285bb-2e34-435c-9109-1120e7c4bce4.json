@@ -16,7 +16,7 @@
         "Wednesday",
         "Thursday"
       ],
-      "delivery_method": "pick-up"
+      "delivery_method": "delivery"
     },
     "links": {
       "self": "https://api/v1/services/433285bb-2e34-435c-9109-1120e7c4bce4",

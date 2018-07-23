@@ -20,9 +20,27 @@ class ServiceMatcher
      */
     public function matches(ShipmentInterface $shipment, ServiceInterface $service)
     {
-        return ($weightContracts = $this->getMatchedWeightGroups($shipment, $service->getServiceContracts()))
+        return $this->matchesDeliveryMethod($shipment, $service)
+            && ($weightContracts = $this->getMatchedWeightGroups($shipment, $service->getServiceContracts()))
             && ($optionContracts = $this->getMatchedOptions($shipment, $weightContracts))
             && $this->getMatchedInsurances($shipment, $optionContracts);
+    }
+
+    /**
+     * Returns true if the service has a delivery method that matches the
+     * shipment.
+     *
+     * @param ShipmentInterface $shipment
+     * @param ServiceInterface  $service
+     * @return bool
+     */
+    public function matchesDeliveryMethod(ShipmentInterface $shipment, ServiceInterface $service)
+    {
+        $deliveryMethod = $shipment->getPickupLocationCode()
+            ? ServiceInterface::DELIVERY_METHOD_PICKUP
+            : ServiceInterface::DELIVERY_METHOD_DELIVERY;
+
+        return $service->getDeliveryMethod() === $deliveryMethod;
     }
 
     /**

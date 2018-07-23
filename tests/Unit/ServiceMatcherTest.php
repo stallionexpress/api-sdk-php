@@ -294,6 +294,56 @@ class ServiceMatcherTest extends TestCase
     }
 
     /** @test */
+    public function testGetMatchedDeliveryMethod()
+    {
+        $serviceBuilder = $this->getMockBuilder(ServiceInterface::class)
+            ->disableOriginalConstructor()
+            ->disableOriginalClone()
+            ->disableArgumentCloning()
+            ->disallowMockingUnknownTypes();
+
+        $pickupService = $serviceBuilder->getMock();
+        $deliveyService = $serviceBuilder->getMock();
+
+        $pickupService->method('getDeliveryMethod')
+            ->willReturn(ServiceInterface::DELIVERY_METHOD_PICKUP);
+        $deliveyService->method('getDeliveryMethod')
+            ->willReturn(ServiceInterface::DELIVERY_METHOD_DELIVERY);
+
+        $deliveyShipment = $this->getMockedShipment();
+        $pickupShipment = $this->getMockedShipment();
+        $pickupShipment->method('getPickupLocationCode')->willReturn('p1ckup');
+
+
+        $matcher = new ServiceMatcher();
+
+        $this->assertTrue(
+            $matcher->matchesDeliveryMethod(
+                $deliveyShipment,
+                $deliveyService
+            )
+        );
+        $this->assertFalse(
+            $matcher->matchesDeliveryMethod(
+                $deliveyShipment,
+                $pickupService
+            )
+        );
+        $this->assertTrue(
+            $matcher->matchesDeliveryMethod(
+                $pickupShipment,
+                $pickupService
+            )
+        );
+        $this->assertFalse(
+            $matcher->matchesDeliveryMethod(
+                $pickupShipment,
+                $deliveyService
+            )
+        );
+    }
+
+    /** @test */
     public function testMatches()
     {
 
@@ -434,12 +484,21 @@ class ServiceMatcherTest extends TestCase
         $serviceA
             ->method('getServiceContracts')
             ->willReturn([$contracts[0], $contracts[1], $contracts[2]]);
+        $serviceA
+            ->method('getDeliveryMethod')
+            ->willReturn(ServiceInterface::DELIVERY_METHOD_DELIVERY);
         $serviceB
             ->method('getServiceContracts')
             ->willReturn([$contracts[0], $contracts[4]]);
+        $serviceB
+            ->method('getDeliveryMethod')
+            ->willReturn(ServiceInterface::DELIVERY_METHOD_DELIVERY);
         $serviceC
             ->method('getServiceContracts')
             ->willReturn([$contracts[2], $contracts[3], $contracts[4]]);
+        $serviceC
+            ->method('getDeliveryMethod')
+            ->willReturn(ServiceInterface::DELIVERY_METHOD_DELIVERY);
 
         $matcher = new ServiceMatcher();
 
