@@ -73,24 +73,6 @@
             }
           ]
         }
-      },
-      "service_insurances": {
-        "data": [
-          {
-            "type": "service-insurances",
-            "id": "a1b42172-74e7-4254-83a7-0deb4d5216bf",
-            "attributes": {
-              "covered": {
-                "amount": 25000,
-                "currency": "EUR"
-              },
-              "price": {
-                "amount": 1000,
-                "currency": "EUR"
-              }
-            }
-          }
-        ]
       }
     },
     {
@@ -160,24 +142,6 @@
                 "name": "signature",
                 "price": {
                   "amount": 90,
-                  "currency": "EUR"
-                }
-              }
-            }
-          ]
-        },
-        "service_insurances": {
-          "data": [
-            {
-              "type": "service-insurances",
-              "id": "9d5d631d-af3b-4b0a-99e5-5995688a8e88",
-              "attributes": {
-                "covered": {
-                  "amount": 25000,
-                  "currency": "EUR"
-                },
-                "price": {
-                  "amount": 1200,
                   "currency": "EUR"
                 }
               }

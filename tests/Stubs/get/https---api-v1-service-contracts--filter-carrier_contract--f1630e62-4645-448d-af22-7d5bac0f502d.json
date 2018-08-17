@@ -35,14 +35,6 @@
               "id": "ad3b8030-0da1-40bb-ac07-d1bdbaeaa3e7"
             }
           ]
-        },
-        "service_insurances": {
-          "data": [
-            {
-              "type": "service-insurances",
-              "id": "9d5d631d-af3b-4b0a-99e5-5995688a8e88"
-            }
-          ]
         }
       }
     }

@@ -4,15 +4,13 @@ namespace MyParcelCom\ApiSdk\Tests\Traits;
 
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceGroupInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInsuranceInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionPriceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 
 trait MocksContract
 {
-    protected function getMockedServiceContract(array $groups = [], array $insurances = [], array $options = [])
+    protected function getMockedServiceContract(array $groups = [], array $options = [])
     {
         $contract = $this->getMockBuilder(ServiceContractInterface::class)
             ->disableOriginalConstructor()
@@ -23,8 +21,6 @@ trait MocksContract
 
         $contract->method('getServiceGroups')
             ->willReturn($this->getMockedServiceGroups($groups));
-        $contract->method('getServiceInsurances')
-            ->willReturn($this->getMockedServiceInsurances($insurances));
         $contract->method('getServiceOptionPrices')
             ->willReturn($this->getMockedServiceOptionPrices($options));
 
@@ -33,12 +29,11 @@ trait MocksContract
 
     /**
      * @param int                      $weight
-     * @param int                      $insurance
      * @param array                    $options
      * @param ServiceContractInterface $contract
      * @return ShipmentInterface
      */
-    protected function getMockedShipment($weight = 5000, $insurance = 0, array $options = [], ServiceContractInterface $contract = null)
+    protected function getMockedShipment($weight = 5000, array $options = [], ServiceContractInterface $contract = null)
     {
         $shipment = $this->getMockBuilder(ShipmentInterface::class)
             ->disableOriginalConstructor()
@@ -51,8 +46,6 @@ trait MocksContract
             ->willReturn($contract);
         $shipment->method('getWeight')
             ->willReturn($weight);
-        $shipment->method('getInsuranceAmount')
-            ->willReturn($insurance);
 
         $optionMocks = array_map(function ($option) {
             $optionMock = $this->getMockBuilder(ServiceOptionInterface::class)
@@ -106,33 +99,6 @@ trait MocksContract
         }
 
         return $groupMocks;
-    }
-
-    /**
-     * @param array $insurances
-     * @return ServiceInsuranceInterface[]
-     */
-    protected function getMockedServiceInsurances(array $insurances)
-    {
-        $insuranceMockBuilder = $this->getMockBuilder(ServiceInsuranceInterface::class)
-            ->disableOriginalConstructor()
-            ->disableOriginalClone()
-            ->disableArgumentCloning()
-            ->disallowMockingUnknownTypes();
-
-        $insuranceMocks = [];
-        foreach ($insurances as $insurance) {
-            $insuranceMock = $insuranceMockBuilder->getMock();
-            $insuranceMock->method('getCovered')
-                ->willReturn($insurance['covered']);
-            $insuranceMock->method('getCurrency')
-                ->willReturn('EUR');
-            $insuranceMock->method('getPrice')
-                ->willReturn($insurance['price']);
-            $insuranceMocks[] = $insuranceMock;
-        }
-
-        return $insuranceMocks;
     }
 
     /**

@@ -20,7 +20,6 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceGroupInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInsuranceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionPriceInterface;
@@ -35,7 +34,6 @@ use MyParcelCom\ApiSdk\Resources\Proxy\FileStreamProxy;
 use MyParcelCom\ApiSdk\Resources\Proxy\RegionProxy;
 use MyParcelCom\ApiSdk\Resources\Proxy\ServiceContractProxy;
 use MyParcelCom\ApiSdk\Resources\Proxy\ServiceGroupProxy;
-use MyParcelCom\ApiSdk\Resources\Proxy\ServiceInsuranceProxy;
 use MyParcelCom\ApiSdk\Resources\Proxy\ServiceOptionPriceProxy;
 use MyParcelCom\ApiSdk\Resources\Proxy\ServiceOptionProxy;
 use MyParcelCom\ApiSdk\Resources\Proxy\ServiceProxy;
@@ -83,7 +81,6 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         $serviceContractFactory = [$this, 'serviceContractFactory'];
         $serviceGroupFactory = [$this, 'serviceGroupFactory'];
         $serviceOptionPriceFactory = [$this, 'serviceOptionPriceFactory'];
-        $serviceInsuranceFactory = [$this, 'serviceInsuranceFactory'];
         $fileFactory = [$this, 'fileFactory'];
         $shipmentItemFactory = [$this, 'shipmentItemFactory'];
 
@@ -107,9 +104,6 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
 
         $this->setFactoryForType(ResourceInterface::TYPE_SERVICE_OPTION_PRICE, $serviceOptionPriceFactory);
         $this->setFactoryForType(ServiceOptionPriceInterface::class, $serviceOptionPriceFactory);
-
-        $this->setFactoryForType(ResourceInterface::TYPE_SERVICE_INSURANCE, $serviceInsuranceFactory);
-        $this->setFactoryForType(ServiceInsuranceInterface::class, $serviceInsuranceFactory);
 
         $this->setFactoryForType(ResourceInterface::TYPE_FILE, $fileFactory);
         $this->setFactoryForType(FileInterface::class, $fileFactory);
@@ -158,19 +152,6 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
             });
 
             unset($attributes['service_groups']);
-        }
-        if (isset($attributes['service_insurances'])) {
-            array_walk($attributes['service_insurances'], function ($insurance) use ($serviceContract) {
-                if (empty($insurance['id'])) {
-                    return;
-                }
-
-                $serviceContract->addServiceInsurance(
-                    (new ServiceInsuranceProxy())->setMyParcelComApi($this->api)->setId($insurance['id'])
-                );
-            });
-
-            unset($attributes['service_insurances']);
         }
         if (isset($attributes['service_option_prices'])) {
             array_walk($attributes['service_option_prices'], function ($optionPrice) use ($serviceContract) {
@@ -324,15 +305,6 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
             unset($attributes['price']);
         }
 
-        if (isset($attributes['insurance']['amount'])) {
-            $shipment->setInsuranceAmount($attributes['insurance']['amount']);
-            if (!$shipment->getCurrency()) {
-                $shipment->setCurrency($attributes['insurance']['currency']);
-            }
-
-            unset($attributes['insurance']);
-        }
-
         if (isset($attributes['pickup_location']['code'])) {
             $shipment->setPickupLocationCode($attributes['pickup_location']['code']);
         }
@@ -484,36 +456,6 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         }
 
         return $serviceGroup;
-    }
-
-    /**
-     * ServiceInsurance factory method.
-     *
-     * @param string $type
-     * @param array  $attributes
-     * @return ServiceInsurance
-     */
-    protected function serviceInsuranceFactory($type, &$attributes)
-    {
-        $serviceInsurance = new ServiceInsurance();
-
-        if (isset($attributes['price']['amount'])) {
-            $serviceInsurance->setPrice($attributes['price']['amount']);
-            $serviceInsurance->setCurrency($attributes['price']['currency']);
-
-            unset($attributes['price']);
-        }
-
-        if (isset($attributes['covered']['amount'])) {
-            $serviceInsurance->setCovered($attributes['covered']['amount']);
-            if (!$serviceInsurance->getCurrency()) {
-                $serviceInsurance->setCurrency($attributes['covered']['currency']);
-            }
-
-            unset($attributes['covered']);
-        }
-
-        return $serviceInsurance;
     }
 
     /**

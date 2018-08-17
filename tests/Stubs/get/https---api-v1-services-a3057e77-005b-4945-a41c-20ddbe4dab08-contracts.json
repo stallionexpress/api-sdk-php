@@ -53,38 +53,6 @@
               }
             }
           ]
-        },
-        "service_insurances": {
-          "data": [
-            {
-              "type": "service-insurances",
-              "id": "5e82f025-5512-46af-98f1-646e589d6190",
-              "attributes": {
-                "covered": {
-                  "amount": 10000,
-                  "currency": "EUR"
-                },
-                "price": {
-                  "amount": 500,
-                  "currency": "EUR"
-                }
-              }
-            },
-            {
-              "type": "service-insurances",
-              "id": "64f08f09-d840-4f09-a787-87d9b0854088",
-              "attributes": {
-                "covered": {
-                  "amount": 50000,
-                  "currency": "EUR"
-                },
-                "price": {
-                  "amount": 1000,
-                  "currency": "EUR"
-                }
-              }
-            }
-          ]
         }
       }
     }
