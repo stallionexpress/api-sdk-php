@@ -90,17 +90,6 @@ interface ShipmentInterface extends ResourceInterface
     public function getPrice();
 
     /**
-     * @param int $insuranceAmount
-     * @return $this
-     */
-    public function setInsuranceAmount($insuranceAmount);
-
-    /**
-     * @return int
-     */
-    public function getInsuranceAmount();
-
-    /**
      * @param string $currency
      * @return $this
      */

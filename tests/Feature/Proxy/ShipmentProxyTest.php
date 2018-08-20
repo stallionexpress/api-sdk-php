@@ -59,7 +59,6 @@ class ShipmentProxyTest extends TestCase
         $this->assertEquals('https://I.Track.U/134', $this->shipmentProxy->setTrackingUrl('https://I.Track.U/134')->getTrackingUrl());
         $this->assertEquals('Something living with hair', $this->shipmentProxy->setDescription('Something living with hair')->getDescription());
         $this->assertEquals('|||||||||||||', $this->shipmentProxy->setBarcode('|||||||||||||')->getBarcode());
-        $this->assertEquals(555, $this->shipmentProxy->setInsuranceAmount(555)->getInsuranceAmount());
         $this->assertEquals(12, $this->shipmentProxy->setWeight(12)->getWeight());
         $this->assertEquals('80-90A', $this->shipmentProxy->setPickupLocationCode('80-90A')->getPickupLocationCode());
         $this->assertEquals('an-id-for-a-shipment', $this->shipmentProxy->setId('an-id-for-a-shipment')->getId());
@@ -166,7 +165,6 @@ class ShipmentProxyTest extends TestCase
             ->getDescription()
         );
         $this->assertEquals(50, $this->shipmentProxy->setPrice(50)->getPrice());
-        $this->assertEquals(1337, $this->shipmentProxy->setInsuranceAmount(1337)->getInsuranceAmount());
         $this->assertEquals('EUR', $this->shipmentProxy->getCurrency());
         $this->assertEquals('3SABCD0123456789', $this->shipmentProxy->getBarcode());
         $this->assertEquals('TR4CK1NGC0D3', $this->shipmentProxy->getTrackingCode());

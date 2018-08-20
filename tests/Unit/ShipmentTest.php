@@ -98,13 +98,6 @@ class ShipmentTest extends TestCase
     }
 
     /** @test */
-    public function testInsuranceAmount()
-    {
-        $shipment = new Shipment();
-        $this->assertEquals(50, $shipment->setInsuranceAmount(50)->getInsuranceAmount());
-    }
-
-    /** @test */
     public function testCurrency()
     {
         $shipment = new Shipment();
@@ -624,7 +617,6 @@ class ShipmentTest extends TestCase
             ->setDescription('order #012ASD')
             ->setPickupLocationCode('CODE123')
             ->setPrice(99)
-            ->setInsuranceAmount(50)
             ->setCurrency('USD')
             ->setBarcode('S3BARCODE')
             ->setTrackingCode('ATRACKINGCODE')
@@ -654,10 +646,6 @@ class ShipmentTest extends TestCase
                 'description'                  => 'order #012ASD',
                 'price'                        => [
                     'amount'   => 99,
-                    'currency' => 'USD',
-                ],
-                'insurance'                    => [
-                    'amount'   => 50,
                     'currency' => 'USD',
                 ],
                 'physical_properties'          => [

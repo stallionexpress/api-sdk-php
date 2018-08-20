@@ -7,11 +7,8 @@ use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
 use MyParcelCom\ApiSdk\MyParcelComApi;
 use MyParcelCom\ApiSdk\MyParcelComApiInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierContractInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceGroupInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInsuranceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionPriceInterface;
 use MyParcelCom\ApiSdk\Resources\Proxy\ServiceContractProxy;
@@ -73,20 +70,6 @@ class ServiceContractProxyTest extends TestCase
         $this->assertEquals(
             [$serviceGroupA, $serviceGroupB, $serviceGroupC],
             $this->serviceContractProxy->addServiceGroup($serviceGroupC)->getServiceGroups()
-        );
-
-        $serviceInsuranceBuilder = $this->getMockBuilder(ServiceInsuranceInterface::class);
-        /** @var ServiceInsuranceInterface $serviceInsuranceA */
-        $serviceInsuranceA = $serviceInsuranceBuilder->getMock();
-        $this->assertEquals(
-            [$serviceInsuranceA],
-            $this->serviceContractProxy->setServiceInsurances([$serviceInsuranceA])->getServiceInsurances()
-        );
-        /** @var ServiceInsuranceInterface $serviceInsuranceB */
-        $serviceInsuranceB = $serviceInsuranceBuilder->getMock();
-        $this->assertEquals(
-            [$serviceInsuranceA, $serviceInsuranceB],
-            $this->serviceContractProxy->addServiceInsurance($serviceInsuranceB)->getServiceInsurances()
         );
 
         $serviceOptionPriceBuilder = $this->getMockBuilder(ServiceOptionPriceInterface::class);
@@ -156,7 +139,7 @@ class ServiceContractProxyTest extends TestCase
         $secondProxy
             ->setMyParcelComApi($this->api)
             ->setId('f94dda81-c418-4077-ba7c-87ddf9076c28');
-        $secondProxy->getServiceInsurances();
+        $secondProxy->getServiceOptionPrices();
 
         $this->assertEquals(2, $this->clientCalls['https://api/v1/service-contracts/f94dda81-c418-4077-ba7c-87ddf9076c28']);
     }

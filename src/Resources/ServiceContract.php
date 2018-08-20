@@ -6,7 +6,6 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceGroupInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInsuranceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionPriceInterface;
@@ -20,7 +19,6 @@ class ServiceContract implements ServiceContractInterface
     const RELATIONSHIP_CARRIER_CONTRACT = 'carrier_contract';
     const RELATIONSHIP_SERVICE_GROUPS = 'service_groups';
     const RELATIONSHIP_SERVICE_OPTION_PRICES = 'service_option_prices';
-    const RELATIONSHIP_SERVICE_INSURANCES = 'service_insurances';
 
     /** @var string */
     private $id;
@@ -40,9 +38,6 @@ class ServiceContract implements ServiceContractInterface
             'data' => [],
         ],
         self::RELATIONSHIP_SERVICE_OPTION_PRICES => [
-            'data' => [],
-        ],
-        self::RELATIONSHIP_SERVICE_INSURANCES    => [
             'data' => [],
         ],
     ];
@@ -177,39 +172,5 @@ class ServiceContract implements ServiceContractInterface
     public function getServiceOptionPrices()
     {
         return $this->relationships[self::RELATIONSHIP_SERVICE_OPTION_PRICES]['data'];
-    }
-
-    /**
-     * @param ServiceInsuranceInterface[] $insurances
-     * @return $this
-     */
-    public function setServiceInsurances(array $insurances)
-    {
-        $this->relationships[self::RELATIONSHIP_SERVICE_INSURANCES]['data'] = [];
-
-        array_walk($insurances, function (ServiceInsuranceInterface $insurance) {
-            $this->relationships[self::RELATIONSHIP_SERVICE_INSURANCES]['data'][] = $insurance;
-        });
-
-        return $this;
-    }
-
-    /**
-     * @param ServiceInsuranceInterface $insurance
-     * @return $this
-     */
-    public function addServiceInsurance(ServiceInsuranceInterface $insurance)
-    {
-        $this->relationships[self::RELATIONSHIP_SERVICE_INSURANCES]['data'][] = $insurance;
-
-        return $this;
-    }
-
-    /**
-     * @return ServiceInsuranceInterface[]
-     */
-    public function getServiceInsurances()
-    {
-        return $this->relationships[self::RELATIONSHIP_SERVICE_INSURANCES]['data'];
     }
 }

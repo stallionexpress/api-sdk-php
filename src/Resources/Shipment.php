@@ -26,7 +26,6 @@ class Shipment implements ShipmentInterface
     const ATTRIBUTE_DESCRIPTION = 'description';
     const ATTRIBUTE_AMOUNT = 'amount';
     const ATTRIBUTE_PRICE = 'price';
-    const ATTRIBUTE_INSURANCE = 'insurance';
     const ATTRIBUTE_CURRENCY = 'currency';
     const ATTRIBUTE_WEIGHT = 'weight';
     const ATTRIBUTE_PHYSICAL_PROPERTIES = 'physical_properties';
@@ -66,7 +65,6 @@ class Shipment implements ShipmentInterface
         self::ATTRIBUTE_TRACKING_URL                 => null,
         self::ATTRIBUTE_DESCRIPTION                  => null,
         self::ATTRIBUTE_PRICE                        => null,
-        self::ATTRIBUTE_INSURANCE                    => null,
         self::ATTRIBUTE_WEIGHT                       => null,
         self::ATTRIBUTE_PHYSICAL_PROPERTIES          => null,
         self::ATTRIBUTE_PHYSICAL_PROPERTIES_VERIFIED => null,
@@ -260,30 +258,9 @@ class Shipment implements ShipmentInterface
     /**
      * {@inheritdoc}
      */
-    public function setInsuranceAmount($insuranceAmount)
-    {
-        $this->attributes[self::ATTRIBUTE_INSURANCE][self::ATTRIBUTE_AMOUNT] = $insuranceAmount;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getInsuranceAmount()
-    {
-        return isset($this->attributes[self::ATTRIBUTE_INSURANCE][self::ATTRIBUTE_AMOUNT])
-            ? $this->attributes[self::ATTRIBUTE_INSURANCE][self::ATTRIBUTE_AMOUNT]
-            : null;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function setCurrency($currency)
     {
         $this->attributes[self::ATTRIBUTE_PRICE][self::ATTRIBUTE_CURRENCY] = $currency;
-        $this->attributes[self::ATTRIBUTE_INSURANCE][self::ATTRIBUTE_CURRENCY] = $currency;
 
         return $this;
     }

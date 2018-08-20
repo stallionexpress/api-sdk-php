@@ -16,7 +16,6 @@ interface ResourceInterface extends \JsonSerializable
     const TYPE_SERVICE = 'services';
     const TYPE_SERVICE_CONTRACT = 'service-contracts';
     const TYPE_SERVICE_GROUP = 'service-groups';
-    const TYPE_SERVICE_INSURANCE = 'service-insurances';
     const TYPE_SERVICE_OPTION = 'service-options';
     const TYPE_SERVICE_OPTION_PRICE = 'service-option-prices';
     const TYPE_SHIPMENT = 'shipments';

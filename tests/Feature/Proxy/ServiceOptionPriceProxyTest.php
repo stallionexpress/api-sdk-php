@@ -49,7 +49,6 @@ class ServiceOptionPriceProxyTest extends TestCase
         $this->assertEquals('JPY', $this->serviceOptionPriceProxy->setCurrency('JPY')->getCurrency());
         $this->assertEquals(1100, $this->serviceOptionPriceProxy->setPrice(1100)->getPrice());
         $this->assertFalse($this->serviceOptionPriceProxy->setRequired(false)->isRequired());
-        $this->assertEquals('an-id-for-an-insurance', $this->serviceOptionPriceProxy->setId('an-id-for-an-insurance')->getId());
 
         /** @var ServiceContractInterface $serviceContract */
         $serviceContract = $this->getMockBuilder(ServiceContractInterface::class)->getMock();
