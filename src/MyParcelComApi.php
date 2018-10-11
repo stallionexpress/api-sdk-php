@@ -246,9 +246,10 @@ class MyParcelComApi implements MyParcelComApiInterface
     /**
      * {@inheritdoc}
      */
-    public function getServices(ShipmentInterface $shipment = null)
+    public function getServices(ShipmentInterface $shipment = null, array $filters = ['has_active_contract' => 'true'])
     {
         $url = new UrlBuilder($this->apiUri . self::PATH_SERVICES);
+        $url->addQuery($this->arrayToFilter($filters));
 
         if ($shipment === null) {
             return $this->getResourceCollection($url->getUrl(), self::TTL_WEEK);
@@ -277,10 +278,10 @@ class MyParcelComApi implements MyParcelComApiInterface
             $shipment->getRecipientAddress()->getRegionCode()
         )->get();
 
-        $url->addQuery([
-            'filter[region_from]' => reset($regionsFrom)->getId(),
-            'filter[region_to]'   => reset($regionsTo)->getId(),
-        ]);
+        $url->addQuery($this->arrayToFilter([
+            'region_from' => reset($regionsFrom)->getId(),
+            'region_to'   => reset($regionsTo)->getId(),
+        ]));
 
         // Services can be cached for a week.
         $services = $this->getResourcesPromise($url->getUrl(), self::TTL_WEEK)
@@ -819,5 +820,29 @@ class MyParcelComApi implements MyParcelComApiInterface
                 $id,
             ])
         );
+    }
+
+    /**
+     * Converts given array to a filter array usable as query params.
+     *
+     * @param array $array
+     * @return array
+     */
+    private function arrayToFilter(array $array)
+    {
+        $filters = [];
+        foreach ($array as $name => $value) {
+            /**
+             * @deprecated This condition is to keep the SDK backwards
+             * compatible until the API has been updated to use the new filter.
+             */
+            if ($name === 'has_active_contract') {
+                $filters['filter[has_contract]'] = $value;
+            }
+
+            $filters["filter[$name]"] = $value;
+        }
+
+        return $filters;
     }
 }
