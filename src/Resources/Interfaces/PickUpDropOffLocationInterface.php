@@ -2,6 +2,8 @@
 
 namespace MyParcelCom\ApiSdk\Resources\Interfaces;
 
+use MyParcelCom\ApiSdk\Utils\DistanceUtils;
+
 interface PickUpDropOffLocationInterface extends ResourceInterface
 {
     /**
@@ -59,4 +61,17 @@ interface PickUpDropOffLocationInterface extends ResourceInterface
      * @return PositionInterface
      */
     public function getPosition();
+
+    /**
+     * @param int    $distance
+     * @param string $unit
+     * @return $this
+     */
+    public function setDistance($distance, $unit = DistanceUtils::UNIT_METER);
+
+    /**
+     * @param string $unit
+     * @return int
+     */
+    public function getDistance($unit = DistanceUtils::UNIT_METER);
 }

@@ -2,12 +2,13 @@
 
 namespace MyParcelCom\ApiSdk\Tests\Unit;
 
-use MyParcelCom\ApiSdk\Resources\Carrier;
+use MyParcelCom\ApiSdk\Exceptions\MyParcelComException;
 use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\OpeningHourInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\PositionInterface;
 use MyParcelCom\ApiSdk\Resources\PickUpDropOffLocation;
+use MyParcelCom\ApiSdk\Utils\DistanceUtils;
 use PHPUnit\Framework\TestCase;
 
 class PickUpDropOffLocationTest extends TestCase
@@ -87,6 +88,40 @@ class PickUpDropOffLocationTest extends TestCase
     }
 
     /** @test */
+    public function testDistance()
+    {
+        $position = new PickUpDropOffLocation();
+        $this->assertEquals(900, $position->setDistance(900)->getDistance());
+        $this->assertEquals(80, $position->setDistance(80, DistanceUtils::UNIT_METER)->getDistance());
+        $this->assertEquals(3000, $position->setDistance(3, DistanceUtils::UNIT_KILOMETER)->getDistance());
+        $this->assertEquals(1524, $position->setDistance(5000, DistanceUtils::UNIT_FOOT)->getDistance());
+        $this->assertEquals(19312, $position->setDistance(12, DistanceUtils::UNIT_MILE)->getDistance());
+        $this->assertEquals(80, $position->setDistance(80)->getDistance(DistanceUtils::UNIT_METER));
+        $this->assertEquals(3, $position->setDistance(3000)->getDistance(DistanceUtils::UNIT_KILOMETER));
+        $this->assertEquals(5000, $position->setDistance(1524)->getDistance(DistanceUtils::UNIT_FOOT));
+        $this->assertEquals(12, $position->setDistance(19312)->getDistance(DistanceUtils::UNIT_MILE));
+    }
+
+    /** @test */
+    public function testSetDistanceInvalidUnit()
+    {
+        $position = new PickUpDropOffLocation();
+
+        $this->expectException(MyParcelComException::class);
+        $position->setDistance(900, 'lightyears');
+    }
+
+    /** @test */
+    public function testGetDistanceInvalidUnit()
+    {
+        $position = new PickUpDropOffLocation();
+        $position->setDistance(900);
+
+        $this->expectException(MyParcelComException::class);
+        $position->getDistance('au');
+    }
+
+    /** @test */
     public function testJsonSerialize()
     {
         $address = $this->getMockBuilder(AddressInterface::class)
@@ -135,14 +170,14 @@ class PickUpDropOffLocationTest extends TestCase
             ->willReturn([
                 'latitude'  => 1.2345,
                 'longitude' => 2.34567,
-                'distance'  => 5000,
             ]);
 
         $pudoLocation = (new PickUpDropOffLocation())
             ->setId('pudo-id')
             ->setAddress($address)
             ->setOpeningHours([$openingHour])
-            ->setPosition($position);
+            ->setPosition($position)
+            ->setDistance(5000);
 
         $this->assertEquals([
             'id'         => 'pudo-id',
@@ -173,8 +208,10 @@ class PickUpDropOffLocationTest extends TestCase
                 'position'      => [
                     'latitude'  => 1.2345,
                     'longitude' => 2.34567,
-                    'distance'  => 5000,
                 ],
+            ],
+            'meta'       => [
+                'distance' => 5000,
             ],
         ], $pudoLocation->jsonSerialize());
     }

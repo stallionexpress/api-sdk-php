@@ -8,7 +8,6 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CustomsInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentItemInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\OpeningHourInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\PhysicalPropertiesInterface;
@@ -24,6 +23,7 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionPriceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentItemInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentStatusInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\StatusInterface;
@@ -83,6 +83,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         $serviceOptionPriceFactory = [$this, 'serviceOptionPriceFactory'];
         $fileFactory = [$this, 'fileFactory'];
         $shipmentItemFactory = [$this, 'shipmentItemFactory'];
+        $pudoLocationFactory = [$this, 'pudoLocationFactory'];
 
         $this->setFactoryForType(ResourceInterface::TYPE_CARRIER_CONTRACT, $carrierContractFactory);
         $this->setFactoryForType(CarrierContractInterface::class, $carrierContractFactory);
@@ -108,7 +109,31 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         $this->setFactoryForType(ResourceInterface::TYPE_FILE, $fileFactory);
         $this->setFactoryForType(FileInterface::class, $fileFactory);
 
+        $this->setFactoryForType(ResourceInterface::TYPE_PUDO_LOCATION, $pudoLocationFactory);
+        $this->setFactoryForType(PickUpDropOffLocationInterface::class, $pudoLocationFactory);
+
         $this->setFactoryForType(ShipmentItemInterface::class, $shipmentItemFactory);
+    }
+
+    /**
+     * Factory method for creating pudo locations, sets distance from meta on
+     * position object.
+     *
+     * @param string $type
+     * @param array  $attributes
+     * @return PickUpDropOffLocation
+     */
+    protected function pudoLocationFactory($type, array &$attributes)
+    {
+        $pudoLocation = new PickUpDropOffLocation();
+
+        if (isset($attributes['meta']['distance'])) {
+            $pudoLocation->setDistance($attributes['meta']['distance']);
+
+            unset($attributes['meta']);
+        }
+
+        return $pudoLocation;
     }
 
     /**
