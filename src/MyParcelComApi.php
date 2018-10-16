@@ -652,6 +652,10 @@ class MyParcelComApi implements MyParcelComApiInterface
      * Flattens the data of the resource into a single array, effectively
      * removing the `attributes` and `relationships` arrays.
      *
+     * @deprecated The flattening of all resource attributes should be in favour
+     *             of having the factories handle it. Which currently is not the
+     *             case.
+     *
      * @param array $resourceData
      * @return array
      */
@@ -671,6 +675,10 @@ class MyParcelComApi implements MyParcelComApiInterface
                 [$this, 'flattenRelationship'],
                 $resourceData['relationships']
             );
+        }
+
+        if (isset($resourceData['meta'])) {
+            $data['meta'] = $resourceData['meta'];
         }
 
         if (isset($resourceData['links'])) {

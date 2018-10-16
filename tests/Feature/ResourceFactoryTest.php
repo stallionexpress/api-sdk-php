@@ -263,18 +263,25 @@ class ResourceFactoryTest extends TestCase
             'position'      => [
                 'latitude'  => 1.2345,
                 'longitude' => 2.34567,
-                'distance'  => 5000,
+            ],
+        ];
+        $meta = [
+            'meta' => [
+                'distance' => 5000,
             ],
         ];
 
         $resourceFactory = new ResourceFactory();
-        $pudoLocation = $resourceFactory->create('pickup-dropoff-locations', $pudoAttributes);
+        $pudoLocation = $resourceFactory->create('pickup-dropoff-locations', $pudoAttributes + $meta);
 
         $this->assertInstanceOf(PickUpDropOffLocationInterface::class, $pudoLocation);
-        $this->assertEquals([
-            'type'       => 'pickup-dropoff-locations',
-            'attributes' => $pudoAttributes,
-        ], $pudoLocation->jsonSerialize());
+        $this->assertEquals(
+            [
+                'type'       => 'pickup-dropoff-locations',
+                'attributes' => $pudoAttributes,
+            ] + $meta,
+            $pudoLocation->jsonSerialize()
+        );
     }
 
     /** @test */

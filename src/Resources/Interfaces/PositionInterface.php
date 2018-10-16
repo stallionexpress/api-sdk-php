@@ -2,13 +2,10 @@
 
 namespace MyParcelCom\ApiSdk\Resources\Interfaces;
 
-interface PositionInterface extends \JsonSerializable
-{
-    const UNIT_KILOMETER = 'kilometers';
-    const UNIT_METER = 'meters';
-    const UNIT_MILE = 'miles';
-    const UNIT_FOOT = 'feet';
+use JsonSerializable;
 
+interface PositionInterface extends JsonSerializable
+{
     /**
      * @param float $latitude
      * @return $this
@@ -30,17 +27,4 @@ interface PositionInterface extends \JsonSerializable
      * @return float
      */
     public function getLongitude();
-
-    /**
-     * @param int    $distance
-     * @param string $unit
-     * @return $this
-     */
-    public function setDistance($distance, $unit = self::UNIT_METER);
-
-    /**
-     * @param string $unit
-     * @return int
-     */
-    public function getDistance($unit = self::UNIT_METER);
 }
