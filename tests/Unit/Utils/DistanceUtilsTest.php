@@ -11,14 +11,11 @@ class DistanceUtilsTest extends TestCase
     /** @test */
     public function testDistanceConversion()
     {
-        $initialDistance = 100;
-        $expectedDistance = $initialDistance * 1000 / 1609.344;
-
-        $convertedDistance = DistanceUtils::convertDistance($initialDistance, 'kilometers', 'miles');
+        $convertedDistance = DistanceUtils::convertDistance(100, 'kilometers', 'miles');
         $revertedDistance = DistanceUtils::convertDistance($convertedDistance, 'miles', 'kilometers');
 
-        $this->assertEquals($expectedDistance, $convertedDistance);
-        $this->assertEquals($initialDistance, $revertedDistance);
+        $this->assertEquals(62.1371192237, $convertedDistance);
+        $this->assertEquals(100, $revertedDistance);
     }
 
     /** @test */
