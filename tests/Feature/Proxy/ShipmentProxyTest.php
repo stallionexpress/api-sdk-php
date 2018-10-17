@@ -353,7 +353,7 @@ class ShipmentProxyTest extends TestCase
         $firstProxy->getCurrency();
         $firstProxy->getSenderAddress();
 
-        $this->assertEquals(1, $this->clientCalls['https://api/v1/shipments/shipment-id-1']);
+        $this->assertEquals(1, $this->clientCalls['https://api/shipments/shipment-id-1']);
 
         // Creating a new proxy for the same resource will
         // change the amount of client calls to 2.
@@ -363,7 +363,7 @@ class ShipmentProxyTest extends TestCase
             ->setId('shipment-id-1');
         $secondProxy->getFiles();
 
-        $this->assertEquals(2, $this->clientCalls['https://api/v1/shipments/shipment-id-1']);
+        $this->assertEquals(2, $this->clientCalls['https://api/shipments/shipment-id-1']);
     }
 
     /** @test */
@@ -393,7 +393,7 @@ class ShipmentProxyTest extends TestCase
         $shipmentProxy = new ShipmentProxy();
         $shipmentProxy
             ->setMyParcelComApi($this->api)
-            ->setResourceUri('https://api/v1/shipments/shipment-id-1')
+            ->setResourceUri('https://api/shipments/shipment-id-1')
             ->setId('shipment-id-1');
 
         $this->assertEquals([
