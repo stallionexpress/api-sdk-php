@@ -104,7 +104,7 @@ class ServiceOptionPriceProxyTest extends TestCase
         $firstProxy->getPrice();
         $firstProxy->isRequired();
 
-        $this->assertEquals(1, $this->clientCalls['https://api/v1/service-option-prices/a6e63d46-5395-49a2-9111-df80f15b35de']);
+        $this->assertEquals(1, $this->clientCalls['https://api/service-option-prices/a6e63d46-5395-49a2-9111-df80f15b35de']);
 
         // Creating a new proxy for the same resource will
         // change the amount of client calls to 2.
@@ -114,7 +114,7 @@ class ServiceOptionPriceProxyTest extends TestCase
             ->setId('a6e63d46-5395-49a2-9111-df80f15b35de');
         $secondProxy->getServiceContract();
 
-        $this->assertEquals(2, $this->clientCalls['https://api/v1/service-option-prices/a6e63d46-5395-49a2-9111-df80f15b35de']);
+        $this->assertEquals(2, $this->clientCalls['https://api/service-option-prices/a6e63d46-5395-49a2-9111-df80f15b35de']);
     }
 
     /** @test */
@@ -123,7 +123,7 @@ class ServiceOptionPriceProxyTest extends TestCase
         $serviceProxy = new ServiceOptionPriceProxy();
         $serviceProxy
             ->setMyParcelComApi($this->api)
-            ->setResourceUri('https://api/v1/service-option-prices/a6e63d46-5395-49a2-9111-df80f15b35de')
+            ->setResourceUri('https://api/service-option-prices/a6e63d46-5395-49a2-9111-df80f15b35de')
             ->setId('service-option-price-id-1');
 
         $this->assertEquals([

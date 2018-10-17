@@ -97,7 +97,7 @@ class CarrierContractProxyTest extends TestCase
         $firstProxy->getCurrency();
         $firstProxy->getServiceContracts();
 
-        $this->assertEquals(1, $this->clientCalls['https://api/v1/carrier-contracts/f1630e62-4645-448d-af22-7d5bac0f502d']);
+        $this->assertEquals(1, $this->clientCalls['https://api/carrier-contracts/f1630e62-4645-448d-af22-7d5bac0f502d']);
 
         // Creating a new proxy for the same resource will
         // change the amount of client calls to 2.
@@ -107,7 +107,7 @@ class CarrierContractProxyTest extends TestCase
             ->setId('f1630e62-4645-448d-af22-7d5bac0f502d');
         $secondProxy->getCarrier();
 
-        $this->assertEquals(2, $this->clientCalls['https://api/v1/carrier-contracts/f1630e62-4645-448d-af22-7d5bac0f502d']);
+        $this->assertEquals(2, $this->clientCalls['https://api/carrier-contracts/f1630e62-4645-448d-af22-7d5bac0f502d']);
     }
 
     /** @test */
@@ -116,7 +116,7 @@ class CarrierContractProxyTest extends TestCase
         $serviceProxy = new CarrierContractProxy();
         $serviceProxy
             ->setMyParcelComApi($this->api)
-            ->setResourceUri('https://api/v1/carrier-contracts/f1630e62-4645-448d-af22-7d5bac0f502d')
+            ->setResourceUri('https://api/carrier-contracts/f1630e62-4645-448d-af22-7d5bac0f502d')
             ->setId('carrier-contract-id-1');
 
         $this->assertEquals([

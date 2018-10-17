@@ -78,7 +78,7 @@ class ServiceGroupProxyTest extends TestCase
         $firstProxy->getStepSize();
         $firstProxy->getPrice();
 
-        $this->assertEquals(1, $this->clientCalls['https://api/v1/service-groups/01a4a016-ff29-45ca-832d-92382f9ae243']);
+        $this->assertEquals(1, $this->clientCalls['https://api/service-groups/01a4a016-ff29-45ca-832d-92382f9ae243']);
 
         // Creating a new proxy for the same resource will
         // change the amount of client calls to 2.
@@ -88,7 +88,7 @@ class ServiceGroupProxyTest extends TestCase
             ->setId('01a4a016-ff29-45ca-832d-92382f9ae243');
         $secondProxy->getStepPrice();
 
-        $this->assertEquals(2, $this->clientCalls['https://api/v1/service-groups/01a4a016-ff29-45ca-832d-92382f9ae243']);
+        $this->assertEquals(2, $this->clientCalls['https://api/service-groups/01a4a016-ff29-45ca-832d-92382f9ae243']);
     }
 
     /** @test */
@@ -97,7 +97,7 @@ class ServiceGroupProxyTest extends TestCase
         $serviceProxy = new ServiceGroupProxy();
         $serviceProxy
             ->setMyParcelComApi($this->api)
-            ->setResourceUri('https://api/v1/service-groups/01a4a016-ff29-45ca-832d-92382f9ae243')
+            ->setResourceUri('https://api/service-groups/01a4a016-ff29-45ca-832d-92382f9ae243')
             ->setId('service-group-id-1');
 
         $this->assertEquals([

@@ -101,7 +101,7 @@ class ShopProxyTest extends TestCase
         $firstProxy->getBillingAddress();
         $firstProxy->getName();
 
-        $this->assertEquals(1, $this->clientCalls['https://api/v1/shops/shop-id-1']);
+        $this->assertEquals(1, $this->clientCalls['https://api/shops/shop-id-1']);
 
         // Creating a new proxy for the same resource will
         // change the amount of client calls to 2.
@@ -111,7 +111,7 @@ class ShopProxyTest extends TestCase
             ->setId('shop-id-1');
         $secondProxy->getReturnAddress();
 
-        $this->assertEquals(2, $this->clientCalls['https://api/v1/shops/shop-id-1']);
+        $this->assertEquals(2, $this->clientCalls['https://api/shops/shop-id-1']);
     }
 
     /** @test */
@@ -120,7 +120,7 @@ class ShopProxyTest extends TestCase
         $shopProxy = new ShopProxy();
         $shopProxy
             ->setMyParcelComApi($this->api)
-            ->setResourceUri('https://api/v1/shops/shop-id-1')
+            ->setResourceUri('https://api/shops/shop-id-1')
             ->setId('shop-id-1');
 
         $this->assertEquals([

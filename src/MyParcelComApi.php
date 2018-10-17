@@ -34,8 +34,6 @@ use function GuzzleHttp\Psr7\str;
 
 class MyParcelComApi implements MyParcelComApiInterface
 {
-    const API_VERSION = 'v1';
-
     /** @var string */
     protected $apiUri;
 
@@ -823,7 +821,6 @@ class MyParcelComApi implements MyParcelComApiInterface
             '/',
             array_filter([
                 $this->apiUri,
-                self::API_VERSION,
                 $resourceType,
                 $id,
             ])

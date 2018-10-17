@@ -155,13 +155,13 @@ class FileStreamProxyTest extends TestCase
         $firstProxy->getSize();
         $firstProxy->isWritable();
 
-        $this->assertEquals(1, $this->clientCalls['https://api/v1/files/file-stream-id-1']);
+        $this->assertEquals(1, $this->clientCalls['https://api/files/file-stream-id-1']);
 
         // Creating a new proxy for the same resource will
         // change the amount of client calls to 2.
         $secondProxy = new FileStreamProxy('file-stream-id-1', 'application/pdf', $this->api);
         $secondProxy->close();
 
-        $this->assertEquals(2, $this->clientCalls['https://api/v1/files/file-stream-id-1']);
+        $this->assertEquals(2, $this->clientCalls['https://api/files/file-stream-id-1']);
     }
 }

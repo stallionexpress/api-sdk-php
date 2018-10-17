@@ -75,7 +75,7 @@ class StatusProxyTest extends TestCase
         $firstProxy->getLevel();
         $firstProxy->getCode();
 
-        $this->assertEquals(1, $this->clientCalls['https://api/v1/statuses/status-id-1']);
+        $this->assertEquals(1, $this->clientCalls['https://api/statuses/status-id-1']);
 
         // Creating a new proxy for the same resource will
         // change the amount of client calls to 2.
@@ -85,7 +85,7 @@ class StatusProxyTest extends TestCase
             ->setId('status-id-1');
         $secondProxy->getDescription();
 
-        $this->assertEquals(2, $this->clientCalls['https://api/v1/statuses/status-id-1']);
+        $this->assertEquals(2, $this->clientCalls['https://api/statuses/status-id-1']);
     }
 
     /** @test */
@@ -94,7 +94,7 @@ class StatusProxyTest extends TestCase
         $statusProxy = new StatusProxy();
         $statusProxy
             ->setMyParcelComApi($this->api)
-            ->setResourceUri('https://api/v1/statuses/status-id-1')
+            ->setResourceUri('https://api/statuses/status-id-1')
             ->setId('status-id-1');
 
         $this->assertEquals([
