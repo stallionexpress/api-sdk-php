@@ -65,21 +65,4 @@ interface ServiceContractInterface extends ResourceInterface
      * @return ServiceOptionPriceInterface[]
      */
     public function getServiceOptionPrices();
-
-    /**
-     * @param ServiceInsuranceInterface[] $insurances
-     * @return $this
-     */
-    public function setServiceInsurances(array $insurances);
-
-    /**
-     * @param ServiceInsuranceInterface $insurance
-     * @return $this
-     */
-    public function addServiceInsurance(ServiceInsuranceInterface $insurance);
-
-    /**
-     * @return ServiceInsuranceInterface[]
-     */
-    public function getServiceInsurances();
 }

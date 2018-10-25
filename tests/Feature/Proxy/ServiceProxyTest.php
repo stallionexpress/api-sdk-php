@@ -189,7 +189,7 @@ class ServiceProxyTest extends TestCase
         $firstProxy->getRegionTo();
         $firstProxy->getDeliveryDays();
 
-        $this->assertEquals(1, $this->clientCalls['https://api/v1/services/433285bb-2e34-435c-9109-1120e7c4bce4']);
+        $this->assertEquals(1, $this->clientCalls['https://api/services/433285bb-2e34-435c-9109-1120e7c4bce4']);
 
         // Creating a new proxy for the same resource will
         // change the amount of client calls to 2.
@@ -199,7 +199,7 @@ class ServiceProxyTest extends TestCase
             ->setId('433285bb-2e34-435c-9109-1120e7c4bce4');
         $secondProxy->getTransitTimeMax();
 
-        $this->assertEquals(2, $this->clientCalls['https://api/v1/services/433285bb-2e34-435c-9109-1120e7c4bce4']);
+        $this->assertEquals(2, $this->clientCalls['https://api/services/433285bb-2e34-435c-9109-1120e7c4bce4']);
     }
 
     /** @test */
@@ -208,7 +208,7 @@ class ServiceProxyTest extends TestCase
         $serviceProxy = new ServiceProxy();
         $serviceProxy
             ->setMyParcelComApi($this->api)
-            ->setResourceUri('https://api/v1/services/433285bb-2e34-435c-9109-1120e7c4bce4')
+            ->setResourceUri('https://api/services/433285bb-2e34-435c-9109-1120e7c4bce4')
             ->setId('service-id-1');
 
         $this->assertEquals([

@@ -78,7 +78,7 @@ class RegionProxyTest extends TestCase
         $firstProxy->getCurrency();
         $firstProxy->getCountryCode();
 
-        $this->assertEquals(1, $this->clientCalls['https://api/v1/regions/c1048135-db45-404e-adac-fdecd0c7134a']);
+        $this->assertEquals(1, $this->clientCalls['https://api/regions/c1048135-db45-404e-adac-fdecd0c7134a']);
 
         // Creating a new proxy for the same resource will
         // change the amount of client calls to 2.
@@ -88,7 +88,7 @@ class RegionProxyTest extends TestCase
             ->setId('c1048135-db45-404e-adac-fdecd0c7134a');
         $secondProxy->getName();
 
-        $this->assertEquals(2, $this->clientCalls['https://api/v1/regions/c1048135-db45-404e-adac-fdecd0c7134a']);
+        $this->assertEquals(2, $this->clientCalls['https://api/regions/c1048135-db45-404e-adac-fdecd0c7134a']);
     }
 
     /** @test */
@@ -96,7 +96,7 @@ class RegionProxyTest extends TestCase
     {
         $regionProxy = (new RegionProxy())
             ->setMyParcelComApi($this->api)
-            ->setResourceUri('https://api/v1/regions/c1048135-db45-404e-adac-fdecd0c7134a')
+            ->setResourceUri('https://api/regions/c1048135-db45-404e-adac-fdecd0c7134a')
             ->setId('region-proxy-id-1');
 
         $this->assertEquals([

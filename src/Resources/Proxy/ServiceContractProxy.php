@@ -7,7 +7,6 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceGroupInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInsuranceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionPriceInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
@@ -147,36 +146,6 @@ class ServiceContractProxy implements ServiceContractInterface, ResourceProxyInt
     public function getServiceOptionPrices()
     {
         return $this->getResource()->getServiceOptionPrices();
-    }
-
-    /**
-     * @param ServiceInsuranceInterface[] $insurances
-     * @return $this
-     */
-    public function setServiceInsurances(array $insurances)
-    {
-        $this->getResource()->setServiceInsurances($insurances);
-
-        return $this;
-    }
-
-    /**
-     * @param ServiceInsuranceInterface $insurance
-     * @return $this
-     */
-    public function addServiceInsurance(ServiceInsuranceInterface $insurance)
-    {
-        $this->getResource()->addServiceInsurance($insurance);
-
-        return $this;
-    }
-
-    /**
-     * @return ServiceInsuranceInterface[]
-     */
-    public function getServiceInsurances()
-    {
-        return $this->getResource()->getServiceInsurances();
     }
 
     /**

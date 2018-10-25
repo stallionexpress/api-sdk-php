@@ -10,7 +10,6 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\PickUpDropOffLocationInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceGroupInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInsuranceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionPriceInterface;
@@ -152,12 +151,6 @@ class ResourceFactoryTest extends TestCase
                     'id'   => 'service-option-price-id',
                 ],
             ],
-            'service_insurances'    => [
-                [
-                    'type' => 'service-insurances',
-                    'id'   => 'service-insurance-id',
-                ],
-            ],
         ];
 
         $resourceFactory = new ResourceFactory();
@@ -192,14 +185,6 @@ class ResourceFactoryTest extends TestCase
                         [
                             'type' => 'service-option-prices',
                             'id'   => 'service-option-price-id',
-                        ],
-                    ],
-                ],
-                'service_insurances'    => [
-                    'data' => [
-                        [
-                            'type' => 'service-insurances',
-                            'id'   => 'service-insurance-id',
                         ],
                     ],
                 ],
@@ -278,18 +263,25 @@ class ResourceFactoryTest extends TestCase
             'position'      => [
                 'latitude'  => 1.2345,
                 'longitude' => 2.34567,
-                'distance'  => 5000,
+            ],
+        ];
+        $meta = [
+            'meta' => [
+                'distance' => 5000,
             ],
         ];
 
         $resourceFactory = new ResourceFactory();
-        $pudoLocation = $resourceFactory->create('pickup-dropoff-locations', $pudoAttributes);
+        $pudoLocation = $resourceFactory->create('pickup-dropoff-locations', $pudoAttributes + $meta);
 
         $this->assertInstanceOf(PickUpDropOffLocationInterface::class, $pudoLocation);
-        $this->assertEquals([
-            'type'       => 'pickup-dropoff-locations',
-            'attributes' => $pudoAttributes,
-        ], $pudoLocation->jsonSerialize());
+        $this->assertEquals(
+            [
+                'type'       => 'pickup-dropoff-locations',
+                'attributes' => $pudoAttributes,
+            ] + $meta,
+            $pudoLocation->jsonSerialize()
+        );
     }
 
     /** @test */
@@ -533,49 +525,6 @@ class ResourceFactoryTest extends TestCase
     }
 
     /** @test */
-    public function testCreateEmptyServiceInsurance()
-    {
-        $resourceFactory = new ResourceFactory();
-        $serviceInsurance = $resourceFactory->create('service-insurances');
-
-        $this->assertInstanceOf(ServiceInsuranceInterface::class, $serviceInsurance);
-        $this->assertEquals([
-            'type' => 'service-insurances',
-        ], $serviceInsurance->jsonSerialize());
-    }
-
-    /** @test */
-    public function testCreateServiceInsurance()
-    {
-        $resourceFactory = new ResourceFactory();
-        $serviceInsurance = $resourceFactory->create('service-insurances', [
-            'covered' => [
-                'amount'   => 10000,
-                'currency' => 'EUR',
-            ],
-            'price'   => [
-                'amount'   => 500,
-                'currency' => 'EUR',
-            ],
-        ]);
-
-        $this->assertInstanceOf(ServiceInsuranceInterface::class, $serviceInsurance);
-        $this->assertEquals([
-            'type'       => 'service-insurances',
-            'attributes' => [
-                'covered' => [
-                    'amount'   => 10000,
-                    'currency' => 'EUR',
-                ],
-                'price'   => [
-                    'amount'   => 500,
-                    'currency' => 'EUR',
-                ],
-            ],
-        ], $serviceInsurance->jsonSerialize());
-    }
-
-    /** @test */
     public function testCreateEmptyShipment()
     {
         $resourceFactory = new ResourceFactory();
@@ -596,10 +545,6 @@ class ResourceFactoryTest extends TestCase
             'description'                  => 'order #012ASD',
             'price'                        => [
                 'amount'   => 99,
-                'currency' => 'USD',
-            ],
-            'insurance'                    => [
-                'amount'   => 50,
                 'currency' => 'USD',
             ],
             'physical_properties'          => [
@@ -679,10 +624,6 @@ class ResourceFactoryTest extends TestCase
                 'description'                  => 'order #012ASD',
                 'price'                        => [
                     'amount'   => 99,
-                    'currency' => 'USD',
-                ],
-                'insurance'                    => [
-                    'amount'   => 50,
                     'currency' => 'USD',
                 ],
                 'physical_properties'          => [
@@ -768,7 +709,6 @@ class ResourceFactoryTest extends TestCase
             'description'                  => 'order #012ASD',
             'price'                        => 99,
             'currency'                     => 'USD',
-            'insurance_amount'             => 50,
             'physical_properties'          => [
                 'weight' => 1000,
                 'length' => 1100,
@@ -877,10 +817,6 @@ class ResourceFactoryTest extends TestCase
                 'description'                  => 'order #012ASD',
                 'price'                        => [
                     'amount'   => 99,
-                    'currency' => 'USD',
-                ],
-                'insurance'                    => [
-                    'amount'   => 50,
                     'currency' => 'USD',
                 ],
                 'physical_properties'          => [

@@ -4,7 +4,6 @@ namespace MyParcelCom\ApiSdk\Tests\Unit;
 
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceGroupInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInsuranceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionPriceInterface;
 use MyParcelCom\ApiSdk\Resources\ServiceContract;
@@ -98,30 +97,6 @@ class ServiceContractTest extends TestCase
     }
 
     /** @test */
-    public function testServiceInsurances()
-    {
-        $contract = new ServiceContract();
-
-        $this->assertEmpty($contract->getServiceGroups());
-
-        $mock = $this->getMockClass(ServiceInsuranceInterface::class);
-
-        $insurances = [
-            new $mock(),
-            new $mock(),
-        ];
-        $contract->setServiceInsurances($insurances);
-        $this->assertCount(2, $contract->getServiceInsurances());
-        $this->assertEquals($insurances, $contract->getServiceInsurances());
-
-        $insurance = new $mock();
-        $contract->addServiceInsurance($insurance);
-        $insurances[] = $insurance;
-        $this->assertCount(3, $contract->getServiceInsurances());
-        $this->assertEquals($insurances, $contract->getServiceInsurances());
-    }
-
-    /** @test */
     public function testJsonSerialize()
     {
         $carrierContractMock = $this->getMockBuilder(CarrierContractInterface::class)
@@ -176,24 +151,10 @@ class ServiceContractTest extends TestCase
                 'id'   => 'service-option-id',
             ]);
 
-        $insuranceMock = $this->getMockBuilder(ServiceInsuranceInterface::class)
-            ->disableOriginalConstructor()
-            ->disableOriginalClone()
-            ->disableArgumentCloning()
-            ->disallowMockingUnknownTypes()
-            ->getMock();
-
-        $insuranceMock->method('jsonSerialize')
-            ->willReturn([
-                'type' => 'service-insurances',
-                'id'   => 'service-insurance-id',
-            ]);
-
         $contract = (new ServiceContract())
             ->setId('contract-id')
             ->setService($serviceMock)
             ->setCarrierContract($carrierContractMock)
-            ->setServiceInsurances([$insuranceMock])
             ->setServiceGroups([$groupMock])
             ->setServiceOptionPrices([$optionMock]);
 
@@ -226,14 +187,6 @@ class ServiceContractTest extends TestCase
                         [
                             'type' => 'service-options',
                             'id'   => 'service-option-id',
-                        ],
-                    ],
-                ],
-                'service_insurances'    => [
-                    'data' => [
-                        [
-                            'type' => 'service-insurances',
-                            'id'   => 'service-insurance-id',
                         ],
                     ],
                 ],

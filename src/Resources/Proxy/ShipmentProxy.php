@@ -192,25 +192,6 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
     }
 
     /**
-     * @param int $insuranceAmount
-     * @return $this
-     */
-    public function setInsuranceAmount($insuranceAmount)
-    {
-        $this->getResource()->setInsuranceAmount($insuranceAmount);
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getInsuranceAmount()
-    {
-        return $this->getResource()->getInsuranceAmount();
-    }
-
-    /**
      * @param string $currency
      * @return $this
      */

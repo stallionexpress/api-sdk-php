@@ -9,6 +9,7 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\PickUpDropOffLocationInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\PositionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
+use MyParcelCom\ApiSdk\Utils\DistanceUtils;
 
 class PickUpDropOffLocation implements PickUpDropOffLocationInterface
 {
@@ -20,6 +21,8 @@ class PickUpDropOffLocation implements PickUpDropOffLocationInterface
     const ATTRIBUTE_POSITION = 'position';
 
     const RELATIONSHIP_CARRIER = 'carrier';
+
+    const META_DISTANCE = 'distance';
 
     /** @var string */
     private $id;
@@ -40,6 +43,11 @@ class PickUpDropOffLocation implements PickUpDropOffLocationInterface
         self::RELATIONSHIP_CARRIER => [
             'data' => null,
         ],
+    ];
+
+    /** @var array */
+    private $meta = [
+        self::META_DISTANCE => null,
     ];
 
     /**
@@ -170,5 +178,23 @@ class PickUpDropOffLocation implements PickUpDropOffLocationInterface
     public function getCarrier()
     {
         return $this->relationships[self::RELATIONSHIP_CARRIER]['data'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDistance($distance, $unit = DistanceUtils::UNIT_METER)
+    {
+        $this->meta[self::META_DISTANCE] = round(DistanceUtils::convertDistance($distance, $unit, DistanceUtils::UNIT_METER));
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDistance($unit = DistanceUtils::UNIT_METER)
+    {
+        return round(DistanceUtils::convertDistance($this->meta[self::META_DISTANCE], DistanceUtils::UNIT_METER, $unit));
     }
 }

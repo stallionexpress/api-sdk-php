@@ -113,7 +113,7 @@ class FileProxyTest extends TestCase
         $firstProxy->getStream();
         $firstProxy->getFormats();
 
-        $this->assertEquals(1, $this->clientCalls['https://api/v1/files/file-id-1']);
+        $this->assertEquals(1, $this->clientCalls['https://api/files/file-id-1']);
 
         // Creating a new proxy for the same resource will
         // change the amount of client calls to 2.
@@ -123,7 +123,7 @@ class FileProxyTest extends TestCase
             ->setId('file-id-1');
         $secondProxy->getDocumentType();
 
-        $this->assertEquals(2, $this->clientCalls['https://api/v1/files/file-id-1']);
+        $this->assertEquals(2, $this->clientCalls['https://api/files/file-id-1']);
     }
 
     /** @test */
@@ -132,7 +132,7 @@ class FileProxyTest extends TestCase
         $fileProxy = new FileProxy();
         $fileProxy
             ->setMyParcelComApi($this->api)
-            ->setResourceUri('https://api/v1/files/file-id-1')
+            ->setResourceUri('https://api/files/file-id-1')
             ->setId('file-proxy-id-1');
 
         $this->assertEquals([

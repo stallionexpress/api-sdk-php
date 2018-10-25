@@ -59,7 +59,6 @@ class ShipmentProxyTest extends TestCase
         $this->assertEquals('https://I.Track.U/134', $this->shipmentProxy->setTrackingUrl('https://I.Track.U/134')->getTrackingUrl());
         $this->assertEquals('Something living with hair', $this->shipmentProxy->setDescription('Something living with hair')->getDescription());
         $this->assertEquals('|||||||||||||', $this->shipmentProxy->setBarcode('|||||||||||||')->getBarcode());
-        $this->assertEquals(555, $this->shipmentProxy->setInsuranceAmount(555)->getInsuranceAmount());
         $this->assertEquals(12, $this->shipmentProxy->setWeight(12)->getWeight());
         $this->assertEquals('80-90A', $this->shipmentProxy->setPickupLocationCode('80-90A')->getPickupLocationCode());
         $this->assertEquals('an-id-for-a-shipment', $this->shipmentProxy->setId('an-id-for-a-shipment')->getId());
@@ -166,7 +165,6 @@ class ShipmentProxyTest extends TestCase
             ->getDescription()
         );
         $this->assertEquals(50, $this->shipmentProxy->setPrice(50)->getPrice());
-        $this->assertEquals(1337, $this->shipmentProxy->setInsuranceAmount(1337)->getInsuranceAmount());
         $this->assertEquals('EUR', $this->shipmentProxy->getCurrency());
         $this->assertEquals('3SABCD0123456789', $this->shipmentProxy->getBarcode());
         $this->assertEquals('TR4CK1NGC0D3', $this->shipmentProxy->getTrackingCode());
@@ -355,7 +353,7 @@ class ShipmentProxyTest extends TestCase
         $firstProxy->getCurrency();
         $firstProxy->getSenderAddress();
 
-        $this->assertEquals(1, $this->clientCalls['https://api/v1/shipments/shipment-id-1']);
+        $this->assertEquals(1, $this->clientCalls['https://api/shipments/shipment-id-1']);
 
         // Creating a new proxy for the same resource will
         // change the amount of client calls to 2.
@@ -365,7 +363,7 @@ class ShipmentProxyTest extends TestCase
             ->setId('shipment-id-1');
         $secondProxy->getFiles();
 
-        $this->assertEquals(2, $this->clientCalls['https://api/v1/shipments/shipment-id-1']);
+        $this->assertEquals(2, $this->clientCalls['https://api/shipments/shipment-id-1']);
     }
 
     /** @test */
@@ -395,7 +393,7 @@ class ShipmentProxyTest extends TestCase
         $shipmentProxy = new ShipmentProxy();
         $shipmentProxy
             ->setMyParcelComApi($this->api)
-            ->setResourceUri('https://api/v1/shipments/shipment-id-1')
+            ->setResourceUri('https://api/shipments/shipment-id-1')
             ->setId('shipment-id-1');
 
         $this->assertEquals([

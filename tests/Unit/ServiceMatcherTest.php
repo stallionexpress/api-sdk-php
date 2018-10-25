@@ -106,146 +106,31 @@ class ServiceMatcherTest extends TestCase
     }
 
     /** @test */
-    public function testGetMatchedInsurances()
-    {
-        $contracts = [
-            $this->getMockedServiceContract([], [
-                [
-                    'covered' => 500,
-                    'price'   => 80,
-                ],
-                [
-                    'covered' => 2500,
-                    'price'   => 500,
-                ],
-                [
-                    'covered' => 15000,
-                    'price'   => 789,
-                ],
-                [
-                    'covered' => 900000,
-                    'price'   => 989,
-                ],
-            ]),
-            $this->getMockedServiceContract([], [
-                [
-                    'covered' => 5000,
-                    'price'   => 823,
-                ],
-            ]),
-            $this->getMockedServiceContract([], [
-                [
-                    'covered' => 10,
-                    'price'   => 5,
-                ],
-                [
-                    'covered' => 100,
-                    'price'   => 50,
-                ],
-            ]),
-            $this->getMockedServiceContract([], [
-                [
-                    'covered' => 500,
-                    'price'   => 80,
-                ],
-                [
-                    'covered' => 100,
-                    'price'   => 5,
-                ],
-                [
-                    'covered' => 1000,
-                    'price'   => 99,
-                ],
-                [
-                    'covered' => 900,
-                    'price'   => 90,
-                ],
-            ]),
-        ];
-
-        $matcher = new ServiceMatcher();
-
-        $this->assertCount(
-            4,
-            $matcher->getMatchedInsurances(
-                $this->getMockedShipment(10, 0),
-                $contracts
-            )
-        );
-
-        $this->assertCount(
-            4,
-            $matcher->getMatchedInsurances(
-                $this->getMockedShipment(10, 99),
-                $contracts
-            )
-        );
-
-        $this->assertCount(
-            3,
-            $matcher->getMatchedInsurances(
-                $this->getMockedShipment(10, 1000),
-                $contracts
-            )
-        );
-
-        $this->assertCount(
-            2,
-            $matcher->getMatchedInsurances(
-                $this->getMockedShipment(10, 1002),
-                $contracts
-            )
-        );
-
-        $this->assertCount(
-            1,
-            $matcher->getMatchedInsurances(
-                $this->getMockedShipment(10, 100000),
-                $contracts
-            )
-        );
-
-        $this->assertCount(
-            0,
-            $matcher->getMatchedInsurances(
-                $this->getMockedShipment(10, 898765463546987),
-                $contracts
-            )
-        );
-
-        $this->expectException(ServiceMatchingException::class);
-        $matcher->getMatchedInsurances(
-            $this->getMockedShipment(10, -4847),
-            $contracts
-        );
-    }
-
-    /** @test */
     public function testGetMatchedOptions()
     {
         $contracts = [
-            $this->getMockedServiceContract([], [], [
+            $this->getMockedServiceContract([], [
                 ['id' => 'option-id-1', 'price' => 1],
                 ['id' => 'option-id-2', 'price' => 23],
                 ['id' => 'option-id-4', 'price' => 112],
                 ['id' => 'option-id-7', 'price' => 10],
             ]),
-            $this->getMockedServiceContract([], [], [
+            $this->getMockedServiceContract([], [
                 ['id' => 'option-id-1', 'price' => 124],
                 ['id' => 'option-id-3', 'price' => 5],
             ]),
-            $this->getMockedServiceContract([], [], [
+            $this->getMockedServiceContract([], [
                 ['id' => 'option-id-1', 'price' => 89],
                 ['id' => 'option-id-3', 'price' => 44],
                 ['id' => 'option-id-4', 'price' => 546],
                 ['id' => 'option-id-6', 'price' => 3],
                 ['id' => 'option-id-7', 'price' => 2],
             ]),
-            $this->getMockedServiceContract([], [], [
+            $this->getMockedServiceContract([], [
                 ['id' => 'option-id-4', 'price' => 15],
                 ['id' => 'option-id-8', 'price' => 2576],
             ]),
-            $this->getMockedServiceContract([], [], []),
+            $this->getMockedServiceContract([], []),
         ];
 
         $matcher = new ServiceMatcher();
@@ -253,35 +138,35 @@ class ServiceMatcherTest extends TestCase
         $this->assertCount(
             5,
             $matcher->getMatchedOptions(
-                $this->getMockedShipment(10, 0, []),
+                $this->getMockedShipment(10, []),
                 $contracts
             )
         );
         $this->assertCount(
             3,
             $matcher->getMatchedOptions(
-                $this->getMockedShipment(10, 0, ['option-id-4']),
+                $this->getMockedShipment(10, ['option-id-4']),
                 $contracts
             )
         );
         $this->assertCount(
             2,
             $matcher->getMatchedOptions(
-                $this->getMockedShipment(10, 0, ['option-id-1', 'option-id-4']),
+                $this->getMockedShipment(10, ['option-id-1', 'option-id-4']),
                 $contracts
             )
         );
         $this->assertCount(
             1,
             $matcher->getMatchedOptions(
-                $this->getMockedShipment(10, 0, ['option-id-1', 'option-id-3', 'option-id-4', 'option-id-6']),
+                $this->getMockedShipment(10, ['option-id-1', 'option-id-3', 'option-id-4', 'option-id-6']),
                 $contracts
             )
         );
         $this->assertCount(
             0,
             $matcher->getMatchedOptions(
-                $this->getMockedShipment(10, 0, [
+                $this->getMockedShipment(10, [
                     'option-id-1',
                     'option-id-2',
                     'option-id-3',
@@ -346,7 +231,6 @@ class ServiceMatcherTest extends TestCase
     /** @test */
     public function testMatches()
     {
-
         $contracts = [
             $this->getMockedServiceContract([
                 [
@@ -364,11 +248,6 @@ class ServiceMatcherTest extends TestCase
                     'step_price' => 0,
                 ],
             ], [
-                ['covered' => 500, 'price' => 80],
-                ['covered' => 2500, 'price' => 500],
-                ['covered' => 15000, 'price' => 789],
-                ['covered' => 900000, 'price' => 989],
-            ], [
                 ['id' => 'option-id-1', 'price' => 1],
                 ['id' => 'option-id-2', 'price' => 23],
                 ['id' => 'option-id-4', 'price' => 112],
@@ -382,8 +261,6 @@ class ServiceMatcherTest extends TestCase
                     'step_size'  => 100,
                     'step_price' => 10,
                 ],
-            ], [
-                ['covered' => 5000, 'price' => 823],
             ], [
                 ['id' => 'option-id-1', 'price' => 124],
                 ['id' => 'option-id-5', 'price' => 5],
@@ -410,7 +287,7 @@ class ServiceMatcherTest extends TestCase
                     'step_size'  => 0,
                     'step_price' => 0,
                 ],
-            ], [], [
+            ], [
                 ['id' => 'option-id-1', 'price' => 89],
                 ['id' => 'option-id-3', 'price' => 44],
                 ['id' => 'option-id-4', 'price' => 546],
@@ -440,9 +317,6 @@ class ServiceMatcherTest extends TestCase
                     'step_price' => 0,
                 ],
             ], [
-                ['covered' => 10, 'price' => 5],
-                ['covered' => 100, 'price' => 50],
-            ], [
                 ['id' => 'option-id-4', 'price' => 15],
                 ['id' => 'option-id-8', 'price' => 2576],
             ]),
@@ -461,11 +335,6 @@ class ServiceMatcherTest extends TestCase
                     'step_size'  => 0,
                     'step_price' => 0,
                 ],
-            ], [
-                ['covered' => 500, 'price' => 80],
-                ['covered' => 100, 'price' => 5],
-                ['covered' => 1000, 'price' => 99],
-                ['covered' => 900, 'price' => 90],
             ], [
                 ['id' => 'option-id-3', 'price' => 66],
             ]),
@@ -502,33 +371,33 @@ class ServiceMatcherTest extends TestCase
 
         $matcher = new ServiceMatcher();
 
-        $this->assertTrue($matcher->matches($this->getMockedShipment(10, 0, []), $serviceA));
-        $this->assertTrue($matcher->matches($this->getMockedShipment(10, 0, []), $serviceB));
-        $this->assertTrue($matcher->matches($this->getMockedShipment(10, 0, []), $serviceC));
+        $this->assertTrue($matcher->matches($this->getMockedShipment(10, []), $serviceA));
+        $this->assertTrue($matcher->matches($this->getMockedShipment(10, []), $serviceB));
+        $this->assertTrue($matcher->matches($this->getMockedShipment(10, []), $serviceC));
 
-        $this->assertTrue($matcher->matches($this->getMockedShipment(10, 100, [
+        $this->assertTrue($matcher->matches($this->getMockedShipment(10, [
             'option-id-2',
             'option-id-4',
         ]), $serviceA));
-        $this->assertTrue($matcher->matches($this->getMockedShipment(10, 100, [
+        $this->assertTrue($matcher->matches($this->getMockedShipment(10, [
             'option-id-2',
             'option-id-4',
         ]), $serviceB));
-        $this->assertFalse($matcher->matches($this->getMockedShipment(10, 100, [
+        $this->assertFalse($matcher->matches($this->getMockedShipment(10, [
             'option-id-2',
             'option-id-4',
         ]), $serviceC));
 
-        $this->assertTrue($matcher->matches($this->getMockedShipment(10001, 1000, ['option-id-1']), $serviceA));
-        $this->assertFalse($matcher->matches($this->getMockedShipment(10001, 1000, ['option-id-1']), $serviceB));
-        $this->assertFalse($matcher->matches($this->getMockedShipment(10001, 1000, ['option-id-1']), $serviceC));
+        $this->assertTrue($matcher->matches($this->getMockedShipment(10001, ['option-id-1']), $serviceA));
+        $this->assertFalse($matcher->matches($this->getMockedShipment(10001, ['option-id-1']), $serviceB));
+        $this->assertFalse($matcher->matches($this->getMockedShipment(10001, ['option-id-1']), $serviceC));
 
-        $this->assertFalse($matcher->matches($this->getMockedShipment(9000, 1000, ['option-id-3']), $serviceA));
-        $this->assertTrue($matcher->matches($this->getMockedShipment(9000, 1000, ['option-id-3']), $serviceB));
-        $this->assertTrue($matcher->matches($this->getMockedShipment(9000, 1000, ['option-id-3']), $serviceC));
+        $this->assertTrue($matcher->matches($this->getMockedShipment(9000, ['option-id-6']), $serviceA));
+        $this->assertFalse($matcher->matches($this->getMockedShipment(9000, ['option-id-6']), $serviceB));
+        $this->assertTrue($matcher->matches($this->getMockedShipment(9000, ['option-id-6']), $serviceC));
 
-        $this->assertFalse($matcher->matches($this->getMockedShipment(999999999, 5001, []), $serviceA));
-        $this->assertFalse($matcher->matches($this->getMockedShipment(999999999, 5001, []), $serviceB));
-        $this->assertFalse($matcher->matches($this->getMockedShipment(999999999, 5001, []), $serviceC));
+        $this->assertFalse($matcher->matches($this->getMockedShipment(999999999, ['some-unknown-id']), $serviceA));
+        $this->assertFalse($matcher->matches($this->getMockedShipment(999999999, ['some-unknown-id']), $serviceB));
+        $this->assertFalse($matcher->matches($this->getMockedShipment(999999999, ['some-unknown-id']), $serviceC));
     }
 }

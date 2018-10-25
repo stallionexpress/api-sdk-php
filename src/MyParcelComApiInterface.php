@@ -13,16 +13,16 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 
 interface MyParcelComApiInterface
 {
-    const PATH_CARRIERS = '/v1/carriers';
-    const PATH_FILES_ID = '/v1/files/{file_id}';
-    const PATH_PUDO_LOCATIONS = '/v1/carriers/{carrier_id}/pickup-dropoff-locations/{country_code}/{postal_code}';
-    const PATH_REGIONS = '/v1/regions';
-    const PATH_SERVICES = '/v1/services';
-    const PATH_SERVICE_CONTRACTS = '/v1/services/{service_id}/contracts';
-    const PATH_CARRIER_SERVICE_CONTRACTS = '/v1/service-contracts/?filter[carrier_contract]={carrier_contract_id}';
-    const PATH_SHIPMENTS = '/v1/shipments';
-    const PATH_SHIPMENT_STATUSES = '/v1/shipments/{shipment_id}/statuses';
-    const PATH_SHOPS = '/v1/shops';
+    const PATH_CARRIERS = '/carriers';
+    const PATH_FILES_ID = '/files/{file_id}';
+    const PATH_PUDO_LOCATIONS = '/carriers/{carrier_id}/pickup-dropoff-locations/{country_code}/{postal_code}';
+    const PATH_REGIONS = '/regions';
+    const PATH_SERVICES = '/services';
+    const PATH_SERVICE_CONTRACTS = '/services/{service_id}/contracts';
+    const PATH_CARRIER_SERVICE_CONTRACTS = '/service-contracts/?filter[carrier_contract]={carrier_contract_id}';
+    const PATH_SHIPMENTS = '/shipments';
+    const PATH_SHIPMENT_STATUSES = '/shipments/{shipment_id}/statuses';
+    const PATH_SHOPS = '/shops';
 
     const TTL_10MIN = 600;
     const TTL_WEEK = 604800;

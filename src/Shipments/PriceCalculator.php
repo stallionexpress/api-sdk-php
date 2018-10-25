@@ -5,7 +5,6 @@ namespace MyParcelCom\ApiSdk\Shipments;
 use MyParcelCom\ApiSdk\Exceptions\CalculationException;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceGroupInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInsuranceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 
 class PriceCalculator
@@ -32,8 +31,7 @@ class PriceCalculator
         }
 
         return $this->calculateGroupPrice($shipment, $contract)
-            + $this->calculateOptionsPrice($shipment, $contract)
-            + $this->calculateInsurancePrice($shipment, $contract);
+            + $this->calculateOptionsPrice($shipment, $contract);
     }
 
     /**
@@ -154,60 +152,5 @@ class PriceCalculator
         }
 
         return (int)$price;
-    }
-
-    /**
-     * Calculate the price based on the desired insurance for given shipment.
-     * Optionally a contract can be supplied for the price calculations. If no
-     * contract is given, the contract on the shipment is used.
-     *
-     * @param ShipmentInterface             $shipment
-     * @param ServiceContractInterface|null $contract
-     * @return int
-     */
-    public function calculateInsurancePrice(ShipmentInterface $shipment, ServiceContractInterface $contract = null)
-    {
-        if ($contract === null) {
-            $contract = $shipment->getServiceContract();
-        }
-
-        if ($contract === null) {
-            throw new CalculationException('Cannot calculate a price for given shipment without a contract');
-        }
-
-        if (!$shipment->getInsuranceAmount()) {
-            return 0;
-        }
-
-        if ($shipment->getInsuranceAmount() < 0) {
-            throw new CalculationException(
-                'Cannot calculate a price for given shipment; negative insurance set'
-            );
-        }
-
-        if (!($insurances = $contract->getServiceInsurances())) {
-            throw new CalculationException(
-                'Cannot calculate a price for given shipment; no insurances are available in contract'
-            );
-        }
-
-        @usort($insurances, function (ServiceInsuranceInterface $a, ServiceInsuranceInterface $b) {
-            return $a->getCovered() - $b->getCovered();
-        });
-
-        foreach ($insurances as $insurance) {
-            if ($shipment->getInsuranceAmount() <= $insurance->getCovered()) {
-                break;
-            }
-        }
-
-        if ($shipment->getInsuranceAmount() > $insurance->getCovered()) {
-            throw new CalculationException(
-                'Cannot calculate a price for given shipment; no insurances are available in contract for amount: '
-                . $shipment->getInsuranceAmount()
-            );
-        }
-
-        return $insurance->getPrice();
     }
 }

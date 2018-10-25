@@ -50,31 +50,31 @@ class PriceCalculatorTest extends TestCase
 
         $this->assertEquals(
             250,
-            $calculator->calculateGroupPrice($this->getMockedShipment(0, 0, [], $contract))
+            $calculator->calculateGroupPrice($this->getMockedShipment(0, [], $contract))
         );
 
         $this->assertEquals(
             250,
-            $calculator->calculateGroupPrice($this->getMockedShipment(2000, 0, [], $contract))
+            $calculator->calculateGroupPrice($this->getMockedShipment(2000, [], $contract))
         );
 
         $this->assertEquals(
             400,
-            $calculator->calculateGroupPrice($this->getMockedShipment(7500, 0, [], $contract))
+            $calculator->calculateGroupPrice($this->getMockedShipment(7500, [], $contract))
         );
 
         $this->assertEquals(
             1499,
-            $calculator->calculateGroupPrice($this->getMockedShipment(55000, 0, [], $contract))
+            $calculator->calculateGroupPrice($this->getMockedShipment(55000, [], $contract))
         );
 
         $this->assertEquals(
             99999995999,
-            $calculator->calculateGroupPrice($this->getMockedShipment(999999999999, 0, [], $contract))
+            $calculator->calculateGroupPrice($this->getMockedShipment(999999999999, [], $contract))
         );
 
         $this->expectException(CalculationException::class);
-        $calculator->calculateGroupPrice($this->getMockedShipment(-5000, 0, [], $contract));
+        $calculator->calculateGroupPrice($this->getMockedShipment(-5000, [], $contract));
     }
 
     /** @test */
@@ -93,7 +93,7 @@ class PriceCalculatorTest extends TestCase
         $calculator = new PriceCalculator();
 
         $this->expectException(CalculationException::class);
-        $calculator->calculateGroupPrice($this->getMockedShipment(1000, 0, [], $contract));
+        $calculator->calculateGroupPrice($this->getMockedShipment(1000, [], $contract));
     }
 
     /** @test */
@@ -125,99 +125,13 @@ class PriceCalculatorTest extends TestCase
         $calculator = new PriceCalculator();
 
         $this->expectException(CalculationException::class);
-        $calculator->calculateGroupPrice($this->getMockedShipment(98544, 0, [], $contract));
-    }
-
-    /** @test */
-    public function testCalculateInsurancePrice()
-    {
-        $contract = $this->getMockedServiceContract([], [
-            [
-                'covered' => 1000,
-                'price'   => 99,
-            ],
-            [
-                'covered' => 2000,
-                'price'   => 500,
-            ],
-            [
-                'covered' => 123456,
-                'price'   => 789,
-            ],
-            [
-                'covered' => 100100,
-                'price'   => 600,
-            ],
-        ]);
-
-        $calculator = new PriceCalculator();
-
-        $this->assertEquals(
-            99,
-            $calculator->calculateInsurancePrice($this->getMockedShipment(10, 587, [], $contract))
-        );
-        $this->assertEquals(
-            500,
-            $calculator->calculateInsurancePrice($this->getMockedShipment(20, 1177, [], $contract))
-        );
-        $this->assertEquals(
-            600,
-            $calculator->calculateInsurancePrice($this->getMockedShipment(30, 100000, [], $contract))
-        );
-        $this->assertEquals(
-            789,
-            $calculator->calculateInsurancePrice($this->getMockedShipment(40, 123456, [], $contract))
-        );
-    }
-
-    /** @test */
-    public function testCalculateInsurancePriceTooHighInsurance()
-    {
-        $contract = $this->getMockedServiceContract([], [
-            [
-                'covered' => 100,
-                'price'   => 101,
-            ],
-            [
-                'covered' => 987654,
-                'price'   => 12,
-            ],
-            [
-                'covered' => 13456,
-                'price'   => 79,
-            ],
-        ]);
-
-        $calculator = new PriceCalculator();
-
-        $this->expectException(CalculationException::class);
-        $calculator->calculateInsurancePrice($this->getMockedShipment(50, 99999999999999999999, [], $contract));
-    }
-
-    /** @test */
-    public function testCalculateInsurancePriceNegativeInsurance()
-    {
-        $contract = $this->getMockedServiceContract([], [
-            [
-                'covered' => 654,
-                'price'   => 121,
-            ],
-            [
-                'covered' => 1456,
-                'price'   => 739,
-            ],
-        ]);
-
-        $calculator = new PriceCalculator();
-
-        $this->expectException(CalculationException::class);
-        $calculator->calculateInsurancePrice($this->getMockedShipment(50, -124, [], $contract));
+        $calculator->calculateGroupPrice($this->getMockedShipment(98544, [], $contract));
     }
 
     /** @test */
     public function testCalculateOptionsPrice()
     {
-        $contract = $this->getMockedServiceContract([], [], [
+        $contract = $this->getMockedServiceContract([], [
             [
                 'id'    => 'option-a',
                 'price' => 123,
@@ -232,22 +146,22 @@ class PriceCalculatorTest extends TestCase
 
         $this->assertEquals(
             123,
-            $calculator->calculateOptionsPrice($this->getMockedShipment(50, 0, ['option-a'], $contract))
+            $calculator->calculateOptionsPrice($this->getMockedShipment(50, ['option-a'], $contract))
         );
         $this->assertEquals(
             738,
-            $calculator->calculateOptionsPrice($this->getMockedShipment(50, 0, ['option-b'], $contract))
+            $calculator->calculateOptionsPrice($this->getMockedShipment(50, ['option-b'], $contract))
         );
         $this->assertEquals(
             861,
-            $calculator->calculateOptionsPrice($this->getMockedShipment(50, 0, ['option-a', 'option-b'], $contract))
+            $calculator->calculateOptionsPrice($this->getMockedShipment(50, ['option-a', 'option-b'], $contract))
         );
     }
 
     /** @test */
     public function testCalculateOptionsPriceInvalidOption()
     {
-        $contract = $this->getMockedServiceContract([], [], [
+        $contract = $this->getMockedServiceContract([], [
             [
                 'id'    => 'option-a',
                 'price' => 1233,
@@ -265,7 +179,7 @@ class PriceCalculatorTest extends TestCase
         $calculator = new PriceCalculator();
 
         $this->expectException(CalculationException::class);
-        $calculator->calculateOptionsPrice($this->getMockedShipment(50, 0, ['option-q'], $contract));
+        $calculator->calculateOptionsPrice($this->getMockedShipment(50, ['option-q'], $contract));
     }
 
     /** @test */
@@ -302,15 +216,6 @@ class PriceCalculatorTest extends TestCase
             ],
         ], [
             [
-                'covered' => 654,
-                'price'   => 121,
-            ],
-            [
-                'covered' => 1456,
-                'price'   => 739,
-            ],
-        ], [
-            [
                 'id'    => 'option-a',
                 'price' => 1233,
             ],
@@ -327,23 +232,23 @@ class PriceCalculatorTest extends TestCase
         $calculator = new PriceCalculator();
 
         $this->assertEquals(
-            73 + 739 + 799,
-            $calculator->calculate($this->getMockedShipment(30012, 1245, ['option-b'], $contract))
+            73 + 799,
+            $calculator->calculate($this->getMockedShipment(30012, ['option-b'], $contract))
         );
 
         $this->assertEquals(
-            12 + 121,
-            $calculator->calculate($this->getMockedShipment(30, 100, [], $contract))
+            12,
+            $calculator->calculate($this->getMockedShipment(30, [], $contract))
         );
 
         $this->assertEquals(
             779,
-            $calculator->calculate($this->getMockedShipment(3515, 0, [], $contract))
+            $calculator->calculate($this->getMockedShipment(3515, [], $contract))
         );
 
         $this->assertEquals(
-            799 + 121 + 1233 + 789,
-            $calculator->calculate($this->getMockedShipment(9000, 157, ['option-a', 'option-c'], $contract))
+            799 + 1233 + 789,
+            $calculator->calculate($this->getMockedShipment(9000, ['option-a', 'option-c'], $contract))
         );
     }
 
@@ -378,16 +283,5 @@ class PriceCalculatorTest extends TestCase
 
         $this->expectException(CalculationException::class);
         $calculator->calculateOptionsPrice($shipment);
-    }
-
-    /** @test */
-    public function testCalculateInsurancePriceException()
-    {
-        $calculator = new PriceCalculator();
-        $shipment = $this->createMock(ShipmentInterface::class);
-        $shipment->method('getServiceContract')->willReturn(null);
-
-        $this->expectException(CalculationException::class);
-        $calculator->calculateInsurancePrice($shipment);
     }
 }

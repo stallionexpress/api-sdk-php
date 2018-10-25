@@ -22,8 +22,7 @@ class ServiceMatcher
     {
         return $this->matchesDeliveryMethod($shipment, $service)
             && ($weightContracts = $this->getMatchedWeightGroups($shipment, $service->getServiceContracts()))
-            && ($optionContracts = $this->getMatchedOptions($shipment, $weightContracts))
-            && $this->getMatchedInsurances($shipment, $optionContracts);
+            && ($optionContracts = $this->getMatchedOptions($shipment, $weightContracts));
     }
 
     /**
@@ -102,36 +101,5 @@ class ServiceMatcher
         }
 
         return $matches;
-    }
-
-    /**
-     * Returns a subset of the given contracts that can cover the desired
-     * insurance of the shipment.
-     *
-     * @param ShipmentInterface          $shipment
-     * @param ServiceContractInterface[] $serviceContracts
-     * @return ServiceContractInterface[]
-     */
-    public function getMatchedInsurances(ShipmentInterface $shipment, array $serviceContracts)
-    {
-        if (!$shipment->getInsuranceAmount()) {
-            return $serviceContracts;
-        }
-
-        if ($shipment->getInsuranceAmount() < 0) {
-            throw new ServiceMatchingException(
-                'Cannot match a service to given shipment; negative insurance amount given'
-            );
-        }
-
-        return array_filter($serviceContracts, function (ServiceContractInterface $serviceContract) use ($shipment) {
-            foreach ($serviceContract->getServiceInsurances() as $insurance) {
-                if ($shipment->getInsuranceAmount() <= $insurance->getCovered()) {
-                    return true;
-                }
-            }
-
-            return false;
-        });
     }
 }
