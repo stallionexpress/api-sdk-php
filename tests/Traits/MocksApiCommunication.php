@@ -29,7 +29,14 @@ trait MocksApiCommunication
                         dirname(dirname(__FILE__)),
                         'Stubs',
                         $method,
-                        str_replace([':', '{', '}', '(', ')', '/', '\\', '@', '?', '[', ']', '=', '&'], '-', $uri),
+                        str_replace(
+                            ['?', '&'],
+                            DIRECTORY_SEPARATOR,
+                            str_replace(
+                                [':', '{', '}', '(', ')', '/', '\\', '@', '[', ']', '='],
+                                '-',
+                                $uri
+                            )),
                     ]) . '.json';
 
                 if (strpos($filePath, 'stream') !== false) {
