@@ -9,6 +9,7 @@ use MyParcelCom\ApiSdk\Collection\CollectionInterface;
 use MyParcelCom\ApiSdk\Exceptions\InvalidResourceException;
 use MyParcelCom\ApiSdk\MyParcelComApi;
 use MyParcelCom\ApiSdk\Resources\Address;
+use MyParcelCom\ApiSdk\Resources\Carrier;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\PickUpDropOffLocationInterface;
@@ -295,6 +296,53 @@ class MyParcelComApiTest extends TestCase
             }, $carriers),
             array_keys($allPudoLocations)
         );
+    }
+
+    /** @test */
+    public function testItRetrievesPickupLocationsForCarriersWithActiveContract()
+    {
+        $pudoServices = $this->api->getServices(null, [
+            'has_active_contract' => 'true',
+            'delivery_method'     => 'pick-up',
+        ]);
+        $this->assertCount(1, $pudoServices);
+        /** @var Carrier $pudoCarrier */
+        $pudoCarrierId = $pudoServices->current()->getCarrier()->getId();
+
+        $allCarriers = $this->api->getCarriers()->get();
+        $this->assertCount(2, $allCarriers);
+
+        $allPudoLocations = $this->api->getPickUpDropOffLocations(
+            'GB',
+            'B48 7QN',
+            null,
+            null,
+            null,
+            false
+        );
+
+        $this->assertTrue(array_key_exists($pudoCarrierId, $allPudoLocations));
+        $this->assertCount(2, $allPudoLocations);
+
+        // When requesting pudo locations for active contracts
+        $filteredPudoLocations = $this->api->getPickUpDropOffLocations(
+            'GB',
+            'B48 7QN',
+            null,
+            null,
+            null,
+            true
+        );
+
+        // I expect pudo locations for carriers that I have active contracts for
+        $this->assertTrue(array_key_exists($pudoCarrierId, $filteredPudoLocations));
+        $this->assertCount(1, $filteredPudoLocations);
+    }
+
+    /** @test */
+    public function testGetPudoLocationsForSpecificCarrierWhichDoesntHaveActiveContract()
+    {
+        // TODO: Write test! And Make work!
     }
 
     /** @test */

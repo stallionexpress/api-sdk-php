@@ -1,0 +1,62 @@
+{
+  "data": [
+    {
+      "id": "7f954d93-2f29-43ef-a5c1-6daf67642e26",
+      "type": "service-contracts",
+      "links": {
+        "self": "https://localhost:9443/service-contracts/7f954d93-2f29-43ef-a5c1-6daf67642e26"
+      },
+      "relationships": {
+        "service": {
+          "data": {
+            "id": "372c961e-006d-4351-b4e6-4dc9036e939b",
+            "type": "services"
+          },
+          "links": {
+            "related": "https://localhost:9443/services/372c961e-006d-4351-b4e6-4dc9036e939b"
+          }
+        },
+        "carrier_contract": {
+          "data": {
+            "id": "6c4f5d7d-13ff-478d-8aed-3d2b2732ad5a",
+            "type": "carrier-contracts"
+          },
+          "links": {
+            "related": "https://localhost:9443/carrier-contracts/6c4f5d7d-13ff-478d-8aed-3d2b2732ad5a"
+          }
+        },
+        "service_groups": {
+          "data": [
+            {
+              "id": "5cede9e8-f7a4-471e-8cee-cd8e1da3a212",
+              "type": "service-groups"
+            }
+          ],
+          "links": {
+            "related": "https://localhost:9443/service-contracts/7f954d93-2f29-43ef-a5c1-6daf67642e26/groups"
+          }
+        },
+        "service_option_prices": {
+          "data": [
+            {
+              "id": "4d96327c-2474-4e0a-9e11-af2292bb7274",
+              "type": "service-option-prices"
+            }
+          ],
+          "links": {
+            "related": "https://localhost:9443/service-contracts/7f954d93-2f29-43ef-a5c1-6daf67642e26/option-prices"
+          }
+        }
+      }
+    }
+  ],
+  "meta": {
+    "total_pages": 1,
+    "total_records": 1
+  },
+  "links": {
+    "self": "https://localhost:9443/services/372c961e-006d-4351-b4e6-4dc9036e939b/contracts?page[size]=30&page[number]=1",
+    "first": "https://localhost:9443/services/372c961e-006d-4351-b4e6-4dc9036e939b/contracts?page[size]=30&page[number]=1",
+    "last": "https://localhost:9443/services/372c961e-006d-4351-b4e6-4dc9036e939b/contracts?page[size]=30&page[number]=1"
+  }
+}

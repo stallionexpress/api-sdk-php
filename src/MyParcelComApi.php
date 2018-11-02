@@ -20,6 +20,7 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\ApiSdk\Resources\ResourceFactory;
+use MyParcelCom\ApiSdk\Resources\Service;
 use MyParcelCom\ApiSdk\Shipments\ContractSelector;
 use MyParcelCom\ApiSdk\Shipments\PriceCalculator;
 use MyParcelCom\ApiSdk\Shipments\ServiceMatcher;
@@ -164,9 +165,10 @@ class MyParcelComApi implements MyParcelComApiInterface
         $postalCode,
         $streetName = null,
         $streetNumber = null,
-        CarrierInterface $specificCarrier = null
+        CarrierInterface $specificCarrier = null,
+        $hasActiveContract = null
     ) {
-        $carriers = $specificCarrier ? [$specificCarrier] : $this->getCarriers();
+        $carriers = $this->determineCarriers($specificCarrier, $hasActiveContract);
 
         $uri = new UrlBuilder($this->apiUri
             . str_replace(
@@ -837,17 +839,30 @@ class MyParcelComApi implements MyParcelComApiInterface
     {
         $filters = [];
         foreach ($array as $name => $value) {
-            /**
-             * @deprecated This condition is to keep the SDK backwards
-             * compatible until the API has been updated to use the new filter.
-             */
-            if ($name === 'has_active_contract') {
-                $filters['filter[has_contract]'] = $value;
-            }
-
             $filters["filter[$name]"] = $value;
         }
 
         return $filters;
+    }
+
+    /**
+     * @param CarrierInterface $specificCarrier
+     * @param                  $hasActiveContract
+     * @return array|CollectionInterface
+     */
+    private function determineCarriers(CarrierInterface $specificCarrier = null, $hasActiveContract = null)
+    {
+        if ($hasActiveContract === true) {
+            $pudoServices = $this->getServices(null, [
+                'has_active_contract' => 'true',
+                'delivery_method'     => 'pick-up',
+            ])->get();
+
+            return array_map(function (Service $service) {
+                return $service->getCarrier();
+            }, $pudoServices);
+        }
+
+        return $this->getCarriers();
     }
 }
