@@ -846,12 +846,22 @@ class MyParcelComApi implements MyParcelComApiInterface
     }
 
     /**
+     * Determines which carriers to look pudo locations up for.
+     * The specificCarrier parameter indicates a specific carrier to look up pudo locations for. Otherwise,
+     * all carriers will be used.
+     * The onlyActiveContracts parameter indicates whether only carriers for which the user has an active contract
+     * for services with delivery method pickup should be used for pudo location retrieval.
+     *
      * @param bool                  $onlyActiveContracts
      * @param null|CarrierInterface $specificCarrier
      * @return array
      */
     private function determineCarriers($onlyActiveContracts, $specificCarrier = null)
     {
+        if ($specificCarrier && !$onlyActiveContracts) {
+            return [$specificCarrier];
+        }
+
         if ($onlyActiveContracts) {
             $pudoServices = $this->getServices(null, [
                 'has_active_contract' => 'true',
@@ -871,6 +881,6 @@ class MyParcelComApi implements MyParcelComApiInterface
             return $pudoCarriers;
         }
 
-        return $specificCarrier ? [$specificCarrier] : $this->getCarriers()->get();
+        return $this->getCarriers()->get();
     }
 }
