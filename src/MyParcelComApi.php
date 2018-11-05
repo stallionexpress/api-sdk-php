@@ -166,9 +166,9 @@ class MyParcelComApi implements MyParcelComApiInterface
         $streetName = null,
         $streetNumber = null,
         CarrierInterface $specificCarrier = null,
-        $hasActiveContract = null
+        $onlyActiveContracts = true
     ) {
-        $carriers = $this->determineCarriers($specificCarrier, $hasActiveContract);
+        $carriers = $this->determineCarriers($onlyActiveContracts, $specificCarrier);
 
         $uri = new UrlBuilder($this->apiUri
             . str_replace(
@@ -846,23 +846,31 @@ class MyParcelComApi implements MyParcelComApiInterface
     }
 
     /**
-     * @param CarrierInterface $specificCarrier
-     * @param                  $hasActiveContract
-     * @return array|CollectionInterface
+     * @param bool                  $onlyActiveContracts
+     * @param null|CarrierInterface $specificCarrier
+     * @return array
      */
-    private function determineCarriers(CarrierInterface $specificCarrier = null, $hasActiveContract = null)
+    private function determineCarriers($onlyActiveContracts, $specificCarrier = null)
     {
-        if ($hasActiveContract === true) {
+        if ($onlyActiveContracts) {
             $pudoServices = $this->getServices(null, [
                 'has_active_contract' => 'true',
                 'delivery_method'     => 'pick-up',
             ])->get();
 
-            return array_map(function (Service $service) {
+            $pudoCarriers = array_map(function (Service $service) {
                 return $service->getCarrier();
             }, $pudoServices);
+
+            if ($specificCarrier) {
+                return array_filter($pudoCarriers, function (CarrierInterface $carrier) use ($specificCarrier) {
+                    return $carrier->getId() === $specificCarrier->getId();
+                });
+            }
+
+            return $pudoCarriers;
         }
 
-        return $this->getCarriers();
+        return $specificCarrier ? [$specificCarrier] : $this->getCarriers()->get();
     }
 }

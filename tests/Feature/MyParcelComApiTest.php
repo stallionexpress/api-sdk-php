@@ -262,7 +262,8 @@ class MyParcelComApiTest extends TestCase
             'B48 7QN',
             null,
             null,
-            $failingCarrier
+            $failingCarrier,
+            false
         );
     }
 
@@ -279,7 +280,14 @@ class MyParcelComApiTest extends TestCase
             }
         });
 
-        $allPudoLocations = $this->api->getPickUpDropOffLocations('GB', 'B48 7QN');
+        $allPudoLocations = $this->api->getPickUpDropOffLocations(
+            'GB',
+            'B48 7QN',
+            null,
+            null,
+            null,
+            false
+        );
 
         $this->assertInternalType('array', $allPudoLocations);
         $this->assertNull($allPudoLocations[$failingCarrierId]);
@@ -304,14 +312,14 @@ class MyParcelComApiTest extends TestCase
         $pudoServices = $this->api->getServices(null, [
             'has_active_contract' => 'true',
             'delivery_method'     => 'pick-up',
-        ]);
+        ])->get();
         $this->assertCount(1, $pudoServices);
-        /** @var Carrier $pudoCarrier */
-        $pudoCarrierId = $pudoServices->current()->getCarrier()->getId();
+        $pudoCarrierId = reset($pudoServices)->getCarrier()->getId();
 
         $allCarriers = $this->api->getCarriers()->get();
         $this->assertCount(2, $allCarriers);
 
+        // Requesting pudo locations without the onlyActiveContracts filter gives pudo locations for both carriers.
         $allPudoLocations = $this->api->getPickUpDropOffLocations(
             'GB',
             'B48 7QN',
@@ -324,17 +332,10 @@ class MyParcelComApiTest extends TestCase
         $this->assertTrue(array_key_exists($pudoCarrierId, $allPudoLocations));
         $this->assertCount(2, $allPudoLocations);
 
-        // When requesting pudo locations for active contracts
-        $filteredPudoLocations = $this->api->getPickUpDropOffLocations(
-            'GB',
-            'B48 7QN',
-            null,
-            null,
-            null,
-            true
-        );
+        // When requesting pudo locations for active contracts,
+        // it only returns the one that has active contract for pudo.
+        $filteredPudoLocations = $this->api->getPickUpDropOffLocations('GB', 'B48 7QN');
 
-        // I expect pudo locations for carriers that I have active contracts for
         $this->assertTrue(array_key_exists($pudoCarrierId, $filteredPudoLocations));
         $this->assertCount(1, $filteredPudoLocations);
     }
@@ -342,7 +343,43 @@ class MyParcelComApiTest extends TestCase
     /** @test */
     public function testGetPudoLocationsForSpecificCarrierWhichDoesntHaveActiveContract()
     {
-        // TODO: Write test! And Make work!
+        $pudoServices = $this->api->getServices(null, [
+            'has_active_contract' => 'true',
+            'delivery_method'     => 'pick-up',
+        ])->get();
+        $this->assertCount(1, $pudoServices);
+
+        /** @var Carrier $pudoCarrier */
+        $pudoCarrier = reset($pudoServices)->getCarrier();
+
+        $pudoLocations = $this->api->getPickUpDropOffLocations(
+            'GB',
+            'B48 7QN',
+            null,
+            null,
+            $pudoCarrier
+        );
+
+        // The carrier with pudo locations should return a set of pudo locations.
+        $this->assertNotEmpty($pudoLocations);
+
+        $allCarriers = $this->api->getCarriers()->get();
+        $this->assertCount(2, $allCarriers);
+
+        $nonPudoCarriers = array_filter($allCarriers, function (CarrierInterface $carrier) use ($pudoCarrier) {
+            return $carrier->getId() !== $pudoCarrier->getId();
+        });
+
+        $pudoLocations = $this->api->getPickUpDropOffLocations(
+            'GB',
+            'B48 7QN',
+            null,
+            null,
+            reset($nonPudoCarriers)
+        );
+
+        // The other carrier does not have any pudo services and should thus not return pudo locations.
+        $this->assertEmpty($pudoLocations);
     }
 
     /** @test */
