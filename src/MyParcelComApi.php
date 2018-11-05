@@ -858,8 +858,18 @@ class MyParcelComApi implements MyParcelComApiInterface
      */
     private function determineCarriers($onlyActiveContracts, $specificCarrier = null)
     {
-        if ($specificCarrier && !$onlyActiveContracts) {
-            return [$specificCarrier];
+        if ($specificCarrier) {
+            if (!$onlyActiveContracts) {
+                return [$specificCarrier];
+            }
+
+            $pudoServices = $this->getServices(null, [
+                'has_active_contract' => 'true',
+                'carrier'             => $specificCarrier->getId(),
+                'delivery_method'     => 'pick-up',
+            ])->get();
+
+            return empty($pudoServices) ? [] : [$specificCarrier];
         }
 
         if ($onlyActiveContracts) {
@@ -868,17 +878,9 @@ class MyParcelComApi implements MyParcelComApiInterface
                 'delivery_method'     => 'pick-up',
             ])->get();
 
-            $pudoCarriers = array_map(function (Service $service) {
+            return array_map(function (Service $service) {
                 return $service->getCarrier();
             }, $pudoServices);
-
-            if ($specificCarrier) {
-                return array_filter($pudoCarriers, function (CarrierInterface $carrier) use ($specificCarrier) {
-                    return $carrier->getId() === $specificCarrier->getId();
-                });
-            }
-
-            return $pudoCarriers;
         }
 
         return $this->getCarriers()->get();
