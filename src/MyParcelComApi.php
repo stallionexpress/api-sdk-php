@@ -866,7 +866,7 @@ class MyParcelComApi implements MyParcelComApiInterface
 
         // Return all carriers if we're not filtering for anything
         // specific.
-        if (!$onlyActiveContracts && !$specificCarrier) {
+        if (!$onlyActiveContracts) {
             return $this->getCarriers()->get();
         }
 
