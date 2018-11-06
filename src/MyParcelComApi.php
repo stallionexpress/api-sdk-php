@@ -168,7 +168,7 @@ class MyParcelComApi implements MyParcelComApiInterface
         CarrierInterface $specificCarrier = null,
         $onlyActiveContracts = true
     ) {
-        $carriers = $this->determineCarriers($onlyActiveContracts, $specificCarrier);
+        $carriers = $this->determineCarriersForPudoLocations($onlyActiveContracts, $specificCarrier);
 
         $uri = new UrlBuilder($this->apiUri
             . str_replace(
@@ -856,33 +856,33 @@ class MyParcelComApi implements MyParcelComApiInterface
      * @param null|CarrierInterface $specificCarrier
      * @return array
      */
-    private function determineCarriers($onlyActiveContracts, $specificCarrier = null)
+    private function determineCarriersForPudoLocations($onlyActiveContracts, $specificCarrier = null)
     {
+        // If we're looking for a specific carrier but it doesn't
+        // matter if it has active contracts, just return it immediately.
+        if (!$onlyActiveContracts && $specificCarrier) {
+            return [$specificCarrier];
+        }
+
+        // Return all carriers if we're not filtering for anything
+        // specific.
+        if (!$onlyActiveContracts && !$specificCarrier) {
+            return $this->getCarriers()->get();
+        }
+
+        $parameters = [
+            'has_active_contract' => 'true',
+            'delivery_method'     => 'pick-up',
+        ];
+
         if ($specificCarrier) {
-            if (!$onlyActiveContracts) {
-                return [$specificCarrier];
-            }
-
-            $pudoServices = $this->getServices(null, [
-                'has_active_contract' => 'true',
-                'carrier'             => $specificCarrier->getId(),
-                'delivery_method'     => 'pick-up',
-            ])->get();
-
-            return empty($pudoServices) ? [] : [$specificCarrier];
+            $parameters['carrier'] = $specificCarrier->getId();
         }
 
-        if ($onlyActiveContracts) {
-            $pudoServices = $this->getServices(null, [
-                'has_active_contract' => 'true',
-                'delivery_method'     => 'pick-up',
-            ])->get();
+        $pudoServices = $this->getServices(null, $parameters)->get();
 
-            return array_map(function (Service $service) {
-                return $service->getCarrier();
-            }, $pudoServices);
-        }
-
-        return $this->getCarriers()->get();
+        return array_map(function (Service $service) {
+            return $service->getCarrier();
+        }, $pudoServices);
     }
 }
