@@ -20,6 +20,7 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\ApiSdk\Resources\ResourceFactory;
+use MyParcelCom\ApiSdk\Resources\Service;
 use MyParcelCom\ApiSdk\Shipments\ContractSelector;
 use MyParcelCom\ApiSdk\Shipments\PriceCalculator;
 use MyParcelCom\ApiSdk\Shipments\ServiceMatcher;
@@ -164,9 +165,10 @@ class MyParcelComApi implements MyParcelComApiInterface
         $postalCode,
         $streetName = null,
         $streetNumber = null,
-        CarrierInterface $specificCarrier = null
+        CarrierInterface $specificCarrier = null,
+        $onlyActiveContracts = true
     ) {
-        $carriers = $specificCarrier ? [$specificCarrier] : $this->getCarriers();
+        $carriers = $this->determineCarriersForPudoLocations($onlyActiveContracts, $specificCarrier);
 
         $uri = new UrlBuilder($this->apiUri
             . str_replace(
@@ -837,17 +839,50 @@ class MyParcelComApi implements MyParcelComApiInterface
     {
         $filters = [];
         foreach ($array as $name => $value) {
-            /**
-             * @deprecated This condition is to keep the SDK backwards
-             * compatible until the API has been updated to use the new filter.
-             */
-            if ($name === 'has_active_contract') {
-                $filters['filter[has_contract]'] = $value;
-            }
-
             $filters["filter[$name]"] = $value;
         }
 
         return $filters;
+    }
+
+    /**
+     * Determines which carriers to look pudo locations up for.
+     * The specificCarrier parameter indicates a specific carrier to look up pudo locations for. Otherwise,
+     * all carriers will be used.
+     * The onlyActiveContracts parameter indicates whether only carriers for which the user has an active contract
+     * for services with delivery method pickup should be used for pudo location retrieval.
+     *
+     * @param bool                  $onlyActiveContracts
+     * @param null|CarrierInterface $specificCarrier
+     * @return array
+     */
+    private function determineCarriersForPudoLocations($onlyActiveContracts, $specificCarrier = null)
+    {
+        // If we're looking for a specific carrier but it doesn't
+        // matter if it has active contracts, just return it immediately.
+        if (!$onlyActiveContracts && $specificCarrier) {
+            return [$specificCarrier];
+        }
+
+        // Return all carriers if we're not filtering for anything
+        // specific.
+        if (!$onlyActiveContracts) {
+            return $this->getCarriers()->get();
+        }
+
+        $parameters = [
+            'has_active_contract' => 'true',
+            'delivery_method'     => 'pick-up',
+        ];
+
+        if ($specificCarrier) {
+            $parameters['carrier'] = $specificCarrier->getId();
+        }
+
+        $pudoServices = $this->getServices(null, $parameters)->get();
+
+        return array_map(function (Service $service) {
+            return $service->getCarrier();
+        }, $pudoServices);
     }
 }
