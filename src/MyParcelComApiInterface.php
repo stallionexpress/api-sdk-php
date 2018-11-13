@@ -57,13 +57,14 @@ interface MyParcelComApiInterface
 
     /**
      * Get the pick up/drop off locations around a given location. If no carrier
-     * is given, the default carrier is used.
+     * is given, pick up locations for all available carriers will be used.
      *
      * @param string                $countryCode
      * @param string                $postalCode
      * @param string|null           $streetName
      * @param string|null           $streetNumber
      * @param CarrierInterface|null $specificCarrier
+     * @param bool                  $onlyActiveContracts
      * @return CollectionInterface
      */
     public function getPickUpDropOffLocations(
@@ -71,7 +72,8 @@ interface MyParcelComApiInterface
         $postalCode,
         $streetName = null,
         $streetNumber = null,
-        CarrierInterface $specificCarrier = null
+        CarrierInterface $specificCarrier = null,
+        $onlyActiveContracts = true
     );
 
     /**

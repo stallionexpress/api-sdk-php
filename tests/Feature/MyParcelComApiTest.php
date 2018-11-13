@@ -9,6 +9,7 @@ use MyParcelCom\ApiSdk\Collection\CollectionInterface;
 use MyParcelCom\ApiSdk\Exceptions\InvalidResourceException;
 use MyParcelCom\ApiSdk\MyParcelComApi;
 use MyParcelCom\ApiSdk\Resources\Address;
+use MyParcelCom\ApiSdk\Resources\Carrier;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\PickUpDropOffLocationInterface;
@@ -261,7 +262,8 @@ class MyParcelComApiTest extends TestCase
             'B48 7QN',
             null,
             null,
-            $failingCarrier
+            $failingCarrier,
+            false
         );
     }
 
@@ -278,7 +280,14 @@ class MyParcelComApiTest extends TestCase
             }
         });
 
-        $allPudoLocations = $this->api->getPickUpDropOffLocations('GB', 'B48 7QN');
+        $allPudoLocations = $this->api->getPickUpDropOffLocations(
+            'GB',
+            'B48 7QN',
+            null,
+            null,
+            null,
+            false
+        );
 
         $this->assertInternalType('array', $allPudoLocations);
         $this->assertNull($allPudoLocations[$failingCarrierId]);
@@ -295,6 +304,82 @@ class MyParcelComApiTest extends TestCase
             }, $carriers),
             array_keys($allPudoLocations)
         );
+    }
+
+    /** @test */
+    public function testItRetrievesPickupLocationsForCarriersWithActiveContract()
+    {
+        $pudoServices = $this->api->getServices(null, [
+            'has_active_contract' => 'true',
+            'delivery_method'     => 'pick-up',
+        ])->get();
+        $this->assertCount(1, $pudoServices);
+        $pudoCarrierId = reset($pudoServices)->getCarrier()->getId();
+
+        $allCarriers = $this->api->getCarriers()->get();
+        $this->assertCount(2, $allCarriers);
+
+        // Requesting pudo locations without the onlyActiveContracts filter gives pudo locations for both carriers.
+        $allPudoLocations = $this->api->getPickUpDropOffLocations(
+            'GB',
+            'B48 7QN',
+            null,
+            null,
+            null,
+            false
+        );
+
+        $this->assertTrue(array_key_exists($pudoCarrierId, $allPudoLocations));
+        $this->assertCount(2, $allPudoLocations);
+
+        // When requesting pudo locations for active contracts,
+        // it only returns the one that has active contract for pudo.
+        $filteredPudoLocations = $this->api->getPickUpDropOffLocations('GB', 'B48 7QN');
+
+        $this->assertTrue(array_key_exists($pudoCarrierId, $filteredPudoLocations));
+        $this->assertCount(1, $filteredPudoLocations);
+    }
+
+    /** @test */
+    public function testGetPudoLocationsForSpecificCarrierWhichDoesntHaveActiveContract()
+    {
+        $pudoServices = $this->api->getServices(null, [
+            'has_active_contract' => 'true',
+            'delivery_method'     => 'pick-up',
+        ])->get();
+        $this->assertCount(1, $pudoServices);
+
+        /** @var Carrier $pudoCarrier */
+        $pudoCarrier = reset($pudoServices)->getCarrier();
+
+        $pudoLocations = $this->api->getPickUpDropOffLocations(
+            'GB',
+            'B48 7QN',
+            null,
+            null,
+            $pudoCarrier
+        );
+
+        // The carrier with pudo locations should return a set of pudo locations.
+        $this->assertNotEmpty($pudoLocations);
+
+        $allCarriers = $this->api->getCarriers()->get();
+        $this->assertCount(2, $allCarriers);
+
+        $nonPudoCarriers = array_filter($allCarriers, function (CarrierInterface $carrier) use ($pudoCarrier) {
+            return $carrier->getId() !== $pudoCarrier->getId();
+        });
+
+        $pudoLocations = $this->api->getPickUpDropOffLocations(
+            'GB',
+            'B48 7QN',
+            null,
+            null,
+            reset($nonPudoCarriers)
+        );
+
+        // The other carrier does not have any pudo services and should thus not return pudo locations.
+        $this->assertEmpty($pudoLocations);
     }
 
     /** @test */
