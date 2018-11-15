@@ -19,6 +19,35 @@ class ServiceOptionProxy implements ServiceOptionInterface, ResourceProxyInterfa
     /** @var string */
     private $type = ResourceInterface::TYPE_SERVICE_OPTION;
 
+    private $serviceRateMeta = [];
+
+    /**
+     * @param string $serviceRateId
+     * @param array  $meta
+     * @return ServiceOptionProxy
+     */
+    public function addMetaForServiceRate($serviceRateId, array $meta)
+    {
+        // TODO: Think about this. Maybe it's not a good option.
+        // TODO: If it is, write tests.
+        $this->serviceRateMeta[$serviceRateId] = $meta;
+
+        return $this;
+    }
+
+    /**
+     * @param $serviceRateId
+     * @return array|null
+     */
+    public function getMetaForServiceRate($serviceRateId)
+    {
+        // TODO: Think about this. Maybe it's not a good option.
+        // TODO: If it is, write tests.
+        return array_key_exists($serviceRateId, $this->serviceRateMeta)
+            ? $this->serviceRateMeta[$serviceRateId]
+            : null;
+    }
+
     /**
      * Set the identifier for this file.
      *

@@ -484,6 +484,34 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
     }
 
     /**
+     * ServiceRate factory method.
+     *
+     * @param string $type
+     * @param array  $attributes
+     * @return ServiceRate
+     */
+    protected function serviceRateFactory($type, &$attributes)
+    {
+        $serviceRate = new ServiceRate();
+
+        // TODO: Finish implementing this.
+        // Think about implementation of service option prices in service option proxy.
+
+        if (isset($attributes['service_options'])) {
+            $serviceOptions = $attributes['service_options']['data'];
+            foreach ($serviceOptions as $serviceOption) {
+                $serviceOption = (new ServiceOptionProxy())
+                    ->setMyParcelComApi($this->api)
+                    ->setId($serviceOption['id'])
+                    ->addMetaForServiceRate($attributes['id'], $serviceOption['meta']);
+                $serviceRate->addServiceOption($serviceOption);
+            }
+        }
+
+        return $serviceRate;
+    }
+
+    /**
      * Factory method for creating file resources, adds proxy streams to the
      * file for requesting the file data.
      *
