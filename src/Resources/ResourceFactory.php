@@ -5,7 +5,7 @@ namespace MyParcelCom\ApiSdk\Resources;
 use MyParcelCom\ApiSdk\Exceptions\ResourceFactoryException;
 use MyParcelCom\ApiSdk\MyParcelComApiInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierContractInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CustomsInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
@@ -27,7 +27,7 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentItemInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentStatusInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\StatusInterface;
-use MyParcelCom\ApiSdk\Resources\Proxy\CarrierContractProxy;
+use MyParcelCom\ApiSdk\Resources\Proxy\ContractProxy;
 use MyParcelCom\ApiSdk\Resources\Proxy\CarrierProxy;
 use MyParcelCom\ApiSdk\Resources\Proxy\FileProxy;
 use MyParcelCom\ApiSdk\Resources\Proxy\FileStreamProxy;
@@ -74,7 +74,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
 
     public function __construct()
     {
-        $carrierContractFactory = [$this, 'carrierContractFactory'];
+        $contractFactory = [$this, 'contractFactory'];
         $shipmentFactory = [$this, 'shipmentFactory'];
         $shipmentStatusFactory = [$this, 'shipmentStatusFactory'];
         $serviceFactory = [$this, 'serviceFactory'];
@@ -85,8 +85,8 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         $shipmentItemFactory = [$this, 'shipmentItemFactory'];
         $pudoLocationFactory = [$this, 'pudoLocationFactory'];
 
-        $this->setFactoryForType(ResourceInterface::TYPE_CARRIER_CONTRACT, $carrierContractFactory);
-        $this->setFactoryForType(CarrierContractInterface::class, $carrierContractFactory);
+        $this->setFactoryForType(ResourceInterface::TYPE_CONTRACT, $contractFactory);
+        $this->setFactoryForType(ContractInterface::class, $contractFactory);
 
         $this->setFactoryForType(ResourceInterface::TYPE_SHIPMENT, $shipmentFactory);
         $this->setFactoryForType(ShipmentInterface::class, $shipmentFactory);
@@ -156,12 +156,12 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
             unset($attributes['service']);
         }
 
-        if (isset($attributes['carrier_contract']['id'])) {
-            $serviceContract->setCarrierContract(
-                (new CarrierContractProxy())->setMyParcelComApi($this->api)->setId($attributes['carrier_contract']['id'])
+        if (isset($attributes['contract']['id'])) {
+            $serviceContract->setContract(
+                (new ContractProxy())->setMyParcelComApi($this->api)->setId($attributes['contract']['id'])
             );
 
-            unset($attributes['carrier_contract']);
+            unset($attributes['contract']);
         }
 
 
@@ -234,19 +234,19 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
     }
 
     /**
-     * Factory method for creating CarrierContracts with proxies for all
+     * Factory method for creating Contracts with proxies for all
      * relationships.
      *
      * @param string $type
      * @param array  $attributes
-     * @return CarrierContract
+     * @return Contract
      */
-    protected function carrierContractFactory($type, array &$attributes)
+    protected function contractFactory($type, array &$attributes)
     {
-        $carrierContract = new CarrierContract();
+        $contract = new Contract();
 
         if (isset($attributes['carrier']['id'])) {
-            $carrierContract->setCarrier(
+            $contract->setCarrier(
                 (new CarrierProxy())->setMyParcelComApi($this->api)->setId($attributes['carrier']['id'])
             );
 
@@ -254,10 +254,10 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         }
 
         if (isset($attributes['id'])) {
-            $carrierContract->setServiceContractsCallback(function () use ($attributes) {
+            $contract->setServiceContractsCallback(function () use ($attributes) {
                 return $this->api->getResourcesFromUri(
                     str_replace(
-                        '{carrier_contract_id}',
+                        '{contract_id}',
                         $attributes['id'],
                         MyParcelComApiInterface::PATH_CARRIER_SERVICE_CONTRACTS
                     )
@@ -265,7 +265,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
             });
         }
 
-        return $carrierContract;
+        return $contract;
     }
 
     /**

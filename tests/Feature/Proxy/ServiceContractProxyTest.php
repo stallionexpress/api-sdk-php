@@ -6,7 +6,7 @@ use GuzzleHttp\ClientInterface;
 use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
 use MyParcelCom\ApiSdk\MyParcelComApi;
 use MyParcelCom\ApiSdk\MyParcelComApiInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierContractInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceGroupInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
@@ -52,9 +52,9 @@ class ServiceContractProxyTest extends TestCase
         $service = $this->getMockBuilder(ServiceInterface::class)->getMock();
         $this->assertEquals($service, $this->serviceContractProxy->setService($service)->getService());
 
-        /** @var CarrierContractInterface $carrierContract */
-        $carrierContract = $this->getMockBuilder(CarrierContractInterface::class)->getMock();
-        $this->assertEquals($carrierContract, $this->serviceContractProxy->setCarrierContract($carrierContract)->getCarrierContract());
+        /** @var ContractInterface $contract */
+        $contract = $this->getMockBuilder(ContractInterface::class)->getMock();
+        $this->assertEquals($contract, $this->serviceContractProxy->setContract($contract)->getContract());
 
         $serviceGroupBuilder = $this->getMockBuilder(ServiceGroupInterface::class);
         /** @var ServiceGroupInterface $serviceGroupA */
@@ -128,7 +128,7 @@ class ServiceContractProxyTest extends TestCase
             ->setMyParcelComApi($this->api)
             ->setId('f94dda81-c418-4077-ba7c-87ddf9076c28');
         $firstProxy->getService();
-        $firstProxy->getCarrierContract();
+        $firstProxy->getContract();
         $firstProxy->getServiceGroups();
 
         $this->assertEquals(1, $this->clientCalls['https://api/service-contracts/f94dda81-c418-4077-ba7c-87ddf9076c28']);

@@ -2,13 +2,13 @@
 
 namespace MyParcelCom\ApiSdk\Resources;
 
-use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierContractInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 
-class CarrierContract implements CarrierContractInterface
+class Contract implements ContractInterface
 {
     use JsonSerializable;
 
@@ -24,7 +24,7 @@ class CarrierContract implements CarrierContractInterface
     private $id;
 
     /** @var string */
-    private $type = ResourceInterface::TYPE_CARRIER_CONTRACT;
+    private $type = ResourceInterface::TYPE_CONTRACT;
 
     /** @var array */
     private $attributes = [

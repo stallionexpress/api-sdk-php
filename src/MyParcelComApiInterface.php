@@ -19,7 +19,7 @@ interface MyParcelComApiInterface
     const PATH_REGIONS = '/regions';
     const PATH_SERVICES = '/services';
     const PATH_SERVICE_CONTRACTS = '/services/{service_id}/contracts';
-    const PATH_CARRIER_SERVICE_CONTRACTS = '/service-contracts/?filter[carrier_contract]={carrier_contract_id}';
+    const PATH_CARRIER_SERVICE_CONTRACTS = '/service-contracts/?filter[contract]={contract_id}';
     const PATH_SHIPMENTS = '/shipments';
     const PATH_SHIPMENT_STATUSES = '/shipments/{shipment_id}/statuses';
     const PATH_SHOPS = '/shops';

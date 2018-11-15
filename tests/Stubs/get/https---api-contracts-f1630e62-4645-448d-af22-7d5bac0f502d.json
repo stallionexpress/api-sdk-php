@@ -1,6 +1,6 @@
 {
   "data": {
-    "type": "carrier-contracts",
+    "type": "contracts",
     "id": "f1630e62-4645-448d-af22-7d5bac0f502d",
     "attributes": {
       "currency": "EUR",
@@ -17,7 +17,7 @@
       },
       "service_contracts": {
         "links": {
-          "related": "https://api/service-contracts?filter[carrier_contract]=f1630e62-4645-448d-af22-7d5bac0f502d"
+          "related": "https://api/service-contracts?filter[contract]=f1630e62-4645-448d-af22-7d5bac0f502d"
         }
       }
     }

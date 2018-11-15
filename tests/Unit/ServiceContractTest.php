@@ -2,7 +2,7 @@
 
 namespace MyParcelCom\ApiSdk\Tests\Unit;
 
-use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierContractInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceGroupInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionPriceInterface;
@@ -15,45 +15,45 @@ class ServiceContractTest extends TestCase
     /** @test */
     public function testId()
     {
-        $contract = new ServiceContract();
-        $this->assertEquals('contract-id', $contract->setId('contract-id')->getId());
+        $serviceContract = new ServiceContract();
+        $this->assertEquals('contract-id', $serviceContract->setId('contract-id')->getId());
     }
 
     /** @test */
     public function testGetType()
     {
-        $contract = new ServiceContract();
-        $this->assertEquals('service-contracts', $contract->getType());
+        $serviceContract = new ServiceContract();
+        $this->assertEquals('service-contracts', $serviceContract->getType());
     }
 
     /** @test */
     public function testService()
     {
-        $contract = new ServiceContract();
+        $serviceContract = new ServiceContract();
 
         $mock = $this->getMockClass(ServiceInterface::class);
         $service = new $mock();
 
-        $this->assertEquals($service, $contract->setService($service)->getService());
+        $this->assertEquals($service, $serviceContract->setService($service)->getService());
     }
 
     /** @test */
-    public function testCarrierContract()
+    public function testContract()
     {
-        $contract = new ServiceContract();
+        $serviceContract = new ServiceContract();
 
-        $mock = $this->getMockClass(CarrierContractInterface::class);
-        $carrierContract = new $mock();
+        $mock = $this->getMockClass(ContractInterface::class);
+        $contract = new $mock();
 
-        $this->assertEquals($carrierContract, $contract->setCarrierContract($carrierContract)->getCarrierContract());
+        $this->assertEquals($contract, $serviceContract->setContract($contract)->getContract());
     }
 
     /** @test */
     public function testServiceGroups()
     {
-        $contract = new ServiceContract();
+        $serviceContract = new ServiceContract();
 
-        $this->assertEmpty($contract->getServiceGroups());
+        $this->assertEmpty($serviceContract->getServiceGroups());
 
         $mock = $this->getMockClass(ServiceGroupInterface::class);
 
@@ -61,23 +61,23 @@ class ServiceContractTest extends TestCase
             new $mock(),
             new $mock(),
         ];
-        $contract->setServiceGroups($groups);
-        $this->assertCount(2, $contract->getServiceGroups());
-        $this->assertEquals($groups, $contract->getServiceGroups());
+        $serviceContract->setServiceGroups($groups);
+        $this->assertCount(2, $serviceContract->getServiceGroups());
+        $this->assertEquals($groups, $serviceContract->getServiceGroups());
 
         $group = new $mock();
-        $contract->addServiceGroup($group);
+        $serviceContract->addServiceGroup($group);
         $groups[] = $group;
-        $this->assertCount(3, $contract->getServiceGroups());
-        $this->assertEquals($groups, $contract->getServiceGroups());
+        $this->assertCount(3, $serviceContract->getServiceGroups());
+        $this->assertEquals($groups, $serviceContract->getServiceGroups());
     }
 
     /** @test */
     public function testServiceOptionPrices()
     {
-        $contract = new ServiceContract();
+        $serviceContract = new ServiceContract();
 
-        $this->assertEmpty($contract->getServiceOptionPrices());
+        $this->assertEmpty($serviceContract->getServiceOptionPrices());
 
         $mock = $this->getMockClass(ServiceOptionPriceInterface::class);
 
@@ -85,31 +85,31 @@ class ServiceContractTest extends TestCase
             new $mock(),
             new $mock(),
         ];
-        $contract->setServiceOptionPrices($options);
-        $this->assertCount(2, $contract->getServiceOptionPrices());
-        $this->assertEquals($options, $contract->getServiceOptionPrices());
+        $serviceContract->setServiceOptionPrices($options);
+        $this->assertCount(2, $serviceContract->getServiceOptionPrices());
+        $this->assertEquals($options, $serviceContract->getServiceOptionPrices());
 
         $option = new $mock();
-        $contract->addServiceOptionPrice($option);
+        $serviceContract->addServiceOptionPrice($option);
         $options[] = $option;
-        $this->assertCount(3, $contract->getServiceOptionPrices());
-        $this->assertEquals($options, $contract->getServiceOptionPrices());
+        $this->assertCount(3, $serviceContract->getServiceOptionPrices());
+        $this->assertEquals($options, $serviceContract->getServiceOptionPrices());
     }
 
     /** @test */
     public function testJsonSerialize()
     {
-        $carrierContractMock = $this->getMockBuilder(CarrierContractInterface::class)
+        $contractMock = $this->getMockBuilder(ContractInterface::class)
             ->disableOriginalConstructor()
             ->disableOriginalClone()
             ->disableArgumentCloning()
             ->disallowMockingUnknownTypes()
             ->getMock();
 
-        $carrierContractMock->method('jsonSerialize')
+        $contractMock->method('jsonSerialize')
             ->willReturn([
-                'type' => 'carrier-contracts',
-                'id'   => 'carrier-contract-id',
+                'type' => 'contracts',
+                'id'   => 'contract-id',
             ]);
 
         $serviceMock = $this->getMockBuilder(ServiceInterface::class)
@@ -151,10 +151,10 @@ class ServiceContractTest extends TestCase
                 'id'   => 'service-option-id',
             ]);
 
-        $contract = (new ServiceContract())
+        $serviceContract = (new ServiceContract())
             ->setId('contract-id')
             ->setService($serviceMock)
-            ->setCarrierContract($carrierContractMock)
+            ->setContract($contractMock)
             ->setServiceGroups([$groupMock])
             ->setServiceOptionPrices([$optionMock]);
 
@@ -168,10 +168,10 @@ class ServiceContractTest extends TestCase
                         'id'   => 'service-id',
                     ],
                 ],
-                'carrier_contract'      => [
+                'contract'      => [
                     'data' => [
-                        'type' => 'carrier-contracts',
-                        'id'   => 'carrier-contract-id',
+                        'type' => 'contracts',
+                        'id'   => 'contract-id',
                     ],
                 ],
                 'service_groups'        => [
@@ -191,6 +191,6 @@ class ServiceContractTest extends TestCase
                     ],
                 ],
             ],
-        ], $contract->jsonSerialize());
+        ], $serviceContract->jsonSerialize());
     }
 }
