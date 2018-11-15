@@ -2,38 +2,38 @@
 
 namespace MyParcelCom\ApiSdk\Tests\Unit;
 
-use MyParcelCom\ApiSdk\Resources\CarrierContract;
+use MyParcelCom\ApiSdk\Resources\Contract;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use PHPUnit\Framework\TestCase;
 
-class CarrierContractTest extends TestCase
+class ContractTest extends TestCase
 {
     /** @test */
     public function testId()
     {
-        $contract = new CarrierContract();
+        $contract = new Contract();
         $this->assertEquals('contract-id', $contract->setId('contract-id')->getId());
     }
 
     /** @test */
     public function testGetType()
     {
-        $contract = new CarrierContract();
-        $this->assertEquals('carrier-contracts', $contract->getType());
+        $contract = new Contract();
+        $this->assertEquals('contracts', $contract->getType());
     }
 
     /** @test */
     public function testCurrency()
     {
-        $contract = new CarrierContract();
+        $contract = new Contract();
         $this->assertEquals('ABC', $contract->setCurrency('ABC')->getCurrency());
     }
 
     /** @test */
     public function testCarrier()
     {
-        $contract = new CarrierContract();
+        $contract = new Contract();
 
         $mock = $this->getMockClass(CarrierInterface::class);
         $carrier = new $mock();
@@ -44,7 +44,7 @@ class CarrierContractTest extends TestCase
     /** @test */
     public function testServiceContracts()
     {
-        $contract = new CarrierContract();
+        $contract = new Contract();
 
         $mock = $this->getMockClass(ServiceContractInterface::class);
         $serviceContracts = [new $mock(), new $mock(), new $mock()];
@@ -99,7 +99,7 @@ class CarrierContractTest extends TestCase
                 'id'   => 'carrier-id',
             ]);
 
-        $contract = (new CarrierContract())
+        $contract = (new Contract())
             ->setId('contract-id')
             ->setCurrency('IOU')
             ->setCarrier($carrierMock)
@@ -111,7 +111,7 @@ class CarrierContractTest extends TestCase
 
         $this->assertEquals([
             'id'            => 'contract-id',
-            'type'          => 'carrier-contracts',
+            'type'          => 'contracts',
             'attributes'    => [
                 'currency' => 'IOU',
             ],

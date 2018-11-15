@@ -3,7 +3,7 @@
 namespace MyParcelCom\ApiSdk\Tests\Feature;
 
 use MyParcelCom\ApiSdk\MyParcelComApiInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierContractInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\PickUpDropOffLocationInterface;
@@ -55,8 +55,8 @@ class ResourceFactoryTest extends TestCase
     public function testCreateCarrierConract()
     {
         $resourceFactory = new ResourceFactory();
-        $carrierContract = $resourceFactory->create(
-            'carrier-contracts',
+        $contract = $resourceFactory->create(
+            'contracts',
             [
                 'id'                => 'carrier-id',
                 'currency'          => 'JPY',
@@ -81,10 +81,10 @@ class ResourceFactoryTest extends TestCase
             ]
         );
 
-        $this->assertInstanceOf(CarrierContractInterface::class, $carrierContract);
+        $this->assertInstanceOf(ContractInterface::class, $contract);
         $this->assertEquals([
             'id'            => 'carrier-id',
-            'type'          => 'carrier-contracts',
+            'type'          => 'contracts',
             'attributes'    => [
                 'currency' => 'JPY',
             ],
@@ -112,7 +112,7 @@ class ResourceFactoryTest extends TestCase
                     ],
                 ],
             ],
-        ], $carrierContract->jsonSerialize());
+        ], $contract->jsonSerialize());
     }
 
     /** @test */
@@ -135,9 +135,9 @@ class ResourceFactoryTest extends TestCase
                 'type' => 'services',
                 'id'   => 'service-id',
             ],
-            'carrier_contract'      => [
-                'type' => 'carrier-contracts',
-                'id'   => 'carrier-contract-id',
+            'contract'      => [
+                'type' => 'contracts',
+                'id'   => 'contract-id',
             ],
             'service_groups'        => [
                 [
@@ -166,10 +166,10 @@ class ResourceFactoryTest extends TestCase
                         'id'   => 'service-id',
                     ],
                 ],
-                'carrier_contract'      => [
+                'contract'      => [
                     'data' => [
-                        'type' => 'carrier-contracts',
-                        'id'   => 'carrier-contract-id',
+                        'type' => 'contracts',
+                        'id'   => 'contract-id',
                     ],
                 ],
                 'service_groups'        => [

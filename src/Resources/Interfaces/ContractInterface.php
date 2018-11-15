@@ -2,7 +2,7 @@
 
 namespace MyParcelCom\ApiSdk\Resources\Interfaces;
 
-interface CarrierContractInterface extends ResourceInterface
+interface ContractInterface extends ResourceInterface
 {
     /**
      * @param string $id

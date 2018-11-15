@@ -9,7 +9,7 @@ namespace MyParcelCom\ApiSdk\Resources\Interfaces;
 interface ResourceInterface extends \JsonSerializable
 {
     const TYPE_CARRIER = 'carriers';
-    const TYPE_CARRIER_CONTRACT = 'carrier-contracts';
+    const TYPE_CONTRACT = 'contracts';
     const TYPE_FILE = 'files';
     const TYPE_PUDO_LOCATION = 'pickup-dropoff-locations';
     const TYPE_REGION = 'regions';

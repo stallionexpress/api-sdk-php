@@ -22,15 +22,15 @@ interface ServiceContractInterface extends ResourceInterface
     public function getService();
 
     /**
-     * @param CarrierContractInterface $carrierContract
+     * @param ContractInterface $contract
      * @return $this
      */
-    public function setCarrierContract(CarrierContractInterface $carrierContract);
+    public function setContract(ContractInterface $contract);
 
     /**
-     * @return CarrierContractInterface
+     * @return ContractInterface
      */
-    public function getCarrierContract();
+    public function getContract();
 
     /**
      * @param ServiceGroupInterface[] $groups

@@ -10,10 +10,10 @@
             "type": "services"
           }
         },
-        "carrier_contract": {
+        "contract": {
           "data": {
             "id": "f1630e62-4645-448d-af22-7d5bac0f502d",
-            "type": "carrier-contracts"
+            "type": "contracts"
           }
         },
         "service_groups": {

@@ -2,7 +2,7 @@
 
 namespace MyParcelCom\ApiSdk\Resources;
 
-use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierContractInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceGroupInterface;
@@ -16,7 +16,7 @@ class ServiceContract implements ServiceContractInterface
     use JsonSerializable;
 
     const RELATIONSHIP_SERVICE = 'service';
-    const RELATIONSHIP_CARRIER_CONTRACT = 'carrier_contract';
+    const RELATIONSHIP_CONTRACT = 'contract';
     const RELATIONSHIP_SERVICE_GROUPS = 'service_groups';
     const RELATIONSHIP_SERVICE_OPTION_PRICES = 'service_option_prices';
 
@@ -31,7 +31,7 @@ class ServiceContract implements ServiceContractInterface
         self::RELATIONSHIP_SERVICE               => [
             'data' => null,
         ],
-        self::RELATIONSHIP_CARRIER_CONTRACT      => [
+        self::RELATIONSHIP_CONTRACT      => [
             'data' => null,
         ],
         self::RELATIONSHIP_SERVICE_GROUPS        => [
@@ -88,22 +88,22 @@ class ServiceContract implements ServiceContractInterface
     }
 
     /**
-     * @param CarrierContractInterface $carrierContract
+     * @param ContractInterface $contract
      * @return $this
      */
-    public function setCarrierContract(CarrierContractInterface $carrierContract)
+    public function setContract(ContractInterface $contract)
     {
-        $this->relationships[self::RELATIONSHIP_CARRIER_CONTRACT]['data'] = $carrierContract;
+        $this->relationships[self::RELATIONSHIP_CONTRACT]['data'] = $contract;
 
         return $this;
     }
 
     /**
-     * @return CarrierContractInterface
+     * @return ContractInterface
      */
-    public function getCarrierContract()
+    public function getContract()
     {
-        return $this->relationships[self::RELATIONSHIP_CARRIER_CONTRACT]['data'];
+        return $this->relationships[self::RELATIONSHIP_CONTRACT]['data'];
     }
 
     /**

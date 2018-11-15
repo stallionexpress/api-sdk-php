@@ -2,7 +2,7 @@
 
 namespace MyParcelCom\ApiSdk\Resources\Proxy;
 
-use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierContractInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
@@ -70,22 +70,22 @@ class ServiceContractProxy implements ServiceContractInterface, ResourceProxyInt
     }
 
     /**
-     * @param CarrierContractInterface $carrierContract
+     * @param ContractInterface $contract
      * @return $this
      */
-    public function setCarrierContract(CarrierContractInterface $carrierContract)
+    public function setContract(ContractInterface $contract)
     {
-        $this->getResource()->setCarrierContract($carrierContract);
+        $this->getResource()->setContract($contract);
 
         return $this;
     }
 
     /**
-     * @return CarrierContractInterface
+     * @return ContractInterface
      */
-    public function getCarrierContract()
+    public function getContract()
     {
-        return $this->getResource()->getCarrierContract();
+        return $this->getResource()->getContract();
     }
 
     /**
