@@ -19,6 +19,7 @@ interface MyParcelComApiInterface
     const PATH_REGIONS = '/regions';
     const PATH_SERVICES = '/services';
     const PATH_SERVICE_CONTRACTS = '/services/{service_id}/contracts';
+    const PATH_SERVICE_RATES = '/service-rates';
     const PATH_CARRIER_SERVICE_CONTRACTS = '/service-contracts/?filter[contract]={contract_id}';
     const PATH_SHIPMENTS = '/shipments';
     const PATH_SHIPMENT_STATUSES = '/shipments/{shipment_id}/statuses';
@@ -111,6 +112,16 @@ interface MyParcelComApiInterface
      * @return CollectionInterface
      */
     public function getServicesForCarrier(CarrierInterface $carrier);
+
+    /**
+     * Retrieves service rates for a shipment or based on the set filters.
+     * Available filters are: service_ids, contract_ids and weight.
+     *
+     * @param ShipmentInterface|null $shipment
+     * @param array                  $filters
+     * @return CollectionInterface
+     */
+    public function getServiceRates(ShipmentInterface $shipment = null, array $filters = []);
 
     /**
      * Get shipments for a given shop. If no shop is given the default shop is

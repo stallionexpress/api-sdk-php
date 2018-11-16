@@ -22,6 +22,7 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceGroupInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionPriceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceRateInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentItemInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentStatusInterface;
@@ -78,6 +79,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         $shipmentFactory = [$this, 'shipmentFactory'];
         $shipmentStatusFactory = [$this, 'shipmentStatusFactory'];
         $serviceFactory = [$this, 'serviceFactory'];
+        $serviceRateFactory = [$this, 'serviceRateFactory'];
         $serviceContractFactory = [$this, 'serviceContractFactory'];
         $serviceGroupFactory = [$this, 'serviceGroupFactory'];
         $serviceOptionPriceFactory = [$this, 'serviceOptionPriceFactory'];
@@ -96,6 +98,9 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
 
         $this->setFactoryForType(ResourceInterface::TYPE_SERVICE, $serviceFactory);
         $this->setFactoryForType(ServiceInterface::class, $serviceFactory);
+
+        $this->setFactoryForType(ResourceInterface::TYPE_SERVICE_RATE, $serviceRateFactory);
+        $this->setFactoryForType(ServiceRateInterface::class, $serviceRateFactory);
 
         $this->setFactoryForType(ResourceInterface::TYPE_SERVICE_CONTRACT, $serviceContractFactory);
         $this->setFactoryForType(ServiceContractInterface::class, $serviceContractFactory);
@@ -495,17 +500,34 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         $serviceRate = new ServiceRate();
 
         // TODO: Finish implementing this.
-        // Think about implementation of service option prices in service option proxy.
+        // TODO: Think about implementation of service option prices in service option proxy.
+
+        if (isset($attributes['price']['amount'])) {
+            $serviceRate->setPrice($attributes['price']['amount']);
+            $serviceRate->setCurrency($attributes['price']['currency']);
+
+            unset($attributes['price']);
+        }
+
+        if (isset($attributes['step_price']['amount'])) {
+            $serviceRate->setStepPrice($attributes['step_price']['amount']);
+
+            unset($attributes['step_price']);
+        }
 
         if (isset($attributes['service_options'])) {
-            $serviceOptions = $attributes['service_options']['data'];
+            $serviceOptions = $attributes['service_options'];
+
             foreach ($serviceOptions as $serviceOption) {
                 $serviceOption = (new ServiceOptionProxy())
                     ->setMyParcelComApi($this->api)
                     ->setId($serviceOption['id'])
-                    ->addMetaForServiceRate($attributes['id'], $serviceOption['meta']);
+                    ->addDetailsForServiceRate($attributes['id'], $serviceOption['meta']);
+
                 $serviceRate->addServiceOption($serviceOption);
             }
+
+            unset($attributes['service_options']);
         }
 
         return $serviceRate;

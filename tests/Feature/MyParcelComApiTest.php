@@ -16,6 +16,7 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\PickUpDropOffLocationInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceRateInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentStatusInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
@@ -482,6 +483,17 @@ class MyParcelComApiTest extends TestCase
                 $this->assertInstanceOf(ServiceInterface::class, $service);
                 $this->assertEquals($carrier->getId(), $service->getCarrier()->getId());
             }
+        }
+    }
+
+    /** @test */
+    public function testItRetrievesServiceRates()
+    {
+        $serviceRates = $this->api->getServiceRates();
+
+        $this->assertInstanceOf(CollectionInterface::class, $serviceRates);
+        foreach ($serviceRates as $serviceRate) {
+            $this->assertInstanceOf(ServiceRateInterface::class, $serviceRate);
         }
     }
 

@@ -26,6 +26,7 @@ use MyParcelCom\ApiSdk\Shipments\PriceCalculator;
 use MyParcelCom\ApiSdk\Shipments\ServiceMatcher;
 use MyParcelCom\ApiSdk\Utils\UrlBuilder;
 use MyParcelCom\ApiSdk\Validators\ShipmentValidator;
+use phpDocumentor\Reflection\DocBlock\Tags\Reference\Url;
 use Psr\Http\Message\ResponseInterface;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Cache\Simple\FilesystemCache;
@@ -304,6 +305,21 @@ class MyParcelComApi implements MyParcelComApiInterface
         $url->addQuery(['filter[carrier]' => $carrier->getId()]);
 
         return $this->getResourceCollection($url->getUrl(), self::TTL_WEEK);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getServiceRates(ShipmentInterface $shipment = null, array $filters = [])
+    {
+        $url = new UrlBuilder($this->apiUri . self::PATH_SERVICE_RATES);
+        $url->addQuery($this->arrayToFilter($filters));
+
+        if ($shipment === null) {
+            return $this->getResourceCollection($url->getUrl(), self::TTL_WEEK);
+        }
+
+        // TODO: Add funtionality for shipments!
     }
 
     /**

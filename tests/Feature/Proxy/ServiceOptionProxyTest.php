@@ -61,6 +61,23 @@ class ServiceOptionProxyTest extends TestCase
     }
 
     /** @test */
+    public function testItSetsServiceRateDetails()
+    {
+        // TODO: Maybe do this whole thing different.
+
+        $serviceRateDetails = [
+            'included' => true,
+            'price'    => [
+                'amount'   => 540,
+                'currency' => 'GBP',
+            ],
+        ];
+
+        $this->serviceOptionProxy->addDetailsForServiceRate('service-rate-id', $serviceRateDetails);
+        $this->assertEquals($serviceRateDetails, $this->serviceOptionProxy->getDetailsForServiceRate('service-rate-id'));
+    }
+
+    /** @test */
     public function testClientCalls()
     {
         // Check if the uri has been called only once
@@ -88,15 +105,33 @@ class ServiceOptionProxyTest extends TestCase
     /** @test */
     public function testJsonSerialize()
     {
+        // TODO: Maybe do this whole thing different.
+
         $serviceProxy = new ServiceOptionProxy();
         $serviceProxy
             ->setMyParcelComApi($this->api)
             ->setResourceUri('https://api/service-options/d4637e6a-4b7a-44c8-8b4d-8311d0cf1238')
-            ->setId('service-option-id-1');
+            ->setId('service-option-id-1')
+            ->addDetailsForServiceRate('service-rate-id', [
+                'included' => false,
+                'price'    => [
+                    'amount'   => 500,
+                    'currency' => 'GBP',
+                ],
+            ]);
 
         $this->assertEquals([
-            'id'   => 'service-option-id-1',
-            'type' => ResourceInterface::TYPE_SERVICE_OPTION,
+            'id'                   => 'service-option-id-1',
+            'type'                 => ResourceInterface::TYPE_SERVICE_OPTION,
+            'service_rate_details' => [
+                'service-rate-id' => [
+                    'included' => false,
+                    'price'    => [
+                        'amount'   => 500,
+                        'currency' => 'GBP',
+                    ],
+                ],
+            ],
         ], $serviceProxy->jsonSerialize());
     }
 }

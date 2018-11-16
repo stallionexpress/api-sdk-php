@@ -3,8 +3,8 @@
 namespace MyParcelCom\ApiSdk\Tests\Feature;
 
 use MyParcelCom\ApiSdk\MyParcelComApiInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\PickUpDropOffLocationInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
@@ -13,6 +13,7 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceGroupInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionPriceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceRateInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\ApiSdk\Resources\ResourceFactory;
@@ -135,7 +136,7 @@ class ResourceFactoryTest extends TestCase
                 'type' => 'services',
                 'id'   => 'service-id',
             ],
-            'contract'      => [
+            'contract'              => [
                 'type' => 'contracts',
                 'id'   => 'contract-id',
             ],
@@ -166,7 +167,7 @@ class ResourceFactoryTest extends TestCase
                         'id'   => 'service-id',
                     ],
                 ],
-                'contract'      => [
+                'contract'              => [
                     'data' => [
                         'type' => 'contracts',
                         'id'   => 'contract-id',
@@ -444,6 +445,139 @@ class ResourceFactoryTest extends TestCase
                 ],
             ],
         ], $serviceGroup->jsonSerialize());
+    }
+
+    /** @test */
+    public function testItCreatesAnEmptyServiceRate()
+    {
+        $resourceFactory = new ResourceFactory();
+        $serviceRate = $resourceFactory->create('service-rates');
+
+        $this->assertInstanceOf(ServiceRateInterface::class, $serviceRate);
+        $this->assertEquals([
+            'type' => 'service-rates',
+        ], $serviceRate->jsonSerialize());
+    }
+
+    /** @test */
+    public function testItCreatesAServiceRate()
+    {
+        // TODO: Maybe change the way option prices are saved on a service option.
+
+        $resourceFactory = new ResourceFactory();
+        $serviceRate = $resourceFactory->create('service-rates', [
+            'id'              => 'service-rate-id',
+            'weight_min'      => 2000,
+            'weight_max'      => 5000,
+            'width_max'       => 100,
+            'height_max'      => 200,
+            'volume_max'      => 6,
+            'length_max'      => 300,
+            'step_size'       => 1000,
+            'price'           => [
+                'amount'   => 800,
+                'currency' => 'GBP',
+            ],
+            'step_price'      => [
+                'amount'   => 300,
+                'currency' => 'GBP',
+            ],
+            'service'         => [
+                'id'   => 'service-id',
+                'type' => 'services',
+            ],
+            'contract'        => [
+                'id'   => 'contract-id',
+                'type' => 'contracts',
+            ],
+            'service_options' => [
+                [
+                    'id'   => 'service-option-id-1',
+                    'type' => 'service-options',
+                    'meta' => [
+                        'included' => true,
+                        'price'    => [
+                            'amount'   => 500,
+                            'currency' => 'GBP',
+                        ],
+                    ],
+                ],
+                [
+                    'id'   => 'service-option-id-2',
+                    'type' => 'service-options',
+                    'meta' => [
+                        'included' => false,
+                        'price'    => [
+                            'amount'   => 200,
+                            'currency' => 'GBP',
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+
+        $this->assertInstanceOf(ServiceRateInterface::class, $serviceRate);
+        $this->assertEquals([
+            'type'          => 'service-rates',
+            'id'            => 'service-rate-id',
+            'attributes'    => [
+                'weight_min' => 2000,
+                'weight_max' => 5000,
+                'width_max'  => 100,
+                'height_max' => 200,
+                'volume_max' => 6,
+                'length_max' => 300,
+                'step_size'  => 1000,
+                'price'      => [
+                    'amount'   => 800,
+                    'currency' => 'GBP',
+                ],
+                'step_price' => [
+                    'amount'   => 300,
+                    'currency' => 'GBP',
+                ],
+            ],
+            'relationships' => [
+                'service'         => [
+                    'data' => [
+                        'id'   => 'service-id',
+                        'type' => 'services',
+                    ],
+                ],
+                'contract'        => [
+                    'data' => [
+                        'id'   => 'contract-id',
+                        'type' => 'contracts',
+                    ],
+                ],
+                'service_options' => [
+                    'data' => [
+                        [
+                            'id'   => 'service-option-id-1',
+                            'type' => 'service-options',
+                            'service_rate_details' => [
+                                'included' => true,
+                                'price'    => [
+                                    'amount'   => 500,
+                                    'currency' => 'GBP',
+                                ],
+                            ],
+                        ],
+                        [
+                            'id'   => 'service-option-id-2',
+                            'type' => 'service-options',
+                            'meta' => [
+                                'included' => false,
+                                'price'    => [
+                                    'amount'   => 200,
+                                    'currency' => 'GBP',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ], $serviceRate->jsonSerialize());
     }
 
     /** @test */

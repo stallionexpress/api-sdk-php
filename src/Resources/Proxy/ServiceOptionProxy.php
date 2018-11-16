@@ -19,34 +19,8 @@ class ServiceOptionProxy implements ServiceOptionInterface, ResourceProxyInterfa
     /** @var string */
     private $type = ResourceInterface::TYPE_SERVICE_OPTION;
 
-    private $serviceRateMeta = [];
-
-    /**
-     * @param string $serviceRateId
-     * @param array  $meta
-     * @return ServiceOptionProxy
-     */
-    public function addMetaForServiceRate($serviceRateId, array $meta)
-    {
-        // TODO: Think about this. Maybe it's not a good option.
-        // TODO: If it is, write tests.
-        $this->serviceRateMeta[$serviceRateId] = $meta;
-
-        return $this;
-    }
-
-    /**
-     * @param $serviceRateId
-     * @return array|null
-     */
-    public function getMetaForServiceRate($serviceRateId)
-    {
-        // TODO: Think about this. Maybe it's not a good option.
-        // TODO: If it is, write tests.
-        return array_key_exists($serviceRateId, $this->serviceRateMeta)
-            ? $this->serviceRateMeta[$serviceRateId]
-            : null;
-    }
+    /** @var array */
+    private $serviceRateDetails = [];
 
     /**
      * Set the identifier for this file.
@@ -135,6 +109,32 @@ class ServiceOptionProxy implements ServiceOptionInterface, ResourceProxyInterfa
     }
 
     /**
+     * @param string $serviceRateId
+     * @param array  $details
+     * @return ServiceOptionProxy
+     */
+    public function addDetailsForServiceRate($serviceRateId, array $details)
+    {
+        // TODO: Maybe do this whole thing different.
+        $this->serviceRateDetails[$serviceRateId] = $details;
+
+        return $this;
+    }
+
+    /**
+     * @param $serviceRateId
+     * @return array|null
+     */
+    public function getDetailsForServiceRate($serviceRateId)
+    {
+        // TODO: Maybe do this whole thing different.
+
+        return array_key_exists($serviceRateId, $this->serviceRateDetails)
+            ? $this->serviceRateDetails[$serviceRateId]
+            : null;
+    }
+
+    /**
      * This function puts all object properties in an array and returns it.
      *
      * @return array
@@ -145,6 +145,11 @@ class ServiceOptionProxy implements ServiceOptionInterface, ResourceProxyInterfa
         unset($values['resource']);
         unset($values['api']);
         unset($values['uri']);
+
+        // TODO: Maybe not.
+        if (empty($values['serviceRateDetails'])) {
+            unset($values['serviceRateDetails']);
+        }
 
         return $this->arrayValuesToArray($values);
     }
