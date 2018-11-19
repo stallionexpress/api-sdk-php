@@ -16,6 +16,7 @@ class ContractSelector
      */
     public function selectCheapest(ShipmentInterface $shipment, array $serviceContracts)
     {
+        // TODO: Fix!
         $prices = [];
 
         $matcher = new ServiceMatcher();

@@ -12,6 +12,7 @@ class PriceCalculatorTest extends TestCase
 {
     use MocksContract;
 
+    // TODO: Fix!
     /** @test */
     public function testCalculateGroupPrice()
     {

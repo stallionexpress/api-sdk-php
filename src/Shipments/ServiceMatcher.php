@@ -20,6 +20,8 @@ class ServiceMatcher
      */
     public function matches(ShipmentInterface $shipment, ServiceInterface $service)
     {
+        // TODO: Fix!
+
         return $this->matchesDeliveryMethod($shipment, $service)
             && ($weightContracts = $this->getMatchedWeightGroups($shipment, $service->getServiceContracts()))
             && ($optionContracts = $this->getMatchedOptions($shipment, $weightContracts));
