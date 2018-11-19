@@ -149,4 +149,21 @@ interface ServiceInterface extends ResourceInterface
      * @return $this
      */
     public function setDeliveryMethod($deliveryMethod);
+
+    /**
+     * @param ServiceRateInterface[] $serviceRates
+     * @return $this
+     */
+    public function setServiceRates(array $serviceRates);
+
+    /**
+     * @param ServiceRateInterface $serviceRate
+     * @return $this
+     */
+    public function addServiceRate(ServiceRateInterface $serviceRate);
+
+    /**
+     * @return ServiceRateInterface[]
+     */
+    public function getServiceRates();
 }

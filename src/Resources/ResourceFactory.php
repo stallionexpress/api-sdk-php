@@ -439,6 +439,10 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         }
 
         if (isset($attributes['id'])) {
+            $service->setServiceRatesCallback(function () use ($attributes) {
+                return $this->api->getServiceRates(['service' => $attributes['id']])->get();
+            });
+
             $service->setServiceContractsCallback(function () use ($attributes) {
                 return $this->api->getResourcesFromUri(
                     str_replace(

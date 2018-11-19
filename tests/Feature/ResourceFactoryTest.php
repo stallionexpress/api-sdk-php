@@ -612,51 +612,6 @@ class ResourceFactoryTest extends TestCase
     }
 
     /** @test */
-    public function testCreateServiceOptionPrice()
-    {
-        $resourceFactory = new ResourceFactory();
-        $serviceOption = $resourceFactory->create('service-option-prices', [
-            'price'            => 55,
-            'currency'         => 'NOK',
-            'service_option'   => [
-                'id'   => 'service-option-id',
-                'type' => 'service-options',
-            ],
-            'service_contract' => [
-                'id'   => 'service-contract-id',
-                'type' => 'service-contracts',
-            ],
-            'required'         => true,
-        ]);
-
-        $this->assertInstanceOf(ServiceOptionPriceInterface::class, $serviceOption);
-        $this->assertEquals([
-            'type'          => 'service-option-prices',
-            'attributes'    => [
-                'price'    => [
-                    'amount'   => 55,
-                    'currency' => 'NOK',
-                ],
-                'required' => true,
-            ],
-            'relationships' => [
-                'service_option'   => [
-                    'data' => [
-                        'id'   => 'service-option-id',
-                        'type' => 'service-options',
-                    ],
-                ],
-                'service_contract' => [
-                    'data' => [
-                        'id'   => 'service-contract-id',
-                        'type' => 'service-contracts',
-                    ],
-                ],
-            ],
-        ], $serviceOption->jsonSerialize());
-    }
-
-    /** @test */
     public function testCreateEmptyShipment()
     {
         $resourceFactory = new ResourceFactory();

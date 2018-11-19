@@ -498,6 +498,18 @@ class MyParcelComApiTest extends TestCase
     }
 
     /** @test */
+    public function testItRetrievesServiceRatesForAService()
+    {
+        $services = $this->api->getServices()->get();
+        $service = reset($services);
+
+        $serviceRates = $service->getServiceRates();
+        foreach ($serviceRates as $serviceRate) {
+            $this->assertInstanceOf(ServiceRateInterface::class, $serviceRate);
+        }
+    }
+
+    /** @test */
     public function testItRetrievesServiceRatesForShipment()
     {
         $recipient = (new Address())
