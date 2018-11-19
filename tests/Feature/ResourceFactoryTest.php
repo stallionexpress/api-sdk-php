@@ -462,8 +462,6 @@ class ResourceFactoryTest extends TestCase
     /** @test */
     public function testItCreatesAServiceRate()
     {
-        // TODO: Maybe change the way option prices are saved on a service option.
-
         $resourceFactory = new ResourceFactory();
         $serviceRate = $resourceFactory->create('service-rates', [
             'id'              => 'service-rate-id',

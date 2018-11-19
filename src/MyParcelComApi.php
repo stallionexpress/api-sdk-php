@@ -308,18 +308,34 @@ class MyParcelComApi implements MyParcelComApiInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function getServiceRates(ShipmentInterface $shipment = null, array $filters = [])
+    public function getServiceRates(array $filters = [])
     {
         $url = new UrlBuilder($this->apiUri . self::PATH_SERVICE_RATES);
         $url->addQuery($this->arrayToFilter($filters));
 
-        if ($shipment === null) {
-            return $this->getResourceCollection($url->getUrl(), self::TTL_WEEK);
-        }
+        return $this->getResourceCollection($url->getUrl(), self::TTL_WEEK);
+    }
 
-        // TODO: Add funtionality for shipments!
+    /**
+     * {@inheritdoc}
+     */
+    public function getServiceRatesForShipment(ShipmentInterface $shipment)
+    {
+        $services = $this->getServices($shipment)->get();
+
+        $servicesIds = array_map(function (Service $service) {
+            return $service->getId();
+        }, $services);
+
+        $url = new UrlBuilder($this->apiUri . self::PATH_SERVICE_RATES);
+        $url->addQuery([
+            'filter[service]' => implode(',', $servicesIds),
+            'filter[weight]'  => $shipment->getPhysicalProperties()->getWeight(),
+        ]);
+
+        return $this->getResourceCollection($url->getUrl(), self::TTL_WEEK);
     }
 
     /**

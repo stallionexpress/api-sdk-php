@@ -114,14 +114,22 @@ interface MyParcelComApiInterface
     public function getServicesForCarrier(CarrierInterface $carrier);
 
     /**
-     * Retrieves service rates for a shipment or based on the set filters.
+     * Retrieves service rates based on the set filters.
      * Available filters are: service_ids, contract_ids and weight.
      *
-     * @param ShipmentInterface|null $shipment
-     * @param array                  $filters
+     * @param array $filters
      * @return CollectionInterface
      */
-    public function getServiceRates(ShipmentInterface $shipment = null, array $filters = []);
+    public function getServiceRates(array $filters = []);
+
+    /**
+     * Retrieves service rates based on the shipment.
+     * The shipment needs to have a recipient/sender_address and a weight set.
+     *
+     * @param ShipmentInterface $shipment
+     * @return CollectionInterface
+     */
+    public function getServiceRatesForShipment(ShipmentInterface $shipment);
 
     /**
      * Get shipments for a given shop. If no shop is given the default shop is
