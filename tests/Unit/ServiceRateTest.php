@@ -106,6 +106,13 @@ class ServiceRateTest extends TestCase
             ->willReturn([
                 'type' => 'service-options',
                 'id'   => 'service-option-id-1',
+                'meta' => [
+                    'price'    => [
+                        'amount'   => 200,
+                        'currency' => 'EUR',
+                    ],
+                    'included' => false,
+                ],
             ]);
 
         $serviceOptionMockB = $serviceOptionMockBuilder->getMock();
@@ -113,6 +120,13 @@ class ServiceRateTest extends TestCase
             ->willReturn([
                 'type' => 'service-options',
                 'id'   => 'service-option-id-2',
+                'meta' => [
+                    'price'    => [
+                        'amount'   => 300,
+                        'currency' => 'EUR',
+                    ],
+                    'included' => false,
+                ],
             ]);
 
         $serviceOptionMockC = $serviceOptionMockBuilder->getMock();
@@ -120,6 +134,13 @@ class ServiceRateTest extends TestCase
             ->willReturn([
                 'type' => 'service-options',
                 'id'   => 'service-option-id-3',
+                'meta' => [
+                    'price'    => [
+                        'amount'   => 400,
+                        'currency' => 'EUR',
+                    ],
+                    'included' => false,
+                ],
             ]);
 
         $serviceRate = (new ServiceRate())
@@ -180,14 +201,35 @@ class ServiceRateTest extends TestCase
                         [
                             'id'   => 'service-option-id-1',
                             'type' => 'service-options',
+                            'meta' => [
+                                'price'    => [
+                                    'amount'   => 200,
+                                    'currency' => 'EUR',
+                                ],
+                                'included' => false,
+                            ],
                         ],
                         [
                             'id'   => 'service-option-id-2',
                             'type' => 'service-options',
+                            'meta' => [
+                                'price'    => [
+                                    'amount'   => 300,
+                                    'currency' => 'EUR',
+                                ],
+                                'included' => false,
+                            ],
                         ],
                         [
                             'id'   => 'service-option-id-3',
                             'type' => 'service-options',
+                            'meta' => [
+                                'price'    => [
+                                    'amount'   => 400,
+                                    'currency' => 'EUR',
+                                ],
+                                'included' => false,
+                            ],
                         ],
                     ],
                 ],

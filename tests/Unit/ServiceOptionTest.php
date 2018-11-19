@@ -43,6 +43,30 @@ class ServiceOptionTest extends TestCase
     }
 
     /** @test */
+    public function testItSetsAndGetsPrice()
+    {
+        $option = new ServiceOption();
+        $this->assertNull($option->getPrice());
+        $this->assertEquals(200, $option->setPrice(200)->getPrice());
+    }
+
+    /** @test */
+    public function testItSetsAndGetsCurrency()
+    {
+        $option = new ServiceOption();
+        $this->assertNull($option->getCurrency());
+        $this->assertEquals('GBP', $option->setCurrency('GBP')->getCurrency());
+    }
+
+    /** @test */
+    public function testItSetsAndGetsIncluded()
+    {
+        $option = new ServiceOption();
+        $this->assertNull($option->isIncluded());
+        $this->assertTrue($option->setIncluded(true)->isIncluded());
+    }
+
+    /** @test */
     public function testJsonSerialize()
     {
         $option = (new ServiceOption())

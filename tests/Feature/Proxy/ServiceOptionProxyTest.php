@@ -61,20 +61,16 @@ class ServiceOptionProxyTest extends TestCase
     }
 
     /** @test */
-    public function testItSetsServiceRateDetails()
+    public function testItSetsAndGetsMetaProperties()
     {
-        // TODO: Maybe do this whole thing different.
+        $this->assertNull($this->serviceOptionProxy->getPrice());
+        $this->assertEquals(200, $this->serviceOptionProxy->setPrice(200)->getPrice());
 
-        $serviceRateDetails = [
-            'included' => true,
-            'price'    => [
-                'amount'   => 540,
-                'currency' => 'GBP',
-            ],
-        ];
+        $this->assertNull($this->serviceOptionProxy->getCurrency());
+        $this->assertEquals('GBP', $this->serviceOptionProxy->setCurrency('GBP')->getCurrency());
 
-        $this->serviceOptionProxy->addDetailsForServiceRate('service-rate-id', $serviceRateDetails);
-        $this->assertEquals($serviceRateDetails, $this->serviceOptionProxy->getDetailsForServiceRate('service-rate-id'));
+        $this->assertNull($this->serviceOptionProxy->isIncluded());
+        $this->assertTrue($this->serviceOptionProxy->setIncluded(true)->isIncluded());
     }
 
     /** @test */
@@ -105,31 +101,23 @@ class ServiceOptionProxyTest extends TestCase
     /** @test */
     public function testJsonSerialize()
     {
-        // TODO: Maybe do this whole thing different.
-
         $serviceProxy = new ServiceOptionProxy();
         $serviceProxy
             ->setMyParcelComApi($this->api)
             ->setResourceUri('https://api/service-options/d4637e6a-4b7a-44c8-8b4d-8311d0cf1238')
             ->setId('service-option-id-1')
-            ->addDetailsForServiceRate('service-rate-id', [
+            ->setIncluded(false)
+            ->setPrice(500)
+            ->setCurrency('GBP');
+
+        $this->assertEquals([
+            'id'   => 'service-option-id-1',
+            'type' => ResourceInterface::TYPE_SERVICE_OPTION,
+            'meta' => [
                 'included' => false,
                 'price'    => [
                     'amount'   => 500,
                     'currency' => 'GBP',
-                ],
-            ]);
-
-        $this->assertEquals([
-            'id'                   => 'service-option-id-1',
-            'type'                 => ResourceInterface::TYPE_SERVICE_OPTION,
-            'service_rate_details' => [
-                'service-rate-id' => [
-                    'included' => false,
-                    'price'    => [
-                        'amount'   => 500,
-                        'currency' => 'GBP',
-                    ],
                 ],
             ],
         ], $serviceProxy->jsonSerialize());

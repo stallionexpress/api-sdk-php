@@ -499,9 +499,6 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
     {
         $serviceRate = new ServiceRate();
 
-        // TODO: Finish implementing this.
-        // TODO: Think about implementation of service option prices in service option proxy.
-
         if (isset($attributes['price']['amount'])) {
             $serviceRate->setPrice($attributes['price']['amount']);
             $serviceRate->setCurrency($attributes['price']['currency']);
@@ -519,15 +516,40 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
             $serviceOptions = $attributes['service_options'];
 
             foreach ($serviceOptions as $serviceOption) {
-                $serviceOption = (new ServiceOptionProxy())
+                $serviceOptionProxy = (new ServiceOptionProxy())
                     ->setMyParcelComApi($this->api)
-                    ->setId($serviceOption['id'])
-                    ->addDetailsForServiceRate($attributes['id'], $serviceOption['meta']);
+                    ->setId($serviceOption['id']);
 
-                $serviceRate->addServiceOption($serviceOption);
+                if (isset($serviceOption['meta']['price']['amount'])) {
+                    $serviceOptionProxy
+                        ->setPrice($serviceOption['meta']['price']['amount'])
+                        ->setCurrency($serviceOption['meta']['price']['currency']);
+                }
+
+                if (isset($serviceOption['meta']['included'])) {
+                    $serviceOptionProxy->setIncluded($serviceOption['meta']['included']);
+                }
+
+                $serviceRate->addServiceOption($serviceOptionProxy);
             }
 
             unset($attributes['service_options']);
+        }
+
+        if (isset($attributes['service']['id'])) {
+            $serviceRate->setService(
+                (new ServiceProxy())->setMyParcelComApi($this->api)->setId($attributes['service']['id'])
+            );
+
+            unset($attributes['service']);
+        }
+
+        if (isset($attributes['contract']['id'])) {
+            $serviceRate->setContract(
+                (new ContractProxy())->setMyParcelComApi($this->api)->setId($attributes['contract']['id'])
+            );
+
+            unset($attributes['contract']);
         }
 
         return $serviceRate;

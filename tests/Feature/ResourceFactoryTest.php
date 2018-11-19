@@ -555,7 +555,7 @@ class ResourceFactoryTest extends TestCase
                         [
                             'id'   => 'service-option-id-1',
                             'type' => 'service-options',
-                            'service_rate_details' => [
+                            'meta' => [
                                 'included' => true,
                                 'price'    => [
                                     'amount'   => 500,

@@ -498,6 +498,12 @@ class MyParcelComApiTest extends TestCase
     }
 
     /** @test */
+    public function testItRetrievesServiceRatesForShipment()
+    {
+        // TODO: Add test for getServiceRates with shipment param.
+    }
+
+    /** @test */
     public function testGetShipments()
     {
         $shipments = $this->api->getShipments();
