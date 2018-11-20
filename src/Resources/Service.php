@@ -7,6 +7,7 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceRateInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 
 class Service implements ServiceInterface
@@ -37,6 +38,12 @@ class Service implements ServiceInterface
 
     /** @var callable */
     private $serviceContractsCallback;
+
+    /** @var ServiceRateInterface[] */
+    private $serviceRates = [];
+
+    /** @var callable */
+    private $serviceRatesCallback;
 
     /** @var array */
     private $attributes = [
@@ -334,10 +341,58 @@ class Service implements ServiceInterface
     /**
      * {@inheritdoc}
      */
+    public function setServiceRates(array $serviceRates)
+    {
+        $this->serviceRates = [];
+
+        array_walk($serviceRates, function ($serviceRate) {
+            $this->addServiceRate($serviceRate);
+        });
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addServiceRate(ServiceRateInterface $serviceRate)
+    {
+        $this->serviceRates[] = $serviceRate;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getServiceRates()
+    {
+        if (empty($this->serviceRates) && isset($this->serviceRatesCallback)) {
+            $this->setServiceRates(call_user_func($this->serviceRatesCallback));
+        }
+
+        return $this->serviceRates;
+    }
+
+    /**
+     * @param callable $callback
+     * @return $this
+     */
+    public function setServiceRatesCallback(callable $callback)
+    {
+        $this->serviceRatesCallback = $callback;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function jsonSerialize()
     {
         $values = get_object_vars($this);
         unset($values['serviceContracts']);
+        unset($values['serviceRates']);
 
         $json = $this->arrayValuesToArray($values);
 

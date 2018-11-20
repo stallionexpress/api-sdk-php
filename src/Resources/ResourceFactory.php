@@ -22,6 +22,7 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceGroupInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionPriceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceRateInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentItemInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentStatusInterface;
@@ -78,6 +79,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         $shipmentFactory = [$this, 'shipmentFactory'];
         $shipmentStatusFactory = [$this, 'shipmentStatusFactory'];
         $serviceFactory = [$this, 'serviceFactory'];
+        $serviceRateFactory = [$this, 'serviceRateFactory'];
         $serviceContractFactory = [$this, 'serviceContractFactory'];
         $serviceGroupFactory = [$this, 'serviceGroupFactory'];
         $serviceOptionPriceFactory = [$this, 'serviceOptionPriceFactory'];
@@ -96,6 +98,9 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
 
         $this->setFactoryForType(ResourceInterface::TYPE_SERVICE, $serviceFactory);
         $this->setFactoryForType(ServiceInterface::class, $serviceFactory);
+
+        $this->setFactoryForType(ResourceInterface::TYPE_SERVICE_RATE, $serviceRateFactory);
+        $this->setFactoryForType(ServiceRateInterface::class, $serviceRateFactory);
 
         $this->setFactoryForType(ResourceInterface::TYPE_SERVICE_CONTRACT, $serviceContractFactory);
         $this->setFactoryForType(ServiceContractInterface::class, $serviceContractFactory);
@@ -434,6 +439,10 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         }
 
         if (isset($attributes['id'])) {
+            $service->setServiceRatesCallback(function () use ($attributes) {
+                return $this->api->getServiceRates(['service' => $attributes['id']])->get();
+            });
+
             $service->setServiceContractsCallback(function () use ($attributes) {
                 return $this->api->getResourcesFromUri(
                     str_replace(
@@ -481,6 +490,73 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         }
 
         return $serviceGroup;
+    }
+
+    /**
+     * ServiceRate factory method.
+     *
+     * @param string $type
+     * @param array  $attributes
+     * @return ServiceRate
+     */
+    protected function serviceRateFactory($type, &$attributes)
+    {
+        $serviceRate = new ServiceRate();
+
+        if (isset($attributes['price']['amount'])) {
+            $serviceRate->setPrice($attributes['price']['amount']);
+            $serviceRate->setCurrency($attributes['price']['currency']);
+
+            unset($attributes['price']);
+        }
+
+        if (isset($attributes['step_price']['amount'])) {
+            $serviceRate->setStepPrice($attributes['step_price']['amount']);
+
+            unset($attributes['step_price']);
+        }
+
+        if (isset($attributes['service_options'])) {
+            $serviceOptions = $attributes['service_options'];
+
+            foreach ($serviceOptions as $serviceOption) {
+                $serviceOptionProxy = (new ServiceOptionProxy())
+                    ->setMyParcelComApi($this->api)
+                    ->setId($serviceOption['id']);
+
+                if (isset($serviceOption['meta']['price']['amount'])) {
+                    $serviceOptionProxy
+                        ->setPrice($serviceOption['meta']['price']['amount'])
+                        ->setCurrency($serviceOption['meta']['price']['currency']);
+                }
+
+                if (isset($serviceOption['meta']['included'])) {
+                    $serviceOptionProxy->setIncluded($serviceOption['meta']['included']);
+                }
+
+                $serviceRate->addServiceOption($serviceOptionProxy);
+            }
+
+            unset($attributes['service_options']);
+        }
+
+        if (isset($attributes['service']['id'])) {
+            $serviceRate->setService(
+                (new ServiceProxy())->setMyParcelComApi($this->api)->setId($attributes['service']['id'])
+            );
+
+            unset($attributes['service']);
+        }
+
+        if (isset($attributes['contract']['id'])) {
+            $serviceRate->setContract(
+                (new ContractProxy())->setMyParcelComApi($this->api)->setId($attributes['contract']['id'])
+            );
+
+            unset($attributes['contract']);
+        }
+
+        return $serviceRate;
     }
 
     /**

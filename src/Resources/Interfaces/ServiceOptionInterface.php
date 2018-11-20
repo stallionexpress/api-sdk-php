@@ -42,4 +42,37 @@ interface ServiceOptionInterface extends ResourceInterface
      * @return null|string
      */
     public function getCategory();
+
+    /**
+     * @param null|int $price
+     * @return $this
+     */
+    public function setPrice($price);
+
+    /**
+     * @return null|int
+     */
+    public function getPrice();
+
+    /**
+     * @param string $currency
+     * @return $this
+     */
+    public function setCurrency($currency);
+
+    /**
+     * @return null|string
+     */
+    public function getCurrency();
+
+    /**
+     * @param null|bool $included
+     * @return $this
+     */
+    public function setIncluded($included);
+
+    /**
+     * @return null|bool
+     */
+    public function isIncluded();
 }

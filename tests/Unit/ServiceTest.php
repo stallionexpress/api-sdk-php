@@ -3,10 +3,11 @@
 namespace MyParcelCom\ApiSdk\Tests\Unit;
 
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\CServiceontractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceRateInterface;
 use MyParcelCom\ApiSdk\Resources\Service;
+use MyParcelCom\ApiSdk\Resources\ServiceRate;
 use PHPUnit\Framework\TestCase;
 
 class ServiceTest extends TestCase
@@ -101,6 +102,36 @@ class ServiceTest extends TestCase
         $contracts[] = $contract;
         $this->assertCount(4, $contracts);
         $this->assertEquals($contracts, $service->addServiceContract($contract)->getServiceContracts());
+    }
+
+    /** @test */
+    public function testItSetsAddsAndGetsServiceRates()
+    {
+        $service = new Service();
+
+        $mock = $this->getMockClass(ServiceRateInterface::class);
+        $serviceRates = [new $mock(), new $mock(), new $mock()];
+
+        $this->assertEquals($serviceRates, $service->setServiceRates($serviceRates)->getServiceRates());
+
+        $serviceRate = new $mock();
+        $serviceRates[] = $serviceRate;
+        $this->assertEquals($serviceRates, $service->addServiceRate($serviceRate)->getServiceRates());
+    }
+
+    /** @test */
+    public function testItCallsTheServiceRatesCallbackWhenServiceRatesIsEmpty()
+    {
+        $service = new Service();
+
+        $this->assertEmpty($service->getServiceRates());
+
+        $serviceRates = [new ServiceRate(), new ServiceRate()];
+        $service->setServiceRatesCallback(function () use ($serviceRates) {
+            return $serviceRates;
+        });
+
+        $this->assertEquals($serviceRates, $service->getServiceRates());
     }
 
     /** @test */

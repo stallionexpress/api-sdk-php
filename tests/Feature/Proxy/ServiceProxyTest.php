@@ -11,6 +11,7 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceRateInterface;
 use MyParcelCom\ApiSdk\Resources\Proxy\ServiceProxy;
 use MyParcelCom\ApiSdk\Tests\Traits\MocksApiCommunication;
 use PHPUnit\Framework\TestCase;
@@ -174,6 +175,42 @@ class ServiceProxyTest extends TestCase
             ->addServiceContract($contract_C)
             ->getServiceContracts();
         $this->assertCount(3, $contracts);
+    }
+
+    /** @test */
+    public function testServiceRateRelationship()
+    {
+        $serviceRate_A = $this->createMock(ServiceRateInterface::class);
+        $serviceRate_A
+            ->method('getId')
+            ->willReturn('service-rate-id-1');
+        $serviceRate_B = $this->createMock(ServiceRateInterface::class);
+        $serviceRate_B
+            ->method('getId')
+            ->willReturn('service-rate-id-2');
+
+        $serviceRates = $this->serviceProxy
+            ->setServiceRates([$serviceRate_A, $serviceRate_B])
+            ->getServiceRates();
+
+        array_walk($serviceRates, function (ServiceRateInterface $serviceRate) {
+            $this->assertInstanceOf(ServiceRateInterface::class, $serviceRate);
+        });
+        $serviceRateIds = array_map(function (ServiceRateInterface $serviceRate) {
+            return $serviceRate->getId();
+        }, $serviceRates);
+        $this->assertArraySubset(['service-rate-id-1', 'service-rate-id-2'], $serviceRateIds);
+        $this->assertCount(2, $serviceRates);
+
+        $serviceRate_C = $this->createMock(ServiceRateInterface::class);
+        $serviceRate_C
+            ->method('getId')
+            ->willReturn('service-rate-id-3');
+
+        $serviceRates = $this->serviceProxy
+            ->addServiceRate($serviceRate_C)
+            ->getServiceRates();
+        $this->assertCount(3, $serviceRates);
     }
 
     /** @test */

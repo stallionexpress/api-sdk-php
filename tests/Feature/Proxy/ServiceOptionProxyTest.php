@@ -61,6 +61,19 @@ class ServiceOptionProxyTest extends TestCase
     }
 
     /** @test */
+    public function testItSetsAndGetsMetaProperties()
+    {
+        $this->assertNull($this->serviceOptionProxy->getPrice());
+        $this->assertEquals(200, $this->serviceOptionProxy->setPrice(200)->getPrice());
+
+        $this->assertNull($this->serviceOptionProxy->getCurrency());
+        $this->assertEquals('GBP', $this->serviceOptionProxy->setCurrency('GBP')->getCurrency());
+
+        $this->assertNull($this->serviceOptionProxy->isIncluded());
+        $this->assertTrue($this->serviceOptionProxy->setIncluded(true)->isIncluded());
+    }
+
+    /** @test */
     public function testClientCalls()
     {
         // Check if the uri has been called only once
@@ -92,11 +105,21 @@ class ServiceOptionProxyTest extends TestCase
         $serviceProxy
             ->setMyParcelComApi($this->api)
             ->setResourceUri('https://api/service-options/d4637e6a-4b7a-44c8-8b4d-8311d0cf1238')
-            ->setId('service-option-id-1');
+            ->setId('service-option-id-1')
+            ->setIncluded(false)
+            ->setPrice(500)
+            ->setCurrency('GBP');
 
         $this->assertEquals([
             'id'   => 'service-option-id-1',
             'type' => ResourceInterface::TYPE_SERVICE_OPTION,
+            'meta' => [
+                'included' => false,
+                'price'    => [
+                    'amount'   => 500,
+                    'currency' => 'GBP',
+                ],
+            ],
         ], $serviceProxy->jsonSerialize());
     }
 }

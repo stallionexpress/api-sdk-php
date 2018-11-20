@@ -20,6 +20,7 @@ class PriceCalculator
      */
     public function calculate(ShipmentInterface $shipment, ServiceContractInterface $contract = null)
     {
+        // TODO: Fix!
         if ($contract === null) {
             $contract = $shipment->getServiceContract();
         }
