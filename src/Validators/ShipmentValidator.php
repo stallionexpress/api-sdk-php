@@ -8,6 +8,7 @@ use MyParcelCom\ApiSdk\Utils\StringUtils;
 
 class ShipmentValidator implements ValidatorInterface
 {
+    // TODO: FIX!
     use HasErrors;
 
     /** @var ShipmentInterface */

@@ -12,6 +12,7 @@ use PHPUnit\Framework\TestCase;
 
 class ShipmentValidatorTest extends TestCase
 {
+    // TODO: FIX!
     /** @var AddressInterface */
     private $recipientAddress;
     /** @var AddressInterface */
