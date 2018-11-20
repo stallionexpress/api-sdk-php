@@ -149,7 +149,7 @@ interface ServiceRateInterface extends ResourceInterface
     public function addServiceOption(ServiceOptionInterface $serviceOption);
 
     /**
-     * @return ServiceOptionInterface[]|ServiceOptionWithMetaInterface[]
+     * @return ServiceOptionInterface[]
      */
     public function getServiceOptions();
 }

@@ -26,7 +26,6 @@ use MyParcelCom\ApiSdk\Shipments\PriceCalculator;
 use MyParcelCom\ApiSdk\Shipments\ServiceMatcher;
 use MyParcelCom\ApiSdk\Utils\UrlBuilder;
 use MyParcelCom\ApiSdk\Validators\ShipmentValidator;
-use phpDocumentor\Reflection\DocBlock\Tags\Reference\Url;
 use Psr\Http\Message\ResponseInterface;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Cache\Simple\FilesystemCache;
