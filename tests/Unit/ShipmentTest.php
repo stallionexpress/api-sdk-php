@@ -4,6 +4,7 @@ namespace MyParcelCom\ApiSdk\Tests\Unit;
 
 use MyParcelCom\ApiSdk\Exceptions\MyParcelComException;
 use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CustomsInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\PhysicalPropertiesInterface;
@@ -208,14 +209,23 @@ class ShipmentTest extends TestCase
     }
 
     /** @test */
-    public function testServiceContract()
+    public function testItSetsAndGetsAService()
     {
         $shipment = new Shipment();
 
-        $mock = $this->getMockClass(ServiceContractInterface::class);
-        $contract = new $mock();
+        $mock = $this->createMock(ServiceInterface::class);
 
-        $this->assertEquals($contract, $shipment->setServiceContract($contract)->getServiceContract());
+        $this->assertEquals($mock, $shipment->setService($mock)->getService());
+    }
+
+    /** @test */
+    public function testItSetsAndGetsAContract()
+    {
+        $shipment = new Shipment();
+
+        $mock = $this->createMock(ContractInterface::class);
+
+        $this->assertEquals($mock, $shipment->setContract($mock)->getContract());
     }
 
     /** @test */
@@ -513,7 +523,7 @@ class ShipmentTest extends TestCase
                 'type' => 'services',
             ]);
 
-        $contract = $this->getMockBuilder(ServiceContractInterface::class)
+        $contract = $this->getMockBuilder(ContractInterface::class)
             ->disableOriginalConstructor()
             ->disableOriginalClone()
             ->disableArgumentCloning()
@@ -522,7 +532,7 @@ class ShipmentTest extends TestCase
         $contract->method('jsonSerialize')
             ->willReturn([
                 'id'   => 'contract-id-1',
-                'type' => 'service-contracts',
+                'type' => 'contracts',
             ]);
 
         $shop = $this->getMockBuilder(ShopInterface::class)
@@ -626,7 +636,8 @@ class ShipmentTest extends TestCase
             ->setShop($shop)
             ->setServiceOptions([$option])
             ->setFiles([$file])
-            ->setServiceContract($contract)
+            ->setService($service)
+            ->setContract($contract)
             ->setShipmentStatus($status)
             ->setRecipientAddress($recipientAddress)
             ->setSenderAddress($senderAddress)
@@ -747,11 +758,12 @@ class ShipmentTest extends TestCase
                 'register_at'                  => 9001,
             ],
             'relationships' => [
-                'shop'             => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
-                'service_contract' => ['data' => ['id' => 'contract-id-1', 'type' => 'service-contracts']],
-                'shipment_status'  => ['data' => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses']],
-                'service_options'  => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
-                'files'            => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
+                'shop'            => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
+                'service'         => ['data' => ['id' => 'service-id-1', 'type' => 'services']],
+                'contract'        => ['data' => ['id' => 'contract-id-1', 'type' => 'contracts']],
+                'shipment_status' => ['data' => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses']],
+                'service_options' => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
+                'files'           => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
             ],
         ], $shipment->jsonSerialize());
     }

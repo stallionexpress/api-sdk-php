@@ -4,12 +4,13 @@ namespace MyParcelCom\ApiSdk\Resources\Proxy;
 
 use DateTime;
 use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CustomsInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\PhysicalPropertiesInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentItemInterface;
@@ -308,25 +309,6 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
     }
 
     /**
-     * @param ServiceContractInterface $serviceContract
-     * @return $this
-     */
-    public function setServiceContract(ServiceContractInterface $serviceContract)
-    {
-        $this->getResource()->setServiceContract($serviceContract);
-
-        return $this;
-    }
-
-    /**
-     * @return ServiceContractInterface
-     */
-    public function getServiceContract()
-    {
-        return $this->getResource()->getServiceContract();
-    }
-
-    /**
      * @param ServiceOptionInterface[] $options
      * @return $this
      */
@@ -529,6 +511,42 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
     public function getRegisterAt()
     {
         return $this->getResource()->getRegisterAt();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setService(ServiceInterface $service)
+    {
+        $this->getResource()->setService($service);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getService()
+    {
+        return $this->getResource()->getService();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setContract(ContractInterface $contract)
+    {
+        $this->getResource()->setContract($contract);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getContract()
+    {
+        return $this->getResource()->getContract();
     }
 
     /**

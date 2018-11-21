@@ -47,10 +47,14 @@ use ReflectionParameter;
 
 class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterface
 {
-    /** @var array */
+    /**
+     * Mapping of resource types and interface to concrete implementation.
+     * Note that resources with a defined resource factory are not included here.
+     *
+     * @var array
+     */
     private $typeFactory = [
         ResourceInterface::TYPE_CARRIER        => Carrier::class,
-        ResourceInterface::TYPE_PUDO_LOCATION  => PickUpDropOffLocation::class,
         ResourceInterface::TYPE_REGION         => Region::class,
         ResourceInterface::TYPE_SERVICE_OPTION => ServiceOption::class,
         ResourceInterface::TYPE_SHOP           => Shop::class,
@@ -61,11 +65,9 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         CustomsInterface::class               => Customs::class,
         OpeningHourInterface::class           => OpeningHour::class,
         PhysicalPropertiesInterface::class    => PhysicalProperties::class,
-        PickUpDropOffLocationInterface::class => PickUpDropOffLocation::class,
         PositionInterface::class              => Position::class,
         RegionInterface::class                => Region::class,
         ServiceOptionInterface::class         => ServiceOption::class,
-        ShipmentInterface::class              => Shipment::class,
         ShopInterface::class                  => Shop::class,
         StatusInterface::class                => Status::class,
     ];
@@ -306,12 +308,20 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
             unset($attributes['shop']);
         }
 
-        if (isset($attributes['service_contract']['id'])) {
-            $shipment->setServiceContract(
-                (new ServiceContractProxy())->setMyParcelComApi($this->api)->setId($attributes['service_contract']['id'])
+        if (isset($attributes['service']['id'])) {
+            $shipment->setService(
+                (new ServiceProxy())->setMyParcelComApi($this->api)->setId($attributes['service']['id'])
             );
 
-            unset($attributes['service_contract']);
+            unset($attributes['service']);
+        }
+
+        if (isset($attributes['contract']['id'])) {
+            $shipment->setContract(
+                (new ContractProxy())->setMyParcelComApi($this->api)->setId($attributes['contract']['id'])
+            );
+
+            unset($attributes['contract']);
         }
 
         if (isset($attributes['shipment_status']['related'])) {
