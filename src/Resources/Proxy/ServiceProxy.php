@@ -304,11 +304,12 @@ class ServiceProxy implements ServiceInterface, ResourceProxyInterface
     }
 
     /**
+     * @param array $filters
      * @return ServiceRateInterface[]
      */
-    public function getServiceRates()
+    public function getServiceRates(array $filters = [])
     {
-        return $this->getResource()->getServiceRates();
+        return $this->getResource()->getServiceRates($filters);
     }
 
     /**
