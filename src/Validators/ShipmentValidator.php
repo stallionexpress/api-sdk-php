@@ -8,7 +8,6 @@ use MyParcelCom\ApiSdk\Utils\StringUtils;
 
 class ShipmentValidator implements ValidatorInterface
 {
-    // TODO: FIX!
     use HasErrors;
 
     /** @var ShipmentInterface */
@@ -41,7 +40,7 @@ class ShipmentValidator implements ValidatorInterface
      */
     protected function checkRequired()
     {
-        $required = ['weight', 'service_contract', 'recipient_address', 'sender_address', 'shop'];
+        $required = ['weight', 'service', 'contract', 'recipient_address', 'sender_address', 'shop'];
 
         array_walk($required, function ($required) {
             $getter = 'get' . StringUtils::snakeToPascalCase($required);
