@@ -2,11 +2,14 @@
 
 namespace MyParcelCom\ApiSdk\Tests\Traits;
 
+use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceGroupInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionPriceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
+use MyParcelCom\ApiSdk\Resources\PhysicalProperties;
 
 trait MocksContract
 {
@@ -27,14 +30,34 @@ trait MocksContract
         return $contract;
     }
 
+//    public function getMockedServiceRate(
+//        $weight = 5000,
+//        array $options = [],
+//        ServiceInterface $service,
+//        ContractInterface $contract
+//    ) {
+//        $serviceRateMock = $this->getMockBuilder(ServiceRateInterface::class)
+//            ->disableOriginalConstructor()
+//            ->disableOriginalClone()
+//            ->disableArgumentCloning()
+//            ->disallowMockingUnknownTypes();
+//
+//
+//    }
+
     /**
-     * @param int                      $weight
-     * @param array                    $options
-     * @param ServiceContractInterface $contract
+     * @param int                    $weight
+     * @param array                  $options
+     * @param ServiceInterface|null  $service
+     * @param ContractInterface|null $contract
      * @return ShipmentInterface
      */
-    protected function getMockedShipment($weight = 5000, array $options = [], ServiceContractInterface $contract = null)
-    {
+    protected function getMockedShipment(
+        $weight = 5000,
+        array $options = [],
+        ServiceInterface $service = null,
+        ContractInterface $contract = null
+    ) {
         $shipment = $this->getMockBuilder(ShipmentInterface::class)
             ->disableOriginalConstructor()
             ->disableOriginalClone()
@@ -42,10 +65,14 @@ trait MocksContract
             ->disallowMockingUnknownTypes()
             ->getMock();
 
-        $shipment->method('getServiceContract')
+        $shipment->method('getService')
+            ->willReturn($service);
+        $shipment->method('getContract')
             ->willReturn($contract);
-        $shipment->method('getWeight')
-            ->willReturn($weight);
+        $shipment->method('getPhysicalProperties')
+            ->willReturn($this->createMock(PhysicalProperties::class)
+                ->method('getWeight')
+                ->willReturn($weight));
 
         $optionMocks = array_map(function ($option) {
             $optionMock = $this->getMockBuilder(ServiceOptionInterface::class)

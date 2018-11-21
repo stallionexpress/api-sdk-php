@@ -192,7 +192,6 @@ class MyParcelComApiTest extends TestCase
         );
     }
 
-
     /** @test */
     public function testCreateInvalidShipmentMissingRecipient()
     {

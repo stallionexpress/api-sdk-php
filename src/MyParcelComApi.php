@@ -17,11 +17,11 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceFactoryInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceRateInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\ApiSdk\Resources\ResourceFactory;
 use MyParcelCom\ApiSdk\Resources\Service;
-use MyParcelCom\ApiSdk\Shipments\ContractSelector;
 use MyParcelCom\ApiSdk\Shipments\PriceCalculator;
 use MyParcelCom\ApiSdk\Shipments\ServiceMatcher;
 use MyParcelCom\ApiSdk\Utils\UrlBuilder;
@@ -376,6 +376,12 @@ class MyParcelComApi implements MyParcelComApiInterface
      */
     public function createShipment(ShipmentInterface $shipment)
     {
+        if ($shipment->getPhysicalProperties() === null || $shipment->getPhysicalProperties()->getWeight() === null) {
+            throw new InvalidResourceException(
+                'Cannot create shipment without weight'
+            );
+        }
+
         // If no shop is set, use the default shop.
         if ($shipment->getShop() === null) {
             $shipment->setShop($this->getDefaultShop());
@@ -400,9 +406,8 @@ class MyParcelComApi implements MyParcelComApiInterface
             );
         }
 
-        // If no contract is set, select the cheapest one.
-        if ($shipment->getServiceContract() === null) {
-            $this->determineContract($shipment);
+        if ($shipment->getService() === null || $shipment->getContract() === null) {
+            $this->determineServiceAndContract($shipment);
         }
 
         $validator = new ShipmentValidator($shipment);
@@ -439,42 +444,59 @@ class MyParcelComApi implements MyParcelComApiInterface
     }
 
     /**
-     * Determine what service contract to use for given shipment and update the
-     * shipment.
+     * Determine which service and contract to use for given shipment
+     * and update the shipment.
      *
      * @param ShipmentInterface $shipment
      * @return $this
      */
-    protected function determineContract(ShipmentInterface $shipment)
+    protected function determineServiceAndContract(ShipmentInterface $shipment)
     {
-        $selector = new ContractSelector();
         $calculator = new PriceCalculator();
 
-        $allServices = [];
-        $collection = $this->getServices($shipment);
-        for ($offset = 0; $offset < $collection->count(); $offset += 30) {
-            $allServices = array_merge($allServices, $collection->offset($offset)->get());
+        if ($shipment->getService() !== null) {
+            $services = [$shipment->getService()];
+        } else {
+            $services = [];
+            $collection = $this->getServices($shipment);
+            for ($offset = 0; $offset < $collection->count(); $offset += 30) {
+                $services = array_merge($services, $collection->offset($offset)->get());
+            }
         }
 
-        $contracts = array_map(
-            function (ServiceInterface $service) use ($selector, $calculator, $shipment) {
-                $contract = $selector->selectCheapest($shipment, $service->getServiceContracts());
+        $serviceIds = implode(',', array_map(function (ServiceInterface $service) {
+            return $service->getId();
+        }, $services));
 
+        $filters = [
+            'service' => $serviceIds,
+            'weight'  => $shipment->getPhysicalProperties()->getWeight(),
+        ];
+
+        if ($shipment->getContract() !== null) {
+            $filters['contract'] = $shipment->getContract()->getId();
+        };
+
+        $serviceRates = $this->getServiceRates($filters)->get();
+
+        $rates = array_map(
+            function (ServiceRateInterface $serviceRate) use ($calculator, $shipment) {
                 return [
-                    'price'    => $calculator->calculate($shipment, $contract),
-                    'contract' => $contract,
-                    'service'  => $service,
+                    'price'    => $calculator->calculate($shipment, $serviceRate),
+                    'service'  => $serviceRate->getService(),
+                    'contract' => $serviceRate->getContract(),
                 ];
             },
-            $allServices
+            $serviceRates
         );
 
-        usort($contracts, function ($a, $b) {
+        usort($rates, function ($a, $b) {
             return $a['price'] - $b['price'];
         });
 
-        $cheapest = reset($contracts);
-        $shipment->setServiceContract($cheapest['contract']);
+        $cheapest = reset($rates);
+        $shipment->setService($cheapest['service']);
+        $shipment->setContract($cheapest['contract']);
 
         return $this;
     }

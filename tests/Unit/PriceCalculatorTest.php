@@ -3,6 +3,11 @@
 namespace MyParcelCom\ApiSdk\Tests\Unit;
 
 use MyParcelCom\ApiSdk\Exceptions\CalculationException;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\PhysicalPropertiesInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceRateInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Shipments\PriceCalculator;
 use MyParcelCom\ApiSdk\Tests\Traits\MocksContract;
@@ -10,12 +15,113 @@ use PHPUnit\Framework\TestCase;
 
 class PriceCalculatorTest extends TestCase
 {
-    use MocksContract;
+//    use MocksContract;
 
-    // TODO: Fix!
+    /** @test */
+    public function testItCalculatesTheTotalPriceOfAShipment()
+    {
+        // TODO: Refactor this test.
+        $serviceOptionMockBuilder = $this->getMockBuilder(ServiceOptionInterface::class)
+            ->disableOriginalConstructor()
+            ->disableOriginalClone()
+            ->disableArgumentCloning()
+            ->disallowMockingUnknownTypes();
+
+        $serviceOptionMockA = $serviceOptionMockBuilder->getMock();
+        $serviceOptionMockA
+            ->method('getId')
+            ->willReturn('service-option-uno');
+        $serviceOptionMockA
+            ->method('getPrice')
+            ->willReturn(500);
+
+        $serviceOptionMockB = $serviceOptionMockBuilder->getMock();
+        $serviceOptionMockB
+            ->method('getId')
+            ->willReturn('service-option-dos');
+        $serviceOptionMockB
+            ->method('getPrice')
+            ->willReturn(250);
+        $serviceOptionMocks = [$serviceOptionMockA, $serviceOptionMockB];
+
+        $serviceRateMock = $this->getMockBuilder(ServiceRateInterface::class)
+            ->disableOriginalConstructor()
+            ->disableOriginalClone()
+            ->disableArgumentCloning()
+            ->disallowMockingUnknownTypes()
+            ->getMock();
+        $serviceRateMock
+            ->method('getPrice')
+            ->willReturn(5000);
+        $serviceRateMock
+            ->method('getServiceOptions')
+            ->willReturn($serviceOptionMocks);
+
+        $serviceMock = $this->getMockBuilder(ServiceInterface::class)
+            ->disableOriginalConstructor()
+            ->disableOriginalClone()
+            ->disableArgumentCloning()
+            ->disallowMockingUnknownTypes()
+            ->getMock();
+        $serviceMock
+            ->method('getServiceRates')
+            ->willReturn([$serviceRateMock]);
+
+        $contractMock = $this->getMockBuilder(ContractInterface::class)
+            ->disableOriginalConstructor()
+            ->disableOriginalClone()
+            ->disableArgumentCloning()
+            ->disallowMockingUnknownTypes()
+            ->getMock();
+
+        $physicalPropertiesMock = $this->getMockBuilder(PhysicalPropertiesInterface::class)
+            ->disableOriginalConstructor()
+            ->disableOriginalClone()
+            ->disableArgumentCloning()
+            ->disallowMockingUnknownTypes()
+            ->getMock();
+        $physicalPropertiesMock
+            ->method('getWeight')
+            ->willReturn(1337);
+
+        $shipment = $this->getMockBuilder(ShipmentInterface::class)
+            ->disableOriginalConstructor()
+            ->disableOriginalClone()
+            ->disableArgumentCloning()
+            ->disallowMockingUnknownTypes()
+            ->getMock();
+        $shipment->method('getService')->willReturn($serviceMock);
+        $shipment->method('getContract')->willReturn($contractMock);
+        $shipment->method('getPhysicalProperties')->willReturn($physicalPropertiesMock);
+        $shipment->method('getServiceOptions')->willReturn($serviceOptionMocks);
+
+        $priceCalculator = new PriceCalculator();
+        $this->assertEquals(5750, $priceCalculator->calculate($shipment));
+    }
+
+    /** @test */
+    public function testItCalculatesThePriceOfAShipmentWithAGivenServiceRate()
+    {
+        // TODO: Add this test.
+    }
+
+    /** @test */
+    public function testItCalculatesTheOptionsPriceForAShipment()
+    {
+        // TODO: Add this test.
+    }
+
+    /** @test */
+    public function testItCalculatesTheOptionsPriceForAShipmentWithAGivenServiceRate()
+    {
+        // TODO: Add this test.
+    }
+
+
     /** @test */
     public function testCalculateGroupPrice()
     {
+        // TODO: Remove this test.
         $contract = $this->getMockedServiceContract([
             [
                 'weight_min' => 0,
@@ -81,6 +187,8 @@ class PriceCalculatorTest extends TestCase
     /** @test */
     public function testCalculateGroupPriceWeightTooLow()
     {
+        // TODO: Remove this test.
+
         $contract = $this->getMockedServiceContract([
             [
                 'weight_min' => 2001,
@@ -100,6 +208,8 @@ class PriceCalculatorTest extends TestCase
     /** @test */
     public function testCalculateGroupPriceWeightTooHigh()
     {
+        // TODO: Remove this test.
+
         $contract = $this->getMockedServiceContract([
             [
                 'weight_min' => 3500,
@@ -132,6 +242,8 @@ class PriceCalculatorTest extends TestCase
     /** @test */
     public function testCalculateOptionsPrice()
     {
+        // TODO: Remove this test.
+
         $contract = $this->getMockedServiceContract([], [
             [
                 'id'    => 'option-a',
@@ -162,6 +274,8 @@ class PriceCalculatorTest extends TestCase
     /** @test */
     public function testCalculateOptionsPriceInvalidOption()
     {
+        // TODO: Remove this test.
+
         $contract = $this->getMockedServiceContract([], [
             [
                 'id'    => 'option-a',
@@ -186,6 +300,8 @@ class PriceCalculatorTest extends TestCase
     /** @test */
     public function testCalculate()
     {
+        // TODO: Remove this test.
+
         $contract = $this->getMockedServiceContract([
             [
                 'weight_min' => 3500,
@@ -256,6 +372,8 @@ class PriceCalculatorTest extends TestCase
     /** @test */
     public function testCalculateException()
     {
+        // TODO: Remove this test.
+
         $calculator = new PriceCalculator();
         $shipment = $this->createMock(ShipmentInterface::class);
         $shipment->method('getServiceContract')->willReturn(null);
@@ -267,6 +385,8 @@ class PriceCalculatorTest extends TestCase
     /** @test */
     public function testCalculateGroupPriceException()
     {
+        // TODO: Remove this test.
+
         $calculator = new PriceCalculator();
         $shipment = $this->createMock(ShipmentInterface::class);
         $shipment->method('getServiceContract')->willReturn(null);
@@ -278,6 +398,8 @@ class PriceCalculatorTest extends TestCase
     /** @test */
     public function testCalculateOptionsPriceException()
     {
+        // TODO: Remove this test.
+
         $calculator = new PriceCalculator();
         $shipment = $this->createMock(ShipmentInterface::class);
         $shipment->method('getServiceContract')->willReturn(null);
