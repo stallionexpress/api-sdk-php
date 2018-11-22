@@ -18,8 +18,12 @@ class ServiceMatcher
      */
     public function matches(ShipmentInterface $shipment, ServiceInterface $service)
     {
+        // TODO: How much does this method need to validate?
+        // TODO: Add check for regions.
         return $this->matchesDeliveryMethod($shipment, $service)
-            && ($this->getMatchedOptions($shipment, $service->getServiceRates()));
+            && ($this->getMatchedOptions($shipment, $service->getServiceRates([
+                'weight' => $shipment->getPhysicalProperties()->getWeight()
+            ])));
     }
 
     /**

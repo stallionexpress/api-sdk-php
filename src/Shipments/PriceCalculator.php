@@ -3,15 +3,14 @@
 namespace MyParcelCom\ApiSdk\Shipments;
 
 use MyParcelCom\ApiSdk\Exceptions\CalculationException;
+use MyParcelCom\ApiSdk\Exceptions\InvalidResourceException;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceRateInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 
 class PriceCalculator
 {
     /**
-     * Calculate the total price of given shipment. Optionally a contract can be
-     * supplied for the price calculations. If no contract is given, the
-     * contract on the shipment is used.
+     * Calculate the total price of given shipment based off its contract, service and weight.
      *
      * @param ShipmentInterface         $shipment
      * @param ServiceRateInterface|null $serviceRate
@@ -20,27 +19,18 @@ class PriceCalculator
     public function calculate(ShipmentInterface $shipment, ServiceRateInterface $serviceRate = null)
     {
         if ($serviceRate === null) {
-            $serviceRates = $shipment->getService()->getServiceRates([
-                'contract' => $shipment->getContract(),
-                'weight'   => $shipment->getPhysicalProperties()->getWeight(),
-            ]);
-
-            $serviceRate = reset($serviceRates);
-
-            if (!$serviceRate) {
-                throw new CalculationException(
-                    'Cannot find a matching service rate for given shipment'
-                );
-            }
+            $serviceRate = $this->determineServiceRateForShipment($shipment);
         }
+
+        // TODO: Check if shipment weight corresponds to service rate weight range.
+
+        // TODO: Early return for no service options.
 
         return $this->calculateOptionsPrice($shipment, $serviceRate) + $serviceRate->getPrice();
     }
 
     /**
      * Calculate the price based on the selected options for given shipment.
-     * Optionally a contract can be supplied for the price calculations. If no
-     * contract is given, the contract on the shipment is used.
      *
      * @param ShipmentInterface         $shipment
      * @param ServiceRateInterface|null $serviceRate
@@ -49,18 +39,7 @@ class PriceCalculator
     public function calculateOptionsPrice(ShipmentInterface $shipment, ServiceRateInterface $serviceRate = null)
     {
         if ($serviceRate === null) {
-            $serviceRates = $shipment->getService()->getServiceRates([
-                'contract' => $shipment->getContract(),
-                'weight'   => $shipment->getPhysicalProperties()->getWeight(),
-            ]);
-
-            $serviceRate = reset($serviceRates);
-
-            if (!$serviceRate) {
-                throw new CalculationException(
-                    'Cannot find a matching service rate for given shipment'
-                );
-            }
+            $serviceRate = $this->determineServiceRateForShipment($shipment);
         }
 
         $price = 0;
@@ -71,7 +50,7 @@ class PriceCalculator
         }
 
         foreach ($shipment->getServiceOptions() as $option) {
-            if (!isset($prices[$option->getId()])) {
+            if (!array_key_exists($option->getId(), $prices)) {
                 throw new CalculationException(
                     'Cannot calculate a price for given shipment; invalid option: ' . $option->getId()
                 );
@@ -81,5 +60,52 @@ class PriceCalculator
         }
 
         return (int)$price;
+    }
+
+    /**
+     * @param ShipmentInterface $shipment
+     * @throws InvalidResourceException
+     */
+    private function validateShipment(ShipmentInterface $shipment)
+    {
+        if ($shipment->getPhysicalProperties() === null || $shipment->getPhysicalProperties()->getWeight() === null) {
+            throw new InvalidResourceException(
+                'Cannot calculate shipment price without a set weight.'
+            );
+        }
+        if ($shipment->getContract() === null) {
+            throw new InvalidResourceException(
+                'Cannot calculate shipment price without a set contract.'
+            );
+        }
+        if ($shipment->getService() === null) {
+            throw new InvalidResourceException(
+                'Cannot calculate shipment price without a set service.'
+            );
+        }
+    }
+
+    /**
+     * @param ShipmentInterface    $shipment
+     * @return mixed|ServiceRateInterface
+     */
+    private function determineServiceRateForShipment(ShipmentInterface $shipment)
+    {
+        $this->validateShipment($shipment);
+
+        $serviceRates = $shipment->getService()->getServiceRates([
+            'contract' => $shipment->getContract(),
+            'weight'   => $shipment->getPhysicalProperties()->getWeight(),
+        ]);
+
+        $serviceRate = reset($serviceRates);
+
+        if (!$serviceRate) {
+            throw new CalculationException(
+                'Cannot find a matching service rate for given shipment'
+            );
+        }
+
+        return $serviceRate;
     }
 }
