@@ -18,13 +18,28 @@ class PriceCalculator
      */
     public function calculate(ShipmentInterface $shipment, ServiceRateInterface $serviceRate = null)
     {
+        if ($shipment->getPhysicalProperties() === null
+            || $shipment->getPhysicalProperties()->getWeight() === null
+            || $shipment->getPhysicalProperties()->getWeight() < 0) {
+            throw new InvalidResourceException(
+                'Cannot calculate shipment price without a valid shipment weight.'
+            );
+        }
+
         if ($serviceRate === null) {
             $serviceRate = $this->determineServiceRateForShipment($shipment);
         }
 
-        // TODO: Check if shipment weight corresponds to service rate weight range.
+        if ($shipment->getPhysicalProperties()->getWeight() < $serviceRate->getWeightMin()
+            || $shipment->getPhysicalProperties()->getWeight() > $serviceRate->getWeightMax()) {
+            throw new CalculationException(
+                'Could not calculate price for the given service rate since it does not support the shipment weight.'
+            );
+        }
 
-        // TODO: Early return for no service options.
+        if (empty($shipment->getServiceOptions())) {
+            return $serviceRate->getPrice();
+        }
 
         return $this->calculateOptionsPrice($shipment, $serviceRate) + $serviceRate->getPrice();
     }
@@ -38,8 +53,23 @@ class PriceCalculator
      */
     public function calculateOptionsPrice(ShipmentInterface $shipment, ServiceRateInterface $serviceRate = null)
     {
+        if ($shipment->getPhysicalProperties() === null
+            || $shipment->getPhysicalProperties()->getWeight() === null
+            || $shipment->getPhysicalProperties()->getWeight() < 0) {
+            throw new InvalidResourceException(
+                'Cannot calculate shipment price without a valid shipment weight.'
+            );
+        }
+
         if ($serviceRate === null) {
             $serviceRate = $this->determineServiceRateForShipment($shipment);
+        }
+
+        if ($shipment->getPhysicalProperties()->getWeight() < $serviceRate->getWeightMin()
+            || $shipment->getPhysicalProperties()->getWeight() > $serviceRate->getWeightMax()) {
+            throw new CalculationException(
+                'Could not calculate price for the given service rate since it does not support the shipment weight.'
+            );
         }
 
         $price = 0;
@@ -68,11 +98,6 @@ class PriceCalculator
      */
     private function validateShipment(ShipmentInterface $shipment)
     {
-        if ($shipment->getPhysicalProperties() === null || $shipment->getPhysicalProperties()->getWeight() === null) {
-            throw new InvalidResourceException(
-                'Cannot calculate shipment price without a set weight.'
-            );
-        }
         if ($shipment->getContract() === null) {
             throw new InvalidResourceException(
                 'Cannot calculate shipment price without a set contract.'
@@ -86,8 +111,8 @@ class PriceCalculator
     }
 
     /**
-     * @param ShipmentInterface    $shipment
-     * @return mixed|ServiceRateInterface
+     * @param ShipmentInterface $shipment
+     * @return ServiceRateInterface
      */
     private function determineServiceRateForShipment(ShipmentInterface $shipment)
     {

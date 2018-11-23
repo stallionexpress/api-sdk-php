@@ -12,12 +12,18 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 trait MocksContract
 {
     /**
-     * @param int                      $price
      * @param ServiceOptionInterface[] $serviceOptions
+     * @param int                      $price
+     * @param int                      $weightMin
+     * @param int                      $weightMax
      * @return ServiceRateInterface
      */
-    protected function getMockedServiceRate($price, array $serviceOptions = [])
-    {
+    protected function getMockedServiceRate(
+        array $serviceOptions = [],
+        $price = null,
+        $weightMin = null,
+        $weightMax = null
+    ) {
         $mock = $this->getMockBuilder(ServiceRateInterface::class)
             ->disableOriginalConstructor()
             ->disableOriginalClone()
@@ -30,16 +36,23 @@ trait MocksContract
         $mock
             ->method('getServiceOptions')
             ->willReturn($serviceOptions);
+        $mock
+            ->method('getWeightMin')
+            ->willReturn($weightMin);
+        $mock
+            ->method('getWeightMax')
+            ->willReturn($weightMax);
 
         return $mock;
     }
 
     /**
-     * @param ServiceInterface         $service
+     * @param int                      $weight
+     * @param ServiceInterface|null    $service
      * @param ServiceOptionInterface[] $serviceOptions
      * @return ShipmentInterface
      */
-    protected function getMockedShipment(ServiceInterface $service, array $serviceOptions = [])
+    protected function getMockedShipment($weight = 5000, ServiceInterface $service = null, array $serviceOptions = [])
     {
         $physicalPropertiesMock = $this->getMockBuilder(PhysicalPropertiesInterface::class)
             ->disableOriginalConstructor()
@@ -49,7 +62,7 @@ trait MocksContract
             ->getMock();
         $physicalPropertiesMock
             ->method('getWeight')
-            ->willReturn(1337);
+            ->willReturn($weight);
 
         $contractMock = $this->getMockBuilder(ContractInterface::class)
             ->disableOriginalConstructor()
@@ -67,18 +80,20 @@ trait MocksContract
 
         $shipment->method('getPhysicalProperties')->willReturn($physicalPropertiesMock);
         $shipment->method('getContract')->willReturn($contractMock);
-        $shipment->method('getService')->willReturn($service);
         $shipment->method('getServiceOptions')->willReturn($serviceOptions);
+        if ($service) {
+            $shipment->method('getService')->willReturn($service);
+        }
 
         return $shipment;
     }
 
     /**
-     * @param string $id
-     * @param int    $price
+     * @param string   $id
+     * @param int|null $price
      * @return ServiceOptionInterface
      */
-    protected function getMockedServiceOption($id, $price)
+    protected function getMockedServiceOption($id, $price = 0)
     {
         $mock = $this->getMockBuilder(ServiceOptionInterface::class)
             ->disableOriginalConstructor()
@@ -98,10 +113,11 @@ trait MocksContract
     }
 
     /**
-     * @param ServiceRateInterface|null $serviceRate
+     * @param ServiceRateInterface[] $serviceRates
+     * @param string|null            $deliveryMethod
      * @return ServiceInterface
      */
-    protected function getMockedService(ServiceRateInterface $serviceRate = null)
+    protected function getMockedService(array $serviceRates = [], $deliveryMethod = null)
     {
         $mock = $this->getMockBuilder(ServiceInterface::class)
             ->disableOriginalConstructor()
@@ -111,7 +127,10 @@ trait MocksContract
             ->getMock();
         $mock
             ->method('getServiceRates')
-            ->willReturn([$serviceRate]);
+            ->willReturn($serviceRates);
+        $mock
+            ->method('getDeliveryMethod')
+            ->willReturn($deliveryMethod);
 
         return $mock;
     }

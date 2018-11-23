@@ -2,9 +2,10 @@
 
 namespace MyParcelCom\ApiSdk\Shipments;
 
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
+use MyParcelCom\ApiSdk\Exceptions\InvalidResourceException;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceRateInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 
 class ServiceMatcher
@@ -18,12 +19,20 @@ class ServiceMatcher
      */
     public function matches(ShipmentInterface $shipment, ServiceInterface $service)
     {
-        // TODO: How much does this method need to validate?
-        // TODO: Add check for regions.
+        if ($shipment->getPhysicalProperties() === null
+            || $shipment->getPhysicalProperties()->getWeight() === null
+            || $shipment->getPhysicalProperties()->getWeight() < 0) {
+            throw new InvalidResourceException(
+                'Cannot match shipment and service without a valid shipment weight.'
+            );
+        }
+
+        // TODO: Add check for matching regions. We need to implement ancestor regions in the SDK in order to do this.
         return $this->matchesDeliveryMethod($shipment, $service)
-            && ($this->getMatchedOptions($shipment, $service->getServiceRates([
-                'weight' => $shipment->getPhysicalProperties()->getWeight()
-            ])));
+            && ($serviceRates = $service->getServiceRates([
+                'weight' => $shipment->getPhysicalProperties()->getWeight(),
+            ]))
+            && $this->getMatchedOptions($shipment, $serviceRates);
     }
 
     /**
@@ -47,9 +56,9 @@ class ServiceMatcher
      * Returns a subset of the given service rates that have all the options that
      * the shipment requires.
      *
-     * @param ShipmentInterface          $shipment
-     * @param ServiceContractInterface[] $serviceRates
-     * @return ServiceContractInterface[]
+     * @param ShipmentInterface      $shipment
+     * @param ServiceRateInterface[] $serviceRates
+     * @return ServiceRateInterface[]
      */
     public function getMatchedOptions(ShipmentInterface $shipment, array $serviceRates)
     {

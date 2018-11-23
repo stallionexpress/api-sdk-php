@@ -330,8 +330,8 @@ class MyParcelComApi implements MyParcelComApiInterface
 
         $url = new UrlBuilder($this->apiUri . self::PATH_SERVICE_RATES);
         $url->addQuery([
-            'filter[service]' => implode(',', $servicesIds),
             'filter[weight]'  => $shipment->getPhysicalProperties()->getWeight(),
+            'filter[service]' => implode(',', $servicesIds),
         ]);
 
         return $this->getResourceCollection($url->getUrl(), self::TTL_WEEK);
@@ -469,8 +469,8 @@ class MyParcelComApi implements MyParcelComApiInterface
         }, $services));
 
         $filters = [
-            'service' => $serviceIds,
             'weight'  => $shipment->getPhysicalProperties()->getWeight(),
+            'service' => $serviceIds,
         ];
 
         if ($shipment->getContract() !== null) {

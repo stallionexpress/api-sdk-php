@@ -2,8 +2,8 @@
 
 namespace MyParcelCom\ApiSdk\Tests\Unit;
 
-use MyParcelCom\ApiSdk\Exceptions\ServiceMatchingException;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
+use MyParcelCom\ApiSdk\Exceptions\InvalidResourceException;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
 use MyParcelCom\ApiSdk\Shipments\ServiceMatcher;
 use MyParcelCom\ApiSdk\Tests\Traits\MocksContract;
 use PHPUnit\Framework\TestCase;
@@ -12,392 +12,173 @@ class ServiceMatcherTest extends TestCase
 {
     use MocksContract;
 
-    // TODO: Fix!
-    /** @test */
-    public function testGetMatchedWeightGroups()
+    /** @var ServiceOptionInterface */
+    private $proofOfDeliveryOption;
+    /** @var ServiceOptionInterface */
+    private $collectionOption;
+    /** @var ServiceOptionInterface */
+    private $weekendDeliveryOption;
+    /** @var ServiceMatcher */
+    private $matcher;
+
+    public function setUp()
     {
-        $contracts = [
-            $this->getMockedServiceContract([
-                [
-                    'weight_min' => 3500,
-                    'weight_max' => 3600,
-                    'price'      => 779,
-                    'step_size'  => 0,
-                    'step_price' => 0,
-                ],
-                [
-                    'weight_min' => 3601,
-                    'weight_max' => 9999,
-                    'price'      => 799,
-                    'step_size'  => 0,
-                    'step_price' => 0,
-                ],
-                [
-                    'weight_min' => 0,
-                    'weight_max' => 3499,
-                    'price'      => 12,
-                    'step_size'  => 0,
-                    'step_price' => 0,
-                ],
+        $this->matcher = new ServiceMatcher();
+
+        $this->proofOfDeliveryOption = $this->getMockedServiceOption('proof-of-delivery-option');
+        $this->collectionOption = $this->getMockedServiceOption('collection-option');
+        $this->weekendDeliveryOption = $this->getMockedServiceOption('weekend-delivery-option');
+
+        parent::setUp();
+    }
+
+    /** @test */
+    public function testItMatchesDeliveryMethodsOnAServiceAndShipment()
+    {
+        $shipment = $this->getMockedShipment();
+        $shipment->method('getPickupLocationCode')->willReturn(null);
+
+        $matcher = new ServiceMatcher();
+
+        $pickupService = $this->getMockedService([], 'pick-up');
+        $this->assertFalse($matcher->matchesDeliveryMethod($shipment, $pickupService));
+
+        $deliveryService = $this->getMockedService([], 'delivery');
+        $this->assertTrue($matcher->matchesDeliveryMethod($shipment, $deliveryService));
+    }
+
+    /** @test */
+    public function testItMatchesServiceOptionsOnShipmentAndService()
+    {
+        // Shipment only has collectionOption.
+        // Only serviceRates with collectionOption should be returned.
+        $shipment = $this->getMockedShipment(5000, $this->getMockedService(), [$this->collectionOption]);
+
+        $serviceRates = [
+            // Contains collectionOption and should thus be returned.
+            $serviceRateMockA = $this->getMockedServiceRate([
+                $this->proofOfDeliveryOption,
+                $this->collectionOption,
             ]),
-            $this->getMockedServiceContract([
-                [
-                    'weight_min' => 0,
-                    'weight_max' => 20,
-                    'price'      => 88,
-                    'step_size'  => 100,
-                    'step_price' => 10,
-                ],
+
+            // Contains collectionOption and should thus be returned.
+            $serviceRateMockB = $this->getMockedServiceRate([
+                $this->collectionOption,
             ]),
-            $this->getMockedServiceContract([
-                [
-                    'weight_min' => 0,
-                    'weight_max' => 5000,
-                    'price'      => 4456,
-                    'step_size'  => 0,
-                    'step_price' => 0,
-                ],
-                [
-                    'weight_min' => 5001,
-                    'weight_max' => 10000,
-                    'price'      => 7444,
-                    'step_size'  => 0,
-                    'step_price' => 0,
-                ],
+
+            // Does NOT contain collectionOption and should thus NOT be returned.
+            $serviceRateMockC = $this->getMockedServiceRate([
+                $this->proofOfDeliveryOption,
+            ]),
+
+            // Contains collectionOption and should thus be returned.
+            $serviceRateMockD = $this->getMockedServiceRate([
+                $this->proofOfDeliveryOption,
+                $this->collectionOption,
+                $this->weekendDeliveryOption,
+            ]),
+
+            // Does NOT contain collectionOption and should thus NOT be returned.
+            $serviceRateMockE = $this->getMockedServiceRate([
+                $this->proofOfDeliveryOption,
+                $this->weekendDeliveryOption,
             ]),
         ];
 
         $matcher = new ServiceMatcher();
 
-        $this->assertCount(
-            3,
-            $matcher->getMatchedWeightGroups(
-                $this->getMockedShipment(0),
-                $contracts
-            )
-        );
-        $this->assertCount(
-            3,
-            $matcher->getMatchedWeightGroups(
-                $this->getMockedShipment(500),
-                $contracts
-            )
-        );
-        $this->assertCount(
-            2,
-            $matcher->getMatchedWeightGroups(
-                $this->getMockedShipment(10000),
-                $contracts
-            )
-        );
-        $this->assertCount(
-            1,
-            $matcher->getMatchedWeightGroups(
-                $this->getMockedShipment(999999),
-                $contracts
-            )
-        );
-
-        $this->expectException(ServiceMatchingException::class);
-        $matcher->getMatchedWeightGroups(
-            $this->getMockedShipment(-5010),
-            $contracts
-        );
+        $this->assertEquals([
+            $serviceRateMockA,
+            $serviceRateMockB,
+            $serviceRateMockD,
+        ], $matcher->getMatchedOptions($shipment, $serviceRates));
     }
 
     /** @test */
-    public function testGetMatchedOptions()
+    public function testItThrowsAnExceptionIfShipmentWeightIsNegative()
     {
-        $contracts = [
-            $this->getMockedServiceContract([], [
-                ['id' => 'option-id-1', 'price' => 1],
-                ['id' => 'option-id-2', 'price' => 23],
-                ['id' => 'option-id-4', 'price' => 112],
-                ['id' => 'option-id-7', 'price' => 10],
-            ]),
-            $this->getMockedServiceContract([], [
-                ['id' => 'option-id-1', 'price' => 124],
-                ['id' => 'option-id-3', 'price' => 5],
-            ]),
-            $this->getMockedServiceContract([], [
-                ['id' => 'option-id-1', 'price' => 89],
-                ['id' => 'option-id-3', 'price' => 44],
-                ['id' => 'option-id-4', 'price' => 546],
-                ['id' => 'option-id-6', 'price' => 3],
-                ['id' => 'option-id-7', 'price' => 2],
-            ]),
-            $this->getMockedServiceContract([], [
-                ['id' => 'option-id-4', 'price' => 15],
-                ['id' => 'option-id-8', 'price' => 2576],
-            ]),
-            $this->getMockedServiceContract([], []),
-        ];
+        $serviceMock = $this->getMockedService();
+        $shipment = $this->getMockedShipment(-2345);
 
         $matcher = new ServiceMatcher();
 
-        $this->assertCount(
-            5,
-            $matcher->getMatchedOptions(
-                $this->getMockedShipment(10, []),
-                $contracts
-            )
-        );
-        $this->assertCount(
-            3,
-            $matcher->getMatchedOptions(
-                $this->getMockedShipment(10, ['option-id-4']),
-                $contracts
-            )
-        );
-        $this->assertCount(
-            2,
-            $matcher->getMatchedOptions(
-                $this->getMockedShipment(10, ['option-id-1', 'option-id-4']),
-                $contracts
-            )
-        );
-        $this->assertCount(
-            1,
-            $matcher->getMatchedOptions(
-                $this->getMockedShipment(10, ['option-id-1', 'option-id-3', 'option-id-4', 'option-id-6']),
-                $contracts
-            )
-        );
-        $this->assertCount(
-            0,
-            $matcher->getMatchedOptions(
-                $this->getMockedShipment(10, [
-                    'option-id-1',
-                    'option-id-2',
-                    'option-id-3',
-                    'option-id-4',
-                    'option-id-5',
-                ]),
-                $contracts
-            )
-        );
+        $this->expectException(InvalidResourceException::class);
+        $this->expectExceptionMessage('Cannot match shipment and service without a valid shipment weight.');
+        $matcher->matches($shipment, $serviceMock);
     }
 
     /** @test */
-    public function testGetMatchedDeliveryMethod()
+    public function testItThrowsAnExceptionIfShipmentDoesNotHaveWeightSet()
     {
-        $serviceBuilder = $this->getMockBuilder(ServiceInterface::class)
-            ->disableOriginalConstructor()
-            ->disableOriginalClone()
-            ->disableArgumentCloning()
-            ->disallowMockingUnknownTypes();
-
-        $pickupService = $serviceBuilder->getMock();
-        $deliveyService = $serviceBuilder->getMock();
-
-        $pickupService->method('getDeliveryMethod')
-            ->willReturn(ServiceInterface::DELIVERY_METHOD_PICKUP);
-        $deliveyService->method('getDeliveryMethod')
-            ->willReturn(ServiceInterface::DELIVERY_METHOD_DELIVERY);
-
-        $deliveyShipment = $this->getMockedShipment();
-        $pickupShipment = $this->getMockedShipment();
-        $pickupShipment->method('getPickupLocationCode')->willReturn('p1ckup');
-
+        $serviceMock = $this->getMockedService();
+        $shipment = $this->getMockedShipment(null, $serviceMock);
 
         $matcher = new ServiceMatcher();
 
-        $this->assertTrue(
-            $matcher->matchesDeliveryMethod(
-                $deliveyShipment,
-                $deliveyService
-            )
-        );
-        $this->assertFalse(
-            $matcher->matchesDeliveryMethod(
-                $deliveyShipment,
-                $pickupService
-            )
-        );
-        $this->assertTrue(
-            $matcher->matchesDeliveryMethod(
-                $pickupShipment,
-                $pickupService
-            )
-        );
-        $this->assertFalse(
-            $matcher->matchesDeliveryMethod(
-                $pickupShipment,
-                $deliveyService
-            )
-        );
+        $this->expectException(InvalidResourceException::class);
+        $this->expectExceptionMessage('Cannot match shipment and service without a valid shipment weight.');
+        $matcher->matches($shipment, $serviceMock);
     }
 
     /** @test */
-    public function testMatches()
+    public function testItMatchesAServiceAndShipment()
     {
-        $contracts = [
-            $this->getMockedServiceContract([
-                [
-                    'weight_min' => 0,
-                    'weight_max' => 5000,
-                    'price'      => 4456,
-                    'step_size'  => 0,
-                    'step_price' => 0,
-                ],
-                [
-                    'weight_min' => 5001,
-                    'weight_max' => 10000,
-                    'price'      => 7444,
-                    'step_size'  => 0,
-                    'step_price' => 0,
-                ],
-            ], [
-                ['id' => 'option-id-1', 'price' => 1],
-                ['id' => 'option-id-2', 'price' => 23],
-                ['id' => 'option-id-4', 'price' => 112],
-                ['id' => 'option-id-7', 'price' => 10],
+        // A matching service should have the POD and collection options as well as have delivery method 'pick-up'.
+        $shipment = $this->getMockedShipment(2500, null, [$this->proofOfDeliveryOption, $this->collectionOption]);
+        $shipment->method('getPickupLocationCode')->willReturn('pickup-code');
+
+        $matchingServiceRates = [
+            $this->getMockedServiceRate([
+                $this->proofOfDeliveryOption,
+                $this->collectionOption,
+                $this->weekendDeliveryOption,
             ]),
-            $this->getMockedServiceContract([
-                [
-                    'weight_min' => 0,
-                    'weight_max' => 20,
-                    'price'      => 88,
-                    'step_size'  => 100,
-                    'step_price' => 10,
-                ],
-            ], [
-                ['id' => 'option-id-1', 'price' => 124],
-                ['id' => 'option-id-5', 'price' => 5],
-            ]),
-            $this->getMockedServiceContract([
-                [
-                    'weight_min' => 3500,
-                    'weight_max' => 3600,
-                    'price'      => 779,
-                    'step_size'  => 0,
-                    'step_price' => 0,
-                ],
-                [
-                    'weight_min' => 3601,
-                    'weight_max' => 9999,
-                    'price'      => 799,
-                    'step_size'  => 0,
-                    'step_price' => 0,
-                ],
-                [
-                    'weight_min' => 0,
-                    'weight_max' => 3499,
-                    'price'      => 12,
-                    'step_size'  => 0,
-                    'step_price' => 0,
-                ],
-            ], [
-                ['id' => 'option-id-1', 'price' => 89],
-                ['id' => 'option-id-3', 'price' => 44],
-                ['id' => 'option-id-4', 'price' => 546],
-                ['id' => 'option-id-6', 'price' => 3],
-                ['id' => 'option-id-7', 'price' => 2],
-            ]),
-            $this->getMockedServiceContract([
-                [
-                    'weight_min' => 0,
-                    'weight_max' => 100,
-                    'price'      => 79,
-                    'step_size'  => 0,
-                    'step_price' => 0,
-                ],
-                [
-                    'weight_min' => 101,
-                    'weight_max' => 1000,
-                    'price'      => 799,
-                    'step_size'  => 0,
-                    'step_price' => 0,
-                ],
-                [
-                    'weight_min' => 1001,
-                    'weight_max' => 10000,
-                    'price'      => 7999,
-                    'step_size'  => 0,
-                    'step_price' => 0,
-                ],
-            ], [
-                ['id' => 'option-id-4', 'price' => 15],
-                ['id' => 'option-id-8', 'price' => 2576],
-            ]),
-            $this->getMockedServiceContract([
-                [
-                    'weight_min' => 0,
-                    'weight_max' => 5000,
-                    'price'      => 645,
-                    'step_size'  => 0,
-                    'step_price' => 0,
-                ],
-                [
-                    'weight_min' => 5001,
-                    'weight_max' => 9999,
-                    'price'      => 895,
-                    'step_size'  => 0,
-                    'step_price' => 0,
-                ],
-            ], [
-                ['id' => 'option-id-3', 'price' => 66],
+            $this->getMockedServiceRate([
+                $this->proofOfDeliveryOption,
+                $this->collectionOption,
             ]),
         ];
 
-        $serviceBuilder = $this->getMockBuilder(ServiceInterface::class)
-            ->disableOriginalConstructor()
-            ->disableOriginalClone()
-            ->disableArgumentCloning()
-            ->disallowMockingUnknownTypes();
+        $nonMatchingServiceRates = [
+            $this->getMockedServiceRate([
+                $this->weekendDeliveryOption,
+            ]),
+            $this->getMockedServiceRate([
+                $this->weekendDeliveryOption,
+                $this->proofOfDeliveryOption,
+            ]),
+        ];
 
-        $serviceA = $serviceBuilder->getMock();
-        $serviceB = $serviceBuilder->getMock();
-        $serviceC = $serviceBuilder->getMock();
+        // Note that in the service matcher,
+        // service rates are retrieved from the API using the shipment's weight as filter.
+        // An empty array here represents a mocked empty API response for the shipment's weight.
+        $nonMatchingServiceA = $this->getMockedService([], 'delivery');
+        $this->assertFalse($this->matcher->matches($shipment, $nonMatchingServiceA));
 
-        $serviceA
-            ->method('getServiceContracts')
-            ->willReturn([$contracts[0], $contracts[1], $contracts[2]]);
-        $serviceA
-            ->method('getDeliveryMethod')
-            ->willReturn(ServiceInterface::DELIVERY_METHOD_DELIVERY);
-        $serviceB
-            ->method('getServiceContracts')
-            ->willReturn([$contracts[0], $contracts[4]]);
-        $serviceB
-            ->method('getDeliveryMethod')
-            ->willReturn(ServiceInterface::DELIVERY_METHOD_DELIVERY);
-        $serviceC
-            ->method('getServiceContracts')
-            ->willReturn([$contracts[2], $contracts[3], $contracts[4]]);
-        $serviceC
-            ->method('getDeliveryMethod')
-            ->willReturn(ServiceInterface::DELIVERY_METHOD_DELIVERY);
+        // This service does have matching service rates, but the delivery method is wrong.
+        $nonMatchingServiceB = $this->getMockedService($matchingServiceRates, 'delivery');
+        $this->assertFalse($this->matcher->matches($shipment, $nonMatchingServiceB));
 
-        $matcher = new ServiceMatcher();
+        // This service does match the shipment's delivery method, but the service rates don't match the
+        // shipment weight.
+        $nonMatchingServiceC = $this->getMockedService([], 'pick-up');
+        $this->assertFalse($this->matcher->matches($shipment, $nonMatchingServiceC));
 
-        $this->assertTrue($matcher->matches($this->getMockedShipment(10, []), $serviceA));
-        $this->assertTrue($matcher->matches($this->getMockedShipment(10, []), $serviceB));
-        $this->assertTrue($matcher->matches($this->getMockedShipment(10, []), $serviceC));
+        // This service does match the shipment's delivery method and the the service rates match the
+        // shipment weight, but it doesn't have the right options.
+        $nonMatchingServiceC = $this->getMockedService($nonMatchingServiceRates, 'pick-up');
+        $this->assertFalse($this->matcher->matches($shipment, $nonMatchingServiceC));
 
-        $this->assertTrue($matcher->matches($this->getMockedShipment(10, [
-            'option-id-2',
-            'option-id-4',
-        ]), $serviceA));
-        $this->assertTrue($matcher->matches($this->getMockedShipment(10, [
-            'option-id-2',
-            'option-id-4',
-        ]), $serviceB));
-        $this->assertFalse($matcher->matches($this->getMockedShipment(10, [
-            'option-id-2',
-            'option-id-4',
-        ]), $serviceC));
+        // This service matches the shipment's delivery method and all service rates match.
+        $matchingServiceA = $this->getMockedService($matchingServiceRates, 'pick-up');
+        $this->assertTrue($this->matcher->matches($shipment, $matchingServiceA));
 
-        $this->assertTrue($matcher->matches($this->getMockedShipment(10001, ['option-id-1']), $serviceA));
-        $this->assertFalse($matcher->matches($this->getMockedShipment(10001, ['option-id-1']), $serviceB));
-        $this->assertFalse($matcher->matches($this->getMockedShipment(10001, ['option-id-1']), $serviceC));
-
-        $this->assertTrue($matcher->matches($this->getMockedShipment(9000, ['option-id-6']), $serviceA));
-        $this->assertFalse($matcher->matches($this->getMockedShipment(9000, ['option-id-6']), $serviceB));
-        $this->assertTrue($matcher->matches($this->getMockedShipment(9000, ['option-id-6']), $serviceC));
-
-        $this->assertFalse($matcher->matches($this->getMockedShipment(999999999, ['some-unknown-id']), $serviceA));
-        $this->assertFalse($matcher->matches($this->getMockedShipment(999999999, ['some-unknown-id']), $serviceB));
-        $this->assertFalse($matcher->matches($this->getMockedShipment(999999999, ['some-unknown-id']), $serviceC));
+        // This service matches the shipment's delivery method and has matching service rates.
+        // Note that even though it also has non-matching service rates, the service itself should still match.
+        $matchingServiceB = $this->getMockedService(
+            array_merge($matchingServiceRates, $nonMatchingServiceRates),
+            'pick-up'
+        );
+        $this->assertTrue($this->matcher->matches($shipment, $matchingServiceB));
     }
 }

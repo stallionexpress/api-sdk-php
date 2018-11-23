@@ -368,7 +368,7 @@ class Service implements ServiceInterface
     public function getServiceRates(array $filters = [])
     {
         if (empty($this->serviceRates) && isset($this->serviceRatesCallback)) {
-            $this->setServiceRates(call_user_func_array($this->serviceRatesCallback, $filters));
+            $this->setServiceRates(call_user_func_array($this->serviceRatesCallback, [$filters]));
         }
 
         return $this->serviceRates;
