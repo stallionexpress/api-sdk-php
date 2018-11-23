@@ -6,7 +6,6 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceRateInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
@@ -184,36 +183,6 @@ class ServiceProxy implements ServiceInterface, ResourceProxyInterface
     }
 
     /**
-     * @param ServiceContractInterface[] $serviceContracts
-     * @return $this
-     */
-    public function setServiceContracts(array $serviceContracts)
-    {
-        $this->getResource()->setServiceContracts($serviceContracts);
-
-        return $this;
-    }
-
-    /**
-     * @param ServiceContractInterface $serviceContract
-     * @return $this
-     */
-    public function addServiceContract(ServiceContractInterface $serviceContract)
-    {
-        $this->getResource()->addServiceContract($serviceContract);
-
-        return $this;
-    }
-
-    /**
-     * @return ServiceContractInterface[]
-     */
-    public function getServiceContracts()
-    {
-        return $this->getResource()->getServiceContracts();
-    }
-
-    /**
      * @param string $handoverMethod
      * @return $this
      */
@@ -293,12 +262,12 @@ class ServiceProxy implements ServiceInterface, ResourceProxyInterface
     }
 
     /**
-     * @param ServiceRateInterface $serviceContract
+     * @param ServiceRateInterface $serviceRate
      * @return $this
      */
-    public function addServiceRate(ServiceRateInterface $serviceContract)
+    public function addServiceRate(ServiceRateInterface $serviceRate)
     {
-        $this->getResource()->addServiceRate($serviceContract);
+        $this->getResource()->addServiceRate($serviceRate);
 
         return $this;
     }

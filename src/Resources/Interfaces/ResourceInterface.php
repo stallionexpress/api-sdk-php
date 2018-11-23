@@ -14,10 +14,8 @@ interface ResourceInterface extends \JsonSerializable
     const TYPE_PUDO_LOCATION = 'pickup-dropoff-locations';
     const TYPE_REGION = 'regions';
     const TYPE_SERVICE = 'services';
-    const TYPE_SERVICE_CONTRACT = 'service-contracts';
     const TYPE_SERVICE_GROUP = 'service-groups';
     const TYPE_SERVICE_OPTION = 'service-options';
-    const TYPE_SERVICE_OPTION_PRICE = 'service-option-prices';
     const TYPE_SERVICE_RATE = 'service-rates';
     const TYPE_SHIPMENT = 'shipments';
     const TYPE_SHIPMENT_STATUS = 'shipment-statuses';

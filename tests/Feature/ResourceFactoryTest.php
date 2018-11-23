@@ -8,11 +8,9 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\PickUpDropOffLocationInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceGroupInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionPriceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceRateInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
@@ -65,20 +63,6 @@ class ResourceFactoryTest extends TestCase
                     'type' => 'carriers',
                     'id'   => 'carrier-id',
                 ],
-                'service_contracts' => [
-                    [
-                        'type' => 'service-contracts',
-                        'id'   => 'service-contract-id-1',
-                    ],
-                    [
-                        'type' => 'service-contracts',
-                        'id'   => 'service-contract-id-2',
-                    ],
-                    [
-                        'type' => 'service-contracts',
-                        'id'   => 'service-contract-id-3',
-                    ],
-                ],
             ]
         );
 
@@ -90,103 +74,10 @@ class ResourceFactoryTest extends TestCase
                 'currency' => 'JPY',
             ],
             'relationships' => [
-                'carrier'           => [
+                'carrier' => [
                     'data' => [
                         'type' => 'carriers',
                         'id'   => 'carrier-id',
-                    ],
-                ],
-                'service_contracts' => [
-                    'data' => [
-                        [
-                            'type' => 'service-contracts',
-                            'id'   => 'service-contract-id-1',
-                        ],
-                        [
-                            'type' => 'service-contracts',
-                            'id'   => 'service-contract-id-2',
-                        ],
-                        [
-                            'type' => 'service-contracts',
-                            'id'   => 'service-contract-id-3',
-                        ],
-                    ],
-                ],
-            ],
-        ], $contract->jsonSerialize());
-    }
-
-    /** @test */
-    public function testCreateEmptyContract()
-    {
-        $resourceFactory = new ResourceFactory();
-        $contract = $resourceFactory->create('service-contracts');
-
-        $this->assertInstanceOf(ServiceContractInterface::class, $contract);
-        $this->assertEquals([
-            'type' => 'service-contracts',
-        ], $contract->jsonSerialize());
-    }
-
-    /** @test */
-    public function testCreateServiceContract()
-    {
-        $contractAttributes = [
-            'service'               => [
-                'type' => 'services',
-                'id'   => 'service-id',
-            ],
-            'contract'              => [
-                'type' => 'contracts',
-                'id'   => 'contract-id',
-            ],
-            'service_groups'        => [
-                [
-                    'type' => 'service-groups',
-                    'id'   => 'service-group-id',
-                ],
-            ],
-            'service_option_prices' => [
-                [
-                    'type' => 'service-option-prices',
-                    'id'   => 'service-option-price-id',
-                ],
-            ],
-        ];
-
-        $resourceFactory = new ResourceFactory();
-        $contract = $resourceFactory->create('service-contracts', $contractAttributes);
-
-        $this->assertInstanceOf(ServiceContractInterface::class, $contract);
-        $this->assertEquals([
-            'type'          => 'service-contracts',
-            'relationships' => [
-                'service'               => [
-                    'data' => [
-                        'type' => 'services',
-                        'id'   => 'service-id',
-                    ],
-                ],
-                'contract'              => [
-                    'data' => [
-                        'type' => 'contracts',
-                        'id'   => 'contract-id',
-                    ],
-                ],
-                'service_groups'        => [
-                    'data' => [
-                        [
-                            'type' => 'service-groups',
-                            'id'   => 'service-group-id',
-                        ],
-                    ],
-                ],
-                'service_option_prices' => [
-                    'data' => [
-                        [
-                            'type' => 'service-option-prices',
-                            'id'   => 'service-option-price-id',
-                        ],
                     ],
                 ],
             ],

@@ -8,7 +8,6 @@ use MyParcelCom\ApiSdk\MyParcelComApi;
 use MyParcelCom\ApiSdk\MyParcelComApiInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use MyParcelCom\ApiSdk\Resources\Proxy\ContractProxy;
 use MyParcelCom\ApiSdk\Tests\Traits\MocksApiCommunication;
 use PHPUnit\Framework\TestCase;
@@ -52,18 +51,6 @@ class ContractProxyTest extends TestCase
         /** @var CarrierInterface $carrier */
         $carrier = $this->getMockBuilder(CarrierInterface::class)->getMock();
         $this->assertEquals($carrier, $this->contractProxy->setCarrier($carrier)->getCarrier());
-
-        $serviceContractBuilder = $this->getMockBuilder(ServiceContractInterface::class);
-        /** @var ServiceContractInterface $serviceContractA */
-        $serviceContractA = $serviceContractBuilder->getMock();
-        $this->assertEquals([$serviceContractA], $this->contractProxy->setServiceContracts([$serviceContractA])->getServiceContracts());
-
-        /** @var ServiceContractInterface $serviceContractB */
-        $serviceContractB = $serviceContractBuilder->getMock();
-        $this->assertEquals([
-            $serviceContractA,
-            $serviceContractB,
-        ], $this->contractProxy->addServiceContract($serviceContractB)->getServiceContracts());
     }
 
     /** @test */
@@ -95,7 +82,7 @@ class ContractProxyTest extends TestCase
             ->setMyParcelComApi($this->api)
             ->setId('f1630e62-4645-448d-af22-7d5bac0f502d');
         $firstProxy->getCurrency();
-        $firstProxy->getServiceContracts();
+        $firstProxy->getCarrier();
 
         $this->assertEquals(1, $this->clientCalls['https://api/contracts/f1630e62-4645-448d-af22-7d5bac0f502d']);
 

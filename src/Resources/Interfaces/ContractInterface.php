@@ -31,21 +31,4 @@ interface ContractInterface extends ResourceInterface
      * @return CarrierInterface
      */
     public function getCarrier();
-
-    /**
-     * @param ServiceContractInterface[] $serviceContracts
-     * @return $this
-     */
-    public function setServiceContracts(array $serviceContracts);
-
-    /**
-     * @param ServiceContractInterface $serviceContract
-     * @return $this
-     */
-    public function addServiceContract(ServiceContractInterface $serviceContract);
-
-    /**
-     * @return ServiceContractInterface[]
-     */
-    public function getServiceContracts();
 }

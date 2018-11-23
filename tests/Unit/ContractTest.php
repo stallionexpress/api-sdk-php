@@ -4,7 +4,6 @@ namespace MyParcelCom\ApiSdk\Tests\Unit;
 
 use MyParcelCom\ApiSdk\Resources\Contract;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use PHPUnit\Framework\TestCase;
 
 class ContractTest extends TestCase
@@ -42,50 +41,8 @@ class ContractTest extends TestCase
     }
 
     /** @test */
-    public function testServiceContracts()
-    {
-        $contract = new Contract();
-
-        $mock = $this->getMockClass(ServiceContractInterface::class);
-        $serviceContracts = [new $mock(), new $mock(), new $mock()];
-
-        $this->assertEquals($serviceContracts, $contract->setServiceContracts($serviceContracts)->getServiceContracts());
-
-        $serviceContract = new $mock();
-        $serviceContracts[] = $serviceContract;
-        $this->assertEquals($serviceContracts, $contract->addServiceContract($serviceContract)->getServiceContracts());
-    }
-
-    /** @test */
     public function testJsonSerialize()
     {
-        $serviceContractMockBuilder = $this->getMockBuilder(ServiceContractInterface::class)
-            ->disableOriginalConstructor()
-            ->disableOriginalClone()
-            ->disableArgumentCloning()
-            ->disallowMockingUnknownTypes();
-
-        $serviceContractMockA = $serviceContractMockBuilder->getMock();
-        $serviceContractMockA->method('jsonSerialize')
-            ->willReturn([
-                'type' => 'service-contracts',
-                'id'   => 'service-contract-id-1',
-            ]);
-
-        $serviceContractMockB = $serviceContractMockBuilder->getMock();
-        $serviceContractMockB->method('jsonSerialize')
-            ->willReturn([
-                'type' => 'service-contracts',
-                'id'   => 'service-contract-id-2',
-            ]);
-
-        $serviceContractMockC = $serviceContractMockBuilder->getMock();
-        $serviceContractMockC->method('jsonSerialize')
-            ->willReturn([
-                'type' => 'service-contracts',
-                'id'   => 'service-contract-id-3',
-            ]);
-
         $carrierMock = $this->getMockBuilder(CarrierInterface::class)
             ->disableOriginalConstructor()
             ->disableOriginalClone()
@@ -102,12 +59,7 @@ class ContractTest extends TestCase
         $contract = (new Contract())
             ->setId('contract-id')
             ->setCurrency('IOU')
-            ->setCarrier($carrierMock)
-            ->setServiceContracts([
-                $serviceContractMockA,
-                $serviceContractMockB,
-                $serviceContractMockC,
-            ]);
+            ->setCarrier($carrierMock);
 
         $this->assertEquals([
             'id'            => 'contract-id',
@@ -120,22 +72,6 @@ class ContractTest extends TestCase
                     'data' => [
                         'id'   => 'carrier-id',
                         'type' => 'carriers',
-                    ],
-                ],
-                'service_contracts' => [
-                    'data' => [
-                        [
-                            'type' => 'service-contracts',
-                            'id'   => 'service-contract-id-1',
-                        ],
-                        [
-                            'type' => 'service-contracts',
-                            'id'   => 'service-contract-id-2',
-                        ],
-                        [
-                            'type' => 'service-contracts',
-                            'id'   => 'service-contract-id-3',
-                        ],
                     ],
                 ],
             ],
