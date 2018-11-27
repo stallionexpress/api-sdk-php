@@ -5,7 +5,6 @@ namespace MyParcelCom\ApiSdk\Resources;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceRateInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
@@ -32,12 +31,6 @@ class Service implements ServiceInterface
 
     /** @var string */
     private $type = ResourceInterface::TYPE_SERVICE;
-
-    /** @var ServiceContractInterface[] */
-    private $serviceContracts = [];
-
-    /** @var callable */
-    private $serviceContractsCallback;
 
     /** @var ServiceRateInterface[] */
     private $serviceRates = [];
@@ -224,53 +217,6 @@ class Service implements ServiceInterface
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function setServiceContracts(array $serviceServiceContracts)
-    {
-        $this->serviceContracts = [];
-
-        array_walk($serviceServiceContracts, function ($contract) {
-            $this->addServiceContract($contract);
-        });
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addServiceContract(ServiceContractInterface $serviceServiceContract)
-    {
-        $this->serviceContracts[] = $serviceServiceContract;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getServiceContracts()
-    {
-        if (empty($this->serviceContracts) && isset($this->serviceContractsCallback)) {
-            $this->setServiceContracts(call_user_func($this->serviceContractsCallback));
-        }
-
-        return $this->serviceContracts;
-    }
-
-    /**
-     * @param callable $callback
-     * @return $this
-     */
-    public function setServiceContractsCallback(callable $callback)
-    {
-        $this->serviceContractsCallback = $callback;
-
-        return $this;
-    }
-
-    /**
      * @inheritdoc
      */
     public function setHandoverMethod($handoverMethod)
@@ -391,7 +337,6 @@ class Service implements ServiceInterface
     public function jsonSerialize()
     {
         $values = get_object_vars($this);
-        unset($values['serviceContracts']);
         unset($values['serviceRates']);
 
         $json = $this->arrayValuesToArray($values);

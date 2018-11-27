@@ -8,7 +8,6 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CustomsInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\PhysicalPropertiesInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentItemInterface;
