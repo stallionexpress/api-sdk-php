@@ -17,6 +17,7 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceFactoryInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceRateInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
@@ -322,19 +323,36 @@ class MyParcelComApi implements MyParcelComApiInterface
      */
     public function getServiceRatesForShipment(ShipmentInterface $shipment)
     {
-        $services = $this->getServices($shipment)->get();
-
-        $servicesIds = array_map(function (Service $service) {
-            return $service->getId();
-        }, $services);
+        $services = $this->getServices($shipment);
+        $serviceIds = [];
+        foreach ($services as $service) {
+            $serviceIds[] = $service->getId();
+        }
 
         $url = new UrlBuilder($this->apiUri . self::PATH_SERVICE_RATES);
         $url->addQuery([
             'filter[weight]'  => $shipment->getPhysicalProperties()->getWeight(),
-            'filter[service]' => implode(',', $servicesIds),
+            'filter[service]' => implode(',', $serviceIds),
         ]);
 
-        return $this->getResourceCollection($url->getUrl(), self::TTL_WEEK);
+        $serviceRates = $this->getResourceCollection($url->getUrl(), self::TTL_WEEK);
+
+        $shipmentOptionIds = array_map(function (ServiceOptionInterface $serviceOption) {
+            return $serviceOption->getId();
+        }, $shipment->getServiceOptions());
+
+        $matchingServiceRates = [];
+        foreach ($serviceRates as $serviceRate) {
+            $serviceRateOptionIds = array_map(function (ServiceOptionInterface $serviceOption) {
+                return $serviceOption->getId();
+            }, $serviceRate->getServiceOptions());
+
+            if (empty(array_diff($shipmentOptionIds, $serviceRateOptionIds))) {
+                $matchingServiceRates[] = $serviceRate;
+            }
+        }
+
+        return new ArrayCollection($matchingServiceRates);
     }
 
     /**
@@ -458,7 +476,7 @@ class MyParcelComApi implements MyParcelComApiInterface
             $services = [$shipment->getService()];
         } else {
             $services = [];
-            $collection = $this->getServices($shipment);
+            $collection = $this->getServices($shipment)->limit(30);
             for ($offset = 0; $offset < $collection->count(); $offset += 30) {
                 $services = array_merge($services, $collection->offset($offset)->get());
             }
@@ -477,18 +495,16 @@ class MyParcelComApi implements MyParcelComApiInterface
             $filters['contract'] = $shipment->getContract()->getId();
         };
 
-        $serviceRates = $this->getServiceRates($filters)->get();
+        $serviceRates = $this->getServiceRates($filters);
 
-        $rates = array_map(
-            function (ServiceRateInterface $serviceRate) use ($calculator, $shipment) {
-                return [
-                    'price'    => $calculator->calculate($shipment, $serviceRate),
-                    'service'  => $serviceRate->getService(),
-                    'contract' => $serviceRate->getContract(),
-                ];
-            },
-            $serviceRates
-        );
+        $rates = [];
+        foreach ($serviceRates as $serviceRate) {
+            $rates[] = [
+                'price'    => $calculator->calculate($shipment, $serviceRate),
+                'service'  => $serviceRate->getService(),
+                'contract' => $serviceRate->getContract(),
+            ];
+        }
 
         usort($rates, function ($a, $b) {
             return $a['price'] - $b['price'];
