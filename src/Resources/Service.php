@@ -365,10 +365,10 @@ class Service implements ServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function getServiceRates()
+    public function getServiceRates(array $filters = [])
     {
         if (empty($this->serviceRates) && isset($this->serviceRatesCallback)) {
-            $this->setServiceRates(call_user_func($this->serviceRatesCallback));
+            $this->setServiceRates(call_user_func_array($this->serviceRatesCallback, [$filters]));
         }
 
         return $this->serviceRates;

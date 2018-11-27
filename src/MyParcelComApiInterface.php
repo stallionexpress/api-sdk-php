@@ -115,7 +115,7 @@ interface MyParcelComApiInterface
 
     /**
      * Retrieves service rates based on the set filters.
-     * Available filters are: service_ids, contract_ids and weight.
+     * Available filters are: service, contract and weight.
      *
      * @param array $filters
      * @return CollectionInterface

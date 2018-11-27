@@ -2,11 +2,10 @@
 
 namespace MyParcelCom\ApiSdk\Shipments;
 
-use MyParcelCom\ApiSdk\Exceptions\ServiceMatchingException;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
+use MyParcelCom\ApiSdk\Exceptions\InvalidResourceException;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionPriceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceRateInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 
 class ServiceMatcher
@@ -20,11 +19,20 @@ class ServiceMatcher
      */
     public function matches(ShipmentInterface $shipment, ServiceInterface $service)
     {
-        // TODO: Fix!
+        if ($shipment->getPhysicalProperties() === null
+            || $shipment->getPhysicalProperties()->getWeight() === null
+            || $shipment->getPhysicalProperties()->getWeight() < 0) {
+            throw new InvalidResourceException(
+                'Cannot match shipment and service without a valid shipment weight.'
+            );
+        }
 
+        // TODO: Add check for matching regions. We need to implement ancestor regions in the SDK in order to do this.
         return $this->matchesDeliveryMethod($shipment, $service)
-            && ($weightContracts = $this->getMatchedWeightGroups($shipment, $service->getServiceContracts()))
-            && ($optionContracts = $this->getMatchedOptions($shipment, $weightContracts));
+            && ($serviceRates = $service->getServiceRates([
+                'weight' => $shipment->getPhysicalProperties()->getWeight(),
+            ]))
+            && $this->getMatchedOptions($shipment, $serviceRates);
     }
 
     /**
@@ -45,60 +53,27 @@ class ServiceMatcher
     }
 
     /**
-     * Returns a subset of the given contracts that have weight groups that
-     * match the weight of the shipment.
-     *
-     * @param ShipmentInterface          $shipment
-     * @param ServiceContractInterface[] $serviceContracts
-     * @return ServiceContractInterface[]
-     */
-    public function getMatchedWeightGroups(ShipmentInterface $shipment, array $serviceContracts)
-    {
-        if ($shipment->getWeight() < 0) {
-            throw new ServiceMatchingException(
-                'Cannot match a service to given shipment; negative weight given'
-            );
-        }
-
-        $matches = [];
-        foreach ($serviceContracts as $serviceContract) {
-            foreach ($serviceContract->getServiceGroups() as $group) {
-                if (($group->getWeightMin() <= $shipment->getWeight()
-                        && $group->getWeightMax() >= $shipment->getWeight())
-                    // If weight can be added on top of the set weight group,
-                    // this group matches.
-                    || ($group->getStepPrice() && $group->getStepSize())) {
-                    $matches[] = $serviceContract;
-                    continue 2;
-                }
-            }
-        }
-
-        return $matches;
-    }
-
-    /**
-     * Returns a subset of the given contracts that have all the options that
+     * Returns a subset of the given service rates that have all the options that
      * the shipment requires.
      *
-     * @param ShipmentInterface          $shipment
-     * @param ServiceContractInterface[] $serviceContracts
-     * @return ServiceContractInterface[]
+     * @param ShipmentInterface      $shipment
+     * @param ServiceRateInterface[] $serviceRates
+     * @return ServiceRateInterface[]
      */
-    public function getMatchedOptions(ShipmentInterface $shipment, array $serviceContracts)
+    public function getMatchedOptions(ShipmentInterface $shipment, array $serviceRates)
     {
         $optionIds = array_map(function (ServiceOptionInterface $option) {
             return $option->getId();
         }, $shipment->getServiceOptions());
 
         $matches = [];
-        foreach ($serviceContracts as $serviceContract) {
-            $contractOptionIds = array_map(function (ServiceOptionPriceInterface $optionPrice) use ($optionIds) {
-                return $optionPrice->getServiceOption()->getId();
-            }, $serviceContract->getServiceOptionPrices());
+        foreach ($serviceRates as $serviceRate) {
+            $contractOptionIds = array_map(function (ServiceOptionInterface $option) use ($optionIds) {
+                return $option->getId();
+            }, $serviceRate->getServiceOptions());
 
             if (!array_diff($optionIds, $contractOptionIds)) {
-                $matches[] = $serviceContract;
+                $matches[] = $serviceRate;
             }
         }
 

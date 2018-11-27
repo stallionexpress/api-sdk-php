@@ -3,155 +3,134 @@
 namespace MyParcelCom\ApiSdk\Shipments;
 
 use MyParcelCom\ApiSdk\Exceptions\CalculationException;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceGroupInterface;
+use MyParcelCom\ApiSdk\Exceptions\InvalidResourceException;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceRateInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 
 class PriceCalculator
 {
     /**
-     * Calculate the total price of given shipment. Optionally a contract can be
-     * supplied for the price calculations. If no contract is given, the
-     * contract on the shipment is used.
+     * Calculate the total price of given shipment based off its contract, service and weight.
      *
-     * @param ShipmentInterface             $shipment
-     * @param ServiceContractInterface|null $contract
+     * @param ShipmentInterface         $shipment
+     * @param ServiceRateInterface|null $serviceRate
      * @return int
      */
-    public function calculate(ShipmentInterface $shipment, ServiceContractInterface $contract = null)
+    public function calculate(ShipmentInterface $shipment, ServiceRateInterface $serviceRate = null)
     {
-        // TODO: Fix!
-        if ($contract === null) {
-            $contract = $shipment->getServiceContract();
-        }
-
-        if ($contract === null) {
-            throw new CalculationException(
-                'Cannot calculate a price for given shipment without a contract'
+        if ($shipment->getPhysicalProperties() === null
+            || $shipment->getPhysicalProperties()->getWeight() === null
+            || $shipment->getPhysicalProperties()->getWeight() < 0) {
+            throw new InvalidResourceException(
+                'Cannot calculate shipment price without a valid shipment weight.'
             );
         }
 
-        return $this->calculateGroupPrice($shipment, $contract)
-            + $this->calculateOptionsPrice($shipment, $contract);
-    }
-
-    /**
-     * Calculate the price based on the weight group for given shipment.
-     * Optionally a contract can be supplied for the price calculations. If no
-     * contract is given, the contract on the shipment is used.
-     *
-     * @param ShipmentInterface             $shipment
-     * @param ServiceContractInterface|null $contract
-     * @return int
-     */
-    public function calculateGroupPrice(ShipmentInterface $shipment, ServiceContractInterface $contract = null)
-    {
-        if ($contract === null) {
-            $contract = $shipment->getServiceContract();
+        if ($serviceRate === null) {
+            $serviceRate = $this->determineServiceRateForShipment($shipment);
         }
 
-        if ($contract === null) {
+        if ($shipment->getPhysicalProperties()->getWeight() < $serviceRate->getWeightMin()
+            || $shipment->getPhysicalProperties()->getWeight() > $serviceRate->getWeightMax()) {
             throw new CalculationException(
-                'Cannot calculate a price for given shipment without a contract'
+                'Could not calculate price for the given service rate since it does not support the shipment weight.'
             );
         }
 
-        if ($shipment->getWeight() < 0) {
-            throw new CalculationException(
-                'Cannot calculate a price for given shipment; negative weight given'
-            );
+        if (empty($shipment->getServiceOptions())) {
+            return $serviceRate->getPrice();
         }
 
-        $price = 0;
-
-        // Order all the groups to have the highest weight group last.
-        $groups = $contract->getServiceGroups();
-        @usort($groups, function (ServiceGroupInterface $a, ServiceGroupInterface $b) {
-            // Sort based on the min weight;
-            $minDiff = $a->getWeightMin() - $b->getWeightMin();
-            if ($minDiff !== 0) {
-                return $minDiff;
-            }
-
-            // If the min weight of both groups are equal, sort by max weight.
-            $maxDiff = $a->getWeightMax() - $b->getWeightMax();
-            if ($maxDiff !== 0) {
-                return $maxDiff;
-            }
-
-            // If the max weights are equal, sort by step size.
-            $stepDiff = $a->getStepSize() - $b->getStepSize();
-            if ($stepDiff !== 0) {
-                return $stepDiff;
-            }
-
-            // If the step sizes are equal, sort by price.
-            return $a->getPrice() - $b->getPrice();
-        });
-
-        // Find the weight group this shipment is in.
-        foreach ($groups as $group) {
-            if ($shipment->getWeight() >= $group->getWeightMin()
-                && $shipment->getWeight() <= $group->getWeightMax()) {
-                break;
-            }
-        }
-
-        // Add the group price to the price
-        $price += $group->getPrice();
-
-        // Add any weight over the max to the price.
-        if ($shipment->getWeight() > $group->getWeightMax()
-            && $group->getStepSize()
-            && $group->getStepPrice()) {
-            $price +=
-                ceil(($shipment->getWeight() - $group->getWeightMax()) / $group->getStepSize())
-                * $group->getStepPrice();
-        } elseif ($shipment->getWeight() > $group->getWeightMax() || $shipment->getWeight() < $group->getWeightMin()) {
-            throw new CalculationException(
-                'Cannot calculate a price for given shipment; contract did not contain weight prices for: ' . $shipment->getWeight()
-            );
-        }
-
-        return (int)$price;
+        return $this->calculateOptionsPrice($shipment, $serviceRate) + $serviceRate->getPrice();
     }
 
     /**
      * Calculate the price based on the selected options for given shipment.
-     * Optionally a contract can be supplied for the price calculations. If no
-     * contract is given, the contract on the shipment is used.
      *
-     * @param ShipmentInterface             $shipment
-     * @param ServiceContractInterface|null $contract
+     * @param ShipmentInterface         $shipment
+     * @param ServiceRateInterface|null $serviceRate
      * @return int
      */
-    public function calculateOptionsPrice(ShipmentInterface $shipment, ServiceContractInterface $contract = null)
+    public function calculateOptionsPrice(ShipmentInterface $shipment, ServiceRateInterface $serviceRate = null)
     {
-        if ($contract === null) {
-            $contract = $shipment->getServiceContract();
+        if ($shipment->getPhysicalProperties() === null
+            || $shipment->getPhysicalProperties()->getWeight() === null
+            || $shipment->getPhysicalProperties()->getWeight() < 0) {
+            throw new InvalidResourceException(
+                'Cannot calculate shipment price without a valid shipment weight.'
+            );
         }
 
-        if ($contract === null) {
-            throw new CalculationException('Cannot calculate a price for given shipment without a contract');
+        if ($serviceRate === null) {
+            $serviceRate = $this->determineServiceRateForShipment($shipment);
+        }
+
+        if ($shipment->getPhysicalProperties()->getWeight() < $serviceRate->getWeightMin()
+            || $shipment->getPhysicalProperties()->getWeight() > $serviceRate->getWeightMax()) {
+            throw new CalculationException(
+                'Could not calculate price for the given service rate since it does not support the shipment weight.'
+            );
         }
 
         $price = 0;
 
-        $optionPrices = [];
-        foreach ($contract->getServiceOptionPrices() as $option) {
-            $optionPrices[$option->getServiceOption()->getId()] = $option->getPrice();
+        $prices = [];
+        foreach ($serviceRate->getServiceOptions() as $option) {
+            $prices[$option->getId()] = $option->getPrice();
         }
 
         foreach ($shipment->getServiceOptions() as $option) {
-            if (!isset($optionPrices[$option->getId()])) {
+            if (!array_key_exists($option->getId(), $prices)) {
                 throw new CalculationException(
                     'Cannot calculate a price for given shipment; invalid option: ' . $option->getId()
                 );
             }
 
-            $price += $optionPrices[$option->getId()];
+            $price += $prices[$option->getId()];
         }
 
         return (int)$price;
+    }
+
+    /**
+     * @param ShipmentInterface $shipment
+     * @throws InvalidResourceException
+     */
+    private function validateShipment(ShipmentInterface $shipment)
+    {
+        if ($shipment->getContract() === null) {
+            throw new InvalidResourceException(
+                'Cannot calculate shipment price without a set contract.'
+            );
+        }
+        if ($shipment->getService() === null) {
+            throw new InvalidResourceException(
+                'Cannot calculate shipment price without a set service.'
+            );
+        }
+    }
+
+    /**
+     * @param ShipmentInterface $shipment
+     * @return ServiceRateInterface
+     */
+    private function determineServiceRateForShipment(ShipmentInterface $shipment)
+    {
+        $this->validateShipment($shipment);
+
+        $serviceRates = $shipment->getService()->getServiceRates([
+            'contract' => $shipment->getContract(),
+            'weight'   => $shipment->getPhysicalProperties()->getWeight(),
+        ]);
+
+        $serviceRate = reset($serviceRates);
+
+        if (!$serviceRate) {
+            throw new CalculationException(
+                'Cannot find a matching service rate for given shipment'
+            );
+        }
+
+        return $serviceRate;
     }
 }

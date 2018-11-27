@@ -163,7 +163,8 @@ interface ServiceInterface extends ResourceInterface
     public function addServiceRate(ServiceRateInterface $serviceRate);
 
     /**
+     * @param array $filters
      * @return ServiceRateInterface[]
      */
-    public function getServiceRates();
+    public function getServiceRates(array $filters = []);
 }
