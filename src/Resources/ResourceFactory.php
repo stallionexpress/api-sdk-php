@@ -5,8 +5,8 @@ namespace MyParcelCom\ApiSdk\Resources;
 use MyParcelCom\ApiSdk\Exceptions\ResourceFactoryException;
 use MyParcelCom\ApiSdk\MyParcelComApiInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CustomsInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\OpeningHourInterface;
@@ -26,8 +26,8 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentItemInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentStatusInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\StatusInterface;
-use MyParcelCom\ApiSdk\Resources\Proxy\ContractProxy;
 use MyParcelCom\ApiSdk\Resources\Proxy\CarrierProxy;
+use MyParcelCom\ApiSdk\Resources\Proxy\ContractProxy;
 use MyParcelCom\ApiSdk\Resources\Proxy\FileProxy;
 use MyParcelCom\ApiSdk\Resources\Proxy\FileStreamProxy;
 use MyParcelCom\ApiSdk\Resources\Proxy\RegionProxy;
@@ -55,16 +55,16 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         ResourceInterface::TYPE_SHOP           => Shop::class,
         ResourceInterface::TYPE_STATUS         => Status::class,
 
-        AddressInterface::class               => Address::class,
-        CarrierInterface::class               => Carrier::class,
-        CustomsInterface::class               => Customs::class,
-        OpeningHourInterface::class           => OpeningHour::class,
-        PhysicalPropertiesInterface::class    => PhysicalProperties::class,
-        PositionInterface::class              => Position::class,
-        RegionInterface::class                => Region::class,
-        ServiceOptionInterface::class         => ServiceOption::class,
-        ShopInterface::class                  => Shop::class,
-        StatusInterface::class                => Status::class,
+        AddressInterface::class            => Address::class,
+        CarrierInterface::class            => Carrier::class,
+        CustomsInterface::class            => Customs::class,
+        OpeningHourInterface::class        => OpeningHour::class,
+        PhysicalPropertiesInterface::class => PhysicalProperties::class,
+        PositionInterface::class           => Position::class,
+        RegionInterface::class             => Region::class,
+        ServiceOptionInterface::class      => ServiceOption::class,
+        ShopInterface::class               => Shop::class,
+        StatusInterface::class             => Status::class,
     ];
 
     /** @var MyParcelComApiInterface */
@@ -323,6 +323,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         if (isset($attributes['id'])) {
             $service->setServiceRatesCallback(function (array $filters = []) use ($attributes) {
                 $filters['service'] = $attributes['id'];
+
                 return $this->api->getServiceRates($filters)->get();
             });
         }

@@ -81,22 +81,22 @@ class Shipment implements ShipmentInterface
 
     /** @var array */
     private $relationships = [
-        self::RELATIONSHIP_SHOP             => [
+        self::RELATIONSHIP_SHOP            => [
             'data' => null,
         ],
-        self::RELATIONSHIP_STATUS           => [
+        self::RELATIONSHIP_STATUS          => [
             'data' => null,
         ],
-        self::RELATIONSHIP_SERVICE_OPTIONS  => [
+        self::RELATIONSHIP_SERVICE_OPTIONS => [
             'data' => [],
         ],
-        self::RELATIONSHIP_FILES            => [
+        self::RELATIONSHIP_FILES           => [
             'data' => [],
         ],
-        self::RELATIONSHIP_SERVICE          => [
+        self::RELATIONSHIP_SERVICE         => [
             'data' => null,
         ],
-        self::RELATIONSHIP_CONTRACT         => [
+        self::RELATIONSHIP_CONTRACT        => [
             'data' => null,
         ],
     ];
