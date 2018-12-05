@@ -91,7 +91,7 @@ class MyParcelComApiTest extends TestCase
 
         $this->assertNotNull(
             $shipment->getService(),
-            'When no service contract has been selected, the preferred service for given shipment should be used'
+            'When no service has been selected, the preferred service for given shipment should be used'
         );
         $this->assertNotNull(
             $shipment->getContract(),
@@ -140,7 +140,7 @@ class MyParcelComApiTest extends TestCase
 
         $this->assertNotNull(
             $shipment->getService(),
-            'When no service contract has been selected, the preferred service for given shipment should be used'
+            'When no service has been selected, the preferred service for given shipment should be used'
         );
         $this->assertNotNull(
             $shipment->getContract(),
