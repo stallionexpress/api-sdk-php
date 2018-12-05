@@ -68,7 +68,7 @@ class ContractTest extends TestCase
                 'currency' => 'IOU',
             ],
             'relationships' => [
-                'carrier'           => [
+                'carrier' => [
                     'data' => [
                         'id'   => 'carrier-id',
                         'type' => 'carriers',

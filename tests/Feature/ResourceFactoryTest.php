@@ -57,9 +57,9 @@ class ResourceFactoryTest extends TestCase
         $contract = $resourceFactory->create(
             'contracts',
             [
-                'id'                => 'carrier-id',
-                'currency'          => 'JPY',
-                'carrier'           => [
+                'id'       => 'carrier-id',
+                'currency' => 'JPY',
+                'carrier'  => [
                     'type' => 'carriers',
                     'id'   => 'carrier-id',
                 ],

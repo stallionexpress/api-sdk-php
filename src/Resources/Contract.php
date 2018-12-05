@@ -2,8 +2,8 @@
 
 namespace MyParcelCom\ApiSdk\Resources;
 
-use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 
@@ -28,7 +28,7 @@ class Contract implements ContractInterface
 
     /** @var array */
     private $relationships = [
-        self::RELATIONSHIP_CARRIER           => [
+        self::RELATIONSHIP_CARRIER => [
             'data' => null,
         ],
     ];
