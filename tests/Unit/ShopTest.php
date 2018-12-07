@@ -142,9 +142,9 @@ class ShopTest extends TestCase
             ->setCreatedAt(1509001337);
 
         $this->assertEquals([
-            'id'            => 'shop-id',
-            'type'          => 'shops',
-            'attributes'    => [
+            'id'         => 'shop-id',
+            'type'       => 'shops',
+            'attributes' => [
                 'name'            => 'MyParcel.com Test Shop',
                 'billing_address' => [
                     'street_1'             => 'Diagonally',

@@ -7,11 +7,12 @@ use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
 use MyParcelCom\ApiSdk\MyParcelComApi;
 use MyParcelCom\ApiSdk\MyParcelComApiInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CustomsInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\PhysicalPropertiesInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentItemInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentStatusInterface;
@@ -63,9 +64,13 @@ class ShipmentProxyTest extends TestCase
         $this->assertEquals('80-90A', $this->shipmentProxy->setPickupLocationCode('80-90A')->getPickupLocationCode());
         $this->assertEquals('an-id-for-a-shipment', $this->shipmentProxy->setId('an-id-for-a-shipment')->getId());
 
-        /** @var ServiceContractInterface $serviceContract */
-        $serviceContract = $this->getMockBuilder(ServiceContractInterface::class)->getMock();
-        $this->assertEquals($serviceContract, $this->shipmentProxy->setServiceContract($serviceContract)->getServiceContract());
+        /** @var ServiceInterface $service */
+        $service = $this->getMockBuilder(ServiceInterface::class)->getMock();
+        $this->assertEquals($service, $this->shipmentProxy->setService($service)->getService());
+
+        /** @var ContractInterface $contract */
+        $contract = $this->getMockBuilder(ContractInterface::class)->getMock();
+        $this->assertEquals($contract, $this->shipmentProxy->setContract($contract)->getContract());
 
         /** @var ShipmentStatusInterface $shipmentStatus */
         $shipmentStatus = $this->getMockBuilder(ShipmentStatusInterface::class)->getMock();
@@ -207,13 +212,20 @@ class ShipmentProxyTest extends TestCase
         $this->assertEquals('shop-id-1', $this->shipmentProxy->getShop()->getId());
     }
 
+    /** @test */
+    public function testServiceRelationship()
+    {
+        $this->assertInstanceOf(ServiceInterface::class, $this->shipmentProxy->getService());
+        $this->assertEquals(ResourceInterface::TYPE_SERVICE, $this->shipmentProxy->getService()->getType());
+        $this->assertEquals('service-id-1', $this->shipmentProxy->getService()->getId());
+    }
 
     /** @test */
-    public function testServiceContractRelationship()
+    public function testContractRelationship()
     {
-        $this->assertInstanceOf(ServiceContractInterface::class, $this->shipmentProxy->getServiceContract());
-        $this->assertEquals(ResourceInterface::TYPE_SERVICE_CONTRACT, $this->shipmentProxy->getServiceContract()->getType());
-        $this->assertEquals('contract-id-1', $this->shipmentProxy->getServiceContract()->getId());
+        $this->assertInstanceOf(ContractInterface::class, $this->shipmentProxy->getContract());
+        $this->assertEquals(ResourceInterface::TYPE_CONTRACT, $this->shipmentProxy->getContract()->getType());
+        $this->assertEquals('contract-id-1', $this->shipmentProxy->getContract()->getId());
     }
 
     /** @test */

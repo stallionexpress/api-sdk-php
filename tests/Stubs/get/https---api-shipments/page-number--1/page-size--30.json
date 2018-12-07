@@ -171,9 +171,15 @@
             "related": "https://api/shipments/shipment-id-1/statuses/shipment-status-id-1"
           }
         },
-        "service_contract": {
+        "service": {
           "data": {
-            "type": "service_contracts",
+            "type": "services",
+            "id": "service-id-1"
+          }
+        },
+        "contract": {
+          "data": {
+            "type": "contracts",
             "id": "contract-id-1"
           }
         },

@@ -2,15 +2,14 @@
 
 namespace MyParcelCom\ApiSdk\Resources\Proxy;
 
-use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 use MyParcelCom\ApiSdk\Resources\Traits\ProxiesResource;
 
-class CarrierContractProxy implements CarrierContractInterface, ResourceProxyInterface
+class ContractProxy implements ContractInterface, ResourceProxyInterface
 {
     use JsonSerializable;
     use ProxiesResource;
@@ -19,7 +18,7 @@ class CarrierContractProxy implements CarrierContractInterface, ResourceProxyInt
     private $id;
 
     /** @var string */
-    private $type = ResourceInterface::TYPE_CARRIER_CONTRACT;
+    private $type = ResourceInterface::TYPE_CONTRACT;
 
     /**
      * @return string
@@ -84,36 +83,6 @@ class CarrierContractProxy implements CarrierContractInterface, ResourceProxyInt
     public function getCarrier()
     {
         return $this->getResource()->getCarrier();
-    }
-
-    /**
-     * @param ServiceContractInterface[] $serviceContracts
-     * @return $this
-     */
-    public function setServiceContracts(array $serviceContracts)
-    {
-        $this->getResource()->setServiceContracts($serviceContracts);
-
-        return $this;
-    }
-
-    /**
-     * @param ServiceContractInterface $serviceContract
-     * @return $this
-     */
-    public function addServiceContract(ServiceContractInterface $serviceContract)
-    {
-        $this->getResource()->addServiceContract($serviceContract);
-
-        return $this;
-    }
-
-    /**
-     * @return ServiceContractInterface[]
-     */
-    public function getServiceContracts()
-    {
-        return $this->getResource()->getServiceContracts();
     }
 
     /**

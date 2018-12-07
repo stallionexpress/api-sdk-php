@@ -2,39 +2,75 @@
 
 namespace MyParcelCom\ApiSdk\Tests\Traits;
 
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceGroupInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\PhysicalPropertiesInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionPriceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceRateInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 
 trait MocksContract
 {
-    protected function getMockedServiceContract(array $groups = [], array $options = [])
+    /**
+     * @param ServiceOptionInterface[] $serviceOptions
+     * @param int                      $price
+     * @param int                      $weightMin
+     * @param int                      $weightMax
+     * @return ServiceRateInterface
+     */
+    protected function getMockedServiceRate(
+        array $serviceOptions = [],
+        $price = null,
+        $weightMin = null,
+        $weightMax = null
+    ) {
+        $mock = $this->getMockBuilder(ServiceRateInterface::class)
+            ->disableOriginalConstructor()
+            ->disableOriginalClone()
+            ->disableArgumentCloning()
+            ->disallowMockingUnknownTypes()
+            ->getMock();
+        $mock
+            ->method('getPrice')
+            ->willReturn($price);
+        $mock
+            ->method('getServiceOptions')
+            ->willReturn($serviceOptions);
+        $mock
+            ->method('getWeightMin')
+            ->willReturn($weightMin);
+        $mock
+            ->method('getWeightMax')
+            ->willReturn($weightMax);
+
+        return $mock;
+    }
+
+    /**
+     * @param int                      $weight
+     * @param ServiceInterface|null    $service
+     * @param ServiceOptionInterface[] $serviceOptions
+     * @return ShipmentInterface
+     */
+    protected function getMockedShipment($weight = 5000, ServiceInterface $service = null, array $serviceOptions = [])
     {
-        $contract = $this->getMockBuilder(ServiceContractInterface::class)
+        $physicalPropertiesMock = $this->getMockBuilder(PhysicalPropertiesInterface::class)
+            ->disableOriginalConstructor()
+            ->disableOriginalClone()
+            ->disableArgumentCloning()
+            ->disallowMockingUnknownTypes()
+            ->getMock();
+        $physicalPropertiesMock
+            ->method('getWeight')
+            ->willReturn($weight);
+
+        $contractMock = $this->getMockBuilder(ContractInterface::class)
             ->disableOriginalConstructor()
             ->disableOriginalClone()
             ->disableArgumentCloning()
             ->disallowMockingUnknownTypes()
             ->getMock();
 
-        $contract->method('getServiceGroups')
-            ->willReturn($this->getMockedServiceGroups($groups));
-        $contract->method('getServiceOptionPrices')
-            ->willReturn($this->getMockedServiceOptionPrices($options));
-
-        return $contract;
-    }
-
-    /**
-     * @param int                      $weight
-     * @param array                    $options
-     * @param ServiceContractInterface $contract
-     * @return ShipmentInterface
-     */
-    protected function getMockedShipment($weight = 5000, array $options = [], ServiceContractInterface $contract = null)
-    {
         $shipment = $this->getMockBuilder(ShipmentInterface::class)
             ->disableOriginalConstructor()
             ->disableOriginalClone()
@@ -42,100 +78,60 @@ trait MocksContract
             ->disallowMockingUnknownTypes()
             ->getMock();
 
-        $shipment->method('getServiceContract')
-            ->willReturn($contract);
-        $shipment->method('getWeight')
-            ->willReturn($weight);
+        $shipment->method('getPhysicalProperties')->willReturn($physicalPropertiesMock);
+        $shipment->method('getContract')->willReturn($contractMock);
+        $shipment->method('getServiceOptions')->willReturn($serviceOptions);
+        if ($service) {
+            $shipment->method('getService')->willReturn($service);
+        }
 
-        $optionMocks = array_map(function ($option) {
-            $optionMock = $this->getMockBuilder(ServiceOptionInterface::class)
-                ->disableOriginalConstructor()
-                ->disableOriginalClone()
-                ->disableArgumentCloning()
-                ->disallowMockingUnknownTypes()
-                ->getMock();
-            $optionMock->method('getId')
-                ->willReturn($option);
-
-            return $optionMock;
-        }, $options);
-
-        $shipment->method('getServiceOptions')
-            ->willReturn($optionMocks);
-
-        /** @var ShipmentInterface $shipment */
         return $shipment;
     }
 
-
     /**
-     * @param array $groups
-     * @return ServiceGroupInterface[]
+     * @param string   $id
+     * @param int|null $price
+     * @return ServiceOptionInterface
      */
-    protected function getMockedServiceGroups(array $groups)
+    protected function getMockedServiceOption($id, $price = 0)
     {
-        $groupMockBuilder = $this->getMockBuilder(ServiceGroupInterface::class)
+        $mock = $this->getMockBuilder(ServiceOptionInterface::class)
             ->disableOriginalConstructor()
             ->disableOriginalClone()
             ->disableArgumentCloning()
-            ->disallowMockingUnknownTypes();
+            ->disallowMockingUnknownTypes()
+            ->getMock();
 
-        $groupMocks = [];
-        foreach ($groups as $group) {
-            $groupMock = $groupMockBuilder->getMock();
-            $groupMock->method('getWeightMin')
-                ->willReturn($group['weight_min']);
-            $groupMock->method('getWeightMax')
-                ->willReturn($group['weight_max']);
-            $groupMock->method('getCurrency')
-                ->willReturn('EUR');
-            $groupMock->method('getPrice')
-                ->willReturn($group['price']);
-            $groupMock->method('getStepSize')
-                ->willReturn($group['step_size']);
-            $groupMock->method('getStepPrice')
-                ->willReturn($group['step_price']);
-            $groupMocks[] = $groupMock;
-        }
+        $mock
+            ->method('getId')
+            ->willReturn($id);
+        $mock
+            ->method('getPrice')
+            ->willReturn($price);
 
-        return $groupMocks;
+        return $mock;
     }
 
     /**
-     * @param array $options
-     * @return ServiceOptionInterface[]
+     * @param ServiceRateInterface[] $serviceRates
+     * @param string|null            $deliveryMethod
+     * @return ServiceInterface
      */
-    protected function getMockedServiceOptionPrices(array $options)
+    protected function getMockedService(array $serviceRates = [], $deliveryMethod = null)
     {
-        $serviceOptionMockBuilder = $this->getMockBuilder(ServiceOptionInterface::class)
+        $mock = $this->getMockBuilder(ServiceInterface::class)
             ->disableOriginalConstructor()
             ->disableOriginalClone()
             ->disableArgumentCloning()
-            ->disallowMockingUnknownTypes();
-        $serviceOptionPriceMockBuilder = $this->getMockBuilder(ServiceOptionPriceInterface::class)
-            ->disableOriginalConstructor()
-            ->disableOriginalClone()
-            ->disableArgumentCloning()
-            ->disallowMockingUnknownTypes();
+            ->disallowMockingUnknownTypes()
+            ->getMock();
+        $mock
+            ->method('getServiceRates')
+            ->willReturn($serviceRates);
+        $mock
+            ->method('getDeliveryMethod')
+            ->willReturn($deliveryMethod);
 
-        $serviceMocks = [];
-        foreach ($options as $option) {
-            $serviceOptionPriceMock = $serviceOptionPriceMockBuilder->getMock();
-            $serviceOptionMock = $serviceOptionMockBuilder->getMock();
-
-            $serviceOptionMock->method('getId')
-                ->willReturn($option['id']);
-
-            $serviceOptionPriceMock->method('getCurrency')
-                ->willReturn('EUR');
-            $serviceOptionPriceMock->method('getPrice')
-                ->willReturn($option['price']);
-            $serviceOptionPriceMock->method('getServiceOption')
-                ->willReturn($serviceOptionMock);
-
-            $serviceMocks[] = $serviceOptionPriceMock;
-        }
-
-        return $serviceMocks;
+        return $mock;
     }
 }

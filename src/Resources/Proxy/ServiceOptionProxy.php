@@ -13,17 +13,31 @@ class ServiceOptionProxy implements ServiceOptionInterface, ResourceProxyInterfa
     use JsonSerializable;
     use ProxiesResource;
 
+    const META_PRICE = 'price';
+    const META_PRICE_AMOUNT = 'amount';
+    const META_PRICE_CURRENCY = 'currency';
+    const META_INCLUDED = 'included';
+
+
     /** @var string */
     private $id;
 
     /** @var string */
     private $type = ResourceInterface::TYPE_SERVICE_OPTION;
 
+    /** @var array */
+    private $meta = [
+        self::META_PRICE    => [
+            self::META_PRICE_AMOUNT   => null,
+            self::META_PRICE_CURRENCY => null,
+        ],
+        self::META_INCLUDED => null,
+    ];
+
     /**
      * Set the identifier for this file.
      *
-     * @param string $id
-     * @return $this
+     * {@inheritdoc}
      */
     public function setId($id)
     {
@@ -33,7 +47,7 @@ class ServiceOptionProxy implements ServiceOptionInterface, ResourceProxyInterfa
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getId()
     {
@@ -41,7 +55,7 @@ class ServiceOptionProxy implements ServiceOptionInterface, ResourceProxyInterfa
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getType()
     {
@@ -49,8 +63,7 @@ class ServiceOptionProxy implements ServiceOptionInterface, ResourceProxyInterfa
     }
 
     /**
-     * @param string $name
-     * @return $this
+     * {@inheritdoc}
      */
     public function setName($name)
     {
@@ -60,7 +73,7 @@ class ServiceOptionProxy implements ServiceOptionInterface, ResourceProxyInterfa
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getName()
     {
@@ -68,8 +81,7 @@ class ServiceOptionProxy implements ServiceOptionInterface, ResourceProxyInterfa
     }
 
     /**
-     * @param string $code
-     * @return $this
+     * {@inheritdoc}
      */
     public function setCode($code)
     {
@@ -79,7 +91,7 @@ class ServiceOptionProxy implements ServiceOptionInterface, ResourceProxyInterfa
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getCode()
     {
@@ -87,8 +99,7 @@ class ServiceOptionProxy implements ServiceOptionInterface, ResourceProxyInterfa
     }
 
     /**
-     * @param string $category
-     * @return $this
+     * {@inheritdoc}
      */
     public function setCategory($category)
     {
@@ -98,11 +109,65 @@ class ServiceOptionProxy implements ServiceOptionInterface, ResourceProxyInterfa
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getCategory()
     {
         return $this->getResource()->getCategory();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setPrice($price)
+    {
+        $this->meta[self::META_PRICE][self::META_PRICE_AMOUNT] = $price !== null ? (int)$price : null;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPrice()
+    {
+        return $this->meta[self::META_PRICE][self::META_PRICE_AMOUNT];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setCurrency($currency)
+    {
+        $this->meta[self::META_PRICE][self::META_PRICE_CURRENCY] = $currency;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCurrency()
+    {
+        return $this->meta[self::META_PRICE][self::META_PRICE_CURRENCY];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setIncluded($included)
+    {
+        $this->meta[self::META_INCLUDED] = $included;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isIncluded()
+    {
+        return $this->meta[self::META_INCLUDED];
     }
 
     /**

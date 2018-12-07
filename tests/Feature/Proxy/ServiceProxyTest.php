@@ -9,8 +9,8 @@ use MyParcelCom\ApiSdk\MyParcelComApiInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceRateInterface;
 use MyParcelCom\ApiSdk\Resources\Proxy\ServiceProxy;
 use MyParcelCom\ApiSdk\Tests\Traits\MocksApiCommunication;
 use PHPUnit\Framework\TestCase;
@@ -77,17 +77,6 @@ class ServiceProxyTest extends TestCase
         /** @var RegionInterface $regionFrom */
         $regionFrom = $regionBuilder->getMock();
         $this->assertEquals($regionFrom, $this->serviceProxy->setRegionFrom($regionFrom)->getRegionFrom());
-
-        $serviceContractBuilder = $this->getMockBuilder(ServiceContractInterface::class);
-        /** @var ServiceContractInterface $serviceContractA */
-        $serviceContractA = $serviceContractBuilder->getMock();
-        $this->assertEquals([$serviceContractA], $this->serviceProxy->setServiceContracts([$serviceContractA])->getServiceContracts());
-        /** @var ServiceContractInterface $serviceContractB */
-        $serviceContractB = $serviceContractBuilder->getMock();
-        $this->assertEquals(
-            [$serviceContractA, $serviceContractB],
-            $this->serviceProxy->addServiceContract($serviceContractB)->getServiceContracts()
-        );
     }
 
     /** @test */
@@ -141,39 +130,39 @@ class ServiceProxyTest extends TestCase
     }
 
     /** @test */
-    public function testServiceContractRelationship()
+    public function testServiceRateRelationship()
     {
-        $contract_A = $this->createMock(ServiceContractInterface::class);
-        $contract_A
+        $serviceRate_A = $this->createMock(ServiceRateInterface::class);
+        $serviceRate_A
             ->method('getId')
-            ->willReturn('contract-id-1');
-        $contract_B = $this->createMock(ServiceContractInterface::class);
-        $contract_B
+            ->willReturn('service-rate-id-1');
+        $serviceRate_B = $this->createMock(ServiceRateInterface::class);
+        $serviceRate_B
             ->method('getId')
-            ->willReturn('contract-id-2');
+            ->willReturn('service-rate-id-2');
 
-        $contracts = $this->serviceProxy
-            ->setServiceContracts([$contract_A, $contract_B])
-            ->getServiceContracts();
+        $serviceRates = $this->serviceProxy
+            ->setServiceRates([$serviceRate_A, $serviceRate_B])
+            ->getServiceRates();
 
-        array_walk($contracts, function (ServiceContractInterface $contract) {
-            $this->assertInstanceOf(ServiceContractInterface::class, $contract);
+        array_walk($serviceRates, function (ServiceRateInterface $serviceRate) {
+            $this->assertInstanceOf(ServiceRateInterface::class, $serviceRate);
         });
-        $contractIds = array_map(function (ServiceContractInterface $contract) {
-            return $contract->getId();
-        }, $contracts);
-        $this->assertArraySubset(['contract-id-1', 'contract-id-2'], $contractIds);
-        $this->assertCount(2, $contracts);
+        $serviceRateIds = array_map(function (ServiceRateInterface $serviceRate) {
+            return $serviceRate->getId();
+        }, $serviceRates);
+        $this->assertArraySubset(['service-rate-id-1', 'service-rate-id-2'], $serviceRateIds);
+        $this->assertCount(2, $serviceRates);
 
-        $contract_C = $this->createMock(ServiceContractInterface::class);
-        $contract_C
+        $serviceRate_C = $this->createMock(ServiceRateInterface::class);
+        $serviceRate_C
             ->method('getId')
-            ->willReturn('contract-id-3');
+            ->willReturn('service-rate-id-3');
 
-        $contracts = $this->serviceProxy
-            ->addServiceContract($contract_C)
-            ->getServiceContracts();
-        $this->assertCount(3, $contracts);
+        $serviceRates = $this->serviceProxy
+            ->addServiceRate($serviceRate_C)
+            ->getServiceRates();
+        $this->assertCount(3, $serviceRates);
     }
 
     /** @test */
@@ -185,7 +174,6 @@ class ServiceProxyTest extends TestCase
         $firstProxy
             ->setMyParcelComApi($this->api)
             ->setId('433285bb-2e34-435c-9109-1120e7c4bce4');
-        $firstProxy->getServiceContracts();
         $firstProxy->getRegionTo();
         $firstProxy->getDeliveryDays();
 

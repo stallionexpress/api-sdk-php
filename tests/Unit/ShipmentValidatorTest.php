@@ -3,7 +3,8 @@
 namespace MyParcelCom\ApiSdk\Tests\Unit;
 
 use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\ApiSdk\Resources\Shipment;
 use MyParcelCom\ApiSdk\Utils\StringUtils;
@@ -18,8 +19,10 @@ class ShipmentValidatorTest extends TestCase
     private $senderAddress;
     /** @var ShopInterface */
     private $shop;
-    /** @var ServiceContractInterface */
-    private $serviceContract;
+    /** @var ServiceInterface */
+    private $service;
+    /** @var ContractInterface */
+    private $contract;
     /** @var int */
     private $weight;
 
@@ -31,7 +34,8 @@ class ShipmentValidatorTest extends TestCase
         $this->recipientAddress = $this->getMockBuilder(AddressInterface::class)->getMock();
         $this->senderAddress = $this->getMockBuilder(AddressInterface::class)->getMock();
         $this->shop = $this->getMockBuilder(ShopInterface::class)->getMock();
-        $this->serviceContract = $this->getMockBuilder(ServiceContractInterface::class)->getMock();
+        $this->service = $this->getMockBuilder(ServiceInterface::class)->getMock();
+        $this->contract = $this->getMockBuilder(ContractInterface::class)->getMock();
     }
 
     /** @test */
@@ -61,7 +65,8 @@ class ShipmentValidatorTest extends TestCase
             ->setRecipientAddress($this->recipientAddress)
             ->setSenderAddress($this->senderAddress)
             ->setShop($this->shop)
-            ->setServiceContract($this->serviceContract);
+            ->setService($this->service)
+            ->setContract($this->contract);
 
         $validator = new ShipmentValidator($shipment);
 
@@ -109,9 +114,19 @@ class ShipmentValidatorTest extends TestCase
     }
 
     /** @test */
-    public function testMissingServiceContract()
+    public function testMissingService()
     {
-        $shipment = $this->createShipmentWithoutProperty('service_contract');
+        $shipment = $this->createShipmentWithoutProperty('service');
+
+        $validator = new ShipmentValidator($shipment);
+
+        $this->assertFalse($validator->isValid());
+    }
+
+    /** @test */
+    public function testMissingContract()
+    {
+        $shipment = $this->createShipmentWithoutProperty('contract');
 
         $validator = new ShipmentValidator($shipment);
 
@@ -126,7 +141,8 @@ class ShipmentValidatorTest extends TestCase
             ->setRecipientAddress($this->recipientAddress)
             ->setSenderAddress($this->senderAddress)
             ->setShop($this->shop)
-            ->setServiceContract($this->serviceContract);
+            ->setService($this->service)
+            ->setContract($this->contract);
 
         $validator = new ShipmentValidator($shipment);
 
@@ -144,7 +160,7 @@ class ShipmentValidatorTest extends TestCase
     {
         $missingProperty = StringUtils::snakeToCamelCase($missingProperty);
         $shipment = new Shipment();
-        $requiredProperties = ['weight', 'service_contract', 'recipient_address', 'sender_address', 'shop'];
+        $requiredProperties = ['weight', 'service', 'contract', 'recipient_address', 'sender_address', 'shop'];
 
         foreach ($requiredProperties as $requiredProperty) {
             $requiredProperty = StringUtils::snakeToCamelCase($requiredProperty);

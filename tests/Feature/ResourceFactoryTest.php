@@ -3,16 +3,15 @@
 namespace MyParcelCom\ApiSdk\Tests\Feature;
 
 use MyParcelCom\ApiSdk\MyParcelComApiInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\PickUpDropOffLocationInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceGroupInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionPriceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceRateInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\ApiSdk\Resources\ResourceFactory;
@@ -55,137 +54,30 @@ class ResourceFactoryTest extends TestCase
     public function testCreateCarrierConract()
     {
         $resourceFactory = new ResourceFactory();
-        $carrierContract = $resourceFactory->create(
-            'carrier-contracts',
+        $contract = $resourceFactory->create(
+            'contracts',
             [
-                'id'                => 'carrier-id',
-                'currency'          => 'JPY',
-                'carrier'           => [
+                'id'       => 'carrier-id',
+                'currency' => 'JPY',
+                'carrier'  => [
                     'type' => 'carriers',
                     'id'   => 'carrier-id',
-                ],
-                'service_contracts' => [
-                    [
-                        'type' => 'service-contracts',
-                        'id'   => 'service-contract-id-1',
-                    ],
-                    [
-                        'type' => 'service-contracts',
-                        'id'   => 'service-contract-id-2',
-                    ],
-                    [
-                        'type' => 'service-contracts',
-                        'id'   => 'service-contract-id-3',
-                    ],
                 ],
             ]
         );
 
-        $this->assertInstanceOf(CarrierContractInterface::class, $carrierContract);
+        $this->assertInstanceOf(ContractInterface::class, $contract);
         $this->assertEquals([
             'id'            => 'carrier-id',
-            'type'          => 'carrier-contracts',
+            'type'          => 'contracts',
             'attributes'    => [
                 'currency' => 'JPY',
             ],
             'relationships' => [
-                'carrier'           => [
+                'carrier' => [
                     'data' => [
                         'type' => 'carriers',
                         'id'   => 'carrier-id',
-                    ],
-                ],
-                'service_contracts' => [
-                    'data' => [
-                        [
-                            'type' => 'service-contracts',
-                            'id'   => 'service-contract-id-1',
-                        ],
-                        [
-                            'type' => 'service-contracts',
-                            'id'   => 'service-contract-id-2',
-                        ],
-                        [
-                            'type' => 'service-contracts',
-                            'id'   => 'service-contract-id-3',
-                        ],
-                    ],
-                ],
-            ],
-        ], $carrierContract->jsonSerialize());
-    }
-
-    /** @test */
-    public function testCreateEmptyContract()
-    {
-        $resourceFactory = new ResourceFactory();
-        $contract = $resourceFactory->create('service-contracts');
-
-        $this->assertInstanceOf(ServiceContractInterface::class, $contract);
-        $this->assertEquals([
-            'type' => 'service-contracts',
-        ], $contract->jsonSerialize());
-    }
-
-    /** @test */
-    public function testCreateServiceContract()
-    {
-        $contractAttributes = [
-            'service'               => [
-                'type' => 'services',
-                'id'   => 'service-id',
-            ],
-            'carrier_contract'      => [
-                'type' => 'carrier-contracts',
-                'id'   => 'carrier-contract-id',
-            ],
-            'service_groups'        => [
-                [
-                    'type' => 'service-groups',
-                    'id'   => 'service-group-id',
-                ],
-            ],
-            'service_option_prices' => [
-                [
-                    'type' => 'service-option-prices',
-                    'id'   => 'service-option-price-id',
-                ],
-            ],
-        ];
-
-        $resourceFactory = new ResourceFactory();
-        $contract = $resourceFactory->create('service-contracts', $contractAttributes);
-
-        $this->assertInstanceOf(ServiceContractInterface::class, $contract);
-        $this->assertEquals([
-            'type'          => 'service-contracts',
-            'relationships' => [
-                'service'               => [
-                    'data' => [
-                        'type' => 'services',
-                        'id'   => 'service-id',
-                    ],
-                ],
-                'carrier_contract'      => [
-                    'data' => [
-                        'type' => 'carrier-contracts',
-                        'id'   => 'carrier-contract-id',
-                    ],
-                ],
-                'service_groups'        => [
-                    'data' => [
-                        [
-                            'type' => 'service-groups',
-                            'id'   => 'service-group-id',
-                        ],
-                    ],
-                ],
-                'service_option_prices' => [
-                    'data' => [
-                        [
-                            'type' => 'service-option-prices',
-                            'id'   => 'service-option-price-id',
-                        ],
                     ],
                 ],
             ],
@@ -447,6 +339,137 @@ class ResourceFactoryTest extends TestCase
     }
 
     /** @test */
+    public function testItCreatesAnEmptyServiceRate()
+    {
+        $resourceFactory = new ResourceFactory();
+        $serviceRate = $resourceFactory->create('service-rates');
+
+        $this->assertInstanceOf(ServiceRateInterface::class, $serviceRate);
+        $this->assertEquals([
+            'type' => 'service-rates',
+        ], $serviceRate->jsonSerialize());
+    }
+
+    /** @test */
+    public function testItCreatesAServiceRate()
+    {
+        $resourceFactory = new ResourceFactory();
+        $serviceRate = $resourceFactory->create('service-rates', [
+            'id'              => 'service-rate-id',
+            'weight_min'      => 2000,
+            'weight_max'      => 5000,
+            'width_max'       => 100,
+            'height_max'      => 200,
+            'volume_max'      => 6,
+            'length_max'      => 300,
+            'step_size'       => 1000,
+            'price'           => [
+                'amount'   => 800,
+                'currency' => 'GBP',
+            ],
+            'step_price'      => [
+                'amount'   => 300,
+                'currency' => 'GBP',
+            ],
+            'service'         => [
+                'id'   => 'service-id',
+                'type' => 'services',
+            ],
+            'contract'        => [
+                'id'   => 'contract-id',
+                'type' => 'contracts',
+            ],
+            'service_options' => [
+                [
+                    'id'   => 'service-option-id-1',
+                    'type' => 'service-options',
+                    'meta' => [
+                        'included' => true,
+                        'price'    => [
+                            'amount'   => 500,
+                            'currency' => 'GBP',
+                        ],
+                    ],
+                ],
+                [
+                    'id'   => 'service-option-id-2',
+                    'type' => 'service-options',
+                    'meta' => [
+                        'included' => false,
+                        'price'    => [
+                            'amount'   => 200,
+                            'currency' => 'GBP',
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+
+        $this->assertInstanceOf(ServiceRateInterface::class, $serviceRate);
+        $this->assertEquals([
+            'type'          => 'service-rates',
+            'id'            => 'service-rate-id',
+            'attributes'    => [
+                'weight_min' => 2000,
+                'weight_max' => 5000,
+                'width_max'  => 100,
+                'height_max' => 200,
+                'volume_max' => 6,
+                'length_max' => 300,
+                'step_size'  => 1000,
+                'price'      => [
+                    'amount'   => 800,
+                    'currency' => 'GBP',
+                ],
+                'step_price' => [
+                    'amount'   => 300,
+                    'currency' => 'GBP',
+                ],
+            ],
+            'relationships' => [
+                'service'         => [
+                    'data' => [
+                        'id'   => 'service-id',
+                        'type' => 'services',
+                    ],
+                ],
+                'contract'        => [
+                    'data' => [
+                        'id'   => 'contract-id',
+                        'type' => 'contracts',
+                    ],
+                ],
+                'service_options' => [
+                    'data' => [
+                        [
+                            'id'   => 'service-option-id-1',
+                            'type' => 'service-options',
+                            'meta' => [
+                                'included' => true,
+                                'price'    => [
+                                    'amount'   => 500,
+                                    'currency' => 'GBP',
+                                ],
+                            ],
+                        ],
+                        [
+                            'id'   => 'service-option-id-2',
+                            'type' => 'service-options',
+                            'meta' => [
+                                'included' => false,
+                                'price'    => [
+                                    'amount'   => 200,
+                                    'currency' => 'GBP',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ], $serviceRate->jsonSerialize());
+    }
+
+    /** @test */
     public function testCreateEmptyServiceOption()
     {
         $resourceFactory = new ResourceFactory();
@@ -475,51 +498,6 @@ class ResourceFactoryTest extends TestCase
                 'name'     => 'Sign on delivery',
                 'code'     => 'some-code',
                 'category' => 'some-category',
-            ],
-        ], $serviceOption->jsonSerialize());
-    }
-
-    /** @test */
-    public function testCreateServiceOptionPrice()
-    {
-        $resourceFactory = new ResourceFactory();
-        $serviceOption = $resourceFactory->create('service-option-prices', [
-            'price'            => 55,
-            'currency'         => 'NOK',
-            'service_option'   => [
-                'id'   => 'service-option-id',
-                'type' => 'service-options',
-            ],
-            'service_contract' => [
-                'id'   => 'service-contract-id',
-                'type' => 'service-contracts',
-            ],
-            'required'         => true,
-        ]);
-
-        $this->assertInstanceOf(ServiceOptionPriceInterface::class, $serviceOption);
-        $this->assertEquals([
-            'type'          => 'service-option-prices',
-            'attributes'    => [
-                'price'    => [
-                    'amount'   => 55,
-                    'currency' => 'NOK',
-                ],
-                'required' => true,
-            ],
-            'relationships' => [
-                'service_option'   => [
-                    'data' => [
-                        'id'   => 'service-option-id',
-                        'type' => 'service-options',
-                    ],
-                ],
-                'service_contract' => [
-                    'data' => [
-                        'id'   => 'service-contract-id',
-                        'type' => 'service-contracts',
-                    ],
-                ],
             ],
         ], $serviceOption->jsonSerialize());
     }
@@ -609,7 +587,7 @@ class ResourceFactoryTest extends TestCase
             ],
             'register_at'                  => 1526913941,
             'shop'                         => ['id' => 'shop-id-1', 'type' => 'shops'],
-            'service_contract'             => ['id' => 'service-contract-id-1', 'type' => 'service-contracts'],
+            'service'                      => ['id' => 'service-id-1', 'type' => 'services'],
             'contract'                     => ['id' => 'contract-id-1', 'type' => 'contracts'],
             'shipment_status'              => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses'],
             'service_options'              => [['id' => 'option-id-1', 'type' => 'service-options']],
@@ -691,11 +669,12 @@ class ResourceFactoryTest extends TestCase
                 'register_at'                  => 1526913941,
             ],
             'relationships' => [
-                'shop'             => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
-                'service_contract' => ['data' => ['id' => 'service-contract-id-1', 'type' => 'service-contracts']],
-                'shipment_status'  => ['data' => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses']],
-                'service_options'  => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
-                'files'            => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
+                'shop'            => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
+                'service'         => ['data' => ['id' => 'service-id-1', 'type' => 'services']],
+                'contract'        => ['data' => ['id' => 'contract-id-1', 'type' => 'contracts']],
+                'shipment_status' => ['data' => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses']],
+                'service_options' => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
+                'files'           => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
             ],
         ], $shipment->jsonSerialize());
     }
@@ -803,7 +782,8 @@ class ResourceFactoryTest extends TestCase
             ],
             'register_at'                  => 1526913941,
             'shop'                         => ['id' => 'shop-id-1', 'type' => 'shops'],
-            'service_contract'             => ['id' => 'service-contract-id-1', 'type' => 'service-contracts'],
+            'service'                      => ['id' => 'service-id-1', 'type' => 'services'],
+            'contract'                     => ['id' => 'contract-id-1', 'type' => 'contracts'],
             'shipment_status'              => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses'],
             'service_options'              => [['id' => 'option-id-1', 'type' => 'service-options']],
             'files'                        => [['id' => 'file-id-1', 'type' => 'files']],
@@ -922,11 +902,12 @@ class ResourceFactoryTest extends TestCase
                 'register_at'                  => 1526913941,
             ],
             'relationships' => [
-                'shop'             => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
-                'service_contract' => ['data' => ['id' => 'service-contract-id-1', 'type' => 'service-contracts']],
-                'shipment_status'  => ['data' => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses']],
-                'service_options'  => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
-                'files'            => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
+                'shop'            => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
+                'service'         => ['data' => ['id' => 'service-id-1', 'type' => 'services']],
+                'contract'        => ['data' => ['id' => 'contract-id-1', 'type' => 'contracts']],
+                'shipment_status' => ['data' => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses']],
+                'service_options' => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
+                'files'           => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
             ],
         ], $shipment->jsonSerialize());
     }

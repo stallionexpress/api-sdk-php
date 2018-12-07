@@ -16,6 +16,7 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\PickUpDropOffLocationInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceRateInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentStatusInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
@@ -89,8 +90,12 @@ class MyParcelComApiTest extends TestCase
         $shipment = $this->api->createShipment($shipment);
 
         $this->assertNotNull(
-            $shipment->getServiceContract(),
-            'When no service contract has been selected, the preferred service contract for given shipment should be used'
+            $shipment->getService(),
+            'When no service has been selected, the preferred service for given shipment should be used'
+        );
+        $this->assertNotNull(
+            $shipment->getContract(),
+            'When no contract has been selected, the preferred contract for given shipment should be used'
         );
         $this->assertNotNull(
             $shipment->getId(),
@@ -134,8 +139,12 @@ class MyParcelComApiTest extends TestCase
         $shipment = $this->api->saveShipment($shipment);
 
         $this->assertNotNull(
-            $shipment->getServiceContract(),
-            'When no service contract has been selected, the preferred service contract for given shipment should be used'
+            $shipment->getService(),
+            'When no service has been selected, the preferred service for given shipment should be used'
+        );
+        $this->assertNotNull(
+            $shipment->getContract(),
+            'When no contract has been selected, the preferred contract for given shipment should be used'
         );
         $this->assertNotNull(
             $shipment->getId(),
@@ -182,7 +191,6 @@ class MyParcelComApiTest extends TestCase
             'patch should not have replaced the return address'
         );
     }
-
 
     /** @test */
     public function testCreateInvalidShipmentMissingRecipient()
@@ -482,6 +490,54 @@ class MyParcelComApiTest extends TestCase
                 $this->assertInstanceOf(ServiceInterface::class, $service);
                 $this->assertEquals($carrier->getId(), $service->getCarrier()->getId());
             }
+        }
+    }
+
+    /** @test */
+    public function testItRetrievesServiceRates()
+    {
+        $serviceRates = $this->api->getServiceRates();
+
+        $this->assertInstanceOf(CollectionInterface::class, $serviceRates);
+        foreach ($serviceRates as $serviceRate) {
+            $this->assertInstanceOf(ServiceRateInterface::class, $serviceRate);
+        }
+    }
+
+    /** @test */
+    public function testItRetrievesServiceRatesForAService()
+    {
+        $services = $this->api->getServices()->get();
+        $service = reset($services);
+
+        $serviceRates = $service->getServiceRates();
+        foreach ($serviceRates as $serviceRate) {
+            $this->assertInstanceOf(ServiceRateInterface::class, $serviceRate);
+        }
+    }
+
+    /** @test */
+    public function testItRetrievesServiceRatesForShipment()
+    {
+        $recipient = (new Address())
+            ->setFirstName('Hank')
+            ->setLastName('Mozzy')
+            ->setCity('London')
+            ->setStreet1('Allen Street')
+            ->setStreetNumber(1)
+            ->setPostalCode('W8 6UX')
+            ->setCountryCode('GB');
+
+        $shipment = (new Shipment())
+            ->setWeight(500)
+            ->setRecipientAddress($recipient);
+
+        $serviceRates = $this->api->getServiceRatesForShipment($shipment);
+        $this->assertInstanceOf(CollectionInterface::class, $serviceRates);
+        foreach ($serviceRates as $serviceRate) {
+            $this->assertInstanceOf(ServiceRateInterface::class, $serviceRate);
+            $this->assertGreaterThanOrEqual(500, $serviceRate->getWeightMax());
+            $this->assertLessThanOrEqual(500, $serviceRate->getWeightMin());
         }
     }
 
