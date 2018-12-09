@@ -2,8 +2,7 @@
 
 namespace MyParcelCom\ApiSdk;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
+use Psr\Http\Client\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\RequestOptions;
@@ -26,6 +25,9 @@ use MyParcelCom\ApiSdk\Shipments\PriceCalculator;
 use MyParcelCom\ApiSdk\Shipments\ServiceMatcher;
 use MyParcelCom\ApiSdk\Utils\UrlBuilder;
 use MyParcelCom\ApiSdk\Validators\ShipmentValidator;
+use Psr\Http\Client\RequestExceptionInterface;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Cache\Simple\FilesystemCache;
@@ -50,6 +52,9 @@ class MyParcelComApi implements MyParcelComApiInterface
     /** @var ClientInterface */
     private $client;
 
+    /** @var RequestFactoryInterface */
+    private $requestFactory;
+
     /** @var bool */
     private $authRetry = false;
 
@@ -61,6 +66,8 @@ class MyParcelComApi implements MyParcelComApiInterface
      * subsequent calls to `getSingleton()`.
      *
      * @param AuthenticatorInterface        $authenticator
+     * @param ClientInterface               $httpClient
+     * @param RequestFactoryInterface       $requestFactory
      * @param string                        $apiUri
      * @param CacheInterface|null           $cache
      * @param ResourceFactoryInterface|null $resourceFactory
@@ -68,11 +75,13 @@ class MyParcelComApi implements MyParcelComApiInterface
      */
     public static function createSingleton(
         AuthenticatorInterface $authenticator,
+        ClientInterface $httpClient,
+        RequestFactoryInterface $requestFactory,
         $apiUri = 'https://sandbox-api.myparcel.com',
         CacheInterface $cache = null,
         ResourceFactoryInterface $resourceFactory = null
     ) {
-        return self::$singleton = (new self($apiUri, $cache, $resourceFactory))
+        return self::$singleton = (new self($httpClient, $requestFactory, $apiUri, $cache, $resourceFactory))
             ->authenticate($authenticator);
     }
 
@@ -91,16 +100,23 @@ class MyParcelComApi implements MyParcelComApiInterface
      * filesystem is used for caching. If no resource factory is given, the
      * default factory is used.
      *
+     * @param ClientInterface               $httpClient
+     * @param RequestFactoryInterface       $requestFactory
      * @param string                        $apiUri
      * @param CacheInterface|null           $cache
      * @param ResourceFactoryInterface|null $resourceFactory
      */
     public function __construct(
+        ClientInterface $httpClient,
+        RequestFactoryInterface $requestFactory,
         $apiUri = 'https://sandbox-api.myparcel.com',
         CacheInterface $cache = null,
         ResourceFactoryInterface $resourceFactory = null
     ) {
-        $this->setApiUri($apiUri);
+        $this
+            ->setHttpClient($httpClient)
+            ->setRequestFactory($requestFactory)
+            ->setApiUri($apiUri);
 
         // Either use the given cache or instantiate a new one that uses the
         // filesystem as cache. By default the `FilesystemCache` will use the
@@ -581,7 +597,8 @@ class MyParcelComApi implements MyParcelComApiInterface
     }
 
     /**
-     * Set the Guzzle client to use to connect to the api.
+     * Set the HTTP client to use to connect to the api. Given
+     * client must implement the PSR-18 client interface.
      *
      * @param ClientInterface $client
      * @return $this
@@ -594,22 +611,32 @@ class MyParcelComApi implements MyParcelComApiInterface
     }
 
     /**
-     * Get the guzzle client.
+     * Get the HTTP client.
      *
      * @return ClientInterface
      */
     protected function getHttpClient()
     {
-        if (!isset($this->client)) {
-            $this->client = new Client([
-                'base_uri'              => $this->apiUri,
-                RequestOptions::HEADERS => [
-                    'Content-Type' => 'application/vnd.api+json',
-                ],
-            ]);
-        }
-
         return $this->client;
+    }
+
+    /**
+     * @return RequestFactoryInterface
+     */
+    public function getRequestFactory()
+    {
+        return $this->requestFactory;
+    }
+
+    /**
+     * @param RequestFactoryInterface $requestFactory
+     * @return $this
+     */
+    public function setRequestFactory($requestFactory)
+    {
+        $this->requestFactory = $requestFactory;
+
+        return $this;
     }
 
     /**
@@ -674,29 +701,66 @@ class MyParcelComApi implements MyParcelComApiInterface
             $uri = $this->apiUri . $uri;
         }
         $headers += $this->authenticator->getAuthorizationHeader() + [
-                AuthenticatorInterface::HEADER_ACCEPT => AuthenticatorInterface::MIME_TYPE_JSONAPI,
-            ];
+            AuthenticatorInterface::HEADER_ACCEPT => AuthenticatorInterface::MIME_TYPE_JSONAPI,
+        ];
 
+        // Attempt to fetch a response from cache
         $cacheKey = sha1($method . join($headers) . $uri);
-
         if (($response = $this->cache->get($cacheKey))) {
-            return promise_for(parse_response($response));
+            return unserialize($response);
         }
 
-        return $this->getHttpClient()->requestAsync(
-            $method,
-            $uri,
-            [
-                RequestOptions::JSON    => $body,
-                RequestOptions::HEADERS => $headers,
-            ]
-        )->then(function (ResponseInterface $response) use ($cacheKey, $ttl) {
-            $this->cache->set($cacheKey, str($response), $ttl);
+        try {
+            $request = $this->buildRequest($uri, $method, $body, $headers);
+            $response = $this->client->sendRequest($request);
+
+            // Store the response in cache
+            $this->cache->set($cacheKey, serialize($response), $ttl);
 
             return $response;
-        }, function (RequestException $reason) {
-            return $this->handleRequestException($reason);
-        });
+        } catch (RequestExceptionInterface $requestException) {
+            return $this->handleRequestException($requestException);
+        }
+
+
+//        return $this->getHttpClient()->requestAsync(
+//            $method,
+//            $uri,
+//            [
+//                RequestOptions::JSON    => $body,
+//                RequestOptions::HEADERS => $headers,
+//            ]
+//        )->then(function (ResponseInterface $response) use ($cacheKey, $ttl) {
+//            $this->cache->set($cacheKey, str($response), $ttl);
+//
+//            return $response;
+//        }, function (RequestException $reason) {
+//            return $this->handleRequestException($reason);
+//        });
+    }
+
+    /**
+     * @param        $uri
+     * @param string $method
+     * @param array|string $body
+     * @param array  $headers
+     * @return RequestInterface
+     */
+    private function buildRequest($uri, $method = 'GET', $body = '', array $headers = [])
+    {
+        if (is_array($body)) {
+            $body = json_encode($body);
+        }
+
+        $request = $this->requestFactory->createRequest($method, $uri);
+
+        foreach ($headers as $header => $value) {
+            $request = $request->withHeader($header, $value);
+        }
+
+        $request = $request->withBody($body);
+
+        return $request;
     }
 
     /**
