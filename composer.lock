@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1e7901d1ec610868ee72f3e2f4f3958a",
+    "content-hash": "617a633efea57dabb69743b9efcbac23",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -285,6 +285,60 @@
                 "source": "https://github.com/denniskoster/http-client/tree/master"
             },
             "time": "2018-12-09T16:42:52+00:00"
+        },
+        {
+            "name": "psr/http-factory",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/denniskoster/http-factory.git",
+                "reference": "95d08f9af0de5a9057e18286dfe13eff15e82604"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/denniskoster/http-factory/zipball/95d08f9af0de5a9057e18286dfe13eff15e82604",
+                "reference": "95d08f9af0de5a9057e18286dfe13eff15e82604",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6",
+                "psr/http-message": "^1.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Http\\Message\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interfaces for PSR-7 HTTP message factories",
+            "keywords": [
+                "factory",
+                "http",
+                "message",
+                "psr",
+                "psr-17",
+                "psr-7",
+                "request",
+                "response"
+            ],
+            "support": {
+                "source": "https://github.com/denniskoster/http-factory/tree/master"
+            },
+            "time": "2018-12-09T17:35:07+00:00"
         },
         {
             "name": "psr/http-message",
