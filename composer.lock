@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f3a24746c7a242093ab3948cc0862fec",
+    "content-hash": "1e7901d1ec610868ee72f3e2f4f3958a",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -234,6 +234,57 @@
                 "psr-6"
             ],
             "time": "2016-08-06T20:24:11+00:00"
+        },
+        {
+            "name": "psr/http-client",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/denniskoster/http-client.git",
+                "reference": "52eac9ac16ed5c786c10be81234eed37d596221d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/denniskoster/http-client/zipball/52eac9ac16ed5c786c10be81234eed37d596221d",
+                "reference": "52eac9ac16ed5c786c10be81234eed37d596221d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6",
+                "psr/http-message": "^1.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Http\\Client\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for HTTP clients",
+            "homepage": "https://github.com/php-fig/http-client",
+            "keywords": [
+                "http",
+                "http-client",
+                "psr",
+                "psr-18"
+            ],
+            "support": {
+                "source": "https://github.com/denniskoster/http-client/tree/master"
+            },
+            "time": "2018-12-09T16:42:52+00:00"
         },
         {
             "name": "psr/http-message",
