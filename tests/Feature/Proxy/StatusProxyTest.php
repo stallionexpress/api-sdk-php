@@ -56,7 +56,7 @@ class StatusProxyTest extends TestCase
     {
         $this->assertEquals('status-id-1', $this->statusProxy->getId());
         $this->assertEquals(ResourceInterface::TYPE_STATUS, $this->statusProxy->getType());
-        $this->assertEquals('shipment_delivered', $this->statusProxy->getCode());
+        $this->assertEquals('shipment-delivered', $this->statusProxy->getCode());
         $this->assertEquals('success', $this->statusProxy->getLevel());
         $this->assertEquals('Delivered', $this->statusProxy->getName());
         $this->assertEquals('The shipment has been delivered', $this->statusProxy->getDescription());

@@ -26,7 +26,7 @@ class StatusTest extends TestCase
     public function testCode()
     {
         $status = new Status();
-        $this->assertEquals('shipment_concept', $status->setCode('shipment_concept')->getCode());
+        $this->assertEquals('shipment-concept', $status->setCode('shipment-concept')->getCode());
     }
 
     /** @test */
@@ -55,7 +55,7 @@ class StatusTest extends TestCase
     {
         $status = (new Status())
             ->setDescription('The shipment is created')
-            ->setCode('shipment_concept')
+            ->setCode('shipment-concept')
             ->setId('status-id')
             ->setName('Delivered')
             ->setLevel(StatusInterface::LEVEL_FAILED);
@@ -65,7 +65,7 @@ class StatusTest extends TestCase
             'type'       => 'statuses',
             'attributes' => [
                 'description' => 'The shipment is created',
-                'code'        => 'shipment_concept',
+                'code'        => 'shipment-concept',
                 'level'       => 'failed',
                 'name'        => 'Delivered',
             ],

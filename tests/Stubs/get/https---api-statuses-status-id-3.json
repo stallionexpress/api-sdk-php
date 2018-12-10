@@ -3,7 +3,7 @@
     "type": "statuses",
     "id": "status-id-3",
     "attributes": {
-      "code": "shipment_at_carrier",
+      "code": "shipment-received-by-carrier",
       "resource_type": "shipments",
       "level": "success",
       "name": "At carrier",

@@ -598,7 +598,7 @@ class MyParcelComApiTest extends TestCase
         $status = $shipmentStatus->getStatus();
 
         $this->assertInstanceOf(StatusInterface::class, $status);
-        $this->assertEquals('shipment_delivered', $status->getCode());
+        $this->assertEquals('shipment-delivered', $status->getCode());
         $this->assertEquals('success', $status->getLevel());
         $this->assertEquals('Delivered', $status->getName());
         $this->assertEquals('The shipment has been delivered', $status->getDescription());
@@ -619,7 +619,7 @@ class MyParcelComApiTest extends TestCase
 
         $status = $shipmentStatus->getStatus();
         $this->assertInstanceOf(StatusInterface::class, $status);
-        $this->assertEquals('shipment_delivered', $status->getCode());
+        $this->assertEquals('shipment-delivered', $status->getCode());
         $this->assertEquals('success', $status->getLevel());
         $this->assertEquals('Delivered', $status->getName());
         $this->assertEquals('The shipment has been delivered', $status->getDescription());
@@ -633,7 +633,7 @@ class MyParcelComApiTest extends TestCase
 
         $status = $shipmentStatus->getStatus();
         $this->assertInstanceOf(StatusInterface::class, $status);
-        $this->assertEquals('shipment_at_courier', $status->getCode());
+        $this->assertEquals('shipment-with-courier', $status->getCode());
         $this->assertEquals('success', $status->getLevel());
         $this->assertEquals('At courier', $status->getName());
         $this->assertEquals('The shipment is at the courier', $status->getDescription());
@@ -647,7 +647,7 @@ class MyParcelComApiTest extends TestCase
 
         $status = $shipmentStatus->getStatus();
         $this->assertInstanceOf(StatusInterface::class, $status);
-        $this->assertEquals('shipment_at_carrier', $status->getCode());
+        $this->assertEquals('shipment-received-by-carrier', $status->getCode());
         $this->assertEquals('success', $status->getLevel());
         $this->assertEquals('At carrier', $status->getName());
         $this->assertEquals('The shipment is at the carrier', $status->getDescription());
@@ -661,7 +661,7 @@ class MyParcelComApiTest extends TestCase
 
         $status = $shipmentStatus->getStatus();
         $this->assertInstanceOf(StatusInterface::class, $status);
-        $this->assertEquals('shipment_registered', $status->getCode());
+        $this->assertEquals('shipment-registered', $status->getCode());
         $this->assertEquals('success', $status->getLevel());
         $this->assertEquals('Registered', $status->getName());
         $this->assertEquals('The shipment has been registered at the carrier', $status->getDescription());
@@ -675,7 +675,7 @@ class MyParcelComApiTest extends TestCase
 
         $status = $shipmentStatus->getStatus();
         $this->assertInstanceOf(StatusInterface::class, $status);
-        $this->assertEquals('shipment_concept', $status->getCode());
+        $this->assertEquals('shipment-concept', $status->getCode());
         $this->assertEquals('concept', $status->getLevel());
         $this->assertEquals('Concept', $status->getName());
         $this->assertEquals('The shipment is a concept', $status->getDescription());
