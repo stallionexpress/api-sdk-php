@@ -3,7 +3,7 @@
     "type": "statuses",
     "id": "status-id-5",
     "attributes": {
-      "code": "shipment_concept",
+      "code": "shipment-concept",
       "resource_type": "shipments",
       "level": "concept",
       "name": "Concept",
