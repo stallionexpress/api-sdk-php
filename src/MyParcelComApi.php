@@ -630,6 +630,8 @@ class MyParcelComApi implements MyParcelComApiInterface
      * should be cached (defaults to 10 minutes).
      *
      * TODO: Refactor this removing promise collection
+     * TODO: We can rename the promise collection to request collection and ensure the
+     * request collection no longer uses promises in retrieveResources()
      *
      * @param string $uri
      * @param int    $ttl

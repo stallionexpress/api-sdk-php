@@ -94,6 +94,8 @@ class PromiseCollection implements CollectionInterface
      * Retrieve the resources for the given page number and store them
      * in this->resources according to their number.
      *
+     * TODO: Remove then() and wait()
+     *
      * @param int $pageNumber
      * @return void
      */
