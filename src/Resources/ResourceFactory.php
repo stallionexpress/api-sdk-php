@@ -50,7 +50,6 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
      */
     private $typeFactory = [
         ResourceInterface::TYPE_CARRIER        => Carrier::class,
-        ResourceInterface::TYPE_REGION         => Region::class,
         ResourceInterface::TYPE_SERVICE_OPTION => ServiceOption::class,
         ResourceInterface::TYPE_SHOP           => Shop::class,
         ResourceInterface::TYPE_STATUS         => Status::class,
@@ -61,7 +60,6 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         OpeningHourInterface::class        => OpeningHour::class,
         PhysicalPropertiesInterface::class => PhysicalProperties::class,
         PositionInterface::class           => Position::class,
-        RegionInterface::class             => Region::class,
         ServiceOptionInterface::class      => ServiceOption::class,
         ShopInterface::class               => Shop::class,
         StatusInterface::class             => Status::class,
@@ -81,6 +79,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         $fileFactory = [$this, 'fileFactory'];
         $shipmentItemFactory = [$this, 'shipmentItemFactory'];
         $pudoLocationFactory = [$this, 'pudoLocationFactory'];
+        $regionFactory = [$this, 'regionFactory'];
 
         $this->setFactoryForType(ResourceInterface::TYPE_CONTRACT, $contractFactory);
         $this->setFactoryForType(ContractInterface::class, $contractFactory);
@@ -107,6 +106,9 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         $this->setFactoryForType(PickUpDropOffLocationInterface::class, $pudoLocationFactory);
 
         $this->setFactoryForType(ShipmentItemInterface::class, $shipmentItemFactory);
+
+        $this->setFactoryForType(ResourceInterface::TYPE_REGION, $regionFactory);
+        $this->setFactoryForType(RegionInterface::class, $regionFactory);
     }
 
     /**
@@ -484,6 +486,21 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         }
 
         return $item;
+    }
+
+    protected function regionFactory($type, &$attributes)
+    {
+        $region = new Region();
+
+        if (isset($attributes['parent']['id'])) {
+            $region->setParent(
+                (new RegionProxy())->setMyParcelComApi($this->api)->setId($attributes['parent']['id'])
+            );
+
+            unset($attributes['parent']);
+        }
+
+        return $region;
     }
 
     /**

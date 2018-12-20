@@ -199,6 +199,11 @@ class ResourceFactoryTest extends TestCase
             'region_code'  => 'ZH',
             'currency'     => 'EUR',
             'name'         => 'Rotterdam',
+            'category'     => 'city',
+            'parent'       => [
+                'id'   => 'region-id',
+                'type' => 'regions',
+            ],
         ];
 
         $resourceFactory = new ResourceFactory();
@@ -206,8 +211,22 @@ class ResourceFactoryTest extends TestCase
 
         $this->assertInstanceOf(RegionInterface::class, $region);
         $this->assertEquals([
-            'type'       => 'regions',
-            'attributes' => $regionAttributes,
+            'type'          => 'regions',
+            'attributes'    => [
+                'country_code' => 'NL',
+                'region_code'  => 'ZH',
+                'currency'     => 'EUR',
+                'name'         => 'Rotterdam',
+                'category'     => 'city',
+            ],
+            'relationships' => [
+                'parent' => [
+                    'data' => [
+                        'id'   => 'region-id',
+                        'type' => 'regions',
+                    ],
+                ],
+            ],
         ], $region->jsonSerialize());
     }
 
