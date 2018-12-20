@@ -8,7 +8,9 @@ use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 
 class Carrier implements CarrierInterface
 {
-    use JsonSerializable;
+    use JsonSerializable {
+        jsonSerialize as private serialize;
+    }
 
     const ATTRIBUTE_NAME = 'name';
     const ATTRIBUTE_CODE = 'code';
@@ -109,5 +111,27 @@ class Carrier implements CarrierInterface
     public function getCredentialsFormat()
     {
         return $this->attributes[self::ATTRIBUTE_CREDENTIALS_FORMAT];
+    }
+
+    /**
+     * This function puts all object properties in an array and returns it.
+     *
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        // The 'credentials_format' can have camelCased properties, which get
+        // changed to snake_case by the jsonSerialize() method. So ro prevent
+        // that, we unset it and then reset it after serialization is done.
+        $credentialsFormat = $this->attributes[self::ATTRIBUTE_CREDENTIALS_FORMAT];
+        unset($this->attributes[self::ATTRIBUTE_CREDENTIALS_FORMAT]);
+
+        $json = $this->serialize();
+
+        if (!empty($credentialsFormat)) {
+            $json['attributes'][self::ATTRIBUTE_CREDENTIALS_FORMAT] = $credentialsFormat;
+        }
+
+        return $json;
     }
 }
