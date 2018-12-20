@@ -17,7 +17,6 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceFactoryInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceGroupInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceRateInterface;
@@ -75,7 +74,6 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         $shipmentStatusFactory = [$this, 'shipmentStatusFactory'];
         $serviceFactory = [$this, 'serviceFactory'];
         $serviceRateFactory = [$this, 'serviceRateFactory'];
-        $serviceGroupFactory = [$this, 'serviceGroupFactory'];
         $fileFactory = [$this, 'fileFactory'];
         $shipmentItemFactory = [$this, 'shipmentItemFactory'];
         $pudoLocationFactory = [$this, 'pudoLocationFactory'];
@@ -95,9 +93,6 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
 
         $this->setFactoryForType(ResourceInterface::TYPE_SERVICE_RATE, $serviceRateFactory);
         $this->setFactoryForType(ServiceRateInterface::class, $serviceRateFactory);
-
-        $this->setFactoryForType(ResourceInterface::TYPE_SERVICE_GROUP, $serviceGroupFactory);
-        $this->setFactoryForType(ServiceGroupInterface::class, $serviceGroupFactory);
 
         $this->setFactoryForType(ResourceInterface::TYPE_FILE, $fileFactory);
         $this->setFactoryForType(FileInterface::class, $fileFactory);
@@ -337,41 +332,6 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         }
 
         return $service;
-    }
-
-    /**
-     * ServiceGroup factory method.
-     *
-     * @param string $type
-     * @param array  $attributes
-     * @return ServiceGroup
-     */
-    protected function serviceGroupFactory($type, &$attributes)
-    {
-        $serviceGroup = new ServiceGroup();
-
-        if (isset($attributes['price']['amount'])) {
-            $serviceGroup->setPrice($attributes['price']['amount']);
-            $serviceGroup->setCurrency($attributes['price']['currency']);
-
-            unset($attributes['price']);
-        }
-        if (isset($attributes['weight']['min'])) {
-            $serviceGroup->setWeightMin($attributes['weight']['min']);
-            $serviceGroup->setWeightMax($attributes['weight']['max']);
-
-            unset($attributes['weight']);
-        }
-        if (isset($attributes['step_price']['amount'])) {
-            $serviceGroup->setStepPrice($attributes['step_price']['amount']);
-            if (!$serviceGroup->getCurrency()) {
-                $serviceGroup->setCurrency($attributes['step_price']['currency']);
-            }
-
-            unset($attributes['step_price']);
-        }
-
-        return $serviceGroup;
     }
 
     /**
