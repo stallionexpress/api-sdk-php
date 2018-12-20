@@ -4,6 +4,7 @@ namespace MyParcelCom\ApiSdk\Tests\Unit;
 
 use MyParcelCom\ApiSdk\Resources\Contract;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use PHPUnit\Framework\TestCase;
 
 class ContractTest extends TestCase
@@ -41,6 +42,13 @@ class ContractTest extends TestCase
     }
 
     /** @test */
+    public function testItSetsAndGetsStatus()
+    {
+        $contract = new Contract();
+        $this->assertEquals('inactive', $contract->setStatus('inactive')->getStatus());
+    }
+
+    /** @test */
     public function testJsonSerialize()
     {
         $carrierMock = $this->getMockBuilder(CarrierInterface::class)
@@ -59,13 +67,15 @@ class ContractTest extends TestCase
         $contract = (new Contract())
             ->setId('contract-id')
             ->setCurrency('IOU')
-            ->setCarrier($carrierMock);
+            ->setCarrier($carrierMock)
+            ->setStatus('invalid');
 
         $this->assertEquals([
             'id'            => 'contract-id',
             'type'          => 'contracts',
             'attributes'    => [
                 'currency' => 'IOU',
+                'status'   => 'invalid',
             ],
             'relationships' => [
                 'carrier' => [
