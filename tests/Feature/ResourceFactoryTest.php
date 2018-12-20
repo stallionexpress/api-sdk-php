@@ -50,7 +50,19 @@ class ResourceFactoryTest extends TestCase
         ], $carrier->jsonSerialize());
     }
 
-    public function testCreateCarrierConract()
+    /** @test */
+    public function testCreateEmptyContract()
+    {
+        $resourceFactory = new ResourceFactory();
+        $contract = $resourceFactory->create('contracts');
+
+        $this->assertInstanceOf(ContractInterface::class, $contract);
+        $this->assertEquals([
+            'type' => 'contracts',
+        ], $contract->jsonSerialize());
+    }
+
+    public function testCreateContract()
     {
         $resourceFactory = new ResourceFactory();
         $contract = $resourceFactory->create(
@@ -58,6 +70,7 @@ class ResourceFactoryTest extends TestCase
             [
                 'id'       => 'carrier-id',
                 'currency' => 'JPY',
+                'status'   => 'active',
                 'carrier'  => [
                     'type' => 'carriers',
                     'id'   => 'carrier-id',
@@ -71,6 +84,7 @@ class ResourceFactoryTest extends TestCase
             'type'          => 'contracts',
             'attributes'    => [
                 'currency' => 'JPY',
+                'status'   => 'active',
             ],
             'relationships' => [
                 'carrier' => [
