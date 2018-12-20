@@ -37,6 +37,7 @@ use MyParcelCom\ApiSdk\Resources\Proxy\ShipmentStatusProxy;
 use MyParcelCom\ApiSdk\Resources\Proxy\ShopProxy;
 use MyParcelCom\ApiSdk\Resources\Proxy\StatusProxy;
 use MyParcelCom\ApiSdk\Utils\StringUtils;
+use ReflectionMethod;
 use ReflectionParameter;
 
 class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterface
@@ -116,12 +117,6 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
     protected function pudoLocationFactory(array &$attributes)
     {
         $pudoLocation = new PickUpDropOffLocation();
-
-        if (isset($attributes['categories'])) {
-            $pudoLocation->setCategories($attributes['categories']);
-
-            unset($attributes['categories']);
-        }
 
         if (isset($attributes['meta']['distance'])) {
             $pudoLocation->setDistance($attributes['meta']['distance']);
@@ -620,9 +615,13 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
      */
     private function getFillableParam($resource, $method)
     {
-        $params = (new \ReflectionMethod($resource, $method))
-            ->getParameters();
+        // Check if the method exists, if it doesn't return null.
+        if (!method_exists($resource, $method)) {
+            return null;
+        }
 
+        $params = (new ReflectionMethod($resource, $method))
+            ->getParameters();
 
         // Can't use setter if it requires no params.
         if (count($params) === 0) {
