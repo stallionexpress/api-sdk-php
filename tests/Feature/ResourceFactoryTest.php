@@ -37,7 +37,25 @@ class ResourceFactoryTest extends TestCase
     public function testCreateCarrier()
     {
         $carrierAttributes = [
-            'name' => 'MyParcel.com Carrier',
+            'name'               => 'MyParcel.com Carrier',
+            'code'               => 'mp-carrier',
+            'credentials_format' => [
+                '$schema'              => 'http://json-schema.org/draft-07/schema#',
+                'type'                 => 'object',
+                'additionalProperties' => false,
+                'required'             => [
+                    'user',
+                    'pw',
+                ],
+                'properties'           => [
+                    'user' => [
+                        'type' => 'string',
+                    ],
+                    'pw'   => [
+                        'type' => 'string',
+                    ],
+                ],
+            ],
         ];
 
         $resourceFactory = new ResourceFactory();
