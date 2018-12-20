@@ -121,6 +121,12 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
     {
         $pudoLocation = new PickUpDropOffLocation();
 
+        if (isset($attributes['categories'])) {
+            $pudoLocation->setCategories($attributes['categories']);
+
+            unset($attributes['categories']);
+        }
+
         if (isset($attributes['meta']['distance'])) {
             $pudoLocation->setDistance($attributes['meta']['distance']);
 

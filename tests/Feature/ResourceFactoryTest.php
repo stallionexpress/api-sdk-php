@@ -156,6 +156,9 @@ class ResourceFactoryTest extends TestCase
                 'latitude'  => 1.2345,
                 'longitude' => 2.34567,
             ],
+            'categories'    => [
+                'pick-up',
+            ],
         ];
         $meta = [
             'meta' => [

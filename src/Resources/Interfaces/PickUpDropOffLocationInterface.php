@@ -74,4 +74,15 @@ interface PickUpDropOffLocationInterface extends ResourceInterface
      * @return int
      */
     public function getDistance($unit = DistanceUtils::UNIT_METER);
+
+    /**
+     * @param string[] $category
+     * @return $this
+     */
+    public function setCategories(array $category);
+
+    /**
+     * @return array
+     */
+    public function getCategories();
 }
