@@ -12,6 +12,8 @@ class CarrierTest extends TestCase
     {
         $carrier = new Carrier();
 
+        $this->assertNull($carrier->getId());
+
         $this->assertEquals('carrier-id', $carrier->setId('carrier-id')->getId());
     }
 
@@ -19,6 +21,8 @@ class CarrierTest extends TestCase
     public function testName()
     {
         $carrier = new Carrier();
+
+        $this->assertNull($carrier->getName());
 
         $this->assertEquals('MyParcel.com Carrier', $carrier->setName('MyParcel.com Carrier')->getName());
     }
@@ -36,13 +40,45 @@ class CarrierTest extends TestCase
     {
         $carrier = (new Carrier())
             ->setId('carrier-id')
-            ->setName('MyParcel.com Carrier');
+            ->setName('MyParcel.com Carrier')
+            ->setCode('carrier-code')
+            ->setCredentialsFormat([
+                "additionalProperties" => false,
+                "required"             => [
+                    "api_user",
+                    "api_password",
+                ],
+                "properties"           => [
+                    "api_user"     => [
+                        "type" => "string",
+                    ],
+                    "api_password" => [
+                        "type" => "string",
+                    ],
+                ],
+            ]);
 
         $this->assertEquals([
             'id'         => 'carrier-id',
             'type'       => 'carriers',
             'attributes' => [
-                'name' => 'MyParcel.com Carrier',
+                'name'               => 'MyParcel.com Carrier',
+                'code'               => 'carrier-code',
+                'credentials_format' => [
+                    "additionalProperties" => false,
+                    "required"             => [
+                        "api_user",
+                        "api_password",
+                    ],
+                    "properties"           => [
+                        "api_user"     => [
+                            "type" => "string",
+                        ],
+                        "api_password" => [
+                            "type" => "string",
+                        ],
+                    ],
+                ],
             ],
         ], $carrier->jsonSerialize());
     }

@@ -11,6 +11,8 @@ class Carrier implements CarrierInterface
     use JsonSerializable;
 
     const ATTRIBUTE_NAME = 'name';
+    const ATTRIBUTE_CODE = 'code';
+    const ATTRIBUTE_CREDENTIALS_FORMAT = 'credentials_format';
 
     /** @var string */
     private $id;
@@ -20,11 +22,14 @@ class Carrier implements CarrierInterface
 
     /** @var array */
     private $attributes = [
-        self::ATTRIBUTE_NAME => null,
+        self::ATTRIBUTE_NAME               => null,
+        self::ATTRIBUTE_CODE               => null,
+        self::ATTRIBUTE_CREDENTIALS_FORMAT => [],
     ];
 
     /**
-     * {@inheritdoc}
+     * @param string $id
+     * @return $this
      */
     public function setId($id)
     {
@@ -34,7 +39,7 @@ class Carrier implements CarrierInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return string
      */
     public function getId()
     {
@@ -42,7 +47,8 @@ class Carrier implements CarrierInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param string $name
+     * @return $this
      */
     public function setName($name)
     {
@@ -52,7 +58,7 @@ class Carrier implements CarrierInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return string
      */
     public function getName()
     {
@@ -60,10 +66,48 @@ class Carrier implements CarrierInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return string
      */
     public function getType()
     {
         return $this->type;
+    }
+
+    /**
+     * @param string $code
+     * @return $this
+     */
+    public function setCode($code)
+    {
+        $this->attributes[self::ATTRIBUTE_CODE] = $code;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCode()
+    {
+        return $this->attributes[self::ATTRIBUTE_CODE];
+    }
+
+    /**
+     * @param array $format
+     * @return $this
+     */
+    public function setCredentialsFormat(array $format)
+    {
+        $this->attributes[self::ATTRIBUTE_CREDENTIALS_FORMAT] = $format;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCredentialsFormat()
+    {
+        return $this->attributes[self::ATTRIBUTE_CREDENTIALS_FORMAT];
     }
 }
