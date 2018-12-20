@@ -5,8 +5,7 @@
     "attributes": {
       "currency": "EUR",
       "status": "verified",
-      "name": "My Custom contract",
-      "active": true
+      "name": "My Custom contract"
     },
     "relationships": {
       "carrier": {

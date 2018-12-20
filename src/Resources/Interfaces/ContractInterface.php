@@ -31,4 +31,15 @@ interface ContractInterface extends ResourceInterface
      * @return CarrierInterface
      */
     public function getCarrier();
+
+    /**
+     * @param string $status
+     * @return $this
+     */
+    public function setStatus($status);
+
+    /**
+     * @return string
+     */
+    public function getStatus();
 }

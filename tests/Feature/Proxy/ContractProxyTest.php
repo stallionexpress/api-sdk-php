@@ -59,6 +59,7 @@ class ContractProxyTest extends TestCase
         $this->assertEquals('f1630e62-4645-448d-af22-7d5bac0f502d', $this->contractProxy->getId());
         $this->assertEquals(ResourceInterface::TYPE_CONTRACT, $this->contractProxy->getType());
         $this->assertEquals('EUR', $this->contractProxy->getCurrency());
+        $this->assertEquals('verified', $this->contractProxy->getStatus());
     }
 
     /** @test */

@@ -86,6 +86,25 @@ class ContractProxy implements ContractInterface, ResourceProxyInterface
     }
 
     /**
+     * @param string $status
+     * @return $this
+     */
+    public function setStatus($status)
+    {
+        $this->getResource()->setStatus($status);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->getResource()->getStatus();
+    }
+
+    /**
      * This function puts all object properties in an array and returns it.
      *
      * @return array
