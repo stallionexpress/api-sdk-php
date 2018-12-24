@@ -110,7 +110,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
      * Factory method for creating pudo locations, sets distance from meta on
      * position object.
      *
-     * @param array  $attributes
+     * @param array $attributes
      * @return PickUpDropOffLocation
      */
     protected function pudoLocationFactory(array &$attributes)
@@ -136,7 +136,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
      * Factory method for creating Contracts with proxies for all
      * relationships.
      *
-     * @param array  $attributes
+     * @param array $attributes
      * @return Contract
      */
     protected function contractFactory(array &$attributes)
@@ -157,7 +157,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
     /**
      * Shipment factory method that creates proxies for all relationships.
      *
-     * @param array  $attributes
+     * @param array $attributes
      * @return Shipment
      */
     protected function shipmentFactory(array &$attributes)
@@ -255,7 +255,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
     /**
      * ShipmentStatus factory that creates proxies for all relationships.
      *
-     * @param array  $attributes
+     * @param array $attributes
      * @return ShipmentStatus
      */
     protected function shipmentStatusFactory(array &$attributes)
@@ -284,7 +284,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
     /**
      * Service factory method that creates proxies for all relationships.
      *
-     * @param array  $attributes
+     * @param array $attributes
      * @return Service
      */
     protected function serviceFactory(array &$attributes)
@@ -332,7 +332,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
     /**
      * ServiceRate factory method.
      *
-     * @param array  $attributes
+     * @param array $attributes
      * @return ServiceRate
      */
     protected function serviceRateFactory(&$attributes)

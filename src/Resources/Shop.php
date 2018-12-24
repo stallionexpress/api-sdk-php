@@ -13,6 +13,7 @@ class Shop implements ShopInterface
     use JsonSerializable;
 
     const ATTRIBUTE_NAME = 'name';
+    const ATTRIBUTE_WEBSITE = 'website';
     const ATTRIBUTE_BILLING_ADDRESS = 'billing_address';
     const ATTRIBUTE_SENDER_ADDRESS = 'sender_address';
     const ATTRIBUTE_RETURN_ADDRESS = 'return_address';
@@ -27,6 +28,7 @@ class Shop implements ShopInterface
     /** @var array */
     private $attributes = [
         self::ATTRIBUTE_NAME            => null,
+        self::ATTRIBUTE_WEBSITE         => null,
         self::ATTRIBUTE_BILLING_ADDRESS => null,
         self::ATTRIBUTE_SENDER_ADDRESS  => null,
         self::ATTRIBUTE_RETURN_ADDRESS  => null,
@@ -78,6 +80,24 @@ class Shop implements ShopInterface
     public function getName()
     {
         return $this->attributes[self::ATTRIBUTE_NAME];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setWebsite($website)
+    {
+        $this->attributes[self::ATTRIBUTE_WEBSITE] = $website;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getWebsite()
+    {
+        return $this->attributes[self::ATTRIBUTE_WEBSITE];
     }
 
     /**
