@@ -227,8 +227,12 @@ class MyParcelComApiTest extends TestCase
         $carriers = $this->api->getCarriers();
 
         $this->assertInstanceOf(CollectionInterface::class, $carriers);
+        $this->assertCount(2, $carriers);
         foreach ($carriers as $carrier) {
             $this->assertInstanceOf(CarrierInterface::class, $carrier);
+            $this->assertNotEmpty($carrier->getName());
+            $this->assertNotEmpty($carrier->getCode());
+            $this->assertNotEmpty($carrier->getCredentialsFormat());
         }
     }
 
