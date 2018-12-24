@@ -36,6 +36,48 @@ class CarrierTest extends TestCase
     }
 
     /** @test */
+    public function testCode()
+    {
+        $carrier = new Carrier();
+
+        $this->assertNull($carrier->getCode());
+
+        $this->assertEquals('some-code', $carrier->setCode('some-code')->getCode());
+    }
+
+    /** @test */
+    public function testCredentialsFormat()
+    {
+        $carrier = new Carrier();
+
+        $this->assertEquals([], $carrier->getCredentialsFormat());
+
+        $carrier->setCredentialsFormat([
+            "additionalProperties" => false,
+            "required"             => [
+                "api_secret",
+            ],
+            "properties"           => [
+                "api_secret" => [
+                    "type" => "string",
+                ],
+            ],
+        ]);
+
+        $this->assertEquals([
+            "additionalProperties" => false,
+            "required"             => [
+                "api_secret",
+            ],
+            "properties"           => [
+                "api_secret" => [
+                    "type" => "string",
+                ],
+            ],
+        ], $carrier->getCredentialsFormat());
+    }
+
+    /** @test */
     public function testJsonSerialize()
     {
         $carrier = (new Carrier())
