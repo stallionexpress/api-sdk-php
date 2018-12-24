@@ -126,6 +126,44 @@ class RegionProxy implements RegionInterface, ResourceProxyInterface
     }
 
     /**
+     * @param string $category
+     * @return $this
+     */
+    public function setCategory($category)
+    {
+        $this->getResource()->setCategory($category);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCategory()
+    {
+        return $this->getResource()->getCategory();
+    }
+
+    /**
+     * @param RegionInterface $parentRegion
+     * @return $this
+     */
+    public function setParent(RegionInterface $parentRegion)
+    {
+        $this->getResource()->setParent($parentRegion);
+
+        return $this;
+    }
+
+    /**
+     * @return RegionInterface|null
+     */
+    public function getParent()
+    {
+        return $this->getResource()->getParent();
+    }
+
+    /**
      * This function puts all object properties in an array and returns it.
      *
      * @return array

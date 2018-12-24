@@ -17,7 +17,6 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceFactoryInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceGroupInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceRateInterface;
@@ -50,7 +49,6 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
      */
     private $typeFactory = [
         ResourceInterface::TYPE_CARRIER        => Carrier::class,
-        ResourceInterface::TYPE_REGION         => Region::class,
         ResourceInterface::TYPE_SERVICE_OPTION => ServiceOption::class,
         ResourceInterface::TYPE_SHOP           => Shop::class,
         ResourceInterface::TYPE_STATUS         => Status::class,
@@ -61,7 +59,6 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         OpeningHourInterface::class        => OpeningHour::class,
         PhysicalPropertiesInterface::class => PhysicalProperties::class,
         PositionInterface::class           => Position::class,
-        RegionInterface::class             => Region::class,
         ServiceOptionInterface::class      => ServiceOption::class,
         ShopInterface::class               => Shop::class,
         StatusInterface::class             => Status::class,
@@ -77,10 +74,10 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         $shipmentStatusFactory = [$this, 'shipmentStatusFactory'];
         $serviceFactory = [$this, 'serviceFactory'];
         $serviceRateFactory = [$this, 'serviceRateFactory'];
-        $serviceGroupFactory = [$this, 'serviceGroupFactory'];
         $fileFactory = [$this, 'fileFactory'];
         $shipmentItemFactory = [$this, 'shipmentItemFactory'];
         $pudoLocationFactory = [$this, 'pudoLocationFactory'];
+        $regionFactory = [$this, 'regionFactory'];
 
         $this->setFactoryForType(ResourceInterface::TYPE_CONTRACT, $contractFactory);
         $this->setFactoryForType(ContractInterface::class, $contractFactory);
@@ -97,9 +94,6 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         $this->setFactoryForType(ResourceInterface::TYPE_SERVICE_RATE, $serviceRateFactory);
         $this->setFactoryForType(ServiceRateInterface::class, $serviceRateFactory);
 
-        $this->setFactoryForType(ResourceInterface::TYPE_SERVICE_GROUP, $serviceGroupFactory);
-        $this->setFactoryForType(ServiceGroupInterface::class, $serviceGroupFactory);
-
         $this->setFactoryForType(ResourceInterface::TYPE_FILE, $fileFactory);
         $this->setFactoryForType(FileInterface::class, $fileFactory);
 
@@ -107,17 +101,19 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         $this->setFactoryForType(PickUpDropOffLocationInterface::class, $pudoLocationFactory);
 
         $this->setFactoryForType(ShipmentItemInterface::class, $shipmentItemFactory);
+
+        $this->setFactoryForType(ResourceInterface::TYPE_REGION, $regionFactory);
+        $this->setFactoryForType(RegionInterface::class, $regionFactory);
     }
 
     /**
      * Factory method for creating pudo locations, sets distance from meta on
      * position object.
      *
-     * @param string $type
      * @param array  $attributes
      * @return PickUpDropOffLocation
      */
-    protected function pudoLocationFactory($type, array &$attributes)
+    protected function pudoLocationFactory(array &$attributes)
     {
         $pudoLocation = new PickUpDropOffLocation();
 
@@ -140,11 +136,10 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
      * Factory method for creating Contracts with proxies for all
      * relationships.
      *
-     * @param string $type
      * @param array  $attributes
      * @return Contract
      */
-    protected function contractFactory($type, array &$attributes)
+    protected function contractFactory(array &$attributes)
     {
         $contract = new Contract();
 
@@ -162,11 +157,10 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
     /**
      * Shipment factory method that creates proxies for all relationships.
      *
-     * @param string $type
      * @param array  $attributes
      * @return Shipment
      */
-    protected function shipmentFactory($type, array &$attributes)
+    protected function shipmentFactory(array &$attributes)
     {
         $shipment = new Shipment();
 
@@ -261,11 +255,10 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
     /**
      * ShipmentStatus factory that creates proxies for all relationships.
      *
-     * @param string $type
      * @param array  $attributes
      * @return ShipmentStatus
      */
-    protected function shipmentStatusFactory($type, array &$attributes)
+    protected function shipmentStatusFactory(array &$attributes)
     {
         $shipmentStatus = new ShipmentStatus();
 
@@ -291,11 +284,10 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
     /**
      * Service factory method that creates proxies for all relationships.
      *
-     * @param string $type
      * @param array  $attributes
      * @return Service
      */
-    protected function serviceFactory($type, array &$attributes)
+    protected function serviceFactory(array &$attributes)
     {
         $service = new Service();
 
@@ -338,48 +330,12 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
     }
 
     /**
-     * ServiceGroup factory method.
-     *
-     * @param string $type
-     * @param array  $attributes
-     * @return ServiceGroup
-     */
-    protected function serviceGroupFactory($type, &$attributes)
-    {
-        $serviceGroup = new ServiceGroup();
-
-        if (isset($attributes['price']['amount'])) {
-            $serviceGroup->setPrice($attributes['price']['amount']);
-            $serviceGroup->setCurrency($attributes['price']['currency']);
-
-            unset($attributes['price']);
-        }
-        if (isset($attributes['weight']['min'])) {
-            $serviceGroup->setWeightMin($attributes['weight']['min']);
-            $serviceGroup->setWeightMax($attributes['weight']['max']);
-
-            unset($attributes['weight']);
-        }
-        if (isset($attributes['step_price']['amount'])) {
-            $serviceGroup->setStepPrice($attributes['step_price']['amount']);
-            if (!$serviceGroup->getCurrency()) {
-                $serviceGroup->setCurrency($attributes['step_price']['currency']);
-            }
-
-            unset($attributes['step_price']);
-        }
-
-        return $serviceGroup;
-    }
-
-    /**
      * ServiceRate factory method.
      *
-     * @param string $type
      * @param array  $attributes
      * @return ServiceRate
      */
-    protected function serviceRateFactory($type, &$attributes)
+    protected function serviceRateFactory(&$attributes)
     {
         $serviceRate = new ServiceRate();
 
@@ -443,11 +399,10 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
      * Factory method for creating file resources, adds proxy streams to the
      * file for requesting the file data.
      *
-     * @param $type
      * @param $attributes
      * @return File
      */
-    protected function fileFactory($type, &$attributes)
+    protected function fileFactory(&$attributes)
     {
         $file = new File();
 
@@ -468,11 +423,10 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
     /**
      * Factory for creating a shipment item.
      *
-     * @param $type
      * @param $attributes
      * @return ShipmentItem
      */
-    protected function shipmentItemFactory($type, &$attributes)
+    protected function shipmentItemFactory(&$attributes)
     {
         $item = new ShipmentItem();
 
@@ -484,6 +438,27 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         }
 
         return $item;
+    }
+
+    /**
+     * Factory for creating a region.
+     *
+     * @param $attributes
+     * @return Region
+     */
+    protected function regionFactory(&$attributes)
+    {
+        $region = new Region();
+
+        if (isset($attributes['parent']['id'])) {
+            $region->setParent(
+                (new RegionProxy())->setMyParcelComApi($this->api)->setId($attributes['parent']['id'])
+            );
+
+            unset($attributes['parent']);
+        }
+
+        return $region;
     }
 
     /**
@@ -546,7 +521,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         $factory = $this->typeFactory[$type];
 
         if (is_callable($factory)) {
-            return $factory($type, $attributes);
+            return $factory($attributes);
         } elseif (class_exists($factory)) {
             return new $factory();
         }

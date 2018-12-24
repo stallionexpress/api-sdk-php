@@ -14,7 +14,9 @@ class Region implements RegionInterface
     const ATTRIBUTE_REGION_CODE = 'region_code';
     const ATTRIBUTE_CURRENCY = 'currency';
     const ATTRIBUTE_NAME = 'name';
-    const ATTRIBUTE_PARENT = 'parent_id';
+    const ATTRIBUTE_CATEGORY = 'category';
+
+    const RELATIONSHIP_PARENT = 'parent';
 
     /** @var string */
     private $id;
@@ -28,6 +30,13 @@ class Region implements RegionInterface
         self::ATTRIBUTE_REGION_CODE  => null,
         self::ATTRIBUTE_CURRENCY     => null,
         self::ATTRIBUTE_NAME         => null,
+    ];
+
+    /** @var array */
+    private $relationships = [
+        self::RELATIONSHIP_PARENT => [
+            'data' => null,
+        ],
     ];
 
     /**
@@ -126,5 +135,41 @@ class Region implements RegionInterface
     public function getName()
     {
         return $this->attributes[self::ATTRIBUTE_NAME];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setCategory($category)
+    {
+        $this->attributes[self::ATTRIBUTE_CATEGORY] = $category;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCategory()
+    {
+        return $this->attributes[self::ATTRIBUTE_CATEGORY];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setParent(RegionInterface $parentRegion)
+    {
+        $this->relationships[self::RELATIONSHIP_PARENT]['data'] = $parentRegion;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getParent()
+    {
+        return $this->relationships[self::RELATIONSHIP_PARENT]['data'];
     }
 }

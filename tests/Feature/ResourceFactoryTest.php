@@ -8,7 +8,6 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\PickUpDropOffLocationInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceGroupInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceRateInterface;
@@ -51,7 +50,19 @@ class ResourceFactoryTest extends TestCase
         ], $carrier->jsonSerialize());
     }
 
-    public function testCreateCarrierConract()
+    /** @test */
+    public function testCreateEmptyContract()
+    {
+        $resourceFactory = new ResourceFactory();
+        $contract = $resourceFactory->create('contracts');
+
+        $this->assertInstanceOf(ContractInterface::class, $contract);
+        $this->assertEquals([
+            'type' => 'contracts',
+        ], $contract->jsonSerialize());
+    }
+
+    public function testCreateContract()
     {
         $resourceFactory = new ResourceFactory();
         $contract = $resourceFactory->create(
@@ -59,6 +70,7 @@ class ResourceFactoryTest extends TestCase
             [
                 'id'       => 'carrier-id',
                 'currency' => 'JPY',
+                'status'   => 'active',
                 'carrier'  => [
                     'type' => 'carriers',
                     'id'   => 'carrier-id',
@@ -72,6 +84,7 @@ class ResourceFactoryTest extends TestCase
             'type'          => 'contracts',
             'attributes'    => [
                 'currency' => 'JPY',
+                'status'   => 'active',
             ],
             'relationships' => [
                 'carrier' => [
@@ -199,6 +212,11 @@ class ResourceFactoryTest extends TestCase
             'region_code'  => 'ZH',
             'currency'     => 'EUR',
             'name'         => 'Rotterdam',
+            'category'     => 'city',
+            'parent'       => [
+                'id'   => 'region-id',
+                'type' => 'regions',
+            ],
         ];
 
         $resourceFactory = new ResourceFactory();
@@ -206,8 +224,22 @@ class ResourceFactoryTest extends TestCase
 
         $this->assertInstanceOf(RegionInterface::class, $region);
         $this->assertEquals([
-            'type'       => 'regions',
-            'attributes' => $regionAttributes,
+            'type'          => 'regions',
+            'attributes'    => [
+                'country_code' => 'NL',
+                'region_code'  => 'ZH',
+                'currency'     => 'EUR',
+                'name'         => 'Rotterdam',
+                'category'     => 'city',
+            ],
+            'relationships' => [
+                'parent' => [
+                    'data' => [
+                        'id'   => 'region-id',
+                        'type' => 'regions',
+                    ],
+                ],
+            ],
         ], $region->jsonSerialize());
     }
 
@@ -293,52 +325,6 @@ class ResourceFactoryTest extends TestCase
                 ],
             ],
         ], $service->jsonSerialize());
-    }
-
-    /** @test */
-    public function testCreateEmptyServiceGroup()
-    {
-        $resourceFactory = new ResourceFactory();
-        $serviceGroup = $resourceFactory->create('service-groups');
-
-        $this->assertInstanceOf(ServiceGroupInterface::class, $serviceGroup);
-        $this->assertEquals([
-            'type' => 'service-groups',
-        ], $serviceGroup->jsonSerialize());
-    }
-
-    /** @test */
-    public function testCreateServiceGroup()
-    {
-        $resourceFactory = new ResourceFactory();
-        $serviceGroup = $resourceFactory->create('service-groups', [
-            'price'      => 741,
-            'currency'   => 'GBP',
-            'step_price' => 10,
-            'step_size'  => 10,
-            'weight_max' => 987,
-            'weight_min' => 123,
-        ]);
-
-        $this->assertInstanceOf(ServiceGroupInterface::class, $serviceGroup);
-        $this->assertEquals([
-            'type'       => 'service-groups',
-            'attributes' => [
-                'price'      => [
-                    'amount'   => 741,
-                    'currency' => 'GBP',
-                ],
-                'step_price' => [
-                    'amount'   => 10,
-                    'currency' => 'GBP',
-                ],
-                'step_size'  => 10,
-                'weight'     => [
-                    'max' => 987,
-                    'min' => 123,
-                ],
-            ],
-        ], $serviceGroup->jsonSerialize());
     }
 
     /** @test */

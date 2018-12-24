@@ -6,6 +6,7 @@ use GuzzleHttp\ClientInterface;
 use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
 use MyParcelCom\ApiSdk\MyParcelComApi;
 use MyParcelCom\ApiSdk\MyParcelComApiInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Proxy\RegionProxy;
 use MyParcelCom\ApiSdk\Tests\Traits\MocksApiCommunication;
@@ -63,6 +64,17 @@ class RegionProxyTest extends TestCase
         $this->assertEquals('ENG', $this->regionProxy->getRegionCode());
         $this->assertEquals('GBP', $this->regionProxy->setCurrency('GBP')->getCurrency());
         $this->assertEquals('United Kingdom', $this->regionProxy->getName());
+        $this->assertEquals('country', $this->regionProxy->getCategory());
+    }
+
+    /** @test */
+    public function testRelationships()
+    {
+        $parent = $this->regionProxy->getParent();
+        $this->assertInstanceOf(RegionInterface::class, $this->regionProxy->getParent());
+        $this->assertEquals('regions', $parent->getType());
+        $this->assertEquals('3844a94a-49bf-434f-9f67-3ff7ec071821', $parent->getId());
+        $this->assertEquals('Europe', $parent->getName());
     }
 
     /** @test */
