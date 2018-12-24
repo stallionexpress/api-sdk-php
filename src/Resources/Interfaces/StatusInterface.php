@@ -26,6 +26,17 @@ interface StatusInterface extends ResourceInterface
     public function getCode();
 
     /**
+     * @param string $resourceType
+     * @return $this
+     */
+    public function setResourceType($resourceType);
+
+    /**
+     * @return string
+     */
+    public function getResourceType();
+
+    /**
      * @param string $level
      * @return $this
      */
