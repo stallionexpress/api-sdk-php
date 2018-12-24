@@ -110,11 +110,10 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
      * Factory method for creating pudo locations, sets distance from meta on
      * position object.
      *
-     * @param string $type
      * @param array  $attributes
      * @return PickUpDropOffLocation
      */
-    protected function pudoLocationFactory($type, array &$attributes)
+    protected function pudoLocationFactory(array &$attributes)
     {
         $pudoLocation = new PickUpDropOffLocation();
 
@@ -137,11 +136,10 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
      * Factory method for creating Contracts with proxies for all
      * relationships.
      *
-     * @param string $type
      * @param array  $attributes
      * @return Contract
      */
-    protected function contractFactory($type, array &$attributes)
+    protected function contractFactory(array &$attributes)
     {
         $contract = new Contract();
 
@@ -159,11 +157,10 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
     /**
      * Shipment factory method that creates proxies for all relationships.
      *
-     * @param string $type
      * @param array  $attributes
      * @return Shipment
      */
-    protected function shipmentFactory($type, array &$attributes)
+    protected function shipmentFactory(array &$attributes)
     {
         $shipment = new Shipment();
 
@@ -258,11 +255,10 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
     /**
      * ShipmentStatus factory that creates proxies for all relationships.
      *
-     * @param string $type
      * @param array  $attributes
      * @return ShipmentStatus
      */
-    protected function shipmentStatusFactory($type, array &$attributes)
+    protected function shipmentStatusFactory(array &$attributes)
     {
         $shipmentStatus = new ShipmentStatus();
 
@@ -288,11 +284,10 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
     /**
      * Service factory method that creates proxies for all relationships.
      *
-     * @param string $type
      * @param array  $attributes
      * @return Service
      */
-    protected function serviceFactory($type, array &$attributes)
+    protected function serviceFactory(array &$attributes)
     {
         $service = new Service();
 
@@ -337,11 +332,10 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
     /**
      * ServiceRate factory method.
      *
-     * @param string $type
      * @param array  $attributes
      * @return ServiceRate
      */
-    protected function serviceRateFactory($type, &$attributes)
+    protected function serviceRateFactory(&$attributes)
     {
         $serviceRate = new ServiceRate();
 
@@ -405,11 +399,10 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
      * Factory method for creating file resources, adds proxy streams to the
      * file for requesting the file data.
      *
-     * @param $type
      * @param $attributes
      * @return File
      */
-    protected function fileFactory($type, &$attributes)
+    protected function fileFactory(&$attributes)
     {
         $file = new File();
 
@@ -430,11 +423,10 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
     /**
      * Factory for creating a shipment item.
      *
-     * @param $type
      * @param $attributes
      * @return ShipmentItem
      */
-    protected function shipmentItemFactory($type, &$attributes)
+    protected function shipmentItemFactory(&$attributes)
     {
         $item = new ShipmentItem();
 
@@ -448,7 +440,13 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         return $item;
     }
 
-    protected function regionFactory($type, &$attributes)
+    /**
+     * Factory for creating a region.
+     *
+     * @param $attributes
+     * @return Region
+     */
+    protected function regionFactory(&$attributes)
     {
         $region = new Region();
 
@@ -523,7 +521,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         $factory = $this->typeFactory[$type];
 
         if (is_callable($factory)) {
-            return $factory($type, $attributes);
+            return $factory($attributes);
         } elseif (class_exists($factory)) {
             return new $factory();
         }
