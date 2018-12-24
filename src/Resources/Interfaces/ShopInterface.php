@@ -24,6 +24,17 @@ interface ShopInterface extends ResourceInterface
     public function getName();
 
     /**
+     * @param string $website
+     * @return $this
+     */
+    public function setWebsite($website);
+
+    /**
+     * @return string
+     */
+    public function getWebsite();
+
+    /**
      * @param AddressInterface $billingAddress
      * @return $this
      */
