@@ -107,7 +107,7 @@ class ShipmentStatusProxyTest extends TestCase
 
         $this->assertEquals(
             1,
-            $this->clientCalls['https://api/shipments/shipment-id-1/statuses/shipment-status-id-1']
+            $this->clientCalls['https://api/shipment-statuses/shipment-status-id-1']
         );
 
         // Creating a new proxy for the same resource will
@@ -121,7 +121,7 @@ class ShipmentStatusProxyTest extends TestCase
 
         $this->assertEquals(
             2,
-            $this->clientCalls['https://api/shipments/shipment-id-1/statuses/shipment-status-id-1']
+            $this->clientCalls['https://api/shipment-statuses/shipment-status-id-1']
         );
     }
 

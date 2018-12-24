@@ -36,36 +36,36 @@ class ResourceFactoryTest extends TestCase
     /** @test */
     public function testCreateCarrier()
     {
-        $carrierAttributes = [
-            'name'               => 'MyParcel.com Carrier',
-            'code'               => 'mp-carrier',
-            'credentials_format' => [
-                '$schema'              => 'http://json-schema.org/draft-07/schema#',
-                'type'                 => 'object',
-                'additionalProperties' => false,
-                'required'             => [
-                    'user',
-                    'pw',
-                ],
-                'properties'           => [
-                    'user' => [
-                        'type' => 'string',
+        $carrierProperties = [
+            'type'       => 'carriers',
+            'attributes' => [
+                'name'               => 'MyParcel.com Carrier',
+                'code'               => 'mp-carrier',
+                'credentials_format' => [
+                    '$schema'              => 'http://json-schema.org/draft-07/schema#',
+                    'type'                 => 'object',
+                    'additionalProperties' => false,
+                    'required'             => [
+                        'user',
+                        'pw',
                     ],
-                    'pw'   => [
-                        'type' => 'string',
+                    'properties'           => [
+                        'user' => [
+                            'type' => 'string',
+                        ],
+                        'pw'   => [
+                            'type' => 'string',
+                        ],
                     ],
                 ],
             ],
         ];
 
         $resourceFactory = new ResourceFactory();
-        $carrier = $resourceFactory->create('carriers', $carrierAttributes);
+        $carrier = $resourceFactory->create('carriers', $carrierProperties);
 
         $this->assertInstanceOf(CarrierInterface::class, $carrier);
-        $this->assertEquals([
-            'type'       => 'carriers',
-            'attributes' => $carrierAttributes,
-        ], $carrier->jsonSerialize());
+        $this->assertEquals($carrierProperties, $carrier->jsonSerialize());
     }
 
     /** @test */
@@ -82,22 +82,7 @@ class ResourceFactoryTest extends TestCase
 
     public function testCreateContract()
     {
-        $resourceFactory = new ResourceFactory();
-        $contract = $resourceFactory->create(
-            'contracts',
-            [
-                'id'       => 'carrier-id',
-                'currency' => 'JPY',
-                'status'   => 'active',
-                'carrier'  => [
-                    'type' => 'carriers',
-                    'id'   => 'carrier-id',
-                ],
-            ]
-        );
-
-        $this->assertInstanceOf(ContractInterface::class, $contract);
-        $this->assertEquals([
+        $contractProperties = [
             'id'            => 'carrier-id',
             'type'          => 'contracts',
             'attributes'    => [
@@ -112,7 +97,13 @@ class ResourceFactoryTest extends TestCase
                     ],
                 ],
             ],
-        ], $contract->jsonSerialize());
+        ];
+
+        $resourceFactory = new ResourceFactory();
+        $contract = $resourceFactory->create('contracts', $contractProperties);
+
+        $this->assertInstanceOf(ContractInterface::class, $contract);
+        $this->assertEquals($contractProperties, $contract->jsonSerialize());
     }
 
     /** @test */
@@ -130,82 +121,80 @@ class ResourceFactoryTest extends TestCase
     /** @test */
     public function testCreatePickUpDropOffLocation()
     {
-        $pudoAttributes = [
-            'address'       => [
-                'street_1'             => 'Diagonally',
-                'street_2'             => 'Apartment A',
-                'street_number'        => '40',
-                'street_number_suffix' => 'A',
-                'postal_code'          => '1AR BR2',
-                'city'                 => 'London',
-                'region_code'          => 'NH',
-                'country_code'         => 'AF',
-                'first_name'           => 'Robert',
-                'last_name'            => 'Drop Tables',
-                'company'              => 'ACME co.',
-                'email'                => 'rob@tables.com',
-                'phone_number'         => '+31 (0)234 567 890',
+        $pudoProperties = [
+            'type'       => 'pickup-dropoff-locations',
+            'attributes' => [
+                'address'       => [
+                    'street_1'             => 'Diagonally',
+                    'street_2'             => 'Apartment A',
+                    'street_number'        => '40',
+                    'street_number_suffix' => 'A',
+                    'postal_code'          => '1AR BR2',
+                    'city'                 => 'London',
+                    'region_code'          => 'NH',
+                    'country_code'         => 'AF',
+                    'first_name'           => 'Robert',
+                    'last_name'            => 'Drop Tables',
+                    'company'              => 'ACME co.',
+                    'email'                => 'rob@tables.com',
+                    'phone_number'         => '+31 (0)234 567 890',
+                ],
+                'opening_hours' => [
+                    [
+                        'day'    => 'Monday',
+                        'open'   => '12:00',
+                        'closed' => '15:00',
+                    ],
+                    [
+                        'day'    => 'Tuesday',
+                        'open'   => '09:00',
+                        'closed' => '19:00',
+                    ],
+                    [
+                        'day'    => 'Wednesday',
+                        'open'   => '09:00',
+                        'closed' => '19:00',
+                    ],
+                    [
+                        'day'    => 'Thursday',
+                        'open'   => '09:00',
+                        'closed' => '19:00',
+                    ],
+                    [
+                        'day'    => 'Friday',
+                        'open'   => '09:00',
+                        'closed' => '19:00',
+                    ],
+                    [
+                        'day'    => 'Saturday',
+                        'open'   => '10:00',
+                        'closed' => '17:00',
+                    ],
+                    [
+                        'day'    => 'Sunday',
+                        'open'   => '00:00',
+                        'closed' => '00:00',
+                    ],
+                ],
+                'position'      => [
+                    'latitude'  => 1.2345,
+                    'longitude' => 2.34567,
+                ],
+                'categories'    => [
+                    'pick-up',
+                ],
             ],
-            'opening_hours' => [
-                [
-                    'day'    => 'Monday',
-                    'open'   => '12:00',
-                    'closed' => '15:00',
-                ],
-                [
-                    'day'    => 'Tuesday',
-                    'open'   => '09:00',
-                    'closed' => '19:00',
-                ],
-                [
-                    'day'    => 'Wednesday',
-                    'open'   => '09:00',
-                    'closed' => '19:00',
-                ],
-                [
-                    'day'    => 'Thursday',
-                    'open'   => '09:00',
-                    'closed' => '19:00',
-                ],
-                [
-                    'day'    => 'Friday',
-                    'open'   => '09:00',
-                    'closed' => '19:00',
-                ],
-                [
-                    'day'    => 'Saturday',
-                    'open'   => '10:00',
-                    'closed' => '17:00',
-                ],
-                [
-                    'day'    => 'Sunday',
-                    'open'   => '00:00',
-                    'closed' => '00:00',
-                ],
-            ],
-            'position'      => [
-                'latitude'  => 1.2345,
-                'longitude' => 2.34567,
-            ],
-            'categories'    => [
-                'pick-up',
-            ],
-        ];
-        $meta = [
-            'meta' => [
+            'meta'       => [
                 'distance' => 5000,
             ],
         ];
 
         $resourceFactory = new ResourceFactory();
-        $pudoLocation = $resourceFactory->create('pickup-dropoff-locations', $pudoAttributes + $meta);
+        $pudoLocation = $resourceFactory->create('pickup-dropoff-locations', $pudoProperties);
 
         $this->assertInstanceOf(PickUpDropOffLocationInterface::class, $pudoLocation);
         $this->assertEquals(
-            [
-                'type'       => 'pickup-dropoff-locations',
-                'attributes' => $pudoAttributes,
-            ] + $meta,
+            $pudoProperties,
             $pudoLocation->jsonSerialize()
         );
     }
@@ -225,23 +214,7 @@ class ResourceFactoryTest extends TestCase
     /** @test */
     public function testCreateRegion()
     {
-        $regionAttributes = [
-            'country_code' => 'NL',
-            'region_code'  => 'ZH',
-            'currency'     => 'EUR',
-            'name'         => 'Rotterdam',
-            'category'     => 'city',
-            'parent'       => [
-                'id'   => 'region-id',
-                'type' => 'regions',
-            ],
-        ];
-
-        $resourceFactory = new ResourceFactory();
-        $region = $resourceFactory->create('regions', $regionAttributes);
-
-        $this->assertInstanceOf(RegionInterface::class, $region);
-        $this->assertEquals([
+        $regionProperties = [
             'type'          => 'regions',
             'attributes'    => [
                 'country_code' => 'NL',
@@ -258,7 +231,13 @@ class ResourceFactoryTest extends TestCase
                     ],
                 ],
             ],
-        ], $region->jsonSerialize());
+        ];
+
+        $resourceFactory = new ResourceFactory();
+        $region = $resourceFactory->create('regions', $regionProperties);
+
+        $this->assertInstanceOf(RegionInterface::class, $region);
+        $this->assertEquals($regionProperties, $region->jsonSerialize());
     }
 
     /** @test */
@@ -276,35 +255,7 @@ class ResourceFactoryTest extends TestCase
     /** @test */
     public function testCreateService()
     {
-        $resourceFactory = new ResourceFactory();
-        $service = $resourceFactory->create('services', [
-            'id'              => 'service-id-9001',
-            'name'            => 'Easy Delivery Service',
-            'package_type'    => ServiceInterface::PACKAGE_TYPE_PARCEL,
-            'transit_time'    => [
-                'min' => 2,
-                'max' => 5,
-            ],
-            'handover_method' => 'drop-off',
-            'delivery_days'   => [
-                'Monday',
-                'Wednesday',
-                'Friday',
-            ],
-            'delivery_method' => 'delivery',
-            'carrier'         => [
-                'id' => 'carrier-id-1',
-            ],
-            'region_from'     => [
-                'id' => 'region-id-1',
-            ],
-            'region_to'       => [
-                'id' => 'region-id-2',
-            ],
-        ]);
-
-        $this->assertInstanceOf(ServiceInterface::class, $service);
-        $this->assertEquals([
+        $serviceProperties = [
             'id'            => 'service-id-9001',
             'type'          => 'services',
             'attributes'    => [
@@ -342,7 +293,13 @@ class ResourceFactoryTest extends TestCase
                     ],
                 ],
             ],
-        ], $service->jsonSerialize());
+        ];
+
+        $resourceFactory = new ResourceFactory();
+        $service = $resourceFactory->create('services', $serviceProperties);
+
+        $this->assertInstanceOf(ServiceInterface::class, $service);
+        $this->assertEquals($serviceProperties, $service->jsonSerialize());
     }
 
     /** @test */
@@ -360,60 +317,7 @@ class ResourceFactoryTest extends TestCase
     /** @test */
     public function testItCreatesAServiceRate()
     {
-        $resourceFactory = new ResourceFactory();
-        $serviceRate = $resourceFactory->create('service-rates', [
-            'id'              => 'service-rate-id',
-            'weight_min'      => 2000,
-            'weight_max'      => 5000,
-            'width_max'       => 100,
-            'height_max'      => 200,
-            'volume_max'      => 6,
-            'length_max'      => 300,
-            'step_size'       => 1000,
-            'price'           => [
-                'amount'   => 800,
-                'currency' => 'GBP',
-            ],
-            'step_price'      => [
-                'amount'   => 300,
-                'currency' => 'GBP',
-            ],
-            'service'         => [
-                'id'   => 'service-id',
-                'type' => 'services',
-            ],
-            'contract'        => [
-                'id'   => 'contract-id',
-                'type' => 'contracts',
-            ],
-            'service_options' => [
-                [
-                    'id'   => 'service-option-id-1',
-                    'type' => 'service-options',
-                    'meta' => [
-                        'included' => true,
-                        'price'    => [
-                            'amount'   => 500,
-                            'currency' => 'GBP',
-                        ],
-                    ],
-                ],
-                [
-                    'id'   => 'service-option-id-2',
-                    'type' => 'service-options',
-                    'meta' => [
-                        'included' => false,
-                        'price'    => [
-                            'amount'   => 200,
-                            'currency' => 'GBP',
-                        ],
-                    ],
-                ],
-            ],
-        ]);
-
-        $this->assertInstanceOf(ServiceRateInterface::class, $serviceRate);
-        $this->assertEquals([
+        $serviceRateProperties = [
             'type'          => 'service-rates',
             'id'            => 'service-rate-id',
             'attributes'    => [
@@ -473,7 +377,13 @@ class ResourceFactoryTest extends TestCase
                     ],
                 ],
             ],
-        ], $serviceRate->jsonSerialize());
+        ];
+
+        $resourceFactory = new ResourceFactory();
+        $serviceRate = $resourceFactory->create('service-rates', $serviceRateProperties);
+
+        $this->assertInstanceOf(ServiceRateInterface::class, $serviceRate);
+        $this->assertEquals($serviceRateProperties, $serviceRate->jsonSerialize());
     }
 
     /** @test */
@@ -491,22 +401,20 @@ class ResourceFactoryTest extends TestCase
     /** @test */
     public function testCreateServiceOption()
     {
-        $resourceFactory = new ResourceFactory();
-        $serviceOption = $resourceFactory->create('service-options', [
-            'name'     => 'Sign on delivery',
-            'code'     => 'some-code',
-            'category' => 'some-category',
-        ]);
-
-        $this->assertInstanceOf(ServiceOptionInterface::class, $serviceOption);
-        $this->assertEquals([
+        $serviceOptionProperties = [
             'type'       => 'service-options',
             'attributes' => [
                 'name'     => 'Sign on delivery',
                 'code'     => 'some-code',
                 'category' => 'some-category',
             ],
-        ], $serviceOption->jsonSerialize());
+        ];
+
+        $resourceFactory = new ResourceFactory();
+        $serviceOption = $resourceFactory->create('service-options', $serviceOptionProperties);
+
+        $this->assertInstanceOf(ServiceOptionInterface::class, $serviceOption);
+        $this->assertEquals($serviceOptionProperties, $serviceOption->jsonSerialize());
     }
 
     /** @test */
@@ -524,85 +432,7 @@ class ResourceFactoryTest extends TestCase
     /** @test */
     public function testCreateShipment()
     {
-        $resourceFactory = new ResourceFactory();
-        $shipment = $resourceFactory->create('shipments', [
-            'barcode'                      => 'S3BARCODE',
-            'description'                  => 'order #012ASD',
-            'price'                        => [
-                'amount'   => 99,
-                'currency' => 'USD',
-            ],
-            'physical_properties'          => [
-                'weight' => 1000,
-                'length' => 1100,
-                'height' => 1300,
-                'width'  => 1400,
-                'volume' => 2002,
-            ],
-            'physical_properties_verified' => [
-                'weight' => 100,
-                'length' => 110,
-                'height' => 130,
-                'width'  => 140,
-                'volume' => 2.002,
-            ],
-            'recipient_address'            => [
-                'street_1'             => 'Diagonally',
-                'street_2'             => 'Apartment 4',
-                'street_number'        => '1',
-                'street_number_suffix' => 'A',
-                'postal_code'          => '1AR BR2',
-                'city'                 => 'London',
-                'region_code'          => 'NH',
-                'country_code'         => 'AF',
-                'first_name'           => 'Robert',
-                'last_name'            => 'Drop Tables',
-                'company'              => 'ACME co.',
-                'email'                => 'rob@tables.com',
-                'phone_number'         => '+31 (0)234 567 890',
-            ],
-            'sender_address'               => [
-                'street_1'             => 'Diagonally',
-                'street_2'             => 'Apartment 9',
-                'street_number'        => '4',
-                'street_number_suffix' => 'A',
-                'postal_code'          => '1AR BR2',
-                'city'                 => 'London',
-                'region_code'          => 'NH',
-                'country_code'         => 'AF',
-                'first_name'           => 'Robert',
-                'last_name'            => 'Drop Tables',
-                'company'              => 'ACME co.',
-                'email'                => 'rob@tables.com',
-                'phone_number'         => '+31 (0)234 567 890',
-            ],
-            'pickup_location_code'         => 'CODE123',
-            'pickup_location_address'      => [
-                'street_1'             => 'Diagonally',
-                'street_2'             => 'Apartment 41',
-                'street_number'        => '2',
-                'street_number_suffix' => 'A',
-                'postal_code'          => '1AR BR2',
-                'city'                 => 'London',
-                'region_code'          => 'NH',
-                'country_code'         => 'AF',
-                'first_name'           => 'Robert',
-                'last_name'            => 'Drop Tables',
-                'company'              => 'ACME co.',
-                'email'                => 'rob@tables.com',
-                'phone_number'         => '+31 (0)234 567 890',
-            ],
-            'register_at'                  => 1526913941,
-            'shop'                         => ['id' => 'shop-id-1', 'type' => 'shops'],
-            'service'                      => ['id' => 'service-id-1', 'type' => 'services'],
-            'contract'                     => ['id' => 'contract-id-1', 'type' => 'contracts'],
-            'shipment_status'              => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses'],
-            'service_options'              => [['id' => 'option-id-1', 'type' => 'service-options']],
-            'files'                        => [['id' => 'file-id-1', 'type' => 'files']],
-        ]);
-
-        $this->assertInstanceOf(ShipmentInterface::class, $shipment);
-        $this->assertEquals([
+        $shipmentProperties = [
             'type'          => 'shipments',
             'attributes'    => [
                 'barcode'                      => 'S3BARCODE',
@@ -683,121 +513,19 @@ class ResourceFactoryTest extends TestCase
                 'service_options' => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
                 'files'           => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
             ],
-        ], $shipment->jsonSerialize());
+        ];
+
+        $resourceFactory = new ResourceFactory();
+        $shipment = $resourceFactory->create('shipments', $shipmentProperties);
+
+        $this->assertInstanceOf(ShipmentInterface::class, $shipment);
+        $this->assertEquals($shipmentProperties, $shipment->jsonSerialize());
     }
 
     /** @test */
     public function testCreateShipmentWithCustoms()
     {
-        $resourceFactory = new ResourceFactory();
-        $shipment = $resourceFactory->create('shipments', [
-            'barcode'                      => 'S3BARCODE',
-            'description'                  => 'order #012ASD',
-            'price'                        => 99,
-            'currency'                     => 'USD',
-            'physical_properties'          => [
-                'weight' => 1000,
-                'length' => 1100,
-                'height' => 1300,
-                'width'  => 1400,
-                'volume' => 2002,
-            ],
-            'physical_properties_verified' => [
-                'weight' => 100,
-                'length' => 110,
-                'height' => 130,
-                'width'  => 140,
-                'volume' => 2.002,
-            ],
-            'recipient_address'            => [
-                'street_1'             => 'Diagonally',
-                'street_2'             => 'Apartment 4',
-                'street_number'        => '1',
-                'street_number_suffix' => 'A',
-                'postal_code'          => '1AR BR2',
-                'city'                 => 'London',
-                'country_code'         => 'GB',
-                'first_name'           => 'Robert',
-                'last_name'            => 'Drop Tables',
-                'company'              => 'ACME co.',
-                'email'                => 'rob@tables.com',
-                'phone_number'         => '+31 (0)234 567 890',
-            ],
-            'sender_address'               => [
-                'street_1'             => 'Diagonally',
-                'street_2'             => 'Apartment 9',
-                'street_number'        => '4',
-                'street_number_suffix' => 'A',
-                'postal_code'          => '1AR BR2',
-                'city'                 => 'London',
-                'country_code'         => 'NL',
-                'first_name'           => 'Robert',
-                'last_name'            => 'Drop Tables',
-                'company'              => 'ACME co.',
-                'email'                => 'rob@tables.com',
-                'phone_number'         => '+31 (0)234 567 890',
-            ],
-            'pickup_location_code'         => 'CODE123',
-            'pickup_location_address'      => [
-                'street_1'             => 'Diagonally',
-                'street_2'             => 'Apartment 41',
-                'street_number'        => '2',
-                'street_number_suffix' => 'A',
-                'postal_code'          => '1AR BR2',
-                'city'                 => 'London',
-                'country_code'         => 'GB',
-                'first_name'           => 'Robert',
-                'last_name'            => 'Drop Tables',
-                'company'              => 'ACME co.',
-                'email'                => 'rob@tables.com',
-                'phone_number'         => '+31 (0)234 567 890',
-            ],
-            'items'                        => [
-                [
-                    'sku'                 => '123456789',
-                    'description'         => 'OnePlus X',
-                    'item_value'          => 100,
-                    'currency'            => 'GBP',
-                    'quantity'            => 2,
-                    'hs_code'             => '8517.12.00',
-                    'origin_country_code' => 'GB',
-                ],
-                [
-                    'sku'                 => '213425',
-                    'description'         => 'OnePlus One',
-                    'item_value'          => 200,
-                    'currency'            => 'GBP',
-                    'quantity'            => 3,
-                    'hs_code'             => '8517.12.00',
-                    'origin_country_code' => 'GB',
-                ],
-                [
-                    'sku'                 => '6876',
-                    'description'         => 'OnePlus Two',
-                    'item_value'          => 300,
-                    'currency'            => 'GBP',
-                    'quantity'            => 1,
-                    'hs_code'             => '8517.12.00',
-                    'origin_country_code' => 'GB',
-                ],
-            ],
-            'customs'                      => [
-                'content_type'   => 'documents',
-                'invoice_number' => 'NO.5',
-                'non_delivery'   => 'return',
-                'incoterm'       => 'DDU',
-            ],
-            'register_at'                  => 1526913941,
-            'shop'                         => ['id' => 'shop-id-1', 'type' => 'shops'],
-            'service'                      => ['id' => 'service-id-1', 'type' => 'services'],
-            'contract'                     => ['id' => 'contract-id-1', 'type' => 'contracts'],
-            'shipment_status'              => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses'],
-            'service_options'              => [['id' => 'option-id-1', 'type' => 'service-options']],
-            'files'                        => [['id' => 'file-id-1', 'type' => 'files']],
-        ]);
-
-        $this->assertInstanceOf(ShipmentInterface::class, $shipment);
-        $this->assertEquals([
+        $shipmentProperties = [
             'type'          => 'shipments',
             'attributes'    => [
                 'barcode'                      => 'S3BARCODE',
@@ -916,7 +644,13 @@ class ResourceFactoryTest extends TestCase
                 'service_options' => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
                 'files'           => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
             ],
-        ], $shipment->jsonSerialize());
+        ];
+
+        $resourceFactory = new ResourceFactory();
+        $shipment = $resourceFactory->create('shipments', $shipmentProperties);
+
+        $this->assertInstanceOf(ShipmentInterface::class, $shipment);
+        $this->assertEquals($shipmentProperties, $shipment->jsonSerialize());
     }
 
     /** @test */
@@ -934,43 +668,7 @@ class ResourceFactoryTest extends TestCase
     /** @test */
     public function testCreateShop()
     {
-        $resourceFactory = new ResourceFactory();
-        $shop = $resourceFactory->create('shops', [
-            'name'            => 'MyParcel.com Test Shop',
-            'billing_address' => [
-                'street_1'             => 'Diagonally',
-                'street_2'             => 'Apartment 3',
-                'street_number'        => '4',
-                'street_number_suffix' => 'A',
-                'postal_code'          => '1AR BR2',
-                'city'                 => 'London',
-                'region_code'          => 'NH',
-                'country_code'         => 'AF',
-                'first_name'           => 'Robert',
-                'last_name'            => 'Drop Tables',
-                'company'              => 'ACME co.',
-                'email'                => 'rob@tables.com',
-                'phone_number'         => '+31 (0)234 567 890',
-            ],
-            'return_address'  => [
-                'street_1'             => 'Diagonally',
-                'street_2'             => 'Apartment 1',
-                'street_number'        => '4',
-                'street_number_suffix' => 'A',
-                'postal_code'          => '1AR BR2',
-                'city'                 => 'London',
-                'region_code'          => 'NH',
-                'country_code'         => 'AF',
-                'first_name'           => 'Robert',
-                'last_name'            => 'Drop Tables',
-                'company'              => 'ACME co.',
-                'email'                => 'rob@tables.com',
-                'phone_number'         => '+31 (0)234 567 890',
-            ],
-        ]);
-
-        $this->assertInstanceOf(ShopInterface::class, $shop);
-        $this->assertEquals([
+        $shopProperties = [
             'type'       => 'shops',
             'attributes' => [
                 'name'            => 'MyParcel.com Test Shop',
@@ -1005,7 +703,13 @@ class ResourceFactoryTest extends TestCase
                     'phone_number'         => '+31 (0)234 567 890',
                 ],
             ],
-        ], $shop->jsonSerialize());
+        ];
+
+        $resourceFactory = new ResourceFactory();
+        $shop = $resourceFactory->create('shops', $shopProperties);
+
+        $this->assertInstanceOf(ShopInterface::class, $shop);
+        $this->assertEquals($shopProperties, $shop->jsonSerialize());
     }
 
     /** @test */
@@ -1023,34 +727,7 @@ class ResourceFactoryTest extends TestCase
     /** @test */
     public function testCreateFile()
     {
-        // Mock a response from the http client.
-        $api = $this->getMockBuilder(MyParcelComApiInterface::class)
-            ->disableOriginalConstructor()
-            ->disableOriginalClone()
-            ->disableArgumentCloning()
-            ->disallowMockingUnknownTypes()
-            ->getMock();
-
-        $resourceFactory = (new ResourceFactory())
-            ->setMyParcelComApi($api);
-
-        $file = $resourceFactory->create('files', [
-            'id'            => 'file-id',
-            'document_type' => 'label',
-            'formats'       => [
-                [
-                    'extension' => 'pdf',
-                    'mime_type' => 'application/pdf',
-                ],
-                [
-                    'extension' => 'png',
-                    'mime_type' => 'image/png',
-                ],
-            ],
-        ]);
-
-        $this->assertInstanceOf(FileInterface::class, $file);
-        $this->assertEquals([
+        $fileProperties = [
             'id'         => 'file-id',
             'type'       => 'files',
             'attributes' => [
@@ -1066,6 +743,22 @@ class ResourceFactoryTest extends TestCase
                     ],
                 ],
             ],
-        ], $file->jsonSerialize());
+        ];
+
+        // Mock a response from the http client.
+        $api = $this->getMockBuilder(MyParcelComApiInterface::class)
+            ->disableOriginalConstructor()
+            ->disableOriginalClone()
+            ->disableArgumentCloning()
+            ->disallowMockingUnknownTypes()
+            ->getMock();
+
+        $resourceFactory = (new ResourceFactory())
+            ->setMyParcelComApi($api);
+
+        $file = $resourceFactory->create('files', $fileProperties);
+
+        $this->assertInstanceOf(FileInterface::class, $file);
+        $this->assertEquals($fileProperties, $file->jsonSerialize());
     }
 }
