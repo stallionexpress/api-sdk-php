@@ -68,6 +68,25 @@ class StatusProxy implements StatusInterface, ResourceProxyInterface
     }
 
     /**
+     * @param string $resourceType
+     * @return $this
+     */
+    public function setResourceType($resourceType)
+    {
+        $this->getResource()->setResourceType($resourceType);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getResourceType()
+    {
+        return $this->getResource()->getResourceType();
+    }
+
+    /**
      * @param string $level
      * @return $this
      */

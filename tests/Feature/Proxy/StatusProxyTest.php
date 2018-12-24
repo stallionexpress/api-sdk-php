@@ -47,6 +47,7 @@ class StatusProxyTest extends TestCase
         $this->assertEquals('Sketch', $this->statusProxy->setName('Sketch')->getName());
         $this->assertEquals('A sketch of a parcel', $this->statusProxy->setDescription('A sketch of a parcel')->getDescription());
         $this->assertEquals('parcel-sketch', $this->statusProxy->setCode('parcel-sketch')->getCode());
+        $this->assertEquals('shipments', $this->statusProxy->setResourceType('shipments')->getResourceType());
         $this->assertEquals('concept', $this->statusProxy->setLevel('concept')->getLevel());
         $this->assertEquals('an-id-for-a-status', $this->statusProxy->setId('an-id-for-a-status')->getId());
     }
@@ -57,6 +58,7 @@ class StatusProxyTest extends TestCase
         $this->assertEquals('status-id-1', $this->statusProxy->getId());
         $this->assertEquals(ResourceInterface::TYPE_STATUS, $this->statusProxy->getType());
         $this->assertEquals('shipment-delivered', $this->statusProxy->getCode());
+        $this->assertEquals('shipments', $this->statusProxy->getResourceType());
         $this->assertEquals('success', $this->statusProxy->getLevel());
         $this->assertEquals('Delivered', $this->statusProxy->getName());
         $this->assertEquals('The shipment has been delivered', $this->statusProxy->getDescription());
@@ -73,6 +75,7 @@ class StatusProxyTest extends TestCase
             ->setId('status-id-1');
         $firstProxy->getName();
         $firstProxy->getLevel();
+        $firstProxy->getResourceType();
         $firstProxy->getCode();
 
         $this->assertEquals(1, $this->clientCalls['https://api/statuses/status-id-1']);
