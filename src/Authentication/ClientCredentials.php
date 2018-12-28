@@ -3,9 +3,10 @@
 namespace MyParcelCom\ApiSdk\Authentication;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Exception\RequestException;
+
+use MyParcelCom\ApiSdk\Http\Exceptions\RequestException;
 use GuzzleHttp\RequestOptions;
+use MyParcelCom\ApiSdk\Http\Contracts\HttpClient\ClientInterface;
 use MyParcelCom\ApiSdk\Exceptions\AuthenticationException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\SimpleCache\CacheInterface;

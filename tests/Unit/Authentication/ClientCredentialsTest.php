@@ -2,15 +2,14 @@
 
 namespace MyParcelCom\ApiSdk\Tests\Unit\Authentication;
 
-use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Promise\RejectedPromise;
+use MyParcelCom\ApiSdk\Http\Contracts\HttpClient\ClientInterface;
+use MyParcelCom\ApiSdk\Http\Exceptions\RequestException;
 use GuzzleHttp\Psr7\Request;
 use MyParcelCom\ApiSdk\Authentication\ClientCredentials;
 use MyParcelCom\ApiSdk\Exceptions\AuthenticationException;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use function GuzzleHttp\Promise\promise_for;
 use function GuzzleHttp\Psr7\parse_response;
 
 class ClientCredentialsTest extends TestCase
@@ -55,12 +54,14 @@ class ClientCredentialsTest extends TestCase
             ->disallowMockingUnknownTypes()
             ->getMock();
         // Check that if an async request is done, that the correct values are used.
-        $this->httpClient->method('requestAsync')
-            ->willReturnCallback(function ($method, $path, $options) {
+        $this->httpClient->method('sendRequest')
+            ->willReturnCallback(function (RequestInterface $request) {
+                $method = strtolower($request->getMethod());
+                $path = urldecode((string)$request->getUri());
+                $jsonBody = $request->getBody()->getContents();
+
                 if ($this->response->getStatusCode() >= 400) {
-                    return new RejectedPromise(
-                        new RequestException('Oops', new Request($method, $path), $this->response)
-                    );
+                    throw new RequestException(new Request($method, $path), $this->response);
                 }
 
                 $this->assertEquals(
@@ -80,59 +81,10 @@ class ClientCredentialsTest extends TestCase
                     'client_secret' => 'shhh-dont-tell-anyone',
                     'scope'         => ClientCredentials::SCOPES,
                 ];
-                if (isset($options['body'])) {
-                    $this->assertEquals(
-                        json_encode($expectedJson),
-                        $options['body'],
-                        'Request body did not contain required json fields'
-                    );
-                } elseif (isset($options['json'])) {
+                if (isset($jsonBody)) {
                     $this->assertEquals(
                         $expectedJson,
-                        $options['json'],
-                        'Request body did not contain required json fields'
-                    );
-                }
-
-                // Wait for a bit to simulate request delay.
-                usleep($this->delay);
-
-                return promise_for($this->response);
-            });
-        // Check that if a normal request is done, that the correct values are used
-        $this->httpClient->method('request')
-            ->willReturnCallback(function ($method, $path, $options) {
-                if ($this->response->getStatusCode() >= 400) {
-                    throw new RequestException('Oops', new Request($method, $path), $this->response);
-                }
-
-                $this->assertEquals(
-                    'POST',
-                    strtoupper($method),
-                    'Post method should be used when trying to request an access token'
-                );
-                $this->assertEquals(
-                    'https://auth.myparcel.com/access-token',
-                    strtolower($path),
-                    'Requested path should match set uri followed by `/access-token`'
-                );
-
-                $expectedJson = [
-                    'grant_type'    => 'client_credentials',
-                    'client_id'     => 'client-id',
-                    'client_secret' => 'shhh-dont-tell-anyone',
-                    'scope'         => ClientCredentials::SCOPES,
-                ];
-                if (isset($options['body'])) {
-                    $this->assertEquals(
-                        json_encode($expectedJson),
-                        $options['body'],
-                        'Request body did not contain required json fields'
-                    );
-                } elseif (isset($options['json'])) {
-                    $this->assertEquals(
-                        $expectedJson,
-                        $options['json'],
+                        $jsonBody,
                         'Request body did not contain required json fields'
                     );
                 }

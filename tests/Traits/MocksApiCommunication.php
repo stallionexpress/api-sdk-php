@@ -2,13 +2,12 @@
 
 namespace MyParcelCom\ApiSdk\Tests\Traits;
 
-use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Promise\RejectedPromise;
+use MyParcelCom\ApiSdk\Http\Exceptions\RequestException;
+use MyParcelCom\ApiSdk\Http\Contracts\HttpClient\ClientInterface;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
-use function GuzzleHttp\Promise\promise_for;
+use Psr\Http\Message\RequestInterface;
 
 trait MocksApiCommunication
 {
@@ -23,8 +22,12 @@ trait MocksApiCommunication
             ->disallowMockingUnknownTypes()
             ->getMock();
         $client
-            ->method('requestAsync')
-            ->willReturnCallback(function ($method, $uri, $options) {
+            ->method('sendRequest')
+            ->willReturnCallback(function (RequestInterface $request) {
+                $method = strtolower($request->getMethod());
+                $uri = urldecode((string)$request->getUri());
+                $jsonBody = $request->getBody()->getContents();
+
                 $filePath = implode(DIRECTORY_SEPARATOR, [
                         dirname(dirname(__FILE__)),
                         'Stubs',
@@ -38,6 +41,8 @@ trait MocksApiCommunication
                                 $uri
                             )),
                     ]) . '.json';
+
+                $filePath = urldecode($filePath);
 
                 if (strpos($filePath, 'stream') !== false) {
                     $filePath = preg_replace('/.json/', '.txt', $filePath);
@@ -56,14 +61,14 @@ trait MocksApiCommunication
                     // Any post will have the data from the stub added to the
                     // original request. This simulates the api creating the
                     // resource and returning it with added attributes.
-                    $returnJson = \GuzzleHttp\json_encode(
+                    $returnJson = json_encode(
                         array_merge_recursive(
-                            \GuzzleHttp\json_decode($returnJson, true),
+                            json_decode($returnJson, true),
                             // You may wonder why we would encode and then
                             // decode this, but it is possible that the json in
                             // the options array is not an associative array,
                             // which we need to be able to merge.
-                            \GuzzleHttp\json_decode(\GuzzleHttp\json_encode($options['json']), true)
+                            json_decode(json_encode($jsonBody), true)
                         )
                     );
                 }
@@ -71,20 +76,20 @@ trait MocksApiCommunication
                     // Any patch will have the data from the stub merged with the
                     // original request data. This simulates the api updating the
                     // resource and returning it with merged attributes.
-                    $returnJson = \GuzzleHttp\json_encode(
+                    $returnJson = json_encode(
                         array_replace_recursive(
-                            \GuzzleHttp\json_decode($returnJson, true),
-                            \GuzzleHttp\json_decode(\GuzzleHttp\json_encode($options['json']), true)
+                            json_decode($returnJson, true),
+                            json_decode(json_encode($jsonBody), true)
                         )
                     );
                 }
 
                 if (strpos($returnJson, '"errors": [') !== false && strpos($returnJson, '"data": ') === false) {
-                    return new RejectedPromise(new RequestException(
+                    throw new RequestException(
                         'This carrier does not have any pickup and dropoff locations.',
                         new Request($method, $uri),
                         new Response(500, [], $returnJson)
-                    ));
+                    );
                 }
 
                 $response = new Response(200, [], $returnJson);
@@ -94,7 +99,7 @@ trait MocksApiCommunication
                 }
                 $this->clientCalls[$uri]++;
 
-                return promise_for($response);
+                return $response;
             });
 
         return $client;

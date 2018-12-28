@@ -2,7 +2,7 @@
 
 namespace MyParcelCom\ApiSdk\Tests\Feature\Proxy;
 
-use GuzzleHttp\ClientInterface;
+use MyParcelCom\ApiSdk\Http\Contracts\HttpClient\ClientInterface;
 use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
 use MyParcelCom\ApiSdk\MyParcelComApi;
 use MyParcelCom\ApiSdk\MyParcelComApiInterface;
@@ -32,7 +32,7 @@ class ContractProxyTest extends TestCase
 
         $this->client = $this->getClientMock();
         $this->authenticator = $this->getAuthenticatorMock();
-        $this->api = (new MyParcelComApi('https://api'))
+        $this->api = (new MyParcelComApi($this->client, 'https://api'))
             ->setCache(new NullCache())
             ->setHttpClient($this->client)
             ->authenticate($this->authenticator);
