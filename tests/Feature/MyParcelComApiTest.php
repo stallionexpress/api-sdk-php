@@ -60,7 +60,7 @@ class MyParcelComApiTest extends TestCase
     /** @test */
     public function testAuthenticate()
     {
-        $api = new MyParcelComApi();
+        $api = new MyParcelComApi($this->client);
 
         $this->assertEquals(
             $api,

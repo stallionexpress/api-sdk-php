@@ -2,18 +2,20 @@
 
 namespace MyParcelCom\ApiSdk\Authentication;
 
-use GuzzleHttp\Client;
-
+use GuzzleHttp\Psr7\Request;
 use MyParcelCom\ApiSdk\Http\Exceptions\RequestException;
 use GuzzleHttp\RequestOptions;
 use MyParcelCom\ApiSdk\Http\Contracts\HttpClient\ClientInterface;
 use MyParcelCom\ApiSdk\Exceptions\AuthenticationException;
+use MyParcelCom\ApiSdk\Traits\DetectsExistingHttpClient;
 use Psr\Http\Message\ResponseInterface;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Cache\Simple\FilesystemCache;
 
 class ClientCredentials implements AuthenticatorInterface
 {
+    use DetectsExistingHttpClient;
+
     const CACHE_TOKEN = 'auth.token';
     const CACHE_AUTHENTICATING = 'auth.lock';
     const PATH_ACCESS_TOKEN = '/access-token';
@@ -104,19 +106,25 @@ class ClientCredentials implements AuthenticatorInterface
     {
         $this->setAuthenticating();
 
-        return $this->getHttpClient()->requestAsync(
+        $body = json_encode([
+            'grant_type'    => self::GRANT_CLIENT_CREDENTIALS,
+            'client_id'     => $this->clientId,
+            'client_secret' => $this->clientSecret,
+            'scope'         => self::SCOPES,
+        ]);
+
+        $request = new Request(
             'post',
             $this->authUri . self::PATH_ACCESS_TOKEN,
             [
-                RequestOptions::JSON => [
-                    'grant_type'    => self::GRANT_CLIENT_CREDENTIALS,
-                    'client_id'     => $this->clientId,
-                    'client_secret' => $this->clientSecret,
-                    'scope'         => self::SCOPES,
-                ],
-            ]
-        )->then(function (ResponseInterface $response) {
-            $data = \GuzzleHttp\json_decode((string)$response->getBody(), true);
+                self::HEADER_ACCEPT => self::MIME_TYPE_JSONAPI
+            ],
+            $body
+        );
+
+        try {
+            $response = $this->getHttpClient()->sendRequest($request);
+            $data = json_decode((string)$response->getBody(), true);
 
             $header = [
                 self::HEADER_AUTH => $data['token_type'] . ' ' . $data['access_token'],
@@ -125,11 +133,15 @@ class ClientCredentials implements AuthenticatorInterface
             $this->setAuthenticating(false);
             $this->setCachedHeader($header, $data['expires_in']);
 
+            if ($response->getStatusCode() !== 200) {
+                throw new RequestException($request, $response);
+            }
+
             return $header;
-        }, function (RequestException $reason) {
+        } catch (RequestException $exception) {
             $this->setAuthenticating(false);
-            $this->handleRequestException($reason);
-        })->wait();
+            $this->handleRequestException($exception);
+        }
     }
 
     /**
@@ -190,7 +202,7 @@ class ClientCredentials implements AuthenticatorInterface
     protected function getHttpClient()
     {
         if (!isset($this->httpClient)) {
-            $this->httpClient = new Client();
+            $this->httpClient = $this->detectExistingHttpClient();
         }
 
         return $this->httpClient;

@@ -86,7 +86,6 @@ trait MocksApiCommunication
 
                 if (strpos($returnJson, '"errors": [') !== false && strpos($returnJson, '"data": ') === false) {
                     throw new RequestException(
-                        'This carrier does not have any pickup and dropoff locations.',
                         new Request($method, $uri),
                         new Response(500, [], $returnJson)
                     );

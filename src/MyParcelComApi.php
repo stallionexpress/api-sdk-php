@@ -23,6 +23,7 @@ use MyParcelCom\ApiSdk\Resources\ResourceFactory;
 use MyParcelCom\ApiSdk\Resources\Service;
 use MyParcelCom\ApiSdk\Shipments\PriceCalculator;
 use MyParcelCom\ApiSdk\Shipments\ServiceMatcher;
+use MyParcelCom\ApiSdk\Traits\DetectsExistingHttpClient;
 use MyParcelCom\ApiSdk\Utils\UrlBuilder;
 use MyParcelCom\ApiSdk\Validators\ShipmentValidator;
 use MyParcelCom\ApiSdk\Http\Contracts\HttpClient\RequestExceptionInterface;
@@ -35,6 +36,8 @@ use function GuzzleHttp\Psr7\str;
 
 class MyParcelComApi implements MyParcelComApiInterface
 {
+    use DetectsExistingHttpClient;
+
     /** @var string */
     protected $apiUri;
 
@@ -105,7 +108,7 @@ class MyParcelComApi implements MyParcelComApiInterface
         ResourceFactoryInterface $resourceFactory = null
     ) {
         if ($httpClient === null) {
-            $httpClient = $this->findExistingHttpClient();
+            $httpClient = $this->detectExistingHttpClient();
         }
 
         $this
@@ -119,42 +122,6 @@ class MyParcelComApi implements MyParcelComApiInterface
 
         // Either use the given resource factory or instantiate a new one.
         $this->setResourceFactory($resourceFactory ?: new ResourceFactory());
-    }
-
-    /**
-     * @return ClientInterface
-     * @throws MissingHttpClientAdapterException
-     */
-    private function findExistingHttpClient()
-    {
-        if (class_exists('GuzzleHttp\Client')) {
-            // The BatchResults class was removed in Guzzle 6, so
-            // we assume we're at Guzzle 5
-            if (class_exists('GuzzleHttp\BatchResults')) {
-                // Return guzzle 5 adapter
-                if (!class_exists('Http\Adapter\Guzzle5\Client')) {
-                    throw new MissingHttpClientAdapterException('Missing cURL client package. Run `composer require php-http/guzzle5-adapter`.');
-                }
-
-                return new Http\Adapter\Guzzle5\Client();
-            }
-
-            // Otherwise return guzzle 6 adapter
-            if (!class_exists('Http\Adapter\Guzzle6\Client')) {
-                throw new MissingHttpClientAdapterException('Missing cURL client package. Run `composer require php-http/guzzle6-adapter`.');
-            }
-
-            return new Http\Adapter\Guzzle6\Client();
-        }
-
-        if (function_exists('curl_version')) {
-            // Return Curl client
-            if (!class_exists('Http\Client\Curl\Client')) {
-                throw new MissingHttpClientAdapterException('Missing cURL client package. Run `composer require php-http/curl-client`.');
-            }
-
-            return new Http\Client\Curl\Client();
-        }
     }
 
     /**
@@ -852,7 +819,7 @@ class MyParcelComApi implements MyParcelComApiInterface
         $response = $this->doRequest(
             $this->getResourceUri($resource->getType(), $resource->getId()),
             $method,
-            json_encode(['data' => $resource]),
+            ['data' => $resource],
             $this->authenticator->getAuthorizationHeader() + [
                 AuthenticatorInterface::HEADER_ACCEPT => AuthenticatorInterface::MIME_TYPE_JSONAPI,
             ]

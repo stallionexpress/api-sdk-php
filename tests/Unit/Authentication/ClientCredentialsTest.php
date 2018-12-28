@@ -58,7 +58,7 @@ class ClientCredentialsTest extends TestCase
             ->willReturnCallback(function (RequestInterface $request) {
                 $method = strtolower($request->getMethod());
                 $path = urldecode((string)$request->getUri());
-                $jsonBody = $request->getBody()->getContents();
+                $jsonBody = json_decode($request->getBody()->getContents(), true);
 
                 if ($this->response->getStatusCode() >= 400) {
                     throw new RequestException(new Request($method, $path), $this->response);
@@ -81,6 +81,7 @@ class ClientCredentialsTest extends TestCase
                     'client_secret' => 'shhh-dont-tell-anyone',
                     'scope'         => ClientCredentials::SCOPES,
                 ];
+
                 if (isset($jsonBody)) {
                     $this->assertEquals(
                         $expectedJson,
