@@ -3,11 +3,12 @@
 namespace MyParcelCom\ApiSdk;
 
 use GuzzleHttp\Psr7\Request;
+use MyParcelCom\ApiSdk\Exceptions\MissingHttpClientAdapterException;
 use MyParcelCom\ApiSdk\Http\Contracts\HttpClient\ClientInterface;
 use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
 use MyParcelCom\ApiSdk\Collection\ArrayCollection;
 use MyParcelCom\ApiSdk\Collection\CollectionInterface;
-use MyParcelCom\ApiSdk\Collection\PromiseCollection;
+use MyParcelCom\ApiSdk\Collection\RequestCollection;
 use MyParcelCom\ApiSdk\Exceptions\InvalidResourceException;
 use MyParcelCom\ApiSdk\Http\Exceptions\RequestException;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
@@ -60,7 +61,7 @@ class MyParcelComApi implements MyParcelComApiInterface
      * subsequent calls to `getSingleton()`.
      *
      * @param AuthenticatorInterface        $authenticator
-     * @param ClientInterface               $httpClient
+     * @param ClientInterface|null          $httpClient
      * @param string                        $apiUri
      * @param CacheInterface|null           $cache
      * @param ResourceFactoryInterface|null $resourceFactory
@@ -68,7 +69,7 @@ class MyParcelComApi implements MyParcelComApiInterface
      */
     public static function createSingleton(
         AuthenticatorInterface $authenticator,
-        ClientInterface $httpClient,
+        ClientInterface $httpClient = null,
         $apiUri = 'https://sandbox-api.myparcel.com',
         CacheInterface $cache = null,
         ResourceFactoryInterface $resourceFactory = null
@@ -92,17 +93,21 @@ class MyParcelComApi implements MyParcelComApiInterface
      * filesystem is used for caching. If no resource factory is given, the
      * default factory is used.
      *
-     * @param ClientInterface               $httpClient
+     * @param ClientInterface|null          $httpClient
      * @param string                        $apiUri
      * @param CacheInterface|null           $cache
      * @param ResourceFactoryInterface|null $resourceFactory
      */
     public function __construct(
-        ClientInterface $httpClient,
+        ClientInterface $httpClient = null,
         $apiUri = 'https://sandbox-api.myparcel.com',
         CacheInterface $cache = null,
         ResourceFactoryInterface $resourceFactory = null
     ) {
+        if ($httpClient === null) {
+            $httpClient = $this->findExistingHttpClient();
+        }
+
         $this
             ->setHttpClient($httpClient)
             ->setApiUri($apiUri);
@@ -114,6 +119,42 @@ class MyParcelComApi implements MyParcelComApiInterface
 
         // Either use the given resource factory or instantiate a new one.
         $this->setResourceFactory($resourceFactory ?: new ResourceFactory());
+    }
+
+    /**
+     * @return ClientInterface
+     * @throws MissingHttpClientAdapterException
+     */
+    private function findExistingHttpClient()
+    {
+        if (class_exists('GuzzleHttp\Client')) {
+            // The BatchResults class was removed in Guzzle 6, so
+            // we assume we're at Guzzle 5
+            if (class_exists('GuzzleHttp\BatchResults')) {
+                // Return guzzle 5 adapter
+                if (!class_exists('Http\Adapter\Guzzle5\Client')) {
+                    throw new MissingHttpClientAdapterException('Missing cURL client package. Run `composer require php-http/guzzle5-adapter`.');
+                }
+
+                return new Http\Adapter\Guzzle5\Client();
+            }
+
+            // Otherwise return guzzle 6 adapter
+            if (!class_exists('Http\Adapter\Guzzle6\Client')) {
+                throw new MissingHttpClientAdapterException('Missing cURL client package. Run `composer require php-http/guzzle6-adapter`.');
+            }
+
+            return new Http\Adapter\Guzzle6\Client();
+        }
+
+        if (function_exists('curl_version')) {
+            // Return Curl client
+            if (!class_exists('Http\Client\Curl\Client')) {
+                throw new MissingHttpClientAdapterException('Missing cURL client package. Run `composer require php-http/curl-client`.');
+            }
+
+            return new Http\Client\Curl\Client();
+        }
     }
 
     /**
@@ -141,7 +182,7 @@ class MyParcelComApi implements MyParcelComApiInterface
         }
 
         // These resources can be stored for a week.
-        $regions = $this->getResourceCollection($url->getUrl(), self::TTL_WEEK);
+        $regions = $this->getRequestCollection($url->getUrl(), self::TTL_WEEK);
 
         if ($regions->count() > 0 || $regionCode === null) {
             return $regions;
@@ -150,7 +191,7 @@ class MyParcelComApi implements MyParcelComApiInterface
         // Fallback to the country if the specific region is not in the API.
         $url->addQuery(['filter[region_code]' => null]);
 
-        return $this->getResourceCollection($url->getUrl(), self::TTL_WEEK);
+        return $this->getRequestCollection($url->getUrl(), self::TTL_WEEK);
     }
 
     /**
@@ -159,7 +200,7 @@ class MyParcelComApi implements MyParcelComApiInterface
     public function getCarriers()
     {
         // These resources can be stored for a week.
-        return $this->getResourceCollection($this->apiUri . self::PATH_CARRIERS, self::TTL_WEEK);
+        return $this->getRequestCollection($this->apiUri . self::PATH_CARRIERS, self::TTL_WEEK);
     }
 
     /**
@@ -222,7 +263,7 @@ class MyParcelComApi implements MyParcelComApiInterface
     {
         // These resources can be stored for a week. Or should be removed from
         // cache when updated
-        return $this->getResourceCollection($this->apiUri . self::PATH_SHOPS, self::TTL_WEEK);
+        return $this->getRequestCollection($this->apiUri . self::PATH_SHOPS, self::TTL_WEEK);
     }
 
     /**
@@ -249,7 +290,7 @@ class MyParcelComApi implements MyParcelComApiInterface
         $url->addQuery($this->arrayToFilter($filters));
 
         if ($shipment === null) {
-            return $this->getResourceCollection($url->getUrl(), self::TTL_WEEK);
+            return $this->getRequestCollection($url->getUrl(), self::TTL_WEEK);
         }
 
         if ($shipment->getSenderAddress() === null) {
@@ -299,7 +340,7 @@ class MyParcelComApi implements MyParcelComApiInterface
         $url = new UrlBuilder($this->apiUri . self::PATH_SERVICES);
         $url->addQuery(['filter[carrier]' => $carrier->getId()]);
 
-        return $this->getResourceCollection($url->getUrl(), self::TTL_WEEK);
+        return $this->getRequestCollection($url->getUrl(), self::TTL_WEEK);
     }
 
     /**
@@ -310,7 +351,7 @@ class MyParcelComApi implements MyParcelComApiInterface
         $url = new UrlBuilder($this->apiUri . self::PATH_SERVICE_RATES);
         $url->addQuery($this->arrayToFilter($filters));
 
-        return $this->getResourceCollection($url->getUrl(), self::TTL_WEEK);
+        return $this->getRequestCollection($url->getUrl(), self::TTL_WEEK);
     }
 
     /**
@@ -330,7 +371,7 @@ class MyParcelComApi implements MyParcelComApiInterface
             'filter[service]' => implode(',', $serviceIds),
         ]);
 
-        $serviceRates = $this->getResourceCollection($url->getUrl(), self::TTL_WEEK);
+        $serviceRates = $this->getRequestCollection($url->getUrl(), self::TTL_WEEK);
 
         $shipmentOptionIds = array_map(function (ServiceOptionInterface $serviceOption) {
             return $serviceOption->getId();
@@ -361,7 +402,7 @@ class MyParcelComApi implements MyParcelComApiInterface
             $url->addQuery(['filter[shop]' => $shop->getId()]);
         }
 
-        return $this->getResourceCollection($url->getUrl(), self::TTL_WEEK);
+        return $this->getRequestCollection($url->getUrl(), self::TTL_WEEK);
     }
 
     /**
@@ -629,17 +670,13 @@ class MyParcelComApi implements MyParcelComApiInterface
      * A time-to-live can be specified for how long this request
      * should be cached (defaults to 10 minutes).
      *
-     * TODO: Refactor this removing promise collection
-     * TODO: We can rename the promise collection to request collection and ensure the
-     * request collection no longer uses promises in retrieveResources()
-     *
      * @param string $uri
      * @param int    $ttl
      * @return CollectionInterface
      */
-    protected function getResourceCollection($uri, $ttl = self::TTL_10MIN)
+    protected function getRequestCollection($uri, $ttl = self::TTL_10MIN)
     {
-        return new PromiseCollection(function ($pageNumber, $pageSize) use ($uri, $ttl) {
+        return new RequestCollection(function ($pageNumber, $pageSize) use ($uri, $ttl) {
             $url = (new UrlBuilder($uri))->addQuery([
                 'page[number]' => $pageNumber,
                 'page[size]'   => $pageSize,

@@ -32,5 +32,10 @@
   },
   "config": {
     "preferred-install": "dist"
+  },
+  "suggest": {
+    "php-http/guzzle5-adapter": "Install this package if Guzzle 5 is available in the application.",
+    "php-http/guzzle6-adapter": "Install this package if Guzzle 6 is available in the application.",
+    "php-http/curl-client": "Install this package if Guzzle is not available in the application, but curl is."
   }
 }

@@ -41,20 +41,17 @@ class FileStreamProxy implements StreamInterface
             return $this->stream;
         }
 
-        return $this->stream = $this->api->doRequest(
+        $response = $this->api->doRequest(
             str_replace('{file_id}', $this->id, MyParcelComApiInterface::PATH_FILES_ID),
             'get',
             [],
             ['Accept' => $this->mimeType],
             MyParcelComApiInterface::TTL_MONTH
-        )->then(function (ResponseInterface $response) {
-            // Rewind the internal pointer to the start of the body. This
-            // prevents us from having to rewind the stream before we start
-            // using it.
-            $response->getBody()->rewind();
+        );
 
-            return $response->getBody();
-        })->wait();
+        $response->getBody()->rewind();
+
+        return $this->stream = $response->getBody();
     }
 
     /**

@@ -3,9 +3,8 @@
 namespace MyParcelCom\ApiSdk\Collection;
 
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
-use Psr\Http\Message\ResponseInterface;
 
-class PromiseCollection implements CollectionInterface
+class RequestCollection implements CollectionInterface
 {
     /** @var callable */
     protected $promiseCreator;
@@ -94,27 +93,24 @@ class PromiseCollection implements CollectionInterface
      * Retrieve the resources for the given page number and store them
      * in this->resources according to their number.
      *
-     * TODO: Remove then() and wait()
-     *
      * @param int $pageNumber
      * @return void
      */
     private function retrieveResources($pageNumber)
     {
-        call_user_func_array($this->promiseCreator, [$pageNumber, 30])
-            ->then(function (ResponseInterface $response) use ($pageNumber) {
-                $body = \GuzzleHttp\json_decode($response->getBody(), true);
+        $response = call_user_func_array($this->promiseCreator, [$pageNumber, 30]);
 
-                $this->count = $body['meta']['total_records'];
-                $resources = call_user_func($this->resourceCreator, $body['data']);
+        $body = json_decode($response->getBody(), true);
 
-                $resourceNumber = ($pageNumber - 1) * 30;
+        $this->count = $body['meta']['total_records'];
+        $resources = call_user_func($this->resourceCreator, $body['data']);
 
-                array_walk($resources, function ($resource) use ($pageNumber, &$resourceNumber) {
-                    $this->resources[$resourceNumber] = $resource;
-                    $resourceNumber++;
-                });
-            })->wait();
+        $resourceNumber = ($pageNumber - 1) * 30;
+
+        array_walk($resources, function ($resource) use ($pageNumber, &$resourceNumber) {
+            $this->resources[$resourceNumber] = $resource;
+            $resourceNumber++;
+        });
     }
 
     /**
