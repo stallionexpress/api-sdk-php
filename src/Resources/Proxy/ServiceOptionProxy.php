@@ -182,6 +182,12 @@ class ServiceOptionProxy implements ServiceOptionInterface, ResourceProxyInterfa
         unset($values['api']);
         unset($values['uri']);
 
-        return $this->arrayValuesToArray($values);
+        $json = $this->arrayValuesToArray($values);
+
+        if (isset($json['meta']) && $this->isEmpty($json['meta'])) {
+            unset($json['meta']);
+        }
+
+        return $json;
     }
 }

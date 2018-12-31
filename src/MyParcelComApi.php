@@ -708,68 +708,10 @@ class MyParcelComApi implements MyParcelComApiInterface
         }
 
         foreach ($json as $resourceData) {
-            $attributes = $this->flattenResourceData($resourceData);
-
-            $resources[] = $this->resourceFactory->create($resourceData['type'], $attributes);
+            $resources[] = $this->resourceFactory->create($resourceData['type'], $resourceData);
         }
 
         return $resources;
-    }
-
-    /**
-     * Flattens the data of the resource into a single array, effectively
-     * removing the `attributes` and `relationships` arrays.
-     *
-     * @deprecated The flattening of all resource attributes should be in favour
-     *             of having the factories handle it. Which currently is not the
-     *             case.
-     *
-     * @param array $resourceData
-     * @return array
-     */
-    private function flattenResourceData(array $resourceData)
-    {
-        $data = [
-            'id'   => $resourceData['id'],
-            'type' => $resourceData['type'],
-        ];
-
-        if (isset($resourceData['attributes'])) {
-            $data += $resourceData['attributes'];
-        }
-
-        if (isset($resourceData['relationships'])) {
-            $data += array_map(
-                [$this, 'flattenRelationship'],
-                $resourceData['relationships']
-            );
-        }
-
-        if (isset($resourceData['meta'])) {
-            $data['meta'] = $resourceData['meta'];
-        }
-
-        if (isset($resourceData['links'])) {
-            $data['links'] = $resourceData['links'];
-        }
-
-        return $data;
-    }
-
-    /**
-     * @param array $relationship
-     * @return array
-     */
-    private function flattenRelationship(array $relationship)
-    {
-        $data = isset($relationship['data'])
-            ? $relationship['data']
-            : [];
-        $links = isset($relationship['links'])
-            ? $relationship['links']
-            : [];
-
-        return $data + $links;
     }
 
     /**

@@ -42,6 +42,9 @@ use ReflectionParameter;
 
 class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterface
 {
+    /** @var MyParcelComApiInterface */
+    protected $api;
+
     /**
      * Mapping of resource types and interface to concrete implementation.
      * Note that resources with a defined resource factory are not included here.
@@ -49,45 +52,60 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
      * @var array
      */
     private $typeFactory = [
-        ResourceInterface::TYPE_CARRIER        => Carrier::class,
-        ResourceInterface::TYPE_SERVICE_OPTION => ServiceOption::class,
-        ResourceInterface::TYPE_SHOP           => Shop::class,
-        ResourceInterface::TYPE_STATUS         => Status::class,
+        ResourceInterface::TYPE_CARRIER         => Carrier::class,
+        ResourceInterface::TYPE_CONTRACT        => Contract::class,
+        ResourceInterface::TYPE_PUDO_LOCATION   => PickUpDropOffLocation::class,
+        ResourceInterface::TYPE_REGION          => Region::class,
+        ResourceInterface::TYPE_SERVICE_OPTION  => ServiceOption::class,
+        ResourceInterface::TYPE_SHIPMENT_STATUS => ShipmentStatus::class,
+        ResourceInterface::TYPE_SHOP            => Shop::class,
+        ResourceInterface::TYPE_STATUS          => Status::class,
 
-        AddressInterface::class            => Address::class,
-        CarrierInterface::class            => Carrier::class,
-        CustomsInterface::class            => Customs::class,
-        OpeningHourInterface::class        => OpeningHour::class,
-        PhysicalPropertiesInterface::class => PhysicalProperties::class,
-        PositionInterface::class           => Position::class,
-        ServiceOptionInterface::class      => ServiceOption::class,
-        ShopInterface::class               => Shop::class,
-        StatusInterface::class             => Status::class,
+        AddressInterface::class               => Address::class,
+        CarrierInterface::class               => Carrier::class,
+        ContractInterface::class              => Contract::class,
+        CustomsInterface::class               => Customs::class,
+        OpeningHourInterface::class           => OpeningHour::class,
+        PhysicalPropertiesInterface::class    => PhysicalProperties::class,
+        PositionInterface::class              => Position::class,
+        PickUpDropOffLocationInterface::class => PickUpDropOffLocation::class,
+        RegionInterface::class                => Region::class,
+        ServiceOptionInterface::class         => ServiceOption::class,
+        ShipmentStatusInterface::class        => ShipmentStatus::class,
+        ShopInterface::class                  => Shop::class,
+        StatusInterface::class                => Status::class,
     ];
 
-    /** @var MyParcelComApiInterface */
-    protected $api;
+    /**
+     * Mapping of resource types to proxies. These are mainly used to proxy
+     * resources that are part of relationships.
+     *
+     * @var array
+     */
+    private $proxies = [
+        ResourceInterface::TYPE_CARRIER         => CarrierProxy::class,
+        ResourceInterface::TYPE_CONTRACT        => ContractProxy::class,
+        ResourceInterface::TYPE_FILE            => FileProxy::class,
+        ResourceInterface::TYPE_REGION          => RegionProxy::class,
+        ResourceInterface::TYPE_SERVICE         => ServiceProxy::class,
+        ResourceInterface::TYPE_SERVICE_OPTION  => ServiceOptionProxy::class,
+        ResourceInterface::TYPE_SHIPMENT        => ShipmentProxy::class,
+        ResourceInterface::TYPE_SHIPMENT_STATUS => ShipmentStatusProxy::class,
+        ResourceInterface::TYPE_SHOP            => ShopProxy::class,
+        ResourceInterface::TYPE_STATUS          => StatusProxy::class,
+
+    ];
 
     public function __construct()
     {
-        $contractFactory = [$this, 'contractFactory'];
         $shipmentFactory = [$this, 'shipmentFactory'];
-        $shipmentStatusFactory = [$this, 'shipmentStatusFactory'];
         $serviceFactory = [$this, 'serviceFactory'];
         $serviceRateFactory = [$this, 'serviceRateFactory'];
         $fileFactory = [$this, 'fileFactory'];
         $shipmentItemFactory = [$this, 'shipmentItemFactory'];
-        $pudoLocationFactory = [$this, 'pudoLocationFactory'];
-        $regionFactory = [$this, 'regionFactory'];
-
-        $this->setFactoryForType(ResourceInterface::TYPE_CONTRACT, $contractFactory);
-        $this->setFactoryForType(ContractInterface::class, $contractFactory);
 
         $this->setFactoryForType(ResourceInterface::TYPE_SHIPMENT, $shipmentFactory);
         $this->setFactoryForType(ShipmentInterface::class, $shipmentFactory);
-
-        $this->setFactoryForType(ResourceInterface::TYPE_SHIPMENT_STATUS, $shipmentStatusFactory);
-        $this->setFactoryForType(ShipmentStatusInterface::class, $shipmentStatusFactory);
 
         $this->setFactoryForType(ResourceInterface::TYPE_SERVICE, $serviceFactory);
         $this->setFactoryForType(ServiceInterface::class, $serviceFactory);
@@ -98,13 +116,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         $this->setFactoryForType(ResourceInterface::TYPE_FILE, $fileFactory);
         $this->setFactoryForType(FileInterface::class, $fileFactory);
 
-        $this->setFactoryForType(ResourceInterface::TYPE_PUDO_LOCATION, $pudoLocationFactory);
-        $this->setFactoryForType(PickUpDropOffLocationInterface::class, $pudoLocationFactory);
-
         $this->setFactoryForType(ShipmentItemInterface::class, $shipmentItemFactory);
-
-        $this->setFactoryForType(ResourceInterface::TYPE_REGION, $regionFactory);
-        $this->setFactoryForType(RegionInterface::class, $regionFactory);
     }
 
     /**
@@ -152,92 +164,44 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
     /**
      * Shipment factory method that creates proxies for all relationships.
      *
-     * @param array $attributes
+     * @param array $properties
      * @return Shipment
      */
-    protected function shipmentFactory(array &$attributes)
+    protected function shipmentFactory(array &$properties)
     {
         $shipment = new Shipment();
 
-        if (isset($attributes['files'])) {
-            array_walk($attributes['files'], function ($file) use ($shipment) {
-                if (empty($file['id'])) {
-                    return;
-                }
-
-                $shipment->addFile(
-                    (new FileProxy())->setMyParcelComApi($this->api)->setId($file['id'])
-                );
-            });
-
-            unset($attributes['files']);
-        }
-
-        if (isset($attributes['shop']['id'])) {
-            $shipment->setShop(
-                (new ShopProxy())->setMyParcelComApi($this->api)->setId($attributes['shop']['id'])
-            );
-
-            unset($attributes['shop']);
-        }
-
-        if (isset($attributes['service']['id'])) {
-            $shipment->setService(
-                (new ServiceProxy())->setMyParcelComApi($this->api)->setId($attributes['service']['id'])
-            );
-
-            unset($attributes['service']);
-        }
-
-        if (isset($attributes['contract']['id'])) {
-            $shipment->setContract(
-                (new ContractProxy())->setMyParcelComApi($this->api)->setId($attributes['contract']['id'])
-            );
-
-            unset($attributes['contract']);
-        }
-
-        if (isset($attributes['shipment_status']['related'])) {
-
-            $shipment->setShipmentStatus(
-                (new ShipmentStatusProxy())
-                    ->setId($attributes['shipment_status']['id'])
-                    ->setMyParcelComApi($this->api)
-                    ->setResourceUri($attributes['shipment_status']['related'])
-            );
-
-            unset($attributes['shipment_status']);
-        }
-
-        if (isset($attributes['price']['amount'])) {
-            $shipment->setPrice($attributes['price']['amount']);
-            if (isset($attributes['price']['currency'])) {
-                $shipment->setCurrency($attributes['price']['currency']);
+        if (isset($properties['attributes']['price']['amount'])) {
+            $shipment->setPrice($properties['attributes']['price']['amount']);
+            if (isset($properties['attributes']['price']['currency'])) {
+                $shipment->setCurrency($properties['attributes']['price']['currency']);
             }
 
-            unset($attributes['price']);
+            unset($properties['attributes']['price']);
         }
 
-        if (isset($attributes['pickup_location']['code'])) {
-            $shipment->setPickupLocationCode($attributes['pickup_location']['code']);
+        if (isset($properties['attributes']['pickup_location']['code'])) {
+            $shipment->setPickupLocationCode($properties['attributes']['pickup_location']['code']);
         }
 
-        if (isset($attributes['pickup_location']['address'])) {
+        if (isset($properties['attributes']['pickup_location']['address'])) {
             /** @var AddressInterface $pudoAddress */
             $pudoAddress = $this->create(
                 AddressInterface::class,
-                $attributes['pickup_location']['address']
+                $properties['attributes']['pickup_location']['address']
             );
 
             $shipment->setPickupLocationAddress($pudoAddress);
+
+            unset($properties['attributes']['pickup_location']);
         }
 
-        if (isset($attributes['id'])) {
-            $shipment->setStatusHistoryCallback(function () use ($attributes) {
+        if (isset($properties['id'])) {
+            $shipment->setStatusHistoryCallback(function () use ($properties) {
                 return $this->api->getResourcesFromUri(
                     str_replace(
                         '{shipment_id}',
-                        $attributes['id'],
+                        $properties['id'],
                         MyParcelComApiInterface::PATH_SHIPMENT_STATUSES
                     )
                 );
@@ -279,43 +243,28 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
     /**
      * Service factory method that creates proxies for all relationships.
      *
-     * @param array $attributes
+     * @param array $properties
      * @return Service
      */
-    protected function serviceFactory(array &$attributes)
+    protected function serviceFactory(array &$properties)
     {
         $service = new Service();
 
-        if (isset($attributes['region_from']['id'])) {
-            $service->setRegionFrom(
-                (new RegionProxy())->setMyParcelComApi($this->api)->setId($attributes['region_from']['id'])
-            );
+        if (isset($properties['attributes']['transit_time']['min'])) {
+            $service->setTransitTimeMin($properties['attributes']['transit_time']['min']);
 
-            unset($attributes['region_from']);
-        }
-        if (isset($attributes['region_to']['id'])) {
-            $service->setRegionTo(
-                (new RegionProxy())->setMyParcelComApi($this->api)->setId($attributes['region_to']['id'])
-            );
-
-            unset($attributes['region_to']);
+            unset($properties['attributes']['transit_time']['min']);
         }
 
-        if (isset($attributes['transit_time']['min'])) {
-            $service->setTransitTimeMin($attributes['transit_time']['min']);
+        if (isset($properties['attributes']['transit_time']['max'])) {
+            $service->setTransitTimeMax($properties['attributes']['transit_time']['max']);
 
-            unset($attributes['transit_time']['min']);
+            unset($properties['attributes']['transit_time']['max']);
         }
 
-        if (isset($attributes['transit_time']['max'])) {
-            $service->setTransitTimeMax($attributes['transit_time']['max']);
-
-            unset($attributes['transit_time']['max']);
-        }
-
-        if (isset($attributes['id'])) {
-            $service->setServiceRatesCallback(function (array $filters = []) use ($attributes) {
-                $filters['service'] = $attributes['id'];
+        if (isset($properties['id'])) {
+            $service->setServiceRatesCallback(function (array $filters = []) use ($properties) {
+                $filters['service'] = $properties['id'];
 
                 return $this->api->getServiceRates($filters)->get();
             });
@@ -327,28 +276,28 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
     /**
      * ServiceRate factory method.
      *
-     * @param array $attributes
+     * @param array $properties
      * @return ServiceRate
      */
-    protected function serviceRateFactory(&$attributes)
+    protected function serviceRateFactory(array &$properties)
     {
         $serviceRate = new ServiceRate();
 
-        if (isset($attributes['price']['amount'])) {
-            $serviceRate->setPrice($attributes['price']['amount']);
-            $serviceRate->setCurrency($attributes['price']['currency']);
+        if (isset($properties['attributes']['price']['amount'])) {
+            $serviceRate->setPrice($properties['attributes']['price']['amount']);
+            $serviceRate->setCurrency($properties['attributes']['price']['currency']);
 
-            unset($attributes['price']);
+            unset($properties['attributes']['price']);
         }
 
-        if (isset($attributes['step_price']['amount'])) {
-            $serviceRate->setStepPrice($attributes['step_price']['amount']);
+        if (isset($properties['attributes']['step_price']['amount'])) {
+            $serviceRate->setStepPrice($properties['attributes']['step_price']['amount']);
 
-            unset($attributes['step_price']);
+            unset($properties['attributes']['step_price']);
         }
 
-        if (isset($attributes['service_options'])) {
-            $serviceOptions = $attributes['service_options'];
+        if (isset($properties['relationships']['service_options'])) {
+            $serviceOptions = $properties['relationships']['service_options']['data'];
 
             foreach ($serviceOptions as $serviceOption) {
                 $serviceOptionProxy = (new ServiceOptionProxy())
@@ -368,23 +317,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
                 $serviceRate->addServiceOption($serviceOptionProxy);
             }
 
-            unset($attributes['service_options']);
-        }
-
-        if (isset($attributes['service']['id'])) {
-            $serviceRate->setService(
-                (new ServiceProxy())->setMyParcelComApi($this->api)->setId($attributes['service']['id'])
-            );
-
-            unset($attributes['service']);
-        }
-
-        if (isset($attributes['contract']['id'])) {
-            $serviceRate->setContract(
-                (new ContractProxy())->setMyParcelComApi($this->api)->setId($attributes['contract']['id'])
-            );
-
-            unset($attributes['contract']);
+            unset($properties['relationships']['service_options']);
         }
 
         return $serviceRate;
@@ -394,20 +327,20 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
      * Factory method for creating file resources, adds proxy streams to the
      * file for requesting the file data.
      *
-     * @param $attributes
+     * @param $properties
      * @return File
      */
-    protected function fileFactory(&$attributes)
+    protected function fileFactory(&$properties)
     {
         $file = new File();
 
-        if (!isset($attributes['formats'])) {
+        if (!isset($properties['attributes']['formats'])) {
             return $file;
         }
 
-        array_walk($attributes['formats'], function ($format) use ($file, $attributes) {
+        array_walk($properties['attributes']['formats'], function ($format) use ($file, $properties) {
             $file->setStream(
-                new FileStreamProxy($attributes['id'], $format['mime_type'], $this->api),
+                new FileStreamProxy($properties['id'], $format['mime_type'], $this->api),
                 $format['mime_type']
             );
         });
@@ -436,35 +369,41 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
     }
 
     /**
-     * Factory for creating a region.
-     *
-     * @param $attributes
-     * @return Region
-     */
-    protected function regionFactory(&$attributes)
-    {
-        $region = new Region();
-
-        if (isset($attributes['parent']['id'])) {
-            $region->setParent(
-                (new RegionProxy())->setMyParcelComApi($this->api)->setId($attributes['parent']['id'])
-            );
-
-            unset($attributes['parent']);
-        }
-
-        return $region;
-    }
-
-    /**
      * {@inheritdoc}
      */
-    public function create($type, array $attributes = [])
+    public function create($type, array $properties = [])
     {
-        return $this->hydrate(
-            $this->createResource($type, $attributes),
-            $attributes
-        );
+        $resource = $this->createResource($type, $properties);
+
+        /**
+         * Hydrate the top level properties, this is usually only used for
+         * nested classes (like Address).
+         */
+        $this->hydrate($resource, $properties);
+
+        /**
+         * Hydrate all the resource attributes.
+         */
+        if (!empty($properties['attributes'])) {
+            $this->hydrate($resource, $properties['attributes']);
+        }
+
+        /**
+         * Some resources have extra meta data (eg. pickup-dropoff-locations.meta.distance).
+         * These should hydrate the model as well.
+         */
+        if (!empty($properties['meta'])) {
+            $this->hydrate($resource, $properties['meta']);
+        }
+
+        /**
+         * Most resources have relationships. We will hydrate these with proxies.
+         */
+        if (!empty($properties['relationships'])) {
+            $this->hydrateRelationships($resource, $properties['relationships']);
+        }
+
+        return $resource;
     }
 
     /**
@@ -604,6 +543,67 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
 
             $resource->$setter($value);
         });
+
+        return $resource;
+    }
+
+    /**
+     * Hydrates the given resource with its relationships, uses proxies to
+     * accomplish this.
+     *
+     * @param object $resource
+     * @param array  $relationships
+     * @return object
+     */
+    protected function hydrateRelationships($resource, array $relationships)
+    {
+        foreach ($relationships as $name => $relationship) {
+            // If the relationship is empty, we skip it.
+            if (empty($relationship['data'])) {
+                continue;
+            }
+
+            // If there is no setter for the relationship, we skip it.
+            $setter = 'set' . StringUtils::snakeToPascalCase($name);
+            if (!method_exists($resource, $setter)) {
+                continue;
+            }
+
+            $value = isset($relationship['data']['type'])
+                ? $this->createProxy($relationship['data'])
+                : array_map(function (array $identifier) {
+                    return $this->createProxy($identifier);
+                }, $relationship['data']);
+
+            $resource->$setter($value);
+        }
+
+        return $resource;
+    }
+
+    /**
+     * @param array $identifier
+     * @return object
+     */
+    private function createProxy(array $identifier)
+    {
+        if (empty($identifier['type'])) {
+            throw new ResourceFactoryException('Cannot create proxy, no `type` available in identifier.');
+        }
+        if (empty($identifier['id'])) {
+            throw new ResourceFactoryException('Cannot create proxy, no `id` available in identifier.');
+        }
+        $type = $identifier['type'];
+
+        if (empty($this->proxies[$type])) {
+            throw new ResourceFactoryException("Cannot create proxy, no proxy configured for resource with type `{$type}`.");
+        }
+
+        $resource = new $this->proxies[$type]();
+        if ($resource instanceof ResourceProxyInterface) {
+            $resource->setMyParcelComApi($this->api);
+        }
+        $this->hydrate($resource, $identifier);
 
         return $resource;
     }
