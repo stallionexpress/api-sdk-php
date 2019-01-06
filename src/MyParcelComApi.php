@@ -208,7 +208,20 @@ class MyParcelComApi implements MyParcelComApiInterface
             $carrierUri = str_replace('{carrier_id}', $carrier->getId(), $uri->getUrl());
 
             // These resources can be stored for a week.
-            $resources = $this->getResourcesArray($carrierUri, self::TTL_WEEK);
+            try {
+                $resources = $this->getResourcesArray($carrierUri, self::TTL_WEEK);
+            } catch (RequestException $exception) {
+                // For some reason it is expected that this method throws
+                // an exception when fetching a specific carrier fails, but
+                // when no specific carrier is given, it should treat the
+                // failed response as null.
+                if ($specificCarrier) {
+                    throw $exception;
+                }
+
+                $resources = [];
+            }
+
             if ($specificCarrier) {
                 return new ArrayCollection($resources);
             }
