@@ -56,7 +56,6 @@ trait MocksApiCommunication
                 }
 
                 $returnJson = file_get_contents($filePath);
-                var_dump($filePath, $method);
 
                 if ($method === 'post') {
                     // You may wonder why we would encode and then
