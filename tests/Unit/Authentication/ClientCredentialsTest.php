@@ -45,6 +45,8 @@ class ClientCredentialsTest extends TestCase
                     'access_token' => 'an-access-token-for-the-myparcelcom-api-' . $this->tokenSuffix,
                 ]);
             });
+        $this->response->method('getStatusCode')
+            ->willReturn(200);
 
         // Mock an http client.
         $this->httpClient = $this->getMockBuilder(ClientInterface::class)
@@ -173,26 +175,6 @@ content-type: application/vnd.api+json
         }
 
         $this->assertTrue($exceptionThrown, 'No exception was thrown during authentication with invalid credentials');
-    }
-
-    /** @test */
-    public function testGetAuthorizationHeaderInvalidUri()
-    {
-        $clientCredentials = (new ClientCredentials(
-            'client-id',
-            'shhh-dont-tell-anyone',
-            'https://auth.doesnt.exist'
-        ));
-
-        $exceptionThrown = false;
-        try {
-            $clientCredentials->getAuthorizationHeader(true);
-        } catch (AuthenticationException $exception) {
-            $this->assertEquals(404, $exception->getCode());
-
-            $exceptionThrown = true;
-        }
-        $this->assertTrue($exceptionThrown, 'No exception was thrown during authentication with invalid uri');
     }
 
     /**

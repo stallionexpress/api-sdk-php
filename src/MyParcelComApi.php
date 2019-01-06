@@ -3,7 +3,6 @@
 namespace MyParcelCom\ApiSdk;
 
 use GuzzleHttp\Psr7\Request;
-use MyParcelCom\ApiSdk\Exceptions\MissingHttpClientAdapterException;
 use MyParcelCom\ApiSdk\Http\Contracts\HttpClient\ClientInterface;
 use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
 use MyParcelCom\ApiSdk\Collection\ArrayCollection;
@@ -826,8 +825,9 @@ class MyParcelComApi implements MyParcelComApiInterface
         );
 
         $json = json_decode($response->getBody(), true);
+        $resources = $this->jsonToResources($json['data']);
 
-        return reset($this->jsonToResources($json['data']));
+        return reset($resources);
     }
 
     /**

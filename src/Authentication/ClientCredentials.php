@@ -4,11 +4,9 @@ namespace MyParcelCom\ApiSdk\Authentication;
 
 use GuzzleHttp\Psr7\Request;
 use MyParcelCom\ApiSdk\Http\Exceptions\RequestException;
-use GuzzleHttp\RequestOptions;
 use MyParcelCom\ApiSdk\Http\Contracts\HttpClient\ClientInterface;
 use MyParcelCom\ApiSdk\Exceptions\AuthenticationException;
 use MyParcelCom\ApiSdk\Traits\DetectsExistingHttpClient;
-use Psr\Http\Message\ResponseInterface;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Cache\Simple\FilesystemCache;
 
@@ -42,17 +40,27 @@ class ClientCredentials implements AuthenticatorInterface
      * sandbox, the `$authUri` should be set to the correct uri. Optionally a
      * cache can be supplied to store the api-key in.
      *
-     * @param string              $clientId
-     * @param string              $clientSecret
-     * @param string              $authUri
-     * @param CacheInterface|null $cache
+     * @param string               $clientId
+     * @param string               $clientSecret
+     * @param string               $authUri
+     * @param CacheInterface|null  $cache
+     * @param ClientInterface|null $httpClient
      */
-    public function __construct($clientId, $clientSecret, $authUri = 'https://sandbox-auth.myparcel.com', CacheInterface $cache = null)
-    {
+    public function __construct(
+        $clientId,
+        $clientSecret,
+        $authUri = 'https://sandbox-auth.myparcel.com',
+        CacheInterface $cache = null,
+        ClientInterface $httpClient = null
+    ) {
         $this->clientSecret = $clientSecret;
         $this->clientId = $clientId;
         $this->authUri = $authUri;
         $this->cache = $cache ?: new FilesystemCache('myparcelcom');
+
+        if ($httpClient !== null) {
+            $this->setHttpClient($httpClient);
+        }
     }
 
     /**
@@ -225,6 +233,7 @@ class ClientCredentials implements AuthenticatorInterface
         }
 
         $response = json_decode((string)$exception->getResponse()->getBody(), true);
+        var_dump($response);
         $message = 'An unknown error occurred while authenticating with the oauth2 server';
 
         if (!empty($response['errors'])) {
