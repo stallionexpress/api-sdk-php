@@ -46,7 +46,7 @@ class PriceCalculatorTest extends TestCase
     }
 
     /** @test */
-    public function testItTreatsNullPriceAsZero()
+    public function testItIgnoreNullPriceForOptions()
     {
         $serviceOptionMocks = [
             $this->getMockedServiceOption('service-option-id-uno', 250),
@@ -59,6 +59,17 @@ class PriceCalculatorTest extends TestCase
 
         $priceCalculator = new PriceCalculator();
         $this->assertEquals(5650, $priceCalculator->calculate($shipment));
+    }
+
+    /** @test */
+    public function testItReturnsNullForNotPricedServices()
+    {
+        $serviceRateMock = $this->getMockedServiceRate([], null, 0, 5000);
+        $serviceMock = $this->getMockedService([$serviceRateMock]);
+        $shipment = $this->getMockedShipment(1337, $serviceMock, []);
+
+        $priceCalculator = new PriceCalculator();
+        $this->assertNull($priceCalculator->calculate($shipment));
     }
 
     /** @test */

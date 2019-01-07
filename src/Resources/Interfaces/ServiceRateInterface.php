@@ -88,7 +88,7 @@ interface ServiceRateInterface extends ResourceInterface
     public function setPrice($price);
 
     /**
-     * @return int
+     * @return null|int
      */
     public function getPrice();
 

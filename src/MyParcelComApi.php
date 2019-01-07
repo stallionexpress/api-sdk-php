@@ -498,8 +498,14 @@ class MyParcelComApi implements MyParcelComApiInterface
 
         $rates = [];
         foreach ($serviceRates as $serviceRate) {
+            $price = $calculator->calculate($shipment, $serviceRate);
+
+            if ($price === null) {
+                continue;
+            }
+
             $rates[] = [
-                'price'    => $calculator->calculate($shipment, $serviceRate),
+                'price'    => $price,
                 'service'  => $serviceRate->getService(),
                 'contract' => $serviceRate->getContract(),
             ];

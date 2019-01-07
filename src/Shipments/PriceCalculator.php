@@ -15,7 +15,7 @@ class PriceCalculator
      *
      * @param ShipmentInterface         $shipment
      * @param ServiceRateInterface|null $serviceRate
-     * @return int
+     * @return null|int
      */
     public function calculate(ShipmentInterface $shipment, ServiceRateInterface $serviceRate = null)
     {
@@ -32,11 +32,14 @@ class PriceCalculator
             );
         }
 
-        if (empty($shipment->getServiceOptions())) {
-            return $serviceRate->getPrice();
+        $serviceRatePrice = $serviceRate->getPrice();
+        $serviceOptionPrice = $this->calculateOptionsPrice($shipment, $serviceRate);
+
+        if ($serviceRatePrice === null || $serviceOptionPrice === null) {
+            return null;
         }
 
-        return $this->calculateOptionsPrice($shipment, $serviceRate) + $serviceRate->getPrice();
+        return $serviceOptionPrice + $serviceRatePrice;
     }
 
     /**
@@ -44,7 +47,7 @@ class PriceCalculator
      *
      * @param ShipmentInterface         $shipment
      * @param ServiceRateInterface|null $serviceRate
-     * @return int
+     * @return null|int
      */
     public function calculateOptionsPrice(ShipmentInterface $shipment, ServiceRateInterface $serviceRate = null)
     {
@@ -66,7 +69,11 @@ class PriceCalculator
                 );
             }
 
-            $price += $prices[$option->getId()];
+            $optionPrice = $prices[$option->getId()];
+
+            if ($optionPrice !== null) {
+                $price += $optionPrice;
+            }
         }
 
         return (int)$price;
