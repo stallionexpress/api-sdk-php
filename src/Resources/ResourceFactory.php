@@ -569,8 +569,9 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
                 continue;
             }
 
+            $uri = isset($relationship['links']['related']) ? $relationship['links']['related'] : null;
             $value = isset($relationship['data']['type'])
-                ? $this->createProxy($relationship['data'])
+                ? $this->createProxy($relationship['data'], $uri)
                 : array_map(function (array $identifier) {
                     return $this->createProxy($identifier);
                 }, $relationship['data']);
@@ -582,10 +583,11 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
     }
 
     /**
-     * @param array $identifier
+     * @param array       $identifier
+     * @param string|null $uri
      * @return object
      */
-    private function createProxy(array $identifier)
+    private function createProxy(array $identifier, $uri = null)
     {
         if (empty($identifier['type'])) {
             throw new ResourceFactoryException('Cannot create proxy, no `type` available in identifier.');
@@ -602,6 +604,9 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         $resource = new $this->proxies[$type]();
         if ($resource instanceof ResourceProxyInterface) {
             $resource->setMyParcelComApi($this->api);
+            if (method_exists($resource, 'setResourceUri')) {
+                $resource->setResourceUri($uri);
+            }
         }
         $this->hydrate($resource, $identifier);
 
