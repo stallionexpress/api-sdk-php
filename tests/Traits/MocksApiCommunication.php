@@ -79,7 +79,7 @@ trait MocksApiCommunication
                     );
                 }
 
-                if (strpos($returnJson, '"errors": [') !== false) {
+                if (strpos($returnJson, '"errors": [') !== false && strpos($returnJson, '"data": ') === false) {
                     return new RejectedPromise(new RequestException(
                         'This carrier does not have any pickup and dropoff locations.',
                         new Request($method, $uri),

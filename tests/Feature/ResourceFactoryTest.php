@@ -2,6 +2,7 @@
 
 namespace MyParcelCom\ApiSdk\Tests\Feature;
 
+use MyParcelCom\ApiSdk\MyParcelComApi;
 use MyParcelCom\ApiSdk\MyParcelComApiInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
@@ -12,6 +13,7 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceRateInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentStatusInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\ApiSdk\Resources\ResourceFactory;
 use MyParcelCom\ApiSdk\Tests\Traits\MocksApiCommunication;
@@ -760,5 +762,77 @@ class ResourceFactoryTest extends TestCase
 
         $this->assertInstanceOf(FileInterface::class, $file);
         $this->assertEquals($fileProperties, $file->jsonSerialize());
+    }
+
+    /** @test */
+    public function testCreateShipmentStatus()
+    {
+        $shipmentStatusProperties = [
+            'type'          => 'shipment-statuses',
+            'id'            => 'shipment-status-id-1',
+            'attributes'    => [
+                'carrier_statuses' => [
+                    [
+                        'code'        => '9001',
+                        'description' => 'Confirmed at destination',
+                        'assigned_at' => 1504801719,
+                    ],
+                ],
+                'errors'           => [
+                    [
+                        'status' => '422',
+                        'code'   => '12345',
+                        'title'  => 'Value is too long',
+                        'detail' => 'The description field exceeds the limit of 25 characters.',
+                        'source' => [
+                            'pointer'   => '/data/attributes/description',
+                            'parameter' => 'include',
+                        ],
+                        'meta'   => [
+                            'carrier_response' => 'ParcelDescription1 exceeds character limit.',
+                            'carrier_status'   => '400',
+                            'carrier_rules'    => [
+                                [
+                                    'type'  => 'max-length',
+                                    'value' => '35',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                'created_at'       => 1504801719,
+            ],
+            'relationships' => [
+                'status'   => [
+                    'data' => [
+                        'type' => 'statuses',
+                        'id'   => 'status-id-1',
+                    ],
+                ],
+                'shipment' => [
+                    'data' => [
+                        'type' => 'shipments',
+                        'id'   => 'shipment-id-1',
+                    ],
+                ],
+            ],
+        ];
+
+
+        /** @var MyParcelComApi $api */
+        $api = $this->getMockBuilder(MyParcelComApiInterface::class)
+            ->disableOriginalConstructor()
+            ->disableOriginalClone()
+            ->disableArgumentCloning()
+            ->disallowMockingUnknownTypes()
+            ->getMock();
+
+        $resourceFactory = (new ResourceFactory())
+            ->setMyParcelComApi($api);
+
+        $shipmentStatus = $resourceFactory->create('shipment-statuses', $shipmentStatusProperties);
+
+        $this->assertInstanceOf(ShipmentStatusInterface::class, $shipmentStatus);
+        $this->assertEquals($shipmentStatusProperties, $shipmentStatus->jsonSerialize());
     }
 }
