@@ -2,6 +2,8 @@
 
 namespace MyParcelCom\ApiSdk\Resources\Proxy;
 
+use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierStatusInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ErrorInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
@@ -51,60 +53,82 @@ class ShipmentStatusProxy implements ShipmentStatusInterface, ResourceProxyInter
     }
 
     /**
-     * @param string $carrierStatusCode
+     * @param array $carrierStatuses
      * @return $this
      */
-    public function setCarrierStatusCode($carrierStatusCode)
+    public function setCarrierStatuses(array $carrierStatuses)
     {
-        $this->getResource()->setCarrierStatusCode($carrierStatusCode);
+        $this->getResource()->setCarrierStatuses($carrierStatuses);
 
         return $this;
     }
 
     /**
-     * @return string
-     */
-    public function getCarrierStatusCode()
-    {
-        return $this->getResource()->getCarrierStatusCode();
-    }
-
-    /**
-     * @param string $carrierStatusDescription
+     * @param CarrierStatusInterface $carrierStatus
      * @return $this
      */
-    public function setCarrierStatusDescription($carrierStatusDescription)
+    public function addCarrierStatus(CarrierStatusInterface $carrierStatus)
     {
-        $this->getResource()->setCarrierStatusDescription($carrierStatusDescription);
+        $this->getResource()->addCarrierStatus($carrierStatus);
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return CarrierStatusInterface[]
      */
-    public function getCarrierStatusDescription()
+    public function getCarrierStatuses()
     {
-        return $this->getResource()->getCarrierStatusDescription();
+        return $this->getResource()->getCarrierStatuses();
     }
 
     /**
-     * @param int|\DateTime $timestamp
+     * @param array $errors
      * @return $this
      */
-    public function setCarrierTimestamp($timestamp)
+    public function setErrors(array $errors)
     {
-        $this->getResource()->setCarrierTimestamp($timestamp);
+        $this->getResource()->setErrors($errors);
 
         return $this;
     }
 
     /**
-     * @return \DateTime
+     * @param ErrorInterface $error
+     * @return $this
      */
-    public function getCarrierTimestamp()
+    public function addError(ErrorInterface $error)
     {
-        return $this->getResource()->getCarrierTimestamp();
+        $this->getResource()->addError($error);
+
+        return $this;
+    }
+
+    /**
+     * @return ErrorInterface[]
+     */
+    public function getErrors()
+    {
+        return $this->getResource()->getErrors();
+    }
+
+    /**
+     * @param int $createdAt
+     * @return $this
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->getResource()->setCreatedAt($createdAt);
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCreatedAt()
+    {
+        return $this->getResource()->getCreatedAt();
     }
 
     /**

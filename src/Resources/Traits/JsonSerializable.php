@@ -15,18 +15,27 @@ trait JsonSerializable
     {
         $json = $this->arrayValuesToArray(get_object_vars($this));
 
-        if (isset($json['attributes']) && $this->isEmpty($json['attributes'])) {
-            unset($json['attributes']);
-        }
-        if (isset($json['relationships'])) {
-            if ($this->isEmpty($json['relationships'])) {
-                unset($json['relationships']);
-            } else {
-                $json['relationships'] = $this->removeRelationshipAttributes($json['relationships']);
+        // We remove all empty properties
+        foreach ($json as $property => $value) {
+            if ($this->isEmpty($value)) {
+                unset($json[$property]);
             }
         }
-        if (isset($json['meta']) && $this->isEmpty($json['meta'])) {
-            unset($json['meta']);
+
+        // If there are attributes, we make sure no empty attributes are serialized
+        if (isset($json['attributes'])) {
+            foreach ($json['attributes'] as $attribute => $value) {
+                if ($this->isEmpty($value)) {
+                    unset($json['attributes'][$attribute]);
+                }
+            }
+        }
+
+        // If there are relationships, we remove any possible attributes still
+        // present. This can happen when a resource (not a proxy) is set as a
+        // relationship on another resource.
+        if (isset($json['relationships'])) {
+            $json['relationships'] = $this->removeRelationshipAttributes($json['relationships']);
         }
 
         return $json;

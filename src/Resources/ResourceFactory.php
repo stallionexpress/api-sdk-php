@@ -6,8 +6,10 @@ use MyParcelCom\ApiSdk\Exceptions\ResourceFactoryException;
 use MyParcelCom\ApiSdk\MyParcelComApiInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierStatusInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CustomsInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ErrorInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\OpeningHourInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\PhysicalPropertiesInterface;
@@ -63,8 +65,10 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
 
         AddressInterface::class               => Address::class,
         CarrierInterface::class               => Carrier::class,
+        CarrierStatusInterface::class         => CarrierStatus::class,
         ContractInterface::class              => Contract::class,
         CustomsInterface::class               => Customs::class,
+        ErrorInterface::class                 => Error::class,
         OpeningHourInterface::class           => OpeningHour::class,
         PhysicalPropertiesInterface::class    => PhysicalProperties::class,
         PositionInterface::class              => Position::class,
@@ -120,48 +124,6 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
     }
 
     /**
-     * Factory method for creating pudo locations, sets distance from meta on
-     * position object.
-     *
-     * @param array $attributes
-     * @return PickUpDropOffLocation
-     */
-    protected function pudoLocationFactory(array &$attributes)
-    {
-        $pudoLocation = new PickUpDropOffLocation();
-
-        if (isset($attributes['meta']['distance'])) {
-            $pudoLocation->setDistance($attributes['meta']['distance']);
-
-            unset($attributes['meta']);
-        }
-
-        return $pudoLocation;
-    }
-
-    /**
-     * Factory method for creating Contracts with proxies for all
-     * relationships.
-     *
-     * @param array $attributes
-     * @return Contract
-     */
-    protected function contractFactory(array &$attributes)
-    {
-        $contract = new Contract();
-
-        if (isset($attributes['carrier']['id'])) {
-            $contract->setCarrier(
-                (new CarrierProxy())->setMyParcelComApi($this->api)->setId($attributes['carrier']['id'])
-            );
-
-            unset($attributes['carrier']);
-        }
-
-        return $contract;
-    }
-
-    /**
      * Shipment factory method that creates proxies for all relationships.
      *
      * @param array $properties
@@ -209,35 +171,6 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         }
 
         return $shipment;
-    }
-
-    /**
-     * ShipmentStatus factory that creates proxies for all relationships.
-     *
-     * @param array $attributes
-     * @return ShipmentStatus
-     */
-    protected function shipmentStatusFactory(array &$attributes)
-    {
-        $shipmentStatus = new ShipmentStatus();
-
-        if (isset($attributes['status']['id'])) {
-            $shipmentStatus->setStatus(
-                (new StatusProxy())->setMyParcelComApi($this->api)->setId($attributes['status']['id'])
-            );
-
-            unset($attributes['status']);
-        }
-
-        if (isset($attributes['shipment']['id'])) {
-            $shipmentStatus->setShipment(
-                (new ShipmentProxy())->setMyParcelComApi($this->api)->setId($attributes['shipment']['id'])
-            );
-
-            unset($attributes['shipment']);
-        }
-
-        return $shipmentStatus;
     }
 
     /**
@@ -499,7 +432,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
                     return;
                 }
 
-                $adder = trim('add' . StringUtils::snakeToPascalCase($key), 's');
+                $adder = 'add' . rtrim(rtrim(StringUtils::snakeToPascalCase($key), 's'), 'e');
 
                 if (($adderParam = $this->getFillableParam($resource, $adder)) !== null) {
                     $adderParamClass = $adderParam->getClass();
