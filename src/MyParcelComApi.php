@@ -212,10 +212,12 @@ class MyParcelComApi implements MyParcelComApiInterface
             try {
                 $resources = $this->getResourcesArray($carrierUri, self::TTL_WEEK);
             } catch (RequestException $exception) {
-                // For some reason it is expected that this method throws
-                // an exception when fetching a specific carrier fails, but
-                // when no specific carrier is given, it should treat the
-                // failed response as null.
+
+                // When we are trying to fetch pudo locations for a specific
+                // carrier, we want to be able to distinct between 'no results'
+                // or something went wrong. However, when we're not looking
+                // for carrier specific pudo locations, we just want to show
+                // pudo locations for the failing carrier as not aviilable (null).
                 if ($specificCarrier) {
                     throw $exception;
                 }
