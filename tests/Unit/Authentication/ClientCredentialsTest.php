@@ -2,7 +2,7 @@
 
 namespace MyParcelCom\ApiSdk\Tests\Unit\Authentication;
 
-use MyParcelCom\ApiSdk\Http\Contracts\HttpClient\ClientInterface;
+use Http\Client\HttpClient;
 use MyParcelCom\ApiSdk\Http\Exceptions\RequestException;
 use GuzzleHttp\Psr7\Request;
 use MyParcelCom\ApiSdk\Authentication\ClientCredentials;
@@ -14,7 +14,7 @@ use function GuzzleHttp\Psr7\parse_response;
 
 class ClientCredentialsTest extends TestCase
 {
-    /** @var ClientInterface */
+    /** @var HttpClient */
     private $httpClient;
 
     /** @var int */
@@ -49,7 +49,7 @@ class ClientCredentialsTest extends TestCase
             ->willReturn(200);
 
         // Mock an http client.
-        $this->httpClient = $this->getMockBuilder(ClientInterface::class)
+        $this->httpClient = $this->getMockBuilder(HttpClient::class)
             ->disableOriginalConstructor()
             ->disableOriginalClone()
             ->disableArgumentCloning()

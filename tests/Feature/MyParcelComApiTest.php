@@ -2,7 +2,7 @@
 
 namespace MyParcelCom\ApiSdk\Tests\Feature;
 
-use MyParcelCom\ApiSdk\Http\Contracts\HttpClient\ClientInterface;
+use Http\Client\HttpClient;
 use MyParcelCom\ApiSdk\Http\Exceptions\RequestException;
 use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
 use MyParcelCom\ApiSdk\Collection\CollectionInterface;
@@ -33,7 +33,7 @@ class MyParcelComApiTest extends TestCase
     private $authenticator;
     /** @var MyParcelComApi */
     private $api;
-    /** @var ClientInterface */
+    /** @var HttpClient */
     private $client;
 
     public function setUp()

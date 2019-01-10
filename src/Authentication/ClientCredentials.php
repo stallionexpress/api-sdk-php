@@ -3,17 +3,15 @@
 namespace MyParcelCom\ApiSdk\Authentication;
 
 use GuzzleHttp\Psr7\Request;
+use Http\Discovery\HttpClientDiscovery;
 use MyParcelCom\ApiSdk\Http\Exceptions\RequestException;
-use MyParcelCom\ApiSdk\Http\Contracts\HttpClient\ClientInterface;
+use Http\Client\HttpClient;
 use MyParcelCom\ApiSdk\Exceptions\AuthenticationException;
-use MyParcelCom\ApiSdk\Traits\DetectsExistingHttpClient;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Cache\Simple\FilesystemCache;
 
 class ClientCredentials implements AuthenticatorInterface
 {
-    use DetectsExistingHttpClient;
-
     const CACHE_TOKEN = 'auth.token';
     const CACHE_AUTHENTICATING = 'auth.lock';
     const PATH_ACCESS_TOKEN = '/access-token';
@@ -31,7 +29,7 @@ class ClientCredentials implements AuthenticatorInterface
     /** @var CacheInterface */
     private $cache;
 
-    /** @var ClientInterface */
+    /** @var HttpClient */
     private $httpClient;
 
     /**
@@ -44,14 +42,14 @@ class ClientCredentials implements AuthenticatorInterface
      * @param string               $clientSecret
      * @param string               $authUri
      * @param CacheInterface|null  $cache
-     * @param ClientInterface|null $httpClient
+     * @param HttpClient|null $httpClient
      */
     public function __construct(
         $clientId,
         $clientSecret,
         $authUri = 'https://sandbox-auth.myparcel.com',
         CacheInterface $cache = null,
-        ClientInterface $httpClient = null
+        HttpClient $httpClient = null
     ) {
         $this->clientSecret = $clientSecret;
         $this->clientId = $clientId;
@@ -192,10 +190,10 @@ class ClientCredentials implements AuthenticatorInterface
      * Set the http client to use. This can be used when extra options need to
      * be set on the client.
      *
-     * @param ClientInterface $client
+     * @param HttpClient $client
      * @return $this
      */
-    public function setHttpClient(ClientInterface $client)
+    public function setHttpClient(HttpClient $client)
     {
         $this->httpClient = $client;
 
@@ -205,12 +203,12 @@ class ClientCredentials implements AuthenticatorInterface
     /**
      * Get the http client to connect to the auth server.
      *
-     * @return ClientInterface
+     * @return HttpClient
      */
     protected function getHttpClient()
     {
         if (!isset($this->httpClient)) {
-            $this->httpClient = $this->detectExistingHttpClient();
+            $this->httpClient = HttpClientDiscovery::find();
         }
 
         return $this->httpClient;

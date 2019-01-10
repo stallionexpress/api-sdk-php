@@ -2,8 +2,8 @@
 
 namespace MyParcelCom\ApiSdk\Tests\Traits;
 
+use Http\Client\HttpClient;
 use MyParcelCom\ApiSdk\Http\Exceptions\RequestException;
-use MyParcelCom\ApiSdk\Http\Contracts\HttpClient\ClientInterface;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
@@ -15,7 +15,7 @@ trait MocksApiCommunication
 
     protected function getClientMock()
     {
-        $client = $this->getMockBuilder(ClientInterface::class)
+        $client = $this->getMockBuilder(HttpClient::class)
             ->disableOriginalConstructor()
             ->disableOriginalClone()
             ->disableArgumentCloning()

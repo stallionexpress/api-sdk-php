@@ -3,7 +3,8 @@
 namespace MyParcelCom\ApiSdk;
 
 use GuzzleHttp\Psr7\Request;
-use MyParcelCom\ApiSdk\Http\Contracts\HttpClient\ClientInterface;
+use Http\Client\HttpClient;
+use Http\Discovery\HttpClientDiscovery;
 use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
 use MyParcelCom\ApiSdk\Collection\ArrayCollection;
 use MyParcelCom\ApiSdk\Collection\CollectionInterface;
@@ -22,7 +23,6 @@ use MyParcelCom\ApiSdk\Resources\ResourceFactory;
 use MyParcelCom\ApiSdk\Resources\Service;
 use MyParcelCom\ApiSdk\Shipments\PriceCalculator;
 use MyParcelCom\ApiSdk\Shipments\ServiceMatcher;
-use MyParcelCom\ApiSdk\Traits\DetectsExistingHttpClient;
 use MyParcelCom\ApiSdk\Utils\UrlBuilder;
 use MyParcelCom\ApiSdk\Validators\ShipmentValidator;
 use MyParcelCom\ApiSdk\Http\Contracts\HttpClient\RequestExceptionInterface;
@@ -35,8 +35,6 @@ use function GuzzleHttp\Psr7\str;
 
 class MyParcelComApi implements MyParcelComApiInterface
 {
-    use DetectsExistingHttpClient;
-
     /** @var string */
     protected $apiUri;
 
@@ -49,7 +47,7 @@ class MyParcelComApi implements MyParcelComApiInterface
     /** @var AuthenticatorInterface */
     protected $authenticator;
 
-    /** @var ClientInterface */
+    /** @var HttpClient */
     private $client;
 
     /** @var bool */
@@ -64,7 +62,7 @@ class MyParcelComApi implements MyParcelComApiInterface
      *
      * @param AuthenticatorInterface        $authenticator
      * @param string                        $apiUri
-     * @param ClientInterface|null          $httpClient
+     * @param HttpClient|null          $httpClient
      * @param CacheInterface|null           $cache
      * @param ResourceFactoryInterface|null $resourceFactory
      * @return MyParcelComApi
@@ -72,7 +70,7 @@ class MyParcelComApi implements MyParcelComApiInterface
     public static function createSingleton(
         AuthenticatorInterface $authenticator,
         $apiUri = 'https://sandbox-api.myparcel.com',
-        ClientInterface $httpClient = null,
+        HttpClient $httpClient = null,
         CacheInterface $cache = null,
         ResourceFactoryInterface $resourceFactory = null
     ) {
@@ -96,19 +94,18 @@ class MyParcelComApi implements MyParcelComApiInterface
      * default factory is used.
      *
      * @param string                        $apiUri
-     * @param ClientInterface|null          $httpClient
+     * @param HttpClient|null          $httpClient
      * @param CacheInterface|null           $cache
      * @param ResourceFactoryInterface|null $resourceFactory
-     * @throws Exceptions\MissingHttpClientAdapterException
      */
     public function __construct(
         $apiUri = 'https://sandbox-api.myparcel.com',
-        ClientInterface $httpClient = null,
+        HttpClient $httpClient = null,
         CacheInterface $cache = null,
         ResourceFactoryInterface $resourceFactory = null
     ) {
         if ($httpClient === null) {
-            $httpClient = $this->detectExistingHttpClient();
+            $httpClient = HttpClientDiscovery::find();
         }
 
         $this
@@ -603,10 +600,10 @@ class MyParcelComApi implements MyParcelComApiInterface
      * Set the HTTP client to use to connect to the api. Given
      * client must implement the PSR-18 client interface.
      *
-     * @param ClientInterface $client
+     * @param HttpClient $client
      * @return $this
      */
-    public function setHttpClient(ClientInterface $client)
+    public function setHttpClient(HttpClient $client)
     {
         $this->client = $client;
 
@@ -616,7 +613,7 @@ class MyParcelComApi implements MyParcelComApiInterface
     /**
      * Get the HTTP client.
      *
-     * @return ClientInterface
+     * @return HttpClient
      */
     protected function getHttpClient()
     {
@@ -695,7 +692,7 @@ class MyParcelComApi implements MyParcelComApiInterface
             // Store the response in cache
             $this->cache->set($cacheKey, str($response), $ttl);
 
-            if ($response->getStatusCode() !== 200) {
+            if ($response->getStatusCode() >= 300) {
                 throw new RequestException($request, $response);
             }
 
