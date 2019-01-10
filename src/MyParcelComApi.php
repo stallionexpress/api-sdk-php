@@ -209,10 +209,9 @@ class MyParcelComApi implements MyParcelComApiInterface
             try {
                 $resources = $this->getResourcesArray($carrierUri, self::TTL_WEEK);
             } catch (RequestException $exception) {
-
                 // When we are trying to fetch pudo locations for a specific
                 // carrier, we want to be able to distinct between 'no results'
-                // or something went wrong. However, when we're not looking
+                // or 'something went wrong'. However, when we're not looking
                 // for carrier specific pudo locations, we just want to show
                 // pudo locations for the failing carrier as not aviilable (null).
                 if ($specificCarrier) {
@@ -628,6 +627,7 @@ class MyParcelComApi implements MyParcelComApiInterface
      * @param string $uri
      * @param int    $ttl
      * @return ResourceInterface[]
+     * @throws RequestException
      */
     protected function getResourcesArray($uri, $ttl = self::TTL_10MIN)
     {
@@ -779,6 +779,7 @@ class MyParcelComApi implements MyParcelComApiInterface
      * @param string $resourceType
      * @param string $id
      * @return ResourceInterface
+     * @throws RequestException
      */
     public function getResourceById($resourceType, $id)
     {
@@ -802,6 +803,7 @@ class MyParcelComApi implements MyParcelComApiInterface
      *
      * @param ResourceInterface $resource
      * @return ResourceInterface|null
+     * @throws RequestException
      */
     protected function patchResource(ResourceInterface $resource)
     {
@@ -813,6 +815,7 @@ class MyParcelComApi implements MyParcelComApiInterface
      *
      * @param ResourceInterface $resource
      * @return ResourceInterface|null
+     * @throws RequestException
      */
     protected function postResource(ResourceInterface $resource)
     {
@@ -825,6 +828,7 @@ class MyParcelComApi implements MyParcelComApiInterface
      * @param ResourceInterface $resource
      * @param string            $method
      * @return ResourceInterface|null
+     * @throws RequestException
      */
     protected function sendResource(ResourceInterface $resource, $method = 'post')
     {
