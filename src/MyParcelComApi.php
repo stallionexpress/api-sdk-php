@@ -63,20 +63,20 @@ class MyParcelComApi implements MyParcelComApiInterface
      * subsequent calls to `getSingleton()`.
      *
      * @param AuthenticatorInterface        $authenticator
-     * @param ClientInterface|null          $httpClient
      * @param string                        $apiUri
+     * @param ClientInterface|null          $httpClient
      * @param CacheInterface|null           $cache
      * @param ResourceFactoryInterface|null $resourceFactory
      * @return MyParcelComApi
      */
     public static function createSingleton(
         AuthenticatorInterface $authenticator,
-        ClientInterface $httpClient = null,
         $apiUri = 'https://sandbox-api.myparcel.com',
+        ClientInterface $httpClient = null,
         CacheInterface $cache = null,
         ResourceFactoryInterface $resourceFactory = null
     ) {
-        return self::$singleton = (new self($httpClient, $apiUri, $cache, $resourceFactory))
+        return self::$singleton = (new self($apiUri, $httpClient, $cache, $resourceFactory))
             ->authenticate($authenticator);
     }
 
@@ -95,14 +95,15 @@ class MyParcelComApi implements MyParcelComApiInterface
      * filesystem is used for caching. If no resource factory is given, the
      * default factory is used.
      *
-     * @param ClientInterface|null          $httpClient
      * @param string                        $apiUri
+     * @param ClientInterface|null          $httpClient
      * @param CacheInterface|null           $cache
      * @param ResourceFactoryInterface|null $resourceFactory
+     * @throws Exceptions\MissingHttpClientAdapterException
      */
     public function __construct(
-        ClientInterface $httpClient = null,
         $apiUri = 'https://sandbox-api.myparcel.com',
+        ClientInterface $httpClient = null,
         CacheInterface $cache = null,
         ResourceFactoryInterface $resourceFactory = null
     ) {

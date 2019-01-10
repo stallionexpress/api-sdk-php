@@ -35,7 +35,7 @@ class ServiceProxyTest extends TestCase
 
         $this->client = $this->getClientMock();
         $this->authenticator = $this->getAuthenticatorMock();
-        $this->api = (new MyParcelComApi($this->client, 'https://api'))
+        $this->api = (new MyParcelComApi('https://api', $this->client))
             ->setCache(new NullCache())
             ->setHttpClient($this->client)
             ->authenticate($this->authenticator);
