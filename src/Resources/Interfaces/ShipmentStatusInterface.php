@@ -29,7 +29,6 @@ interface ShipmentStatusInterface extends ResourceInterface
      */
     public function getCarrierStatuses();
 
-
     /**
      * @param ErrorInterface[] $errors
      * @return $this

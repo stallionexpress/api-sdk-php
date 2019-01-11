@@ -437,7 +437,6 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
                 if (($adderParam = $this->getFillableParam($resource, $adder)) !== null) {
                     $adderParamClass = $adderParam->getClass();
 
-
                     if ($adderParamClass !== null) {
                         $className = $adderParamClass->getName();
 

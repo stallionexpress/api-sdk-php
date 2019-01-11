@@ -106,7 +106,6 @@ class ShipmentStatus implements ShipmentStatusInterface
         return $this->attributes[self::ATTRIBUTE_CARRIER_STATUSES];
     }
 
-
     /**
      * @param ErrorInterface[] $errors
      * @return $this

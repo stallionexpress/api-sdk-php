@@ -164,7 +164,6 @@ class Shipment implements ShipmentInterface
         return $this->attributes[self::ATTRIBUTE_SENDER_ADDRESS];
     }
 
-
     /**
      * {@inheritdoc}
      */

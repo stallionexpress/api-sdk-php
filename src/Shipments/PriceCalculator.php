@@ -71,7 +71,7 @@ class PriceCalculator
 
             $optionPrice = $prices[$option->getId()];
 
-            if($optionPrice === null){
+            if ($optionPrice === null) {
                 return null;
             }
 
