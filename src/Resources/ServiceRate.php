@@ -209,7 +209,6 @@ class ServiceRate implements ServiceRateInterface
         return $this->attributes[self::ATTRIBUTE_VOLUME_MAX];
     }
 
-
     /**
      * {@inheritdoc}
      */

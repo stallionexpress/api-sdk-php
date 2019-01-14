@@ -18,7 +18,6 @@ class ServiceOptionProxy implements ServiceOptionInterface, ResourceProxyInterfa
     const META_PRICE_CURRENCY = 'currency';
     const META_INCLUDED = 'included';
 
-
     /** @var string */
     private $id;
 

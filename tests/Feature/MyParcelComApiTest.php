@@ -593,11 +593,13 @@ class MyParcelComApiTest extends TestCase
         $shipment = $this->api->getShipment('shipment-id-1');
 
         $shipmentStatus = $shipment->getShipmentStatus();
+        $carrierStatuses = $shipmentStatus->getCarrierStatuses();
 
         $this->assertInstanceOf(ShipmentStatusInterface::class, $shipmentStatus);
-        $this->assertEquals('9001', $shipmentStatus->getCarrierStatusCode());
-        $this->assertEquals('Confirmed at destination', $shipmentStatus->getCarrierStatusDescription());
-        $this->assertEquals(1504801719, $shipmentStatus->getCarrierTimestamp()->getTimestamp());
+        $this->assertCount(1, $carrierStatuses);
+        $this->assertEquals('9001', $carrierStatuses[0]->getCode());
+        $this->assertEquals('Confirmed at destination', $carrierStatuses[0]->getDescription());
+        $this->assertEquals(1504801719, $carrierStatuses[0]->getAssignedAt()->getTimestamp());
 
         $status = $shipmentStatus->getStatus();
 
@@ -613,13 +615,16 @@ class MyParcelComApiTest extends TestCase
         $shipment = $this->api->getShipment('shipment-id-1');
 
         $shipmentStatuses = $shipment->getStatusHistory();
+        $this->assertCount(5, $shipmentStatuses);
 
-        /** @var ShipmentStatusInterface $shipmentStatus */
-        $shipmentStatus = reset($shipmentStatuses);
+        $shipmentStatus = $shipmentStatuses[0];
+        $carrierStatuses = $shipmentStatus->getCarrierStatuses();
         $this->assertInstanceOf(ShipmentStatusInterface::class, $shipmentStatus);
-        $this->assertEquals('9001', $shipmentStatus->getCarrierStatusCode());
-        $this->assertEquals('Confirmed at destination', $shipmentStatus->getCarrierStatusDescription());
-        $this->assertEquals(1504801719, $shipmentStatus->getCarrierTimestamp()->getTimestamp());
+        $this->assertEquals(1504801719, $shipmentStatus->getCreatedAt()->getTimestamp());
+        $this->assertCount(1, $carrierStatuses);
+        $this->assertEquals('9001', $carrierStatuses[0]->getCode());
+        $this->assertEquals('Confirmed at destination', $carrierStatuses[0]->getDescription());
+        $this->assertEquals(1504801719, $carrierStatuses[0]->getAssignedAt()->getTimestamp());
 
         $status = $shipmentStatus->getStatus();
         $this->assertInstanceOf(StatusInterface::class, $status);
@@ -628,12 +633,17 @@ class MyParcelComApiTest extends TestCase
         $this->assertEquals('Delivered', $status->getName());
         $this->assertEquals('The shipment has been delivered', $status->getDescription());
 
-
-        $shipmentStatus = next($shipmentStatuses);
+        $shipmentStatus = $shipmentStatuses[1];
+        $carrierStatuses = $shipmentStatus->getCarrierStatuses();
         $this->assertInstanceOf(ShipmentStatusInterface::class, $shipmentStatus);
-        $this->assertEquals('4567', $shipmentStatus->getCarrierStatusCode());
-        $this->assertEquals('Delivery on it\'s way', $shipmentStatus->getCarrierStatusDescription());
-        $this->assertEquals(1504701719, $shipmentStatus->getCarrierTimestamp()->getTimestamp());
+        $this->assertEquals(1504701719, $shipmentStatus->getCreatedAt()->getTimestamp());
+        $this->assertCount(2, $carrierStatuses);
+        $this->assertEquals('4567-1', $carrierStatuses[0]->getCode());
+        $this->assertEquals('Delivery moved a couple of meters', $carrierStatuses[0]->getDescription());
+        $this->assertEquals(1504701750, $carrierStatuses[0]->getAssignedAt()->getTimestamp());
+        $this->assertEquals('4567', $carrierStatuses[1]->getCode());
+        $this->assertEquals('Delivery on it\'s way', $carrierStatuses[1]->getDescription());
+        $this->assertEquals(1504701719, $carrierStatuses[1]->getAssignedAt()->getTimestamp());
 
         $status = $shipmentStatus->getStatus();
         $this->assertInstanceOf(StatusInterface::class, $status);
@@ -642,12 +652,14 @@ class MyParcelComApiTest extends TestCase
         $this->assertEquals('At courier', $status->getName());
         $this->assertEquals('The shipment is at the courier', $status->getDescription());
 
-
-        $shipmentStatus = next($shipmentStatuses);
+        $shipmentStatus = $shipmentStatuses[2];
+        $carrierStatuses = $shipmentStatus->getCarrierStatuses();
         $this->assertInstanceOf(ShipmentStatusInterface::class, $shipmentStatus);
-        $this->assertEquals('10001', $shipmentStatus->getCarrierStatusCode());
-        $this->assertEquals('Parcel received', $shipmentStatus->getCarrierStatusDescription());
-        $this->assertEquals(1504501719, $shipmentStatus->getCarrierTimestamp()->getTimestamp());
+        $this->assertEquals(1504501720, $shipmentStatus->getCreatedAt()->getTimestamp());
+        $this->assertCount(1, $carrierStatuses);
+        $this->assertEquals('10001', $carrierStatuses[0]->getCode());
+        $this->assertEquals('Parcel received', $carrierStatuses[0]->getDescription());
+        $this->assertEquals(1504501719, $carrierStatuses[0]->getAssignedAt()->getTimestamp());
 
         $status = $shipmentStatus->getStatus();
         $this->assertInstanceOf(StatusInterface::class, $status);
@@ -656,12 +668,14 @@ class MyParcelComApiTest extends TestCase
         $this->assertEquals('At carrier', $status->getName());
         $this->assertEquals('The shipment is at the carrier', $status->getDescription());
 
-
-        $shipmentStatus = next($shipmentStatuses);
+        $shipmentStatus = $shipmentStatuses[3];
+        $carrierStatuses = $shipmentStatus->getCarrierStatuses();
         $this->assertInstanceOf(ShipmentStatusInterface::class, $shipmentStatus);
-        $this->assertNull($shipmentStatus->getCarrierStatusCode());
-        $this->assertNull($shipmentStatus->getCarrierStatusDescription());
-        $this->assertEquals(1504101719, $shipmentStatus->getCarrierTimestamp()->getTimestamp());
+        $this->assertEquals(1504101722, $shipmentStatus->getCreatedAt()->getTimestamp());
+        $this->assertCount(1, $carrierStatuses);
+        $this->assertNull($carrierStatuses[0]->getCode());
+        $this->assertNull($carrierStatuses[0]->getDescription());
+        $this->assertEquals(1504101719, $carrierStatuses[0]->getAssignedAt()->getTimestamp());
 
         $status = $shipmentStatus->getStatus();
         $this->assertInstanceOf(StatusInterface::class, $status);
@@ -670,12 +684,14 @@ class MyParcelComApiTest extends TestCase
         $this->assertEquals('Registered', $status->getName());
         $this->assertEquals('The shipment has been registered at the carrier', $status->getDescription());
 
-
-        $shipmentStatus = next($shipmentStatuses);
+        $shipmentStatus = $shipmentStatuses[4];
+        $carrierStatuses = $shipmentStatus->getCarrierStatuses();
         $this->assertInstanceOf(ShipmentStatusInterface::class, $shipmentStatus);
-        $this->assertNull($shipmentStatus->getCarrierStatusCode());
-        $this->assertNull($shipmentStatus->getCarrierStatusDescription());
-        $this->assertEquals(1504001719, $shipmentStatus->getCarrierTimestamp()->getTimestamp());
+        $this->assertEquals(1504101718, $shipmentStatus->getCreatedAt()->getTimestamp());
+        $this->assertCount(1, $carrierStatuses);
+        $this->assertNull($carrierStatuses[0]->getCode());
+        $this->assertNull($carrierStatuses[0]->getDescription());
+        $this->assertEquals(1504101718, $carrierStatuses[0]->getAssignedAt()->getTimestamp());
 
         $status = $shipmentStatus->getStatus();
         $this->assertInstanceOf(StatusInterface::class, $status);

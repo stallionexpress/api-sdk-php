@@ -16,6 +16,7 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentItemInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentStatusInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
+use MyParcelCom\ApiSdk\Utils\DateUtils;
 
 class Shipment implements ShipmentInterface
 {
@@ -162,7 +163,6 @@ class Shipment implements ShipmentInterface
     {
         return $this->attributes[self::ATTRIBUTE_SENDER_ADDRESS];
     }
-
 
     /**
      * {@inheritdoc}
@@ -591,32 +591,9 @@ class Shipment implements ShipmentInterface
      */
     public function setRegisterAt($registerAt)
     {
-        if (is_int($registerAt)) {
-            $this->attributes[self::ATTRIBUTE_REGISTER_AT] = $registerAt;
+        $this->attributes[self::ATTRIBUTE_REGISTER_AT] = DateUtils::toTimestamp($registerAt);
 
-            return $this;
-        }
-
-        if (is_string($registerAt)) {
-            $this->attributes[self::ATTRIBUTE_REGISTER_AT] = (new DateTime($registerAt))->getTimestamp();
-
-            return $this;
-        }
-
-        if ($registerAt instanceof DateTime) {
-            $this->attributes[self::ATTRIBUTE_REGISTER_AT] = $registerAt->getTimestamp();
-
-            return $this;
-        }
-
-        throw new \InvalidArgumentException(
-            sprintf(
-                '$registerAt must be an instance of DateTime, string or integer, %s given',
-                gettype($registerAt) === 'object'
-                    ? get_class($registerAt)
-                    : gettype($registerAt)
-            )
-        );
+        return $this;
     }
 
     /**
