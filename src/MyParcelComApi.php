@@ -680,8 +680,8 @@ class MyParcelComApi implements MyParcelComApiInterface
             ];
 
         // Attempt to fetch a response from cache
-        $cacheKey = sha1($method . join($headers) . $uri);
-        if (($response = $this->cache->get($cacheKey))) {
+        $cacheKey = sha1(join($headers) . $uri);
+        if (($response = $this->cache->get($cacheKey)) && strtolower($method) === 'get') {
             return parse_response($response);
         }
 
@@ -690,7 +690,9 @@ class MyParcelComApi implements MyParcelComApiInterface
             $response = $this->client->sendRequest($request);
 
             // Store the response in cache
-            $this->cache->set($cacheKey, str($response), $ttl);
+            if (strtolower($method) === 'get') {
+                $this->cache->set($cacheKey, str($response), $ttl);
+            }
 
             if ($response->getStatusCode() >= 300) {
                 throw new RequestException($request, $response);
