@@ -52,7 +52,7 @@ class MyParcelComApiTest extends TestCase
     {
         $this->assertNull(MyParcelComApi::getSingleton());
 
-        $api = MyParcelComApi::createSingleton($this->authenticator, 'https://sandbox-api.myparcel.com', $this->client);
+        $api = MyParcelComApi::createSingleton($this->authenticator, 'https://api', $this->client);
         $this->assertInstanceOf(MyParcelComApi::class, $api);
         $this->assertEquals($api, MyParcelComApi::getSingleton());
     }
@@ -60,7 +60,7 @@ class MyParcelComApiTest extends TestCase
     /** @test */
     public function testAuthenticate()
     {
-        $api = new MyParcelComApi('https://sandbox-api.myparcel.com', $this->client);
+        $api = new MyParcelComApi('https://api', $this->client);
 
         $this->assertEquals(
             $api,
