@@ -151,7 +151,7 @@ class ShipmentStatus implements ShipmentStatusInterface
     }
 
     /**
-     * @return DateTime
+     * @return null|DateTime
      */
     public function getCreatedAt()
     {
