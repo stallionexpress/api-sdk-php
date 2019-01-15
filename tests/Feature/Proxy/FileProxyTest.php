@@ -2,7 +2,7 @@
 
 namespace MyParcelCom\ApiSdk\Tests\Feature\Proxy;
 
-use MyParcelCom\ApiSdk\Http\Contracts\HttpClient\ClientInterface;
+use Http\Client\HttpClient;
 use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
 use MyParcelCom\ApiSdk\MyParcelComApi;
 use MyParcelCom\ApiSdk\MyParcelComApiInterface;
@@ -17,7 +17,7 @@ class FileProxyTest extends TestCase
 {
     use MocksApiCommunication;
 
-    /** @var ClientInterface */
+    /** @var HttpClient */
     private $client;
     /** @var AuthenticatorInterface */
     private $authenticator;
@@ -32,7 +32,6 @@ class FileProxyTest extends TestCase
         $this->authenticator = $this->getAuthenticatorMock();
         $this->api = (new MyParcelComApi('https://api', $this->client))
             ->setCache(new NullCache())
-            ->setHttpClient($this->client)
             ->authenticate($this->authenticator);
     }
 

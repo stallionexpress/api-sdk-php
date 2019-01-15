@@ -43,7 +43,6 @@ class MyParcelComApiTest extends TestCase
         $this->client = $this->getClientMock();
 
         $this->api = (new MyParcelComApi('https://api', $this->client))
-            ->setHttpClient($this->client)
             ->authenticate($this->authenticator);
     }
 
