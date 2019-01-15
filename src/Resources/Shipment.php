@@ -4,17 +4,19 @@ namespace MyParcelCom\ApiSdk\Resources;
 
 use DateTime;
 use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CustomsInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\PhysicalPropertiesInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentItemInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentStatusInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
+use MyParcelCom\ApiSdk\Utils\DateUtils;
 
 class Shipment implements ShipmentInterface
 {
@@ -40,11 +42,12 @@ class Shipment implements ShipmentInterface
     const ATTRIBUTE_ITEMS = 'items';
     const ATTRIBUTE_REGISTER_AT = 'register_at';
 
-    const RELATIONSHIP_SERVICE_CONTRACT = 'service_contract';
+    const RELATIONSHIP_CONTRACT = 'contract';
     const RELATIONSHIP_FILES = 'files';
+    const RELATIONSHIP_SERVICE = 'service';
     const RELATIONSHIP_SERVICE_OPTIONS = 'service_options';
-    const RELATIONSHIP_SHOP = 'shop';
     const RELATIONSHIP_STATUS = 'shipment_status';
+    const RELATIONSHIP_SHOP = 'shop';
 
     /** @var string */
     private $id;
@@ -79,20 +82,23 @@ class Shipment implements ShipmentInterface
 
     /** @var array */
     private $relationships = [
-        self::RELATIONSHIP_SHOP             => [
+        self::RELATIONSHIP_SHOP            => [
             'data' => null,
         ],
-        self::RELATIONSHIP_SERVICE_CONTRACT => [
+        self::RELATIONSHIP_STATUS          => [
             'data' => null,
         ],
-        self::RELATIONSHIP_STATUS           => [
-            'data' => null,
-        ],
-        self::RELATIONSHIP_SERVICE_OPTIONS  => [
+        self::RELATIONSHIP_SERVICE_OPTIONS => [
             'data' => [],
         ],
-        self::RELATIONSHIP_FILES            => [
+        self::RELATIONSHIP_FILES           => [
             'data' => [],
+        ],
+        self::RELATIONSHIP_SERVICE         => [
+            'data' => null,
+        ],
+        self::RELATIONSHIP_CONTRACT        => [
+            'data' => null,
         ],
     ];
 
@@ -157,7 +163,6 @@ class Shipment implements ShipmentInterface
     {
         return $this->attributes[self::ATTRIBUTE_SENDER_ADDRESS];
     }
-
 
     /**
      * {@inheritdoc}
@@ -534,24 +539,6 @@ class Shipment implements ShipmentInterface
     /**
      * {@inheritdoc}
      */
-    public function setServiceContract(ServiceContractInterface $serviceContract)
-    {
-        $this->relationships[self::RELATIONSHIP_SERVICE_CONTRACT]['data'] = $serviceContract;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getServiceContract()
-    {
-        return $this->relationships[self::RELATIONSHIP_SERVICE_CONTRACT]['data'];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function setCustoms(CustomsInterface $customs)
     {
         $this->attributes[self::ATTRIBUTE_CUSTOMS] = $customs;
@@ -604,32 +591,9 @@ class Shipment implements ShipmentInterface
      */
     public function setRegisterAt($registerAt)
     {
-        if (is_int($registerAt)) {
-            $this->attributes[self::ATTRIBUTE_REGISTER_AT] = $registerAt;
+        $this->attributes[self::ATTRIBUTE_REGISTER_AT] = DateUtils::toTimestamp($registerAt);
 
-            return $this;
-        }
-
-        if (is_string($registerAt)) {
-            $this->attributes[self::ATTRIBUTE_REGISTER_AT] = (new DateTime($registerAt))->getTimestamp();
-
-            return $this;
-        }
-
-        if ($registerAt instanceof DateTime) {
-            $this->attributes[self::ATTRIBUTE_REGISTER_AT] = $registerAt->getTimestamp();
-
-            return $this;
-        }
-
-        throw new \InvalidArgumentException(
-            sprintf(
-                '$registerAt must be an instance of DateTime, string or integer, %s given',
-                gettype($registerAt) === 'object'
-                    ? get_class($registerAt)
-                    : gettype($registerAt)
-            )
-        );
+        return $this;
     }
 
     /**
@@ -640,5 +604,41 @@ class Shipment implements ShipmentInterface
         return isset($this->attributes[self::ATTRIBUTE_REGISTER_AT])
             ? (new DateTime())->setTimestamp($this->attributes[self::ATTRIBUTE_REGISTER_AT])
             : null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setService(ServiceInterface $service)
+    {
+        $this->relationships[self::RELATIONSHIP_SERVICE]['data'] = $service;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getService()
+    {
+        return $this->relationships[self::RELATIONSHIP_SERVICE]['data'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setContract(ContractInterface $contract)
+    {
+        $this->relationships[self::RELATIONSHIP_CONTRACT]['data'] = $contract;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getContract()
+    {
+        return $this->relationships[self::RELATIONSHIP_CONTRACT]['data'];
     }
 }

@@ -68,6 +68,44 @@ class CarrierProxy implements CarrierInterface, ResourceProxyInterface
     }
 
     /**
+     * @param string $code
+     * @return $this
+     */
+    public function setCode($code)
+    {
+        $this->getResource()->setCode($code);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCode()
+    {
+        return $this->getResource()->getCode();
+    }
+
+    /**
+     * @param array $format
+     * @return $this
+     */
+    public function setCredentialsFormat(array $format)
+    {
+        $this->getResource()->setCredentialsFormat($format);
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCredentialsFormat()
+    {
+        return $this->getResource()->getCredentialsFormat();
+    }
+
+    /**
      * This function puts all object properties in an array and returns it.
      *
      * @return array

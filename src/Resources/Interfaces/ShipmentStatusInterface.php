@@ -2,6 +2,8 @@
 
 namespace MyParcelCom\ApiSdk\Resources\Interfaces;
 
+use DateTime;
+
 interface ShipmentStatusInterface extends ResourceInterface
 {
     /**
@@ -11,37 +13,49 @@ interface ShipmentStatusInterface extends ResourceInterface
     public function setId($id);
 
     /**
-     * @param string $carrierStatusCode
+     * @param CarrierStatusInterface[] $carrierStatuses
      * @return $this
      */
-    public function setCarrierStatusCode($carrierStatusCode);
+    public function setCarrierStatuses(array $carrierStatuses);
 
     /**
-     * @return string
-     */
-    public function getCarrierStatusCode();
-
-    /**
-     * @param string $carrierStatusDescription
+     * @param CarrierStatusInterface $carrierStatus
      * @return $this
      */
-    public function setCarrierStatusDescription($carrierStatusDescription);
+    public function addCarrierStatus(CarrierStatusInterface $carrierStatus);
 
     /**
-     * @return string
+     * @return CarrierStatusInterface[]
      */
-    public function getCarrierStatusDescription();
+    public function getCarrierStatuses();
 
     /**
-     * @param int|\DateTime $timestamp
+     * @param ErrorInterface[] $errors
      * @return $this
      */
-    public function setCarrierTimestamp($timestamp);
+    public function setErrors(array $errors);
 
     /**
-     * @return \DateTime
+     * @param ErrorInterface $error
+     * @return $this
      */
-    public function getCarrierTimestamp();
+    public function addError(ErrorInterface $error);
+
+    /**
+     * @return ErrorInterface[]
+     */
+    public function getErrors();
+
+    /**
+     * @param DateTime|string|int $createdAt
+     * @return $this
+     */
+    public function setCreatedAt($createdAt);
+
+    /**
+     * @return DateTime
+     */
+    public function getCreatedAt();
 
     /**
      * @param ShipmentInterface $shipment

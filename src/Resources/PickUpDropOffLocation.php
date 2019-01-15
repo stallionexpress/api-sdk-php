@@ -19,6 +19,7 @@ class PickUpDropOffLocation implements PickUpDropOffLocationInterface
     const ATTRIBUTE_ADDRESS = 'address';
     const ATTRIBUTE_OPENING_HOURS = 'openingHours';
     const ATTRIBUTE_POSITION = 'position';
+    const ATTRIBUTE_CATEGORIES = 'categories';
 
     const RELATIONSHIP_CARRIER = 'carrier';
 
@@ -36,6 +37,7 @@ class PickUpDropOffLocation implements PickUpDropOffLocationInterface
         self::ATTRIBUTE_ADDRESS       => null,
         self::ATTRIBUTE_OPENING_HOURS => [],
         self::ATTRIBUTE_POSITION      => null,
+        self::ATTRIBUTE_CATEGORIES    => [],
     ];
 
     /** @var array */
@@ -196,5 +198,23 @@ class PickUpDropOffLocation implements PickUpDropOffLocationInterface
     public function getDistance($unit = DistanceUtils::UNIT_METER)
     {
         return round(DistanceUtils::convertDistance($this->meta[self::META_DISTANCE], DistanceUtils::UNIT_METER, $unit));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setCategories(array $categories)
+    {
+        $this->attributes[self::ATTRIBUTE_CATEGORIES] = $categories;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCategories()
+    {
+        return $this->attributes[self::ATTRIBUTE_CATEGORIES];
     }
 }

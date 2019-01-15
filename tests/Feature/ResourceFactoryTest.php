@@ -2,18 +2,18 @@
 
 namespace MyParcelCom\ApiSdk\Tests\Feature;
 
+use MyParcelCom\ApiSdk\MyParcelComApi;
 use MyParcelCom\ApiSdk\MyParcelComApiInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\PickUpDropOffLocationInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceGroupInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionPriceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceRateInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentStatusInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\ApiSdk\Resources\ResourceFactory;
 use MyParcelCom\ApiSdk\Tests\Traits\MocksApiCommunication;
@@ -38,158 +38,74 @@ class ResourceFactoryTest extends TestCase
     /** @test */
     public function testCreateCarrier()
     {
-        $carrierAttributes = [
-            'name' => 'MyParcel.com Carrier',
+        $carrierProperties = [
+            'type'       => 'carriers',
+            'attributes' => [
+                'name'               => 'MyParcel.com Carrier',
+                'code'               => 'mp-carrier',
+                'credentials_format' => [
+                    '$schema'              => 'http://json-schema.org/draft-07/schema#',
+                    'type'                 => 'object',
+                    'additionalProperties' => false,
+                    'required'             => [
+                        'user',
+                        'pw',
+                    ],
+                    'properties'           => [
+                        'user' => [
+                            'type' => 'string',
+                        ],
+                        'pw'   => [
+                            'type' => 'string',
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $resourceFactory = new ResourceFactory();
-        $carrier = $resourceFactory->create('carriers', $carrierAttributes);
+        $carrier = $resourceFactory->create('carriers', $carrierProperties);
 
         $this->assertInstanceOf(CarrierInterface::class, $carrier);
-        $this->assertEquals([
-            'type'       => 'carriers',
-            'attributes' => $carrierAttributes,
-        ], $carrier->jsonSerialize());
-    }
-
-    public function testCreateCarrierConract()
-    {
-        $resourceFactory = new ResourceFactory();
-        $carrierContract = $resourceFactory->create(
-            'carrier-contracts',
-            [
-                'id'                => 'carrier-id',
-                'currency'          => 'JPY',
-                'carrier'           => [
-                    'type' => 'carriers',
-                    'id'   => 'carrier-id',
-                ],
-                'service_contracts' => [
-                    [
-                        'type' => 'service-contracts',
-                        'id'   => 'service-contract-id-1',
-                    ],
-                    [
-                        'type' => 'service-contracts',
-                        'id'   => 'service-contract-id-2',
-                    ],
-                    [
-                        'type' => 'service-contracts',
-                        'id'   => 'service-contract-id-3',
-                    ],
-                ],
-            ]
-        );
-
-        $this->assertInstanceOf(CarrierContractInterface::class, $carrierContract);
-        $this->assertEquals([
-            'id'            => 'carrier-id',
-            'type'          => 'carrier-contracts',
-            'attributes'    => [
-                'currency' => 'JPY',
-            ],
-            'relationships' => [
-                'carrier'           => [
-                    'data' => [
-                        'type' => 'carriers',
-                        'id'   => 'carrier-id',
-                    ],
-                ],
-                'service_contracts' => [
-                    'data' => [
-                        [
-                            'type' => 'service-contracts',
-                            'id'   => 'service-contract-id-1',
-                        ],
-                        [
-                            'type' => 'service-contracts',
-                            'id'   => 'service-contract-id-2',
-                        ],
-                        [
-                            'type' => 'service-contracts',
-                            'id'   => 'service-contract-id-3',
-                        ],
-                    ],
-                ],
-            ],
-        ], $carrierContract->jsonSerialize());
+        $this->assertEquals($carrierProperties, $carrier->jsonSerialize());
     }
 
     /** @test */
     public function testCreateEmptyContract()
     {
         $resourceFactory = new ResourceFactory();
-        $contract = $resourceFactory->create('service-contracts');
+        $contract = $resourceFactory->create('contracts');
 
-        $this->assertInstanceOf(ServiceContractInterface::class, $contract);
+        $this->assertInstanceOf(ContractInterface::class, $contract);
         $this->assertEquals([
-            'type' => 'service-contracts',
+            'type' => 'contracts',
         ], $contract->jsonSerialize());
     }
 
-    /** @test */
-    public function testCreateServiceContract()
+    public function testCreateContract()
     {
-        $contractAttributes = [
-            'service'               => [
-                'type' => 'services',
-                'id'   => 'service-id',
+        $contractProperties = [
+            'id'            => 'carrier-id',
+            'type'          => 'contracts',
+            'attributes'    => [
+                'currency' => 'JPY',
+                'status'   => 'active',
             ],
-            'carrier_contract'      => [
-                'type' => 'carrier-contracts',
-                'id'   => 'carrier-contract-id',
-            ],
-            'service_groups'        => [
-                [
-                    'type' => 'service-groups',
-                    'id'   => 'service-group-id',
-                ],
-            ],
-            'service_option_prices' => [
-                [
-                    'type' => 'service-option-prices',
-                    'id'   => 'service-option-price-id',
+            'relationships' => [
+                'carrier' => [
+                    'data' => [
+                        'type' => 'carriers',
+                        'id'   => 'carrier-id',
+                    ],
                 ],
             ],
         ];
 
         $resourceFactory = new ResourceFactory();
-        $contract = $resourceFactory->create('service-contracts', $contractAttributes);
+        $contract = $resourceFactory->create('contracts', $contractProperties);
 
-        $this->assertInstanceOf(ServiceContractInterface::class, $contract);
-        $this->assertEquals([
-            'type'          => 'service-contracts',
-            'relationships' => [
-                'service'               => [
-                    'data' => [
-                        'type' => 'services',
-                        'id'   => 'service-id',
-                    ],
-                ],
-                'carrier_contract'      => [
-                    'data' => [
-                        'type' => 'carrier-contracts',
-                        'id'   => 'carrier-contract-id',
-                    ],
-                ],
-                'service_groups'        => [
-                    'data' => [
-                        [
-                            'type' => 'service-groups',
-                            'id'   => 'service-group-id',
-                        ],
-                    ],
-                ],
-                'service_option_prices' => [
-                    'data' => [
-                        [
-                            'type' => 'service-option-prices',
-                            'id'   => 'service-option-price-id',
-                        ],
-                    ],
-                ],
-            ],
-        ], $contract->jsonSerialize());
+        $this->assertInstanceOf(ContractInterface::class, $contract);
+        $this->assertEquals($contractProperties, $contract->jsonSerialize());
     }
 
     /** @test */
@@ -207,79 +123,80 @@ class ResourceFactoryTest extends TestCase
     /** @test */
     public function testCreatePickUpDropOffLocation()
     {
-        $pudoAttributes = [
-            'address'       => [
-                'street_1'             => 'Diagonally',
-                'street_2'             => 'Apartment A',
-                'street_number'        => '40',
-                'street_number_suffix' => 'A',
-                'postal_code'          => '1AR BR2',
-                'city'                 => 'London',
-                'region_code'          => 'NH',
-                'country_code'         => 'AF',
-                'first_name'           => 'Robert',
-                'last_name'            => 'Drop Tables',
-                'company'              => 'ACME co.',
-                'email'                => 'rob@tables.com',
-                'phone_number'         => '+31 (0)234 567 890',
+        $pudoProperties = [
+            'type'       => 'pickup-dropoff-locations',
+            'attributes' => [
+                'address'       => [
+                    'street_1'             => 'Diagonally',
+                    'street_2'             => 'Apartment A',
+                    'street_number'        => '40',
+                    'street_number_suffix' => 'A',
+                    'postal_code'          => '1AR BR2',
+                    'city'                 => 'London',
+                    'region_code'          => 'NH',
+                    'country_code'         => 'AF',
+                    'first_name'           => 'Robert',
+                    'last_name'            => 'Drop Tables',
+                    'company'              => 'ACME co.',
+                    'email'                => 'rob@tables.com',
+                    'phone_number'         => '+31 (0)234 567 890',
+                ],
+                'opening_hours' => [
+                    [
+                        'day'    => 'Monday',
+                        'open'   => '12:00',
+                        'closed' => '15:00',
+                    ],
+                    [
+                        'day'    => 'Tuesday',
+                        'open'   => '09:00',
+                        'closed' => '19:00',
+                    ],
+                    [
+                        'day'    => 'Wednesday',
+                        'open'   => '09:00',
+                        'closed' => '19:00',
+                    ],
+                    [
+                        'day'    => 'Thursday',
+                        'open'   => '09:00',
+                        'closed' => '19:00',
+                    ],
+                    [
+                        'day'    => 'Friday',
+                        'open'   => '09:00',
+                        'closed' => '19:00',
+                    ],
+                    [
+                        'day'    => 'Saturday',
+                        'open'   => '10:00',
+                        'closed' => '17:00',
+                    ],
+                    [
+                        'day'    => 'Sunday',
+                        'open'   => '00:00',
+                        'closed' => '00:00',
+                    ],
+                ],
+                'position'      => [
+                    'latitude'  => 1.2345,
+                    'longitude' => 2.34567,
+                ],
+                'categories'    => [
+                    'pick-up',
+                ],
             ],
-            'opening_hours' => [
-                [
-                    'day'    => 'Monday',
-                    'open'   => '12:00',
-                    'closed' => '15:00',
-                ],
-                [
-                    'day'    => 'Tuesday',
-                    'open'   => '09:00',
-                    'closed' => '19:00',
-                ],
-                [
-                    'day'    => 'Wednesday',
-                    'open'   => '09:00',
-                    'closed' => '19:00',
-                ],
-                [
-                    'day'    => 'Thursday',
-                    'open'   => '09:00',
-                    'closed' => '19:00',
-                ],
-                [
-                    'day'    => 'Friday',
-                    'open'   => '09:00',
-                    'closed' => '19:00',
-                ],
-                [
-                    'day'    => 'Saturday',
-                    'open'   => '10:00',
-                    'closed' => '17:00',
-                ],
-                [
-                    'day'    => 'Sunday',
-                    'open'   => '00:00',
-                    'closed' => '00:00',
-                ],
-            ],
-            'position'      => [
-                'latitude'  => 1.2345,
-                'longitude' => 2.34567,
-            ],
-        ];
-        $meta = [
-            'meta' => [
+            'meta'       => [
                 'distance' => 5000,
             ],
         ];
 
         $resourceFactory = new ResourceFactory();
-        $pudoLocation = $resourceFactory->create('pickup-dropoff-locations', $pudoAttributes + $meta);
+        $pudoLocation = $resourceFactory->create('pickup-dropoff-locations', $pudoProperties);
 
         $this->assertInstanceOf(PickUpDropOffLocationInterface::class, $pudoLocation);
         $this->assertEquals(
-            [
-                'type'       => 'pickup-dropoff-locations',
-                'attributes' => $pudoAttributes,
-            ] + $meta,
+            $pudoProperties,
             $pudoLocation->jsonSerialize()
         );
     }
@@ -299,21 +216,30 @@ class ResourceFactoryTest extends TestCase
     /** @test */
     public function testCreateRegion()
     {
-        $regionAttributes = [
-            'country_code' => 'NL',
-            'region_code'  => 'ZH',
-            'currency'     => 'EUR',
-            'name'         => 'Rotterdam',
+        $regionProperties = [
+            'type'          => 'regions',
+            'attributes'    => [
+                'country_code' => 'NL',
+                'region_code'  => 'ZH',
+                'currency'     => 'EUR',
+                'name'         => 'Rotterdam',
+                'category'     => 'city',
+            ],
+            'relationships' => [
+                'parent' => [
+                    'data' => [
+                        'id'   => 'region-id',
+                        'type' => 'regions',
+                    ],
+                ],
+            ],
         ];
 
         $resourceFactory = new ResourceFactory();
-        $region = $resourceFactory->create('regions', $regionAttributes);
+        $region = $resourceFactory->create('regions', $regionProperties);
 
         $this->assertInstanceOf(RegionInterface::class, $region);
-        $this->assertEquals([
-            'type'       => 'regions',
-            'attributes' => $regionAttributes,
-        ], $region->jsonSerialize());
+        $this->assertEquals($regionProperties, $region->jsonSerialize());
     }
 
     /** @test */
@@ -331,35 +257,7 @@ class ResourceFactoryTest extends TestCase
     /** @test */
     public function testCreateService()
     {
-        $resourceFactory = new ResourceFactory();
-        $service = $resourceFactory->create('services', [
-            'id'              => 'service-id-9001',
-            'name'            => 'Easy Delivery Service',
-            'package_type'    => ServiceInterface::PACKAGE_TYPE_PARCEL,
-            'transit_time'    => [
-                'min' => 2,
-                'max' => 5,
-            ],
-            'handover_method' => 'drop-off',
-            'delivery_days'   => [
-                'Monday',
-                'Wednesday',
-                'Friday',
-            ],
-            'delivery_method' => 'delivery',
-            'carrier'         => [
-                'id' => 'carrier-id-1',
-            ],
-            'region_from'     => [
-                'id' => 'region-id-1',
-            ],
-            'region_to'       => [
-                'id' => 'region-id-2',
-            ],
-        ]);
-
-        $this->assertInstanceOf(ServiceInterface::class, $service);
-        $this->assertEquals([
+        $serviceProperties = [
             'id'            => 'service-id-9001',
             'type'          => 'services',
             'attributes'    => [
@@ -397,53 +295,97 @@ class ResourceFactoryTest extends TestCase
                     ],
                 ],
             ],
-        ], $service->jsonSerialize());
+        ];
+
+        $resourceFactory = new ResourceFactory();
+        $service = $resourceFactory->create('services', $serviceProperties);
+
+        $this->assertInstanceOf(ServiceInterface::class, $service);
+        $this->assertEquals($serviceProperties, $service->jsonSerialize());
     }
 
     /** @test */
-    public function testCreateEmptyServiceGroup()
+    public function testItCreatesAnEmptyServiceRate()
     {
         $resourceFactory = new ResourceFactory();
-        $serviceGroup = $resourceFactory->create('service-groups');
+        $serviceRate = $resourceFactory->create('service-rates');
 
-        $this->assertInstanceOf(ServiceGroupInterface::class, $serviceGroup);
+        $this->assertInstanceOf(ServiceRateInterface::class, $serviceRate);
         $this->assertEquals([
-            'type' => 'service-groups',
-        ], $serviceGroup->jsonSerialize());
+            'type' => 'service-rates',
+        ], $serviceRate->jsonSerialize());
     }
 
     /** @test */
-    public function testCreateServiceGroup()
+    public function testItCreatesAServiceRate()
     {
-        $resourceFactory = new ResourceFactory();
-        $serviceGroup = $resourceFactory->create('service-groups', [
-            'price'      => 741,
-            'currency'   => 'GBP',
-            'step_price' => 10,
-            'step_size'  => 10,
-            'weight_max' => 987,
-            'weight_min' => 123,
-        ]);
-
-        $this->assertInstanceOf(ServiceGroupInterface::class, $serviceGroup);
-        $this->assertEquals([
-            'type'       => 'service-groups',
-            'attributes' => [
+        $serviceRateProperties = [
+            'type'          => 'service-rates',
+            'id'            => 'service-rate-id',
+            'attributes'    => [
+                'weight_min' => 2000,
+                'weight_max' => 5000,
+                'width_max'  => 100,
+                'height_max' => 200,
+                'volume_max' => 6,
+                'length_max' => 300,
+                'step_size'  => 1000,
                 'price'      => [
-                    'amount'   => 741,
+                    'amount'   => 800,
                     'currency' => 'GBP',
                 ],
                 'step_price' => [
-                    'amount'   => 10,
+                    'amount'   => 300,
                     'currency' => 'GBP',
                 ],
-                'step_size'  => 10,
-                'weight'     => [
-                    'max' => 987,
-                    'min' => 123,
+            ],
+            'relationships' => [
+                'service'         => [
+                    'data' => [
+                        'id'   => 'service-id',
+                        'type' => 'services',
+                    ],
+                ],
+                'contract'        => [
+                    'data' => [
+                        'id'   => 'contract-id',
+                        'type' => 'contracts',
+                    ],
+                ],
+                'service_options' => [
+                    'data' => [
+                        [
+                            'id'   => 'service-option-id-1',
+                            'type' => 'service-options',
+                            'meta' => [
+                                'included' => true,
+                                'price'    => [
+                                    'amount'   => 500,
+                                    'currency' => 'GBP',
+                                ],
+                            ],
+                        ],
+                        [
+                            'id'   => 'service-option-id-2',
+                            'type' => 'service-options',
+                            'meta' => [
+                                'included' => false,
+                                'price'    => [
+                                    'amount'   => 200,
+                                    'currency' => 'GBP',
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
             ],
-        ], $serviceGroup->jsonSerialize());
+        ];
+
+        $resourceFactory = new ResourceFactory();
+        $serviceRate = $resourceFactory->create('service-rates', $serviceRateProperties);
+
+        $this->assertInstanceOf(ServiceRateInterface::class, $serviceRate);
+        $this->assertEquals($serviceRateProperties, $serviceRate->jsonSerialize());
     }
 
     /** @test */
@@ -461,67 +403,20 @@ class ResourceFactoryTest extends TestCase
     /** @test */
     public function testCreateServiceOption()
     {
-        $resourceFactory = new ResourceFactory();
-        $serviceOption = $resourceFactory->create('service-options', [
-            'name'     => 'Sign on delivery',
-            'code'     => 'some-code',
-            'category' => 'some-category',
-        ]);
-
-        $this->assertInstanceOf(ServiceOptionInterface::class, $serviceOption);
-        $this->assertEquals([
+        $serviceOptionProperties = [
             'type'       => 'service-options',
             'attributes' => [
                 'name'     => 'Sign on delivery',
                 'code'     => 'some-code',
                 'category' => 'some-category',
             ],
-        ], $serviceOption->jsonSerialize());
-    }
+        ];
 
-    /** @test */
-    public function testCreateServiceOptionPrice()
-    {
         $resourceFactory = new ResourceFactory();
-        $serviceOption = $resourceFactory->create('service-option-prices', [
-            'price'            => 55,
-            'currency'         => 'NOK',
-            'service_option'   => [
-                'id'   => 'service-option-id',
-                'type' => 'service-options',
-            ],
-            'service_contract' => [
-                'id'   => 'service-contract-id',
-                'type' => 'service-contracts',
-            ],
-            'required'         => true,
-        ]);
+        $serviceOption = $resourceFactory->create('service-options', $serviceOptionProperties);
 
-        $this->assertInstanceOf(ServiceOptionPriceInterface::class, $serviceOption);
-        $this->assertEquals([
-            'type'          => 'service-option-prices',
-            'attributes'    => [
-                'price'    => [
-                    'amount'   => 55,
-                    'currency' => 'NOK',
-                ],
-                'required' => true,
-            ],
-            'relationships' => [
-                'service_option'   => [
-                    'data' => [
-                        'id'   => 'service-option-id',
-                        'type' => 'service-options',
-                    ],
-                ],
-                'service_contract' => [
-                    'data' => [
-                        'id'   => 'service-contract-id',
-                        'type' => 'service-contracts',
-                    ],
-                ],
-            ],
-        ], $serviceOption->jsonSerialize());
+        $this->assertInstanceOf(ServiceOptionInterface::class, $serviceOption);
+        $this->assertEquals($serviceOptionProperties, $serviceOption->jsonSerialize());
     }
 
     /** @test */
@@ -539,85 +434,7 @@ class ResourceFactoryTest extends TestCase
     /** @test */
     public function testCreateShipment()
     {
-        $resourceFactory = new ResourceFactory();
-        $shipment = $resourceFactory->create('shipments', [
-            'barcode'                      => 'S3BARCODE',
-            'description'                  => 'order #012ASD',
-            'price'                        => [
-                'amount'   => 99,
-                'currency' => 'USD',
-            ],
-            'physical_properties'          => [
-                'weight' => 1000,
-                'length' => 1100,
-                'height' => 1300,
-                'width'  => 1400,
-                'volume' => 2002,
-            ],
-            'physical_properties_verified' => [
-                'weight' => 100,
-                'length' => 110,
-                'height' => 130,
-                'width'  => 140,
-                'volume' => 2.002,
-            ],
-            'recipient_address'            => [
-                'street_1'             => 'Diagonally',
-                'street_2'             => 'Apartment 4',
-                'street_number'        => '1',
-                'street_number_suffix' => 'A',
-                'postal_code'          => '1AR BR2',
-                'city'                 => 'London',
-                'region_code'          => 'NH',
-                'country_code'         => 'AF',
-                'first_name'           => 'Robert',
-                'last_name'            => 'Drop Tables',
-                'company'              => 'ACME co.',
-                'email'                => 'rob@tables.com',
-                'phone_number'         => '+31 (0)234 567 890',
-            ],
-            'sender_address'               => [
-                'street_1'             => 'Diagonally',
-                'street_2'             => 'Apartment 9',
-                'street_number'        => '4',
-                'street_number_suffix' => 'A',
-                'postal_code'          => '1AR BR2',
-                'city'                 => 'London',
-                'region_code'          => 'NH',
-                'country_code'         => 'AF',
-                'first_name'           => 'Robert',
-                'last_name'            => 'Drop Tables',
-                'company'              => 'ACME co.',
-                'email'                => 'rob@tables.com',
-                'phone_number'         => '+31 (0)234 567 890',
-            ],
-            'pickup_location_code'         => 'CODE123',
-            'pickup_location_address'      => [
-                'street_1'             => 'Diagonally',
-                'street_2'             => 'Apartment 41',
-                'street_number'        => '2',
-                'street_number_suffix' => 'A',
-                'postal_code'          => '1AR BR2',
-                'city'                 => 'London',
-                'region_code'          => 'NH',
-                'country_code'         => 'AF',
-                'first_name'           => 'Robert',
-                'last_name'            => 'Drop Tables',
-                'company'              => 'ACME co.',
-                'email'                => 'rob@tables.com',
-                'phone_number'         => '+31 (0)234 567 890',
-            ],
-            'register_at'                  => 1526913941,
-            'shop'                         => ['id' => 'shop-id-1', 'type' => 'shops'],
-            'service_contract'             => ['id' => 'service-contract-id-1', 'type' => 'service-contracts'],
-            'contract'                     => ['id' => 'contract-id-1', 'type' => 'contracts'],
-            'shipment_status'              => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses'],
-            'service_options'              => [['id' => 'option-id-1', 'type' => 'service-options']],
-            'files'                        => [['id' => 'file-id-1', 'type' => 'files']],
-        ]);
-
-        $this->assertInstanceOf(ShipmentInterface::class, $shipment);
-        $this->assertEquals([
+        $shipmentProperties = [
             'type'          => 'shipments',
             'attributes'    => [
                 'barcode'                      => 'S3BARCODE',
@@ -691,126 +508,26 @@ class ResourceFactoryTest extends TestCase
                 'register_at'                  => 1526913941,
             ],
             'relationships' => [
-                'shop'             => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
-                'service_contract' => ['data' => ['id' => 'service-contract-id-1', 'type' => 'service-contracts']],
-                'shipment_status'  => ['data' => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses']],
-                'service_options'  => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
-                'files'            => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
+                'shop'            => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
+                'service'         => ['data' => ['id' => 'service-id-1', 'type' => 'services']],
+                'contract'        => ['data' => ['id' => 'contract-id-1', 'type' => 'contracts']],
+                'shipment_status' => ['data' => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses']],
+                'service_options' => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
+                'files'           => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
             ],
-        ], $shipment->jsonSerialize());
+        ];
+
+        $resourceFactory = new ResourceFactory();
+        $shipment = $resourceFactory->create('shipments', $shipmentProperties);
+
+        $this->assertInstanceOf(ShipmentInterface::class, $shipment);
+        $this->assertEquals($shipmentProperties, $shipment->jsonSerialize());
     }
 
     /** @test */
     public function testCreateShipmentWithCustoms()
     {
-        $resourceFactory = new ResourceFactory();
-        $shipment = $resourceFactory->create('shipments', [
-            'barcode'                      => 'S3BARCODE',
-            'description'                  => 'order #012ASD',
-            'price'                        => 99,
-            'currency'                     => 'USD',
-            'physical_properties'          => [
-                'weight' => 1000,
-                'length' => 1100,
-                'height' => 1300,
-                'width'  => 1400,
-                'volume' => 2002,
-            ],
-            'physical_properties_verified' => [
-                'weight' => 100,
-                'length' => 110,
-                'height' => 130,
-                'width'  => 140,
-                'volume' => 2.002,
-            ],
-            'recipient_address'            => [
-                'street_1'             => 'Diagonally',
-                'street_2'             => 'Apartment 4',
-                'street_number'        => '1',
-                'street_number_suffix' => 'A',
-                'postal_code'          => '1AR BR2',
-                'city'                 => 'London',
-                'country_code'         => 'GB',
-                'first_name'           => 'Robert',
-                'last_name'            => 'Drop Tables',
-                'company'              => 'ACME co.',
-                'email'                => 'rob@tables.com',
-                'phone_number'         => '+31 (0)234 567 890',
-            ],
-            'sender_address'               => [
-                'street_1'             => 'Diagonally',
-                'street_2'             => 'Apartment 9',
-                'street_number'        => '4',
-                'street_number_suffix' => 'A',
-                'postal_code'          => '1AR BR2',
-                'city'                 => 'London',
-                'country_code'         => 'NL',
-                'first_name'           => 'Robert',
-                'last_name'            => 'Drop Tables',
-                'company'              => 'ACME co.',
-                'email'                => 'rob@tables.com',
-                'phone_number'         => '+31 (0)234 567 890',
-            ],
-            'pickup_location_code'         => 'CODE123',
-            'pickup_location_address'      => [
-                'street_1'             => 'Diagonally',
-                'street_2'             => 'Apartment 41',
-                'street_number'        => '2',
-                'street_number_suffix' => 'A',
-                'postal_code'          => '1AR BR2',
-                'city'                 => 'London',
-                'country_code'         => 'GB',
-                'first_name'           => 'Robert',
-                'last_name'            => 'Drop Tables',
-                'company'              => 'ACME co.',
-                'email'                => 'rob@tables.com',
-                'phone_number'         => '+31 (0)234 567 890',
-            ],
-            'items'                        => [
-                [
-                    'sku'                 => '123456789',
-                    'description'         => 'OnePlus X',
-                    'item_value'          => 100,
-                    'currency'            => 'GBP',
-                    'quantity'            => 2,
-                    'hs_code'             => '8517.12.00',
-                    'origin_country_code' => 'GB',
-                ],
-                [
-                    'sku'                 => '213425',
-                    'description'         => 'OnePlus One',
-                    'item_value'          => 200,
-                    'currency'            => 'GBP',
-                    'quantity'            => 3,
-                    'hs_code'             => '8517.12.00',
-                    'origin_country_code' => 'GB',
-                ],
-                [
-                    'sku'                 => '6876',
-                    'description'         => 'OnePlus Two',
-                    'item_value'          => 300,
-                    'currency'            => 'GBP',
-                    'quantity'            => 1,
-                    'hs_code'             => '8517.12.00',
-                    'origin_country_code' => 'GB',
-                ],
-            ],
-            'customs'                      => [
-                'content_type'   => 'documents',
-                'invoice_number' => 'NO.5',
-                'non_delivery'   => 'return',
-                'incoterm'       => 'DDU',
-            ],
-            'register_at'                  => 1526913941,
-            'shop'                         => ['id' => 'shop-id-1', 'type' => 'shops'],
-            'service_contract'             => ['id' => 'service-contract-id-1', 'type' => 'service-contracts'],
-            'shipment_status'              => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses'],
-            'service_options'              => [['id' => 'option-id-1', 'type' => 'service-options']],
-            'files'                        => [['id' => 'file-id-1', 'type' => 'files']],
-        ]);
-
-        $this->assertInstanceOf(ShipmentInterface::class, $shipment);
-        $this->assertEquals([
+        $shipmentProperties = [
             'type'          => 'shipments',
             'attributes'    => [
                 'barcode'                      => 'S3BARCODE',
@@ -922,13 +639,20 @@ class ResourceFactoryTest extends TestCase
                 'register_at'                  => 1526913941,
             ],
             'relationships' => [
-                'shop'             => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
-                'service_contract' => ['data' => ['id' => 'service-contract-id-1', 'type' => 'service-contracts']],
-                'shipment_status'  => ['data' => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses']],
-                'service_options'  => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
-                'files'            => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
+                'shop'            => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
+                'service'         => ['data' => ['id' => 'service-id-1', 'type' => 'services']],
+                'contract'        => ['data' => ['id' => 'contract-id-1', 'type' => 'contracts']],
+                'shipment_status' => ['data' => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses']],
+                'service_options' => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
+                'files'           => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
             ],
-        ], $shipment->jsonSerialize());
+        ];
+
+        $resourceFactory = new ResourceFactory();
+        $shipment = $resourceFactory->create('shipments', $shipmentProperties);
+
+        $this->assertInstanceOf(ShipmentInterface::class, $shipment);
+        $this->assertEquals($shipmentProperties, $shipment->jsonSerialize());
     }
 
     /** @test */
@@ -946,43 +670,7 @@ class ResourceFactoryTest extends TestCase
     /** @test */
     public function testCreateShop()
     {
-        $resourceFactory = new ResourceFactory();
-        $shop = $resourceFactory->create('shops', [
-            'name'            => 'MyParcel.com Test Shop',
-            'billing_address' => [
-                'street_1'             => 'Diagonally',
-                'street_2'             => 'Apartment 3',
-                'street_number'        => '4',
-                'street_number_suffix' => 'A',
-                'postal_code'          => '1AR BR2',
-                'city'                 => 'London',
-                'region_code'          => 'NH',
-                'country_code'         => 'AF',
-                'first_name'           => 'Robert',
-                'last_name'            => 'Drop Tables',
-                'company'              => 'ACME co.',
-                'email'                => 'rob@tables.com',
-                'phone_number'         => '+31 (0)234 567 890',
-            ],
-            'return_address'  => [
-                'street_1'             => 'Diagonally',
-                'street_2'             => 'Apartment 1',
-                'street_number'        => '4',
-                'street_number_suffix' => 'A',
-                'postal_code'          => '1AR BR2',
-                'city'                 => 'London',
-                'region_code'          => 'NH',
-                'country_code'         => 'AF',
-                'first_name'           => 'Robert',
-                'last_name'            => 'Drop Tables',
-                'company'              => 'ACME co.',
-                'email'                => 'rob@tables.com',
-                'phone_number'         => '+31 (0)234 567 890',
-            ],
-        ]);
-
-        $this->assertInstanceOf(ShopInterface::class, $shop);
-        $this->assertEquals([
+        $shopProperties = [
             'type'       => 'shops',
             'attributes' => [
                 'name'            => 'MyParcel.com Test Shop',
@@ -1017,7 +705,13 @@ class ResourceFactoryTest extends TestCase
                     'phone_number'         => '+31 (0)234 567 890',
                 ],
             ],
-        ], $shop->jsonSerialize());
+        ];
+
+        $resourceFactory = new ResourceFactory();
+        $shop = $resourceFactory->create('shops', $shopProperties);
+
+        $this->assertInstanceOf(ShopInterface::class, $shop);
+        $this->assertEquals($shopProperties, $shop->jsonSerialize());
     }
 
     /** @test */
@@ -1035,34 +729,7 @@ class ResourceFactoryTest extends TestCase
     /** @test */
     public function testCreateFile()
     {
-        // Mock a response from the http client.
-        $api = $this->getMockBuilder(MyParcelComApiInterface::class)
-            ->disableOriginalConstructor()
-            ->disableOriginalClone()
-            ->disableArgumentCloning()
-            ->disallowMockingUnknownTypes()
-            ->getMock();
-
-        $resourceFactory = (new ResourceFactory())
-            ->setMyParcelComApi($api);
-
-        $file = $resourceFactory->create('files', [
-            'id'            => 'file-id',
-            'document_type' => 'label',
-            'formats'       => [
-                [
-                    'extension' => 'pdf',
-                    'mime_type' => 'application/pdf',
-                ],
-                [
-                    'extension' => 'png',
-                    'mime_type' => 'image/png',
-                ],
-            ],
-        ]);
-
-        $this->assertInstanceOf(FileInterface::class, $file);
-        $this->assertEquals([
+        $fileProperties = [
             'id'         => 'file-id',
             'type'       => 'files',
             'attributes' => [
@@ -1078,6 +745,94 @@ class ResourceFactoryTest extends TestCase
                     ],
                 ],
             ],
-        ], $file->jsonSerialize());
+        ];
+
+        // Mock a response from the http client.
+        $api = $this->getMockBuilder(MyParcelComApiInterface::class)
+            ->disableOriginalConstructor()
+            ->disableOriginalClone()
+            ->disableArgumentCloning()
+            ->disallowMockingUnknownTypes()
+            ->getMock();
+
+        $resourceFactory = (new ResourceFactory())
+            ->setMyParcelComApi($api);
+
+        $file = $resourceFactory->create('files', $fileProperties);
+
+        $this->assertInstanceOf(FileInterface::class, $file);
+        $this->assertEquals($fileProperties, $file->jsonSerialize());
+    }
+
+    /** @test */
+    public function testCreateShipmentStatus()
+    {
+        $shipmentStatusProperties = [
+            'type'          => 'shipment-statuses',
+            'id'            => 'shipment-status-id-1',
+            'attributes'    => [
+                'carrier_statuses' => [
+                    [
+                        'code'        => '9001',
+                        'description' => 'Confirmed at destination',
+                        'assigned_at' => 1504801719,
+                    ],
+                ],
+                'errors'           => [
+                    [
+                        'status' => '422',
+                        'code'   => '12345',
+                        'title'  => 'Value is too long',
+                        'detail' => 'The description field exceeds the limit of 25 characters.',
+                        'source' => [
+                            'pointer'   => '/data/attributes/description',
+                            'parameter' => 'include',
+                        ],
+                        'meta'   => [
+                            'carrier_response' => 'ParcelDescription1 exceeds character limit.',
+                            'carrier_status'   => '400',
+                            'carrier_rules'    => [
+                                [
+                                    'type'  => 'max-length',
+                                    'value' => '35',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                'created_at'       => 1504801719,
+            ],
+            'relationships' => [
+                'status'   => [
+                    'data' => [
+                        'type' => 'statuses',
+                        'id'   => 'status-id-1',
+                    ],
+                ],
+                'shipment' => [
+                    'data' => [
+                        'type' => 'shipments',
+                        'id'   => 'shipment-id-1',
+                    ],
+                ],
+            ],
+        ];
+
+
+        /** @var MyParcelComApi $api */
+        $api = $this->getMockBuilder(MyParcelComApiInterface::class)
+            ->disableOriginalConstructor()
+            ->disableOriginalClone()
+            ->disableArgumentCloning()
+            ->disallowMockingUnknownTypes()
+            ->getMock();
+
+        $resourceFactory = (new ResourceFactory())
+            ->setMyParcelComApi($api);
+
+        $shipmentStatus = $resourceFactory->create('shipment-statuses', $shipmentStatusProperties);
+
+        $this->assertInstanceOf(ShipmentStatusInterface::class, $shipmentStatus);
+        $this->assertEquals($shipmentStatusProperties, $shipmentStatus->jsonSerialize());
     }
 }

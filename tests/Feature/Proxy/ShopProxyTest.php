@@ -48,6 +48,7 @@ class ShopProxyTest extends TestCase
     {
         $now = new DateTime();
         $this->assertEquals($now->getTimestamp(), $this->shopProxy->setCreatedAt($now)->getCreatedAt()->getTimestamp());
+        $this->assertEquals('https://www.onestop.shop', $this->shopProxy->setWebsite('https://www.onestop.shop')->getWebsite());
         $this->assertEquals('One Stop Shop', $this->shopProxy->setName('One Stop Shop')->getName());
         $this->assertEquals('an-id-for-a-shop', $this->shopProxy->setId('an-id-for-a-shop')->getId());
 
@@ -71,6 +72,7 @@ class ShopProxyTest extends TestCase
         $this->assertEquals('shop-id-1', $this->shopProxy->getId());
         $this->assertEquals(ResourceInterface::TYPE_SHOP, $this->shopProxy->getType());
         $this->assertEquals('Testshop', $this->shopProxy->getName());
+        $this->assertEquals('https://test.shop', $this->shopProxy->getWebsite());
 
         $billingAddress = $this->shopProxy->getBillingAddress();
         $this->assertInstanceOf(AddressInterface::class, $billingAddress);

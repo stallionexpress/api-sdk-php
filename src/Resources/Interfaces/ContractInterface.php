@@ -2,7 +2,7 @@
 
 namespace MyParcelCom\ApiSdk\Resources\Interfaces;
 
-interface CarrierContractInterface extends ResourceInterface
+interface ContractInterface extends ResourceInterface
 {
     /**
      * @param string $id
@@ -33,19 +33,13 @@ interface CarrierContractInterface extends ResourceInterface
     public function getCarrier();
 
     /**
-     * @param ServiceContractInterface[] $serviceContracts
+     * @param string $status
      * @return $this
      */
-    public function setServiceContracts(array $serviceContracts);
+    public function setStatus($status);
 
     /**
-     * @param ServiceContractInterface $serviceContract
-     * @return $this
+     * @return string
      */
-    public function addServiceContract(ServiceContractInterface $serviceContract);
-
-    /**
-     * @return ServiceContractInterface[]
-     */
-    public function getServiceContracts();
+    public function getStatus();
 }

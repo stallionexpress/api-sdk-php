@@ -4,7 +4,23 @@
       "id": "eef00b32-177e-43d3-9b26-715365e4ce46",
       "type": "carriers",
       "attributes": {
-        "name": "Test Carrier"
+        "name": "Test Carrier",
+        "code": "my-parcel-com",
+        "credentials_format": {
+          "additionalProperties": false,
+          "required": [
+            "api_user",
+            "api_password"
+          ],
+          "properties": {
+            "api_user": {
+              "type": "string"
+            },
+            "api_password": {
+              "type": "string"
+            }
+          }
+        }
       },
       "links": {
         "self": "https://api/carriers/eef00b32-177e-43d3-9b26-715365e4ce46"
@@ -14,7 +30,23 @@
       "id": "4a78637a-5d81-4e71-9b18-c338968f72fa",
       "type": "carriers",
       "attributes": {
-        "name": "Test Carrier 2"
+        "name": "Test Carrier 2",
+        "code": "send-my-parcel-com",
+        "credentials_format": {
+          "additionalProperties": false,
+          "required": [
+            "api_usr",
+            "api_passwd"
+          ],
+          "properties": {
+            "api_usr": {
+              "type": "string"
+            },
+            "api_passwd": {
+              "type": "string"
+            }
+          }
+        }
       },
       "links": {
         "self": "https://api/carriers/4a78637a-5d81-4e71-9b18-c338968f72fa"

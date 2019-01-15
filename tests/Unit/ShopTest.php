@@ -30,6 +30,16 @@ class ShopTest extends TestCase
     }
 
     /** @test */
+    public function testWebsite()
+    {
+        $shop = new Shop();
+
+        $this->assertNull($shop->getWebsite());
+
+        $this->assertEquals('https://test.shop', $shop->setWebsite('https://test.shop')->getWebsite());
+    }
+
+    /** @test */
     public function testBillingAddress()
     {
         $shop = new Shop();
@@ -136,16 +146,18 @@ class ShopTest extends TestCase
         $shop = (new Shop())
             ->setId('shop-id')
             ->setName('MyParcel.com Test Shop')
+            ->setWebsite('https://test.shop')
             ->setReturnAddress($returnAddress)
             ->setSenderAddress($senderAddress)
             ->setBillingAddress($billingAddress)
             ->setCreatedAt(1509001337);
 
         $this->assertEquals([
-            'id'            => 'shop-id',
-            'type'          => 'shops',
-            'attributes'    => [
+            'id'         => 'shop-id',
+            'type'       => 'shops',
+            'attributes' => [
                 'name'            => 'MyParcel.com Test Shop',
+                'website'         => 'https://test.shop',
                 'billing_address' => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 4',

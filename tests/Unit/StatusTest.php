@@ -26,7 +26,17 @@ class StatusTest extends TestCase
     public function testCode()
     {
         $status = new Status();
-        $this->assertEquals('shipment_concept', $status->setCode('shipment_concept')->getCode());
+        $this->assertEquals('shipment-concept', $status->setCode('shipment-concept')->getCode());
+    }
+
+    /** @test */
+    public function testResourceType()
+    {
+        $status = new Status();
+
+        $this->assertNull($status->getResourceType());
+
+        $this->assertEquals('shipments', $status->setResourceType('shipments')->getResourceType());
     }
 
     /** @test */
@@ -55,19 +65,21 @@ class StatusTest extends TestCase
     {
         $status = (new Status())
             ->setDescription('The shipment is created')
-            ->setCode('shipment_concept')
+            ->setCode('shipment-concept')
             ->setId('status-id')
             ->setName('Delivered')
-            ->setLevel(StatusInterface::LEVEL_FAILED);
+            ->setLevel(StatusInterface::LEVEL_FAILED)
+            ->setResourceType('shipments');
 
         $this->assertEquals([
             'id'         => 'status-id',
             'type'       => 'statuses',
             'attributes' => [
-                'description' => 'The shipment is created',
-                'code'        => 'shipment_concept',
-                'level'       => 'failed',
-                'name'        => 'Delivered',
+                'description'   => 'The shipment is created',
+                'code'          => 'shipment-concept',
+                'resource_type' => 'shipments',
+                'level'         => 'failed',
+                'name'          => 'Delivered',
             ],
         ], $status->jsonSerialize());
     }

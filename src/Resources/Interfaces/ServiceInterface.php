@@ -95,23 +95,6 @@ interface ServiceInterface extends ResourceInterface
     public function getRegionTo();
 
     /**
-     * @param ServiceContractInterface[] $serviceContracts
-     * @return $this
-     */
-    public function setServiceContracts(array $serviceContracts);
-
-    /**
-     * @param ServiceContractInterface $serviceContract
-     * @return $this
-     */
-    public function addServiceContract(ServiceContractInterface $serviceContract);
-
-    /**
-     * @return ServiceContractInterface[]
-     */
-    public function getServiceContracts();
-
-    /**
      * @param string $handoverMethod
      * @return $this
      */
@@ -149,4 +132,22 @@ interface ServiceInterface extends ResourceInterface
      * @return $this
      */
     public function setDeliveryMethod($deliveryMethod);
+
+    /**
+     * @param ServiceRateInterface[] $serviceRates
+     * @return $this
+     */
+    public function setServiceRates(array $serviceRates);
+
+    /**
+     * @param ServiceRateInterface $serviceRate
+     * @return $this
+     */
+    public function addServiceRate(ServiceRateInterface $serviceRate);
+
+    /**
+     * @param array $filters
+     * @return ServiceRateInterface[]
+     */
+    public function getServiceRates(array $filters = []);
 }

@@ -6,6 +6,7 @@ use GuzzleHttp\ClientInterface;
 use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
 use MyParcelCom\ApiSdk\MyParcelComApi;
 use MyParcelCom\ApiSdk\MyParcelComApiInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierStatusInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\StatusInterface;
@@ -48,11 +49,24 @@ class ShipmentStatusProxyTest extends TestCase
     /** @test */
     public function testAccessors()
     {
-        $now = new \DateTime();
-        $this->assertEquals($now->getTimestamp(), $this->shipmentStatusProxy->setCarrierTimestamp($now)->getCarrierTimestamp()->getTimestamp());
-        $this->assertEquals('A12', $this->shipmentStatusProxy->setCarrierStatusCode('A12')->getCarrierStatusCode());
-        $this->assertEquals('Something go wrongo', $this->shipmentStatusProxy->setCarrierStatusDescription('Something go wrongo')->getCarrierStatusDescription());
+        $this->assertEquals(123456789, $this->shipmentStatusProxy->setCreatedAt(123456789)->getCreatedAt()->getTimestamp());
         $this->assertEquals('an-id-for-a-shipment-status', $this->shipmentStatusProxy->setId('an-id-for-a-shipment-status')->getId());
+        $this->assertEquals(ResourceInterface::TYPE_SHIPMENT_STATUS, $this->shipmentStatusProxy->getType());
+
+        /** @var CarrierStatusInterface $carrierStatus */
+        $carrierStatusBuilder = $this->getMockBuilder(CarrierStatusInterface::class);
+        $carrierStatuses = [
+            $carrierStatusBuilder->getMock(),
+            $carrierStatusBuilder->getMock(),
+            $carrierStatusBuilder->getMock(),
+            $carrierStatusBuilder->getMock(),
+            $carrierStatusBuilder->getMock(),
+        ];
+        $this->assertEquals($carrierStatuses, $this->shipmentStatusProxy->setCarrierStatuses($carrierStatuses)->getCarrierStatuses());
+
+        $carrierStatus = $carrierStatusBuilder->getMock();
+        $carrierStatuses[] = $carrierStatus;
+        $this->assertEquals($carrierStatuses, $this->shipmentStatusProxy->addCarrierStatus($carrierStatus)->getCarrierStatuses());
 
         /** @var ShipmentInterface $shipment */
         $shipment = $this->getMockBuilder(ShipmentInterface::class)->getMock();
@@ -61,16 +75,6 @@ class ShipmentStatusProxyTest extends TestCase
         /** @var StatusInterface $status */
         $status = $this->getMockBuilder(StatusInterface::class)->getMock();
         $this->assertEquals($status, $this->shipmentStatusProxy->setStatus($status)->getStatus());
-    }
-
-    /** @test */
-    public function testAttributes()
-    {
-        $this->assertEquals('shipment-status-id-1', $this->shipmentStatusProxy->getId());
-        $this->assertEquals(ResourceInterface::TYPE_SHIPMENT_STATUS, $this->shipmentStatusProxy->getType());
-        $this->assertEquals('9001', $this->shipmentStatusProxy->getCarrierStatusCode());
-        $this->assertEquals('Confirmed at destination', $this->shipmentStatusProxy->getCarrierStatusDescription());
-        $this->assertEquals(1504801719, $this->shipmentStatusProxy->getCarrierTimestamp()->getTimestamp());
     }
 
     /** @test */
@@ -101,9 +105,8 @@ class ShipmentStatusProxyTest extends TestCase
             ->setId('shipment-id-1')
             ->getShipmentStatus();
 
-        $firstProxy->getCarrierTimestamp();
-        $firstProxy->getCarrierStatusDescription();
-        $firstProxy->getCarrierStatusCode();
+        $firstProxy->getCreatedAt();
+        $firstProxy->getCarrierStatuses();
 
         $this->assertEquals(
             1,

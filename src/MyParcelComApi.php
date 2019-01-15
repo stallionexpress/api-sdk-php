@@ -17,11 +17,11 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceFactoryInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\ApiSdk\Resources\ResourceFactory;
 use MyParcelCom\ApiSdk\Resources\Service;
-use MyParcelCom\ApiSdk\Shipments\ContractSelector;
 use MyParcelCom\ApiSdk\Shipments\PriceCalculator;
 use MyParcelCom\ApiSdk\Shipments\ServiceMatcher;
 use MyParcelCom\ApiSdk\Utils\UrlBuilder;
@@ -309,6 +309,54 @@ class MyParcelComApi implements MyParcelComApiInterface
     /**
      * {@inheritdoc}
      */
+    public function getServiceRates(array $filters = [])
+    {
+        $url = new UrlBuilder($this->apiUri . self::PATH_SERVICE_RATES);
+        $url->addQuery($this->arrayToFilter($filters));
+
+        return $this->getResourceCollection($url->getUrl(), self::TTL_WEEK);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getServiceRatesForShipment(ShipmentInterface $shipment)
+    {
+        $services = $this->getServices($shipment);
+        $serviceIds = [];
+        foreach ($services as $service) {
+            $serviceIds[] = $service->getId();
+        }
+
+        $url = new UrlBuilder($this->apiUri . self::PATH_SERVICE_RATES);
+        $url->addQuery([
+            'filter[weight]'  => $shipment->getPhysicalProperties()->getWeight(),
+            'filter[service]' => implode(',', $serviceIds),
+        ]);
+
+        $serviceRates = $this->getResourceCollection($url->getUrl(), self::TTL_WEEK);
+
+        $shipmentOptionIds = array_map(function (ServiceOptionInterface $serviceOption) {
+            return $serviceOption->getId();
+        }, $shipment->getServiceOptions());
+
+        $matchingServiceRates = [];
+        foreach ($serviceRates as $serviceRate) {
+            $serviceRateOptionIds = array_map(function (ServiceOptionInterface $serviceOption) {
+                return $serviceOption->getId();
+            }, $serviceRate->getServiceOptions());
+
+            if (empty(array_diff($shipmentOptionIds, $serviceRateOptionIds))) {
+                $matchingServiceRates[] = $serviceRate;
+            }
+        }
+
+        return new ArrayCollection($matchingServiceRates);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getShipments(ShopInterface $shop = null)
     {
         $url = new UrlBuilder($this->apiUri . self::PATH_SHIPMENTS);
@@ -345,6 +393,12 @@ class MyParcelComApi implements MyParcelComApiInterface
      */
     public function createShipment(ShipmentInterface $shipment)
     {
+        if ($shipment->getPhysicalProperties() === null || $shipment->getPhysicalProperties()->getWeight() === null) {
+            throw new InvalidResourceException(
+                'Cannot create shipment without weight'
+            );
+        }
+
         // If no shop is set, use the default shop.
         if ($shipment->getShop() === null) {
             $shipment->setShop($this->getDefaultShop());
@@ -369,9 +423,8 @@ class MyParcelComApi implements MyParcelComApiInterface
             );
         }
 
-        // If no contract is set, select the cheapest one.
-        if ($shipment->getServiceContract() === null) {
-            $this->determineContract($shipment);
+        if ($shipment->getService() === null || $shipment->getContract() === null) {
+            $this->determineServiceAndContract($shipment);
         }
 
         $validator = new ShipmentValidator($shipment);
@@ -408,42 +461,63 @@ class MyParcelComApi implements MyParcelComApiInterface
     }
 
     /**
-     * Determine what service contract to use for given shipment and update the
-     * shipment.
+     * Determine which service and contract to use for given shipment
+     * and update the shipment.
      *
      * @param ShipmentInterface $shipment
      * @return $this
      */
-    protected function determineContract(ShipmentInterface $shipment)
+    protected function determineServiceAndContract(ShipmentInterface $shipment)
     {
-        $selector = new ContractSelector();
         $calculator = new PriceCalculator();
 
-        $allServices = [];
-        $collection = $this->getServices($shipment);
-        for ($offset = 0; $offset < $collection->count(); $offset += 30) {
-            $allServices = array_merge($allServices, $collection->offset($offset)->get());
+        if ($shipment->getService() !== null) {
+            $services = [$shipment->getService()];
+        } else {
+            $services = [];
+            $collection = $this->getServices($shipment)->limit(30);
+            for ($offset = 0; $offset < $collection->count(); $offset += 30) {
+                $services = array_merge($services, $collection->offset($offset)->get());
+            }
         }
 
-        $contracts = array_map(
-            function (ServiceInterface $service) use ($selector, $calculator, $shipment) {
-                $contract = $selector->selectCheapest($shipment, $service->getServiceContracts());
+        $serviceIds = implode(',', array_map(function (ServiceInterface $service) {
+            return $service->getId();
+        }, $services));
 
-                return [
-                    'price'    => $calculator->calculate($shipment, $contract),
-                    'contract' => $contract,
-                    'service'  => $service,
-                ];
-            },
-            $allServices
-        );
+        $filters = [
+            'weight'  => $shipment->getPhysicalProperties()->getWeight(),
+            'service' => $serviceIds,
+        ];
 
-        usort($contracts, function ($a, $b) {
+        if ($shipment->getContract() !== null) {
+            $filters['contract'] = $shipment->getContract()->getId();
+        };
+
+        $serviceRates = $this->getServiceRates($filters);
+
+        $rates = [];
+        foreach ($serviceRates as $serviceRate) {
+            $price = $calculator->calculate($shipment, $serviceRate);
+
+            if ($price === null) {
+                continue;
+            }
+
+            $rates[] = [
+                'price'    => $price,
+                'service'  => $serviceRate->getService(),
+                'contract' => $serviceRate->getContract(),
+            ];
+        }
+
+        usort($rates, function ($a, $b) {
             return $a['price'] - $b['price'];
         });
 
-        $cheapest = reset($contracts);
-        $shipment->setServiceContract($cheapest['contract']);
+        $cheapest = reset($rates);
+        $shipment->setService($cheapest['service']);
+        $shipment->setContract($cheapest['contract']);
 
         return $this;
     }
@@ -640,68 +714,10 @@ class MyParcelComApi implements MyParcelComApiInterface
         }
 
         foreach ($json as $resourceData) {
-            $attributes = $this->flattenResourceData($resourceData);
-
-            $resources[] = $this->resourceFactory->create($resourceData['type'], $attributes);
+            $resources[] = $this->resourceFactory->create($resourceData['type'], $resourceData);
         }
 
         return $resources;
-    }
-
-    /**
-     * Flattens the data of the resource into a single array, effectively
-     * removing the `attributes` and `relationships` arrays.
-     *
-     * @deprecated The flattening of all resource attributes should be in favour
-     *             of having the factories handle it. Which currently is not the
-     *             case.
-     *
-     * @param array $resourceData
-     * @return array
-     */
-    private function flattenResourceData(array $resourceData)
-    {
-        $data = [
-            'id'   => $resourceData['id'],
-            'type' => $resourceData['type'],
-        ];
-
-        if (isset($resourceData['attributes'])) {
-            $data += $resourceData['attributes'];
-        }
-
-        if (isset($resourceData['relationships'])) {
-            $data += array_map(
-                [$this, 'flattenRelationship'],
-                $resourceData['relationships']
-            );
-        }
-
-        if (isset($resourceData['meta'])) {
-            $data['meta'] = $resourceData['meta'];
-        }
-
-        if (isset($resourceData['links'])) {
-            $data['links'] = $resourceData['links'];
-        }
-
-        return $data;
-    }
-
-    /**
-     * @param array $relationship
-     * @return array
-     */
-    private function flattenRelationship(array $relationship)
-    {
-        $data = isset($relationship['data'])
-            ? $relationship['data']
-            : [];
-        $links = isset($relationship['links'])
-            ? $relationship['links']
-            : [];
-
-        return $data + $links;
     }
 
     /**

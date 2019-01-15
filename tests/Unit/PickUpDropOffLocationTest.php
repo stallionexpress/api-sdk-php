@@ -122,6 +122,14 @@ class PickUpDropOffLocationTest extends TestCase
     }
 
     /** @test */
+    public function testItSetsAndGetsCategories()
+    {
+        $location = new PickUpDropOffLocation();
+
+        $this->assertEquals(['drop-off'], $location->setCategories(['drop-off'])->getCategories());
+    }
+
+    /** @test */
     public function testJsonSerialize()
     {
         $address = $this->getMockBuilder(AddressInterface::class)
@@ -177,7 +185,8 @@ class PickUpDropOffLocationTest extends TestCase
             ->setAddress($address)
             ->setOpeningHours([$openingHour])
             ->setPosition($position)
-            ->setDistance(5000);
+            ->setDistance(5000)
+            ->setCategories(['drop-off', 'pick-up']);
 
         $this->assertEquals([
             'id'         => 'pudo-id',
@@ -208,6 +217,10 @@ class PickUpDropOffLocationTest extends TestCase
                 'position'      => [
                     'latitude'  => 1.2345,
                     'longitude' => 2.34567,
+                ],
+                'categories'    => [
+                    'drop-off',
+                    'pick-up',
                 ],
             ],
             'meta'       => [

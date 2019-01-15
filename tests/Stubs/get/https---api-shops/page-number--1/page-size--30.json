@@ -5,6 +5,7 @@
       "type": "shops",
       "attributes": {
         "name": "Testshop",
+        "website": "https://test.shop",
         "billing_address": {
           "street_1": "Hoofdweg",
           "street_number": 679,

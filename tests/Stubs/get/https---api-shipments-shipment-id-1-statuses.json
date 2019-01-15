@@ -4,9 +4,14 @@
       "type": "shipment-statuses",
       "id": "shipment-status-id-1",
       "attributes": {
-        "carrier_status_code": "9001",
-        "carrier_status_description": "Confirmed at destination",
-        "carrier_timestamp": 1504801719
+        "carrier_statuses": [
+          {
+            "code": "9001",
+            "description": "Confirmed at destination",
+            "assigned_at": 1504801719
+          }
+        ],
+        "created_at": 1504801719
       },
       "relationships": {
         "status": {
@@ -36,9 +41,19 @@
       "type": "shipment-statuses",
       "id": "shipment-status-id-2",
       "attributes": {
-        "carrier_status_code": "4567",
-        "carrier_status_description": "Delivery on it's way",
-        "carrier_timestamp": 1504701719
+        "carrier_statuses": [
+          {
+            "code": "4567-1",
+            "description": "Delivery moved a couple of meters",
+            "assigned_at": 1504701750
+          },
+          {
+            "code": "4567",
+            "description": "Delivery on it's way",
+            "assigned_at": 1504701719
+          }
+        ],
+        "created_at": 1504701719
       },
       "relationships": {
         "status": {
@@ -68,9 +83,14 @@
       "type": "shipment-statuses",
       "id": "shipment-status-id-3",
       "attributes": {
-        "carrier_status_code": "10001",
-        "carrier_status_description": "Parcel received",
-        "carrier_timestamp": 1504501719
+        "carrier_statuses": [
+          {
+            "code": "10001",
+            "description": "Parcel received",
+            "assigned_at": 1504501719
+          }
+        ],
+        "created_at": 1504501720
       },
       "relationships": {
         "status": {
@@ -100,9 +120,14 @@
       "type": "shipment-statuses",
       "id": "shipment-status-id-4",
       "attributes": {
-        "carrier_status_code": null,
-        "carrier_status_description": null,
-        "carrier_timestamp": 1504101719
+        "carrier_statuses": [
+          {
+            "code": null,
+            "description": null,
+            "assigned_at": 1504101719
+          }
+        ],
+        "created_at": 1504101722
       },
       "relationships": {
         "status": {
@@ -132,9 +157,14 @@
       "type": "shipment-statuses",
       "id": "shipment-status-id-5",
       "attributes": {
-        "carrier_status_code": null,
-        "carrier_status_description": null,
-        "carrier_timestamp": 1504001719
+        "carrier_statuses": [
+          {
+            "code": null,
+            "description": null,
+            "assigned_at": 1504101718
+          }
+        ],
+        "created_at": 1504101718
       },
       "relationships": {
         "status": {

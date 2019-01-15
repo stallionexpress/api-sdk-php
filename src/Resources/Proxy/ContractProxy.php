@@ -2,15 +2,14 @@
 
 namespace MyParcelCom\ApiSdk\Resources\Proxy;
 
-use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceContractInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 use MyParcelCom\ApiSdk\Resources\Traits\ProxiesResource;
 
-class CarrierContractProxy implements CarrierContractInterface, ResourceProxyInterface
+class ContractProxy implements ContractInterface, ResourceProxyInterface
 {
     use JsonSerializable;
     use ProxiesResource;
@@ -19,7 +18,7 @@ class CarrierContractProxy implements CarrierContractInterface, ResourceProxyInt
     private $id;
 
     /** @var string */
-    private $type = ResourceInterface::TYPE_CARRIER_CONTRACT;
+    private $type = ResourceInterface::TYPE_CONTRACT;
 
     /**
      * @return string
@@ -87,33 +86,22 @@ class CarrierContractProxy implements CarrierContractInterface, ResourceProxyInt
     }
 
     /**
-     * @param ServiceContractInterface[] $serviceContracts
+     * @param string $status
      * @return $this
      */
-    public function setServiceContracts(array $serviceContracts)
+    public function setStatus($status)
     {
-        $this->getResource()->setServiceContracts($serviceContracts);
+        $this->getResource()->setStatus($status);
 
         return $this;
     }
 
     /**
-     * @param ServiceContractInterface $serviceContract
-     * @return $this
+     * @return string
      */
-    public function addServiceContract(ServiceContractInterface $serviceContract)
+    public function getStatus()
     {
-        $this->getResource()->addServiceContract($serviceContract);
-
-        return $this;
-    }
-
-    /**
-     * @return ServiceContractInterface[]
-     */
-    public function getServiceContracts()
-    {
-        return $this->getResource()->getServiceContracts();
+        return $this->getResource()->getStatus();
     }
 
     /**

@@ -2,6 +2,8 @@
 
 namespace MyParcelCom\ApiSdk\Tests\Unit;
 
+use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierStatusInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ErrorInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\StatusInterface;
 use MyParcelCom\ApiSdk\Resources\ShipmentStatus;
@@ -24,25 +26,46 @@ class ShipmentStatusTest extends TestCase
     }
 
     /** @test */
-    public function testCarrierStatusCode()
+    public function testCarrierStatus()
     {
+        $mock = $this->getMockClass(CarrierStatusInterface::class);
+        $carrierStatus = new $mock();
+
         $shipmentStatus = new ShipmentStatus();
-        $this->assertEquals('A01', $shipmentStatus->setCarrierStatusCode('A01')->getCarrierStatusCode());
+        $this->assertEquals([$carrierStatus], $shipmentStatus->setCarrierStatuses([$carrierStatus])->getCarrierStatuses());
+        $this->assertEquals(
+            [
+                $carrierStatus,
+                $carrierStatus,
+            ],
+            $shipmentStatus->addCarrierStatus($carrierStatus)->getCarrierStatuses()
+        );
     }
 
     /** @test */
-    public function testCarrierStatusDescription()
+    public function testErrors()
     {
+        $mock = $this->getMockClass(ErrorInterface::class);
+        $error = new $mock();
+
         $shipmentStatus = new ShipmentStatus();
-        $this->assertEquals('We have received the shipment', $shipmentStatus->setCarrierStatusDescription('We have received the shipment')->getCarrierStatusDescription());
+        $this->assertEquals([$error, $error], $shipmentStatus->setErrors([$error, $error])->getErrors());
+        $this->assertEquals(
+            [
+                $error,
+                $error,
+                $error,
+            ],
+            $shipmentStatus->addError($error)->getErrors()
+        );
     }
 
     /** @test */
-    public function testCarrierTimestamp()
+    public function testCreatedAt()
     {
         $shipmentStatus = new ShipmentStatus();
-        $this->assertEquals((new \DateTime())->setTimestamp(1504801719), $shipmentStatus->setCarrierTimestamp(1504801719)->getCarrierTimestamp());
-        $this->assertEquals((new \DateTime())->setTimestamp(1504801720), $shipmentStatus->setCarrierTimestamp((new \DateTime())->setTimestamp(1504801720))->getCarrierTimestamp());
+        $this->assertEquals((new \DateTime())->setTimestamp(1504801719), $shipmentStatus->setCreatedAt(1504801719)->getCreatedAt());
+        $this->assertEquals((new \DateTime())->setTimestamp(1504801720), $shipmentStatus->setCreatedAt((new \DateTime())->setTimestamp(1504801720))->getCreatedAt());
     }
 
     /** @test */
@@ -80,6 +103,19 @@ class ShipmentStatusTest extends TestCase
                 'type' => 'shipments',
             ]);
 
+        $carrierStatus = $this->getMockBuilder(CarrierStatusInterface::class)
+            ->disableOriginalConstructor()
+            ->disableOriginalClone()
+            ->disableArgumentCloning()
+            ->disallowMockingUnknownTypes()
+            ->getMock();
+        $carrierStatus->method('jsonSerialize')
+            ->willReturn([
+                'code'        => 'A01',
+                'description' => 'We have received the shipment',
+                'assigned_At' => 1504801719,
+            ]);
+
         $status = $this->getMockBuilder(StatusInterface::class)
             ->disableOriginalConstructor()
             ->disableOriginalClone()
@@ -94,9 +130,8 @@ class ShipmentStatusTest extends TestCase
 
         $shipmentStatus = (new ShipmentStatus())
             ->setId('shipment-status-id')
-            ->setCarrierStatusCode('A01')
-            ->setCarrierStatusDescription('We have received the shipment')
-            ->setCarrierTimestamp(1504801719)
+            ->setCarrierStatuses([$carrierStatus])
+            ->setCreatedAt(1504801799)
             ->setShipment($shipment)
             ->setStatus($status);
 
@@ -104,9 +139,14 @@ class ShipmentStatusTest extends TestCase
             'id'            => 'shipment-status-id',
             'type'          => 'shipment-statuses',
             'attributes'    => [
-                'carrier_status_code'        => 'A01',
-                'carrier_status_description' => 'We have received the shipment',
-                'carrier_timestamp'          => 1504801719,
+                'carrier_statuses' => [
+                    [
+                        'code'        => 'A01',
+                        'description' => 'We have received the shipment',
+                        'assigned_At' => 1504801719,
+                    ],
+                ],
+                'created_at'       => 1504801799,
             ],
             'relationships' => [
                 'status'   => [

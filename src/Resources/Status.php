@@ -11,6 +11,7 @@ class Status implements StatusInterface
     use JsonSerializable;
 
     const ATTRIBUTE_CODE = 'code';
+    const ATTRIBUTE_RESOURCE_TYPE = 'resource_type';
     const ATTRIBUTE_LEVEL = 'level';
     const ATTRIBUTE_NAME = 'name';
     const ATTRIBUTE_DESCRIPTION = 'description';
@@ -28,10 +29,11 @@ class Status implements StatusInterface
 
     /** @var array */
     private $attributes = [
-        self::ATTRIBUTE_CODE        => null,
-        self::ATTRIBUTE_LEVEL       => null,
-        self::ATTRIBUTE_NAME        => null,
-        self::ATTRIBUTE_DESCRIPTION => null,
+        self::ATTRIBUTE_CODE          => null,
+        self::ATTRIBUTE_RESOURCE_TYPE => null,
+        self::ATTRIBUTE_LEVEL         => null,
+        self::ATTRIBUTE_NAME          => null,
+        self::ATTRIBUTE_DESCRIPTION   => null,
     ];
 
     /**
@@ -78,6 +80,25 @@ class Status implements StatusInterface
     public function getCode()
     {
         return $this->attributes[self::ATTRIBUTE_CODE];
+    }
+
+    /**
+     * @param string $resourceType
+     * @return $this
+     */
+    public function setResourceType($resourceType)
+    {
+        $this->attributes[self::ATTRIBUTE_RESOURCE_TYPE] = $resourceType;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getResourceType()
+    {
+        return $this->attributes[self::ATTRIBUTE_RESOURCE_TYPE];
     }
 
     /**

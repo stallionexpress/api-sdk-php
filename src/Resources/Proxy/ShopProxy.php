@@ -70,6 +70,25 @@ class ShopProxy implements ShopInterface, ResourceProxyInterface
     }
 
     /**
+     * @param string $website
+     * @return $this
+     */
+    public function setWebsite($website)
+    {
+        $this->getResource()->setWebsite($website);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWebsite()
+    {
+        return $this->getResource()->getWebsite();
+    }
+
+    /**
      * @param AddressInterface $billingAddress
      * @return $this
      */

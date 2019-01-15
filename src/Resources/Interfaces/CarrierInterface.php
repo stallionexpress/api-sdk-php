@@ -20,4 +20,26 @@ interface CarrierInterface extends ResourceInterface
      * @return string
      */
     public function getName();
+
+    /**
+     * @param string $code
+     * @return $this
+     */
+    public function setCode($code);
+
+    /**
+     * @return string
+     */
+    public function getCode();
+
+    /**
+     * @param array $format
+     * @return $this
+     */
+    public function setCredentialsFormat(array $format);
+
+    /**
+     * @return array
+     */
+    public function getCredentialsFormat();
 }
