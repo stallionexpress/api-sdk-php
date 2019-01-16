@@ -2,8 +2,8 @@
 
 namespace MyParcelCom\ApiSdk\Tests\Feature;
 
-use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Exception\RequestException;
+use Http\Client\HttpClient;
+use MyParcelCom\ApiSdk\Http\Exceptions\RequestException;
 use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
 use MyParcelCom\ApiSdk\Collection\CollectionInterface;
 use MyParcelCom\ApiSdk\Exceptions\InvalidResourceException;
@@ -33,7 +33,7 @@ class MyParcelComApiTest extends TestCase
     private $authenticator;
     /** @var MyParcelComApi */
     private $api;
-    /** @var ClientInterface */
+    /** @var HttpClient */
     private $client;
 
     public function setUp()
@@ -42,8 +42,7 @@ class MyParcelComApiTest extends TestCase
 
         $this->client = $this->getClientMock();
 
-        $this->api = (new MyParcelComApi('https://api'))
-            ->setHttpClient($this->client)
+        $this->api = (new MyParcelComApi('https://api', $this->client))
             ->authenticate($this->authenticator);
     }
 
@@ -52,7 +51,7 @@ class MyParcelComApiTest extends TestCase
     {
         $this->assertNull(MyParcelComApi::getSingleton());
 
-        $api = MyParcelComApi::createSingleton($this->authenticator);
+        $api = MyParcelComApi::createSingleton($this->authenticator, 'https://api', $this->client);
         $this->assertInstanceOf(MyParcelComApi::class, $api);
         $this->assertEquals($api, MyParcelComApi::getSingleton());
     }
@@ -60,7 +59,7 @@ class MyParcelComApiTest extends TestCase
     /** @test */
     public function testAuthenticate()
     {
-        $api = new MyParcelComApi();
+        $api = new MyParcelComApi('https://api', $this->client);
 
         $this->assertEquals(
             $api,

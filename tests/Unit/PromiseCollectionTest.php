@@ -3,7 +3,7 @@
 namespace MyParcelCom\ApiSdk\Tests\Unit;
 
 use MyParcelCom\ApiSdk\Collection\CollectionInterface;
-use MyParcelCom\ApiSdk\Collection\PromiseCollection;
+use MyParcelCom\ApiSdk\Collection\RequestCollection;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use function GuzzleHttp\Promise\promise_for;
@@ -30,7 +30,7 @@ class PromiseCollectionTest extends TestCase
             $response = $this->createMock(ResponseInterface::class);
             $response->method('getBody')->willReturn('{"data": "something something", "meta": {"total_records": 123}}');
 
-            return promise_for($response);
+            return $response;
         };
 
         $resourceCreator = function ($data) {
@@ -45,7 +45,7 @@ class PromiseCollectionTest extends TestCase
             return $resources;
         };
 
-        $this->collection = new PromiseCollection($promiseCreator, $resourceCreator);
+        $this->collection = new RequestCollection($promiseCreator, $resourceCreator);
     }
 
     /** @test */

@@ -2,12 +2,11 @@
 
 namespace MyParcelCom\ApiSdk\Authentication;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\RequestOptions;
+use GuzzleHttp\Psr7\Request;
+use Http\Discovery\HttpClientDiscovery;
+use MyParcelCom\ApiSdk\Http\Exceptions\RequestException;
+use Http\Client\HttpClient;
 use MyParcelCom\ApiSdk\Exceptions\AuthenticationException;
-use Psr\Http\Message\ResponseInterface;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Cache\Simple\FilesystemCache;
 
@@ -30,7 +29,7 @@ class ClientCredentials implements AuthenticatorInterface
     /** @var CacheInterface */
     private $cache;
 
-    /** @var ClientInterface */
+    /** @var HttpClient */
     private $httpClient;
 
     /**
@@ -39,17 +38,27 @@ class ClientCredentials implements AuthenticatorInterface
      * sandbox, the `$authUri` should be set to the correct uri. Optionally a
      * cache can be supplied to store the api-key in.
      *
-     * @param string              $clientId
-     * @param string              $clientSecret
-     * @param string              $authUri
-     * @param CacheInterface|null $cache
+     * @param string               $clientId
+     * @param string               $clientSecret
+     * @param string               $authUri
+     * @param CacheInterface|null  $cache
+     * @param HttpClient|null $httpClient
      */
-    public function __construct($clientId, $clientSecret, $authUri = 'https://sandbox-auth.myparcel.com', CacheInterface $cache = null)
-    {
+    public function __construct(
+        $clientId,
+        $clientSecret,
+        $authUri = 'https://sandbox-auth.myparcel.com',
+        CacheInterface $cache = null,
+        HttpClient $httpClient = null
+    ) {
         $this->clientSecret = $clientSecret;
         $this->clientId = $clientId;
         $this->authUri = $authUri;
         $this->cache = $cache ?: new FilesystemCache('myparcelcom');
+
+        if ($httpClient !== null) {
+            $this->setHttpClient($httpClient);
+        }
     }
 
     /**
@@ -103,19 +112,25 @@ class ClientCredentials implements AuthenticatorInterface
     {
         $this->setAuthenticating();
 
-        return $this->getHttpClient()->requestAsync(
+        $body = json_encode([
+            'grant_type'    => self::GRANT_CLIENT_CREDENTIALS,
+            'client_id'     => $this->clientId,
+            'client_secret' => $this->clientSecret,
+            'scope'         => self::SCOPES,
+        ]);
+
+        $request = new Request(
             'post',
             $this->authUri . self::PATH_ACCESS_TOKEN,
             [
-                RequestOptions::JSON => [
-                    'grant_type'    => self::GRANT_CLIENT_CREDENTIALS,
-                    'client_id'     => $this->clientId,
-                    'client_secret' => $this->clientSecret,
-                    'scope'         => self::SCOPES,
-                ],
-            ]
-        )->then(function (ResponseInterface $response) {
-            $data = \GuzzleHttp\json_decode((string)$response->getBody(), true);
+                self::HEADER_ACCEPT => self::MIME_TYPE_JSONAPI
+            ],
+            $body
+        );
+
+        try {
+            $response = $this->getHttpClient()->sendRequest($request);
+            $data = json_decode((string)$response->getBody(), true);
 
             $header = [
                 self::HEADER_AUTH => $data['token_type'] . ' ' . $data['access_token'],
@@ -124,11 +139,15 @@ class ClientCredentials implements AuthenticatorInterface
             $this->setAuthenticating(false);
             $this->setCachedHeader($header, $data['expires_in']);
 
+            if ($response->getStatusCode() !== 200) {
+                throw new RequestException($request, $response);
+            }
+
             return $header;
-        }, function (RequestException $reason) {
+        } catch (RequestException $exception) {
             $this->setAuthenticating(false);
-            $this->handleRequestException($reason);
-        })->wait();
+            $this->handleRequestException($exception);
+        }
     }
 
     /**
@@ -171,10 +190,10 @@ class ClientCredentials implements AuthenticatorInterface
      * Set the http client to use. This can be used when extra options need to
      * be set on the client.
      *
-     * @param ClientInterface $client
+     * @param HttpClient $client
      * @return $this
      */
-    public function setHttpClient(ClientInterface $client)
+    public function setHttpClient(HttpClient $client)
     {
         $this->httpClient = $client;
 
@@ -184,12 +203,12 @@ class ClientCredentials implements AuthenticatorInterface
     /**
      * Get the http client to connect to the auth server.
      *
-     * @return ClientInterface
+     * @return HttpClient
      */
     protected function getHttpClient()
     {
         if (!isset($this->httpClient)) {
-            $this->httpClient = new Client();
+            $this->httpClient = HttpClientDiscovery::find();
         }
 
         return $this->httpClient;
