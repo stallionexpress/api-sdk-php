@@ -3,10 +3,10 @@
 namespace MyParcelCom\ApiSdk\Authentication;
 
 use GuzzleHttp\Psr7\Request;
-use Http\Discovery\HttpClientDiscovery;
-use MyParcelCom\ApiSdk\Http\Exceptions\RequestException;
 use Http\Client\HttpClient;
+use Http\Discovery\HttpClientDiscovery;
 use MyParcelCom\ApiSdk\Exceptions\AuthenticationException;
+use MyParcelCom\ApiSdk\Http\Exceptions\RequestException;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Cache\Simple\FilesystemCache;
 
@@ -38,11 +38,11 @@ class ClientCredentials implements AuthenticatorInterface
      * sandbox, the `$authUri` should be set to the correct uri. Optionally a
      * cache can be supplied to store the api-key in.
      *
-     * @param string               $clientId
-     * @param string               $clientSecret
-     * @param string               $authUri
-     * @param CacheInterface|null  $cache
-     * @param HttpClient|null $httpClient
+     * @param string              $clientId
+     * @param string              $clientSecret
+     * @param string              $authUri
+     * @param CacheInterface|null $cache
+     * @param HttpClient|null     $httpClient
      */
     public function __construct(
         $clientId,
@@ -123,13 +123,17 @@ class ClientCredentials implements AuthenticatorInterface
             'post',
             $this->authUri . self::PATH_ACCESS_TOKEN,
             [
-                self::HEADER_ACCEPT => self::MIME_TYPE_JSONAPI
+                self::HEADER_CONTENT_TYPE => self::MIME_TYPE_JSON,
             ],
             $body
         );
 
         try {
             $response = $this->getHttpClient()->sendRequest($request);
+            if ($response->getStatusCode() >= 400) {
+                throw new RequestException($request, $response);
+            }
+
             $data = json_decode((string)$response->getBody(), true);
 
             $header = [
@@ -138,10 +142,6 @@ class ClientCredentials implements AuthenticatorInterface
 
             $this->setAuthenticating(false);
             $this->setCachedHeader($header, $data['expires_in']);
-
-            if ($response->getStatusCode() !== 200) {
-                throw new RequestException($request, $response);
-            }
 
             return $header;
         } catch (RequestException $exception) {
