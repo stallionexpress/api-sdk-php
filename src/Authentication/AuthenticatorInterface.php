@@ -8,7 +8,9 @@ interface AuthenticatorInterface
 {
     const HEADER_AUTH = 'Authorization';
     const HEADER_ACCEPT = 'Accept';
+    const HEADER_CONTENT_TYPE = 'Content-Type';
     const MIME_TYPE_JSONAPI = 'application/vnd.api+json';
+    const MIME_TYPE_JSON = 'application/json';
     const GRANT_CLIENT_CREDENTIALS = 'client_credentials';
     const SCOPES = '*';
 

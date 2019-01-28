@@ -2,7 +2,7 @@
 
 namespace MyParcelCom\ApiSdk\Tests\Feature\Proxy;
 
-use GuzzleHttp\ClientInterface;
+use Http\Client\HttpClient;
 use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
 use MyParcelCom\ApiSdk\MyParcelComApi;
 use MyParcelCom\ApiSdk\MyParcelComApiInterface;
@@ -17,7 +17,7 @@ class RegionProxyTest extends TestCase
 {
     use MocksApiCommunication;
 
-    /** @var ClientInterface */
+    /** @var HttpClient */
     private $client;
 
     /** @var AuthenticatorInterface */
@@ -35,9 +35,8 @@ class RegionProxyTest extends TestCase
 
         $this->client = $this->getClientMock();
         $this->authenticator = $this->getAuthenticatorMock();
-        $this->api = (new MyParcelComApi('https://api'))
+        $this->api = (new MyParcelComApi('https://api', $this->client))
             ->setCache(new NullCache())
-            ->setHttpClient($this->client)
             ->authenticate($this->authenticator);
 
         $this->regionProxy = (new RegionProxy())

@@ -2,16 +2,15 @@
 
 namespace MyParcelCom\ApiSdk;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Promise\PromiseInterface;
-use GuzzleHttp\RequestOptions;
+use GuzzleHttp\Psr7\Request;
+use Http\Client\HttpClient;
+use Http\Discovery\HttpClientDiscovery;
 use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
 use MyParcelCom\ApiSdk\Collection\ArrayCollection;
 use MyParcelCom\ApiSdk\Collection\CollectionInterface;
-use MyParcelCom\ApiSdk\Collection\PromiseCollection;
+use MyParcelCom\ApiSdk\Collection\RequestCollection;
 use MyParcelCom\ApiSdk\Exceptions\InvalidResourceException;
+use MyParcelCom\ApiSdk\Http\Exceptions\RequestException;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceFactoryInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
@@ -26,10 +25,11 @@ use MyParcelCom\ApiSdk\Shipments\PriceCalculator;
 use MyParcelCom\ApiSdk\Shipments\ServiceMatcher;
 use MyParcelCom\ApiSdk\Utils\UrlBuilder;
 use MyParcelCom\ApiSdk\Validators\ShipmentValidator;
+use MyParcelCom\ApiSdk\Http\Contracts\HttpClient\RequestExceptionInterface;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Cache\Simple\FilesystemCache;
-use function GuzzleHttp\Promise\promise_for;
 use function GuzzleHttp\Psr7\parse_response;
 use function GuzzleHttp\Psr7\str;
 
@@ -47,7 +47,7 @@ class MyParcelComApi implements MyParcelComApiInterface
     /** @var AuthenticatorInterface */
     protected $authenticator;
 
-    /** @var ClientInterface */
+    /** @var HttpClient */
     private $client;
 
     /** @var bool */
@@ -62,6 +62,7 @@ class MyParcelComApi implements MyParcelComApiInterface
      *
      * @param AuthenticatorInterface        $authenticator
      * @param string                        $apiUri
+     * @param HttpClient|null          $httpClient
      * @param CacheInterface|null           $cache
      * @param ResourceFactoryInterface|null $resourceFactory
      * @return MyParcelComApi
@@ -69,10 +70,11 @@ class MyParcelComApi implements MyParcelComApiInterface
     public static function createSingleton(
         AuthenticatorInterface $authenticator,
         $apiUri = 'https://sandbox-api.myparcel.com',
+        HttpClient $httpClient = null,
         CacheInterface $cache = null,
         ResourceFactoryInterface $resourceFactory = null
     ) {
-        return self::$singleton = (new self($apiUri, $cache, $resourceFactory))
+        return self::$singleton = (new self($apiUri, $httpClient, $cache, $resourceFactory))
             ->authenticate($authenticator);
     }
 
@@ -92,15 +94,23 @@ class MyParcelComApi implements MyParcelComApiInterface
      * default factory is used.
      *
      * @param string                        $apiUri
+     * @param HttpClient|null          $httpClient
      * @param CacheInterface|null           $cache
      * @param ResourceFactoryInterface|null $resourceFactory
      */
     public function __construct(
         $apiUri = 'https://sandbox-api.myparcel.com',
+        HttpClient $httpClient = null,
         CacheInterface $cache = null,
         ResourceFactoryInterface $resourceFactory = null
     ) {
-        $this->setApiUri($apiUri);
+        if ($httpClient === null) {
+            $httpClient = HttpClientDiscovery::find();
+        }
+
+        $this
+            ->setHttpClient($httpClient)
+            ->setApiUri($apiUri);
 
         // Either use the given cache or instantiate a new one that uses the
         // filesystem as cache. By default the `FilesystemCache` will use the
@@ -136,7 +146,7 @@ class MyParcelComApi implements MyParcelComApiInterface
         }
 
         // These resources can be stored for a week.
-        $regions = $this->getResourceCollection($url->getUrl(), self::TTL_WEEK);
+        $regions = $this->getRequestCollection($url->getUrl(), self::TTL_WEEK);
 
         if ($regions->count() > 0 || $regionCode === null) {
             return $regions;
@@ -145,7 +155,7 @@ class MyParcelComApi implements MyParcelComApiInterface
         // Fallback to the country if the specific region is not in the API.
         $url->addQuery(['filter[region_code]' => null]);
 
-        return $this->getResourceCollection($url->getUrl(), self::TTL_WEEK);
+        return $this->getRequestCollection($url->getUrl(), self::TTL_WEEK);
     }
 
     /**
@@ -154,7 +164,7 @@ class MyParcelComApi implements MyParcelComApiInterface
     public function getCarriers()
     {
         // These resources can be stored for a week.
-        return $this->getResourceCollection($this->apiUri . self::PATH_CARRIERS, self::TTL_WEEK);
+        return $this->getRequestCollection($this->apiUri . self::PATH_CARRIERS, self::TTL_WEEK);
     }
 
     /**
@@ -196,22 +206,29 @@ class MyParcelComApi implements MyParcelComApiInterface
             $carrierUri = str_replace('{carrier_id}', $carrier->getId(), $uri->getUrl());
 
             // These resources can be stored for a week.
-            $promise = $this->getResourcesPromise($carrierUri, self::TTL_WEEK);
+            try {
+                $resources = $this->getResourcesArray($carrierUri, self::TTL_WEEK);
+            } catch (RequestException $exception) {
+                // When we are trying to fetch pudo locations for a specific
+                // carrier, we want to be able to distinct between 'no results'
+                // or 'something went wrong'. However, when we're not looking
+                // for carrier specific pudo locations, we just want to show
+                // pudo locations for the failing carrier as not aviilable (null).
+                if ($specificCarrier) {
+                    throw $exception;
+                }
+
+                $resources = [];
+            }
+
             if ($specificCarrier) {
-                return new ArrayCollection($promise->wait());
+                return new ArrayCollection($resources);
             }
 
             // When something fails while retrieving the locations
             // for a carrier, the locations of the other carriers should
             // still be returned. The failing carrier returns null.
-            $pudoLocations[$carrier->getId()] = $promise
-                ->then(function ($response) {
-                    return new ArrayCollection($response);
-                })
-                ->otherwise(function () {
-                    return null;
-                })
-                ->wait();
+            $pudoLocations[$carrier->getId()] = !empty($resources) ? new ArrayCollection($resources) : null;
         };
 
         return $pudoLocations;
@@ -224,7 +241,7 @@ class MyParcelComApi implements MyParcelComApiInterface
     {
         // These resources can be stored for a week. Or should be removed from
         // cache when updated
-        return $this->getResourceCollection($this->apiUri . self::PATH_SHOPS, self::TTL_WEEK);
+        return $this->getRequestCollection($this->apiUri . self::PATH_SHOPS, self::TTL_WEEK);
     }
 
     /**
@@ -232,8 +249,7 @@ class MyParcelComApi implements MyParcelComApiInterface
      */
     public function getDefaultShop()
     {
-        $shops = $this->getResourcesPromise($this->apiUri . self::PATH_SHOPS, self::TTL_WEEK)
-            ->wait();
+        $shops = $this->getResourcesArray($this->apiUri . self::PATH_SHOPS, self::TTL_WEEK);
 
         // For now the oldest shop will be the default shop.
         usort($shops, function (ShopInterface $shopA, ShopInterface $shopB) {
@@ -252,7 +268,7 @@ class MyParcelComApi implements MyParcelComApiInterface
         $url->addQuery($this->arrayToFilter($filters));
 
         if ($shipment === null) {
-            return $this->getResourceCollection($url->getUrl(), self::TTL_WEEK);
+            return $this->getRequestCollection($url->getUrl(), self::TTL_WEEK);
         }
 
         if ($shipment->getSenderAddress() === null) {
@@ -284,8 +300,7 @@ class MyParcelComApi implements MyParcelComApiInterface
         ]));
 
         // Services can be cached for a week.
-        $services = $this->getResourcesPromise($url->getUrl(), self::TTL_WEEK)
-            ->wait();
+        $services = $this->getResourcesArray($url->getUrl(), self::TTL_WEEK);
 
         $matcher = new ServiceMatcher();
         $services = array_values(array_filter($services, function (ServiceInterface $service) use ($shipment, $matcher) {
@@ -303,7 +318,7 @@ class MyParcelComApi implements MyParcelComApiInterface
         $url = new UrlBuilder($this->apiUri . self::PATH_SERVICES);
         $url->addQuery(['filter[carrier]' => $carrier->getId()]);
 
-        return $this->getResourceCollection($url->getUrl(), self::TTL_WEEK);
+        return $this->getRequestCollection($url->getUrl(), self::TTL_WEEK);
     }
 
     /**
@@ -314,7 +329,7 @@ class MyParcelComApi implements MyParcelComApiInterface
         $url = new UrlBuilder($this->apiUri . self::PATH_SERVICE_RATES);
         $url->addQuery($this->arrayToFilter($filters));
 
-        return $this->getResourceCollection($url->getUrl(), self::TTL_WEEK);
+        return $this->getRequestCollection($url->getUrl(), self::TTL_WEEK);
     }
 
     /**
@@ -334,7 +349,7 @@ class MyParcelComApi implements MyParcelComApiInterface
             'filter[service]' => implode(',', $serviceIds),
         ]);
 
-        $serviceRates = $this->getResourceCollection($url->getUrl(), self::TTL_WEEK);
+        $serviceRates = $this->getRequestCollection($url->getUrl(), self::TTL_WEEK);
 
         $shipmentOptionIds = array_map(function (ServiceOptionInterface $serviceOption) {
             return $serviceOption->getId();
@@ -365,7 +380,7 @@ class MyParcelComApi implements MyParcelComApiInterface
             $url->addQuery(['filter[shop]' => $shop->getId()]);
         }
 
-        return $this->getResourceCollection($url->getUrl(), self::TTL_WEEK);
+        return $this->getRequestCollection($url->getUrl(), self::TTL_WEEK);
     }
 
     /**
@@ -581,12 +596,13 @@ class MyParcelComApi implements MyParcelComApiInterface
     }
 
     /**
-     * Set the Guzzle client to use to connect to the api.
+     * Set the HTTP client to use to connect to the api. Given
+     * client must implement the PSR-18 client interface.
      *
-     * @param ClientInterface $client
+     * @param HttpClient $client
      * @return $this
      */
-    public function setHttpClient(ClientInterface $client)
+    public function setHttpClient(HttpClient $client)
     {
         $this->client = $client;
 
@@ -594,21 +610,12 @@ class MyParcelComApi implements MyParcelComApiInterface
     }
 
     /**
-     * Get the guzzle client.
+     * Get the HTTP client.
      *
-     * @return ClientInterface
+     * @return HttpClient
      */
     protected function getHttpClient()
     {
-        if (!isset($this->client)) {
-            $this->client = new Client([
-                'base_uri'              => $this->apiUri,
-                RequestOptions::HEADERS => [
-                    'Content-Type' => 'application/vnd.api+json',
-                ],
-            ]);
-        }
-
         return $this->client;
     }
 
@@ -619,27 +626,22 @@ class MyParcelComApi implements MyParcelComApiInterface
      *
      * @param string $uri
      * @param int    $ttl
-     * @return PromiseInterface
-     * @internal param string $path
+     * @return ResourceInterface[]
+     * @throws RequestException
      */
-    protected function getResourcesPromise($uri, $ttl = self::TTL_10MIN)
+    protected function getResourcesArray($uri, $ttl = self::TTL_10MIN)
     {
-        return $this->doRequest($uri, 'get', [], [], $ttl)
-            ->then(function (ResponseInterface $response) {
-                $json = \GuzzleHttp\json_decode((string)$response->getBody(), true);
+        $response = $this->doRequest($uri, 'get', [], [], $ttl);
+        $json = json_decode((string)$response->getBody(), true);
 
-                $resources = $this->jsonToResources($json['data']);
+        $resources = $this->jsonToResources($json['data']);
 
-                // If there is no next link, we don't have to retrieve any more data
-                if (!isset($json['links']['next'])) {
-                    return $resources;
-                }
+        // If there is no next link, we don't have to retrieve any more data
+        if (!isset($json['links']['next'])) {
+            return $resources;
+        }
 
-                return $this->getResourcesPromise($json['links']['next'])
-                    ->then(function ($nextResources) use ($resources) {
-                        return array_merge($resources, $nextResources);
-                    });
-            });
+        return array_merge($resources, $this->getResourcesArray($json['links']['next']));
     }
 
     /**
@@ -651,9 +653,9 @@ class MyParcelComApi implements MyParcelComApiInterface
      * @param int    $ttl
      * @return CollectionInterface
      */
-    protected function getResourceCollection($uri, $ttl = self::TTL_10MIN)
+    protected function getRequestCollection($uri, $ttl = self::TTL_10MIN)
     {
-        return new PromiseCollection(function ($pageNumber, $pageSize) use ($uri, $ttl) {
+        return new RequestCollection(function ($pageNumber, $pageSize) use ($uri, $ttl) {
             $url = (new UrlBuilder($uri))->addQuery([
                 'page[number]' => $pageNumber,
                 'page[size]'   => $pageSize,
@@ -677,26 +679,47 @@ class MyParcelComApi implements MyParcelComApiInterface
                 AuthenticatorInterface::HEADER_ACCEPT => AuthenticatorInterface::MIME_TYPE_JSONAPI,
             ];
 
-        $cacheKey = sha1($method . join($headers) . $uri);
-
-        if (($response = $this->cache->get($cacheKey))) {
-            return promise_for(parse_response($response));
+        // Attempt to fetch a response from cache
+        $cacheKey = sha1(join($headers) . $uri);
+        if (($response = $this->cache->get($cacheKey)) && strtolower($method) === 'get') {
+            return parse_response($response);
         }
 
-        return $this->getHttpClient()->requestAsync(
-            $method,
-            $uri,
-            [
-                RequestOptions::JSON    => $body,
-                RequestOptions::HEADERS => $headers,
-            ]
-        )->then(function (ResponseInterface $response) use ($cacheKey, $ttl) {
-            $this->cache->set($cacheKey, str($response), $ttl);
+        try {
+            $request = $this->buildRequest($uri, $method, $body, $headers);
+            $response = $this->client->sendRequest($request);
+
+            // Store the response in cache
+            if (strtolower($method) === 'get') {
+                $this->cache->set($cacheKey, str($response), $ttl);
+            }
+
+            if ($response->getStatusCode() >= 300) {
+                throw new RequestException($request, $response);
+            }
 
             return $response;
-        }, function (RequestException $reason) {
-            return $this->handleRequestException($reason);
-        });
+        } catch (RequestException $requestException) {
+            return $this->handleRequestException($requestException);
+        }
+    }
+
+    /**
+     * @param              $uri
+     * @param string       $method
+     * @param array|string $body
+     * @param array        $headers
+     * @return RequestInterface
+     */
+    private function buildRequest($uri, $method = 'GET', $body = '', array $headers = [])
+    {
+        if (is_array($body)) {
+            $body = json_encode($body);
+        }
+
+        $request = new Request($method, $uri, $headers, $body);
+
+        return $request;
     }
 
     /**
@@ -721,13 +744,13 @@ class MyParcelComApi implements MyParcelComApiInterface
     }
 
     /**
-     * @param RequestException $exception
-     * @return PromiseInterface
+     * @param RequestExceptionInterface $exception
+     * @return ResponseInterface
+     * @throws RequestExceptionInterface
      */
-    protected function handleRequestException(RequestException $exception)
+    protected function handleRequestException(RequestExceptionInterface $exception)
     {
         $response = $exception->getResponse();
-
         if ($response->getStatusCode() !== 401 || $this->authRetry) {
             // TODO actually do something
             // echo (string)$exception->getRequest()->getUri();
@@ -740,9 +763,10 @@ class MyParcelComApi implements MyParcelComApiInterface
         $authHeaders = $this->authenticator->getAuthorizationHeader(true);
 
         $request = $exception->getRequest();
+
         $body = (string)$request->getBody();
         $jsonBody = $body
-            ? \GuzzleHttp\json_decode($body, true)
+            ? json_decode($body, true)
             : [];
 
         return $this->doRequest(
@@ -757,12 +781,13 @@ class MyParcelComApi implements MyParcelComApiInterface
      * @param string $resourceType
      * @param string $id
      * @return ResourceInterface
+     * @throws RequestException
      */
     public function getResourceById($resourceType, $id)
     {
-        $resources = $this->getResourcesPromise(
+        $resources = $this->getResourcesArray(
             $this->getResourceUri($resourceType, $id)
-        )->wait();
+        );
 
         return reset($resources);
     }
@@ -772,7 +797,7 @@ class MyParcelComApi implements MyParcelComApiInterface
      */
     public function getResourcesFromUri($uri)
     {
-        return $this->getResourcesPromise($uri)->wait();
+        return $this->getResourcesArray($uri);
     }
 
     /**
@@ -780,6 +805,7 @@ class MyParcelComApi implements MyParcelComApiInterface
      *
      * @param ResourceInterface $resource
      * @return ResourceInterface|null
+     * @throws RequestException
      */
     protected function patchResource(ResourceInterface $resource)
     {
@@ -791,6 +817,7 @@ class MyParcelComApi implements MyParcelComApiInterface
      *
      * @param ResourceInterface $resource
      * @return ResourceInterface|null
+     * @throws RequestException
      */
     protected function postResource(ResourceInterface $resource)
     {
@@ -803,27 +830,21 @@ class MyParcelComApi implements MyParcelComApiInterface
      * @param ResourceInterface $resource
      * @param string            $method
      * @return ResourceInterface|null
+     * @throws RequestException
      */
     protected function sendResource(ResourceInterface $resource, $method = 'post')
     {
-        $promise = $this->getHttpClient()->requestAsync(
-            $method,
+        $response = $this->doRequest(
             $this->getResourceUri($resource->getType(), $resource->getId()),
-            [
-                RequestOptions::HEADERS => $this->authenticator->getAuthorizationHeader() + [
-                        AuthenticatorInterface::HEADER_ACCEPT => AuthenticatorInterface::MIME_TYPE_JSONAPI,
-                    ],
-                RequestOptions::JSON    => ['data' => $resource],
+            $method,
+            ['data' => $resource],
+            $this->authenticator->getAuthorizationHeader() + [
+                AuthenticatorInterface::HEADER_ACCEPT => AuthenticatorInterface::MIME_TYPE_JSONAPI,
             ]
-        )->then(function (ResponseInterface $response) {
-            $json = \GuzzleHttp\json_decode($response->getBody(), true);
+        );
 
-            return $this->jsonToResources($json['data']);
-        }, function (RequestException $reason) {
-            return $this->handleRequestException($reason);
-        });
-
-        $resources = $promise->wait();
+        $json = json_decode($response->getBody(), true);
+        $resources = $this->jsonToResources($json['data']);
 
         return reset($resources);
     }

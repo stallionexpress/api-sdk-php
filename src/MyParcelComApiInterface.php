@@ -2,14 +2,15 @@
 
 namespace MyParcelCom\ApiSdk;
 
-use GuzzleHttp\Promise\PromiseInterface;
 use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
 use MyParcelCom\ApiSdk\Collection\CollectionInterface;
 use MyParcelCom\ApiSdk\Exceptions\MyParcelComException;
+use MyParcelCom\ApiSdk\Http\Exceptions\RequestException;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
+use Psr\Http\Message\ResponseInterface;
 
 interface MyParcelComApiInterface
 {
@@ -206,7 +207,8 @@ interface MyParcelComApiInterface
      * @param array  $body
      * @param array  $headers
      * @param int    $ttl
-     * @return PromiseInterface
+     * @return ResponseInterface
+     * @throws RequestException
      */
     public function doRequest($uri, $method = 'get', array $body = [], array $headers = [], $ttl = self::TTL_10MIN);
 }
