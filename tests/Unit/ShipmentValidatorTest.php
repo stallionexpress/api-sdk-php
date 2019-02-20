@@ -114,23 +114,23 @@ class ShipmentValidatorTest extends TestCase
     }
 
     /** @test */
-    public function testMissingService()
+    public function testShipmentWithoutServiceShouldBeValid()
     {
         $shipment = $this->createShipmentWithoutProperty('service');
 
         $validator = new ShipmentValidator($shipment);
 
-        $this->assertFalse($validator->isValid());
+        $this->assertTrue($validator->isValid());
     }
 
     /** @test */
-    public function testMissingContract()
+    public function testShipmentWithoutContractShouldBeValid()
     {
         $shipment = $this->createShipmentWithoutProperty('contract');
 
         $validator = new ShipmentValidator($shipment);
 
-        $this->assertFalse($validator->isValid());
+        $this->assertTrue($validator->isValid());
     }
 
     /** @test */
