@@ -164,10 +164,7 @@ class ShipmentProxyTest extends TestCase
         $this->assertEquals('GB', $this->shipmentProxy->getPickupLocationAddress()->getCountryCode());
         $this->assertEquals('Doe', $this->shipmentProxy->getPickupLocationAddress()->getLastName());
 
-        $this->assertEquals('Playstation 4', $this->shipmentProxy
-            ->setDescription('Playstation 4')
-            ->getDescription()
-        );
+        $this->assertEquals('Playstation 4', $this->shipmentProxy->setDescription('Playstation 4')->getDescription());
         $this->assertEquals(50, $this->shipmentProxy->setPrice(50)->getPrice());
         $this->assertEquals('EUR', $this->shipmentProxy->getCurrency());
         $this->assertEquals('3SABCD0123456789', $this->shipmentProxy->getBarcode());

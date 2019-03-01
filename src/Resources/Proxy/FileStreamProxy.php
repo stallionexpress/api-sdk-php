@@ -3,7 +3,6 @@
 namespace MyParcelCom\ApiSdk\Resources\Proxy;
 
 use MyParcelCom\ApiSdk\MyParcelComApiInterface;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 
 class FileStreamProxy implements StreamInterface

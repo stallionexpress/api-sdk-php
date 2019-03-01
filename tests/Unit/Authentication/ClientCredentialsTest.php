@@ -2,11 +2,11 @@
 
 namespace MyParcelCom\ApiSdk\Tests\Unit\Authentication;
 
-use Http\Client\HttpClient;
-use MyParcelCom\ApiSdk\Http\Exceptions\RequestException;
 use GuzzleHttp\Psr7\Request;
+use Http\Client\HttpClient;
 use MyParcelCom\ApiSdk\Authentication\ClientCredentials;
 use MyParcelCom\ApiSdk\Exceptions\AuthenticationException;
+use MyParcelCom\ApiSdk\Http\Exceptions\RequestException;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;

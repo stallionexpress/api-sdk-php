@@ -76,8 +76,7 @@ class RequestCollection implements CollectionInterface
             $this->retrieveResources($firstPage);
         }
 
-        if (
-            $firstPage !== $secondPage
+        if ($firstPage !== $secondPage
             && !isset($this->resources[$this->offset + $this->limit - 1])
             && (($secondPage - 1) * 30) < $this->count
         ) {

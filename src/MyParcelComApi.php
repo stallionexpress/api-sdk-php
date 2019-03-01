@@ -10,6 +10,7 @@ use MyParcelCom\ApiSdk\Collection\ArrayCollection;
 use MyParcelCom\ApiSdk\Collection\CollectionInterface;
 use MyParcelCom\ApiSdk\Collection\RequestCollection;
 use MyParcelCom\ApiSdk\Exceptions\InvalidResourceException;
+use MyParcelCom\ApiSdk\Http\Contracts\HttpClient\RequestExceptionInterface;
 use MyParcelCom\ApiSdk\Http\Exceptions\RequestException;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceFactoryInterface;
@@ -21,11 +22,9 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\ApiSdk\Resources\ResourceFactory;
 use MyParcelCom\ApiSdk\Resources\Service;
-use MyParcelCom\ApiSdk\Shipments\PriceCalculator;
 use MyParcelCom\ApiSdk\Shipments\ServiceMatcher;
 use MyParcelCom\ApiSdk\Utils\UrlBuilder;
 use MyParcelCom\ApiSdk\Validators\ShipmentValidator;
-use MyParcelCom\ApiSdk\Http\Contracts\HttpClient\RequestExceptionInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\SimpleCache\CacheInterface;
@@ -62,7 +61,7 @@ class MyParcelComApi implements MyParcelComApiInterface
      *
      * @param AuthenticatorInterface        $authenticator
      * @param string                        $apiUri
-     * @param HttpClient|null          $httpClient
+     * @param HttpClient|null               $httpClient
      * @param CacheInterface|null           $cache
      * @param ResourceFactoryInterface|null $resourceFactory
      * @return MyParcelComApi
@@ -94,7 +93,7 @@ class MyParcelComApi implements MyParcelComApiInterface
      * default factory is used.
      *
      * @param string                        $apiUri
-     * @param HttpClient|null          $httpClient
+     * @param HttpClient|null               $httpClient
      * @param CacheInterface|null           $cache
      * @param ResourceFactoryInterface|null $resourceFactory
      */
