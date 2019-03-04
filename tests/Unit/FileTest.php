@@ -92,7 +92,8 @@ class FileTest extends TestCase
         $this->assertEquals([$this->jpegFormat], $file->addFormat($this->jpegFormat['mime_type'], $this->jpegFormat['extension'])->getFormats());
 
         // Setting an array of formats removes all other formats.
-        $this->assertEquals([$this->pdfFormat, $this->pngFormat],
+        $this->assertEquals(
+            [$this->pdfFormat, $this->pngFormat],
             $file
                 ->addFormat($this->jpegFormat['mime_type'], $this->jpegFormat['extension'])
                 ->setFormats([$this->pdfFormat, $this->pngFormat])
@@ -101,7 +102,8 @@ class FileTest extends TestCase
 
         // Adding a format to an array of existing formats keeps the old ones.
         // Order of the formats is always pdf->png->jpeg.
-        $this->assertEquals([$this->pdfFormat, $this->pngFormat, $this->jpegFormat],
+        $this->assertEquals(
+            [$this->pdfFormat, $this->pngFormat, $this->jpegFormat],
             $file
                 ->setFormats([$this->pngFormat, $this->jpegFormat])
                 ->addFormat($this->pdfFormat['mime_type'], $this->pdfFormat['extension'])
@@ -159,7 +161,8 @@ class FileTest extends TestCase
 
         $this->assertNull($file->getBase64Data());
 
-        $this->assertEquals($this->base64TestData,
+        $this->assertEquals(
+            $this->base64TestData,
             $file
                 ->setBase64Data($this->base64TestData, 'application/pdf')
                 ->getBase64Data('application/pdf')
@@ -167,7 +170,8 @@ class FileTest extends TestCase
 
         // Using getBase64Data() without giving a mime_type loops over the
         // file's formats and returns the first base64Data it encounters.
-        $this->assertEquals($this->base64TestData,
+        $this->assertEquals(
+            $this->base64TestData,
             $file
                 ->addFormat($this->pdfFormat['mime_type'], $this->pdfFormat['extension'])
                 ->getBase64Data()
@@ -178,12 +182,14 @@ class FileTest extends TestCase
         // (streams or temporary files).
         $newFile = new File();
 
-        $this->assertEquals(base64_encode($this->streamTestData),
+        $this->assertEquals(
+            base64_encode($this->streamTestData),
             $newFile
                 ->setStream($this->stream, 'image/jpeg')
                 ->getBase64Data('image/jpeg')
         );
-        $this->assertEquals(base64_encode($this->pathTestData),
+        $this->assertEquals(
+            base64_encode($this->pathTestData),
             $newFile
                 ->setTemporaryFilePath($this->path, 'application/pdf')
                 ->getBase64Data('application/pdf')
