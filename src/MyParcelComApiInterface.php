@@ -41,11 +41,10 @@ interface MyParcelComApiInterface
      * Get an array with all the regions, optionally regions can be filtered by
      * country code and region code.
      *
-     * @param string|null $countryCode
-     * @param string|null $regionCode
+     * @param mixed $filters
      * @return CollectionInterface
      */
-    public function getRegions($countryCode = null, $regionCode = null);
+    public function getRegions($filters = null);
 
     /**
      * Get all the carriers from the API.
