@@ -480,6 +480,22 @@ class MyParcelComApiTest extends TestCase
     }
 
     /** @test */
+    public function testItFiltersRegionsByPostalCode()
+    {
+        $regions = $this->api->getRegions([
+            'country_code' => 'GB',
+            'postal_code'  => 'NW1 6XE',
+        ]);
+
+        $this->assertInstanceOf(CollectionInterface::class, $regions);
+        $this->assertEquals(1, $regions->count());
+        foreach ($regions as $region) {
+            $this->assertInstanceOf(RegionInterface::class, $region);
+            $this->assertEquals('GB', $region->getCountryCode());
+        }
+    }
+
+    /** @test */
     public function testGetServices()
     {
         $services = $this->api->getServices();
