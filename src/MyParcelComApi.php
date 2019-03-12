@@ -133,21 +133,33 @@ class MyParcelComApi implements MyParcelComApiInterface
     /**
      * {@inheritdoc}
      */
-    public function getRegions($countryCode = null, $regionCode = null)
+    public function getRegions($filters = [])
     {
         $url = (new UrlBuilder($this->apiUri . self::PATH_REGIONS));
 
-        if ($countryCode) {
-            $url->addQuery(['filter[country_code]' => $countryCode]);
+        // This method used to accept a $countryCode as the first argument and
+        // a $regionCode as the second argument. We converted it to accept just
+        // a $filters argument, but the logic below ensures backward compatibility.
+        $functionArguments = func_get_args();
+        if (count($functionArguments) > 0 && !is_array($functionArguments[0])) {
+            $filters = [];
+            $filters['country_code'] = $functionArguments[0];
+
+            if (isset($functionArguments[1])) {
+                $filters['region_code'] = $functionArguments[1];
+            }
         }
-        if ($regionCode) {
-            $url->addQuery(['filter[region_code]' => $regionCode]);
+
+        if (is_array($filters)) {
+            foreach ($filters as $key => $value) {
+                $url->addQuery(['filter[' . $key . ']' => $value]);
+            }
         }
 
         // These resources can be stored for a week.
         $regions = $this->getRequestCollection($url->getUrl(), self::TTL_WEEK);
 
-        if ($regions->count() > 0 || $regionCode === null) {
+        if ($regions->count() > 0 || !isset($filters['region_code'])) {
             return $regions;
         }
 
