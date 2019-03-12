@@ -133,7 +133,7 @@ class MyParcelComApi implements MyParcelComApiInterface
     /**
      * {@inheritdoc}
      */
-    public function getRegions($filters = null)
+    public function getRegions($filters = [])
     {
         $url = (new UrlBuilder($this->apiUri . self::PATH_REGIONS));
 

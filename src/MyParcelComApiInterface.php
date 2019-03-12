@@ -38,13 +38,19 @@ interface MyParcelComApiInterface
     public function authenticate(AuthenticatorInterface $authenticator);
 
     /**
-     * Get an array with all the regions, optionally regions can be filtered by
-     * country code and region code.
+     * Get an array with all the regions. An array of
+     * filters can be provided to limit the results to
+     * a subset. Available filters:
+     * - country_code
+     * - region_code
+     * - postal_code
      *
-     * @param mixed $filters
+     * @see https://docs.myparcel.com/api/resources/regions/#parameters
+     *
+     * @param array $filters
      * @return CollectionInterface
      */
-    public function getRegions($filters = null);
+    public function getRegions($filters = []);
 
     /**
      * Get all the carriers from the API.
