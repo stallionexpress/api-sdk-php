@@ -10,6 +10,7 @@ use MyParcelCom\ApiSdk\Collection\ArrayCollection;
 use MyParcelCom\ApiSdk\Collection\CollectionInterface;
 use MyParcelCom\ApiSdk\Collection\RequestCollection;
 use MyParcelCom\ApiSdk\Exceptions\InvalidResourceException;
+use MyParcelCom\ApiSdk\Http\Contracts\HttpClient\RequestExceptionInterface;
 use MyParcelCom\ApiSdk\Http\Exceptions\RequestException;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceFactoryInterface;
@@ -21,11 +22,9 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\ApiSdk\Resources\ResourceFactory;
 use MyParcelCom\ApiSdk\Resources\Service;
-use MyParcelCom\ApiSdk\Shipments\PriceCalculator;
 use MyParcelCom\ApiSdk\Shipments\ServiceMatcher;
 use MyParcelCom\ApiSdk\Utils\UrlBuilder;
 use MyParcelCom\ApiSdk\Validators\ShipmentValidator;
-use MyParcelCom\ApiSdk\Http\Contracts\HttpClient\RequestExceptionInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\SimpleCache\CacheInterface;
@@ -62,7 +61,7 @@ class MyParcelComApi implements MyParcelComApiInterface
      *
      * @param AuthenticatorInterface        $authenticator
      * @param string                        $apiUri
-     * @param HttpClient|null          $httpClient
+     * @param HttpClient|null               $httpClient
      * @param CacheInterface|null           $cache
      * @param ResourceFactoryInterface|null $resourceFactory
      * @return MyParcelComApi
@@ -94,7 +93,7 @@ class MyParcelComApi implements MyParcelComApiInterface
      * default factory is used.
      *
      * @param string                        $apiUri
-     * @param HttpClient|null          $httpClient
+     * @param HttpClient|null               $httpClient
      * @param CacheInterface|null           $cache
      * @param ResourceFactoryInterface|null $resourceFactory
      */
@@ -134,21 +133,33 @@ class MyParcelComApi implements MyParcelComApiInterface
     /**
      * {@inheritdoc}
      */
-    public function getRegions($countryCode = null, $regionCode = null)
+    public function getRegions($filters = [])
     {
         $url = (new UrlBuilder($this->apiUri . self::PATH_REGIONS));
 
-        if ($countryCode) {
-            $url->addQuery(['filter[country_code]' => $countryCode]);
+        // This method used to accept a $countryCode as the first argument and
+        // a $regionCode as the second argument. We converted it to accept just
+        // a $filters argument, but the logic below ensures backward compatibility.
+        $functionArguments = func_get_args();
+        if (count($functionArguments) > 0 && !is_array($functionArguments[0])) {
+            $filters = [];
+            $filters['country_code'] = $functionArguments[0];
+
+            if (isset($functionArguments[1])) {
+                $filters['region_code'] = $functionArguments[1];
+            }
         }
-        if ($regionCode) {
-            $url->addQuery(['filter[region_code]' => $regionCode]);
+
+        if (is_array($filters)) {
+            foreach ($filters as $key => $value) {
+                $url->addQuery(['filter[' . $key . ']' => $value]);
+            }
         }
 
         // These resources can be stored for a week.
         $regions = $this->getRequestCollection($url->getUrl(), self::TTL_WEEK);
 
-        if ($regions->count() > 0 || $regionCode === null) {
+        if ($regions->count() > 0 || !isset($filters['region_code'])) {
             return $regions;
         }
 

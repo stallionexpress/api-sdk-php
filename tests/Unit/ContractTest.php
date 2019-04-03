@@ -4,7 +4,6 @@ namespace MyParcelCom\ApiSdk\Tests\Unit;
 
 use MyParcelCom\ApiSdk\Resources\Contract;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use PHPUnit\Framework\TestCase;
 
 class ContractTest extends TestCase

@@ -65,29 +65,38 @@ class FileProxyTest extends TestCase
             'extension' => 'pdf',
         ];
 
-        $this->assertEquals([$pngFormat, $jpegFormat], $fileProxy
-            ->setFormats([$pngFormat, $jpegFormat])
-            ->getFormats()
+        $this->assertEquals(
+            [$pngFormat, $jpegFormat],
+            $fileProxy
+                ->setFormats([$pngFormat, $jpegFormat])
+                ->getFormats()
         );
 
-        $this->assertEquals([$pdfFormat, $pngFormat, $jpegFormat], $fileProxy
-            ->addFormat($pdfFormat['mime_type'], $pdfFormat['extension'])
-            ->getFormats()
+        $this->assertEquals(
+            [$pdfFormat, $pngFormat, $jpegFormat],
+            $fileProxy
+                ->addFormat($pdfFormat['mime_type'], $pdfFormat['extension'])
+                ->getFormats()
         );
 
         $stream = $this->createMock(StreamInterface::class);
         $stream
             ->method('getContents')
             ->willReturn('Some stream test data');
-        $this->assertEquals('Some stream test data', $fileProxy
-            ->setStream($stream, 'application/pdf')
-            ->getStream('application/pdf')
-            ->getContents());
+        $this->assertEquals(
+            'Some stream test data',
+            $fileProxy
+                ->setStream($stream, 'application/pdf')
+                ->getStream('application/pdf')
+                ->getContents()
+        );
 
         $base64Data = base64_encode('Some base64 test data');
-        $this->assertEquals($base64Data, $fileProxy
-            ->setBase64Data($base64Data, 'image/jpeg')
-            ->getBase64Data('image/jpeg')
+        $this->assertEquals(
+            $base64Data,
+            $fileProxy
+                ->setBase64Data($base64Data, 'image/jpeg')
+                ->getBase64Data('image/jpeg')
         );
 
         $createdPath = tempnam(sys_get_temp_dir(), 'myparcelcom_file') . '.pdf';

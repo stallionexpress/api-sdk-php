@@ -2,11 +2,11 @@
 
 namespace MyParcelCom\ApiSdk\Tests\Traits;
 
-use Http\Client\HttpClient;
-use MyParcelCom\ApiSdk\Http\Exceptions\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use Http\Client\HttpClient;
 use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
+use MyParcelCom\ApiSdk\Http\Exceptions\RequestException;
 use Psr\Http\Message\RequestInterface;
 
 trait MocksApiCommunication
@@ -39,7 +39,8 @@ trait MocksApiCommunication
                                 [':', '{', '}', '(', ')', '/', '\\', '@', '[', ']', '='],
                                 '-',
                                 $uri
-                            )),
+                            )
+                        ),
                     ]) . '.json';
 
                 $filePath = urldecode($filePath);
@@ -80,7 +81,6 @@ trait MocksApiCommunication
                 }
 
                 if ($method === 'patch') {
-
                     if (is_array(json_decode($jsonBody, true))) {
                         $jsonBody = json_decode($jsonBody, true);
                     } else {
