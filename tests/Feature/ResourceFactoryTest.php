@@ -450,13 +450,6 @@ class ResourceFactoryTest extends TestCase
                     'width'  => 1400,
                     'volume' => 2002,
                 ],
-                'physical_properties_verified' => [
-                    'weight' => 100,
-                    'length' => 110,
-                    'height' => 130,
-                    'width'  => 140,
-                    'volume' => 2.002,
-                ],
                 'recipient_address'            => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 4',
@@ -542,13 +535,6 @@ class ResourceFactoryTest extends TestCase
                     'height' => 1300,
                     'width'  => 1400,
                     'volume' => 2002,
-                ],
-                'physical_properties_verified' => [
-                    'weight' => 100,
-                    'length' => 110,
-                    'height' => 130,
-                    'width'  => 140,
-                    'volume' => 2.002,
                 ],
                 'recipient_address'            => [
                     'street_1'             => 'Diagonally',

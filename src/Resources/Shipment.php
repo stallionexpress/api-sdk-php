@@ -29,9 +29,7 @@ class Shipment implements ShipmentInterface
     const ATTRIBUTE_AMOUNT = 'amount';
     const ATTRIBUTE_PRICE = 'price';
     const ATTRIBUTE_CURRENCY = 'currency';
-    const ATTRIBUTE_WEIGHT = 'weight';
     const ATTRIBUTE_PHYSICAL_PROPERTIES = 'physical_properties';
-    const ATTRIBUTE_PHYSICAL_PROPERTIES_VERIFIED = 'physical_properties_verified';
     const ATTRIBUTE_RECIPIENT_ADDRESS = 'recipient_address';
     const ATTRIBUTE_SENDER_ADDRESS = 'sender_address';
     const ATTRIBUTE_RETURN_ADDRESS = 'return_address';
@@ -68,9 +66,7 @@ class Shipment implements ShipmentInterface
         self::ATTRIBUTE_TRACKING_URL                 => null,
         self::ATTRIBUTE_DESCRIPTION                  => null,
         self::ATTRIBUTE_PRICE                        => null,
-        self::ATTRIBUTE_WEIGHT                       => null,
         self::ATTRIBUTE_PHYSICAL_PROPERTIES          => null,
-        self::ATTRIBUTE_PHYSICAL_PROPERTIES_VERIFIED => null,
         self::ATTRIBUTE_RECIPIENT_ADDRESS            => null,
         self::ATTRIBUTE_SENDER_ADDRESS               => null,
         self::ATTRIBUTE_RETURN_ADDRESS               => null,
@@ -375,24 +371,6 @@ class Shipment implements ShipmentInterface
     public function getPhysicalProperties()
     {
         return $this->attributes[self::ATTRIBUTE_PHYSICAL_PROPERTIES];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setPhysicalPropertiesVerified(PhysicalPropertiesInterface $physicalProperties)
-    {
-        $this->attributes[self::ATTRIBUTE_PHYSICAL_PROPERTIES_VERIFIED] = $physicalProperties;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getPhysicalPropertiesVerified()
-    {
-        return $this->attributes[self::ATTRIBUTE_PHYSICAL_PROPERTIES_VERIFIED];
     }
 
     /**

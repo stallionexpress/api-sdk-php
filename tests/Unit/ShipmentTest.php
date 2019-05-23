@@ -173,17 +173,6 @@ class ShipmentTest extends TestCase
     }
 
     /** @test */
-    public function testPhysicalPropertiesVerified()
-    {
-        $shipment = new Shipment();
-
-        $mock = $this->getMockClass(PhysicalPropertiesInterface::class);
-        $physicalProperties = new $mock();
-
-        $this->assertEquals($physicalProperties, $shipment->setPhysicalPropertiesVerified($physicalProperties)->getPhysicalPropertiesVerified());
-    }
-
-    /** @test */
     public function testOptions()
     {
         $shipment = new Shipment();
@@ -561,21 +550,6 @@ class ShipmentTest extends TestCase
                 'width'  => 1400,
             ]);
 
-        $physicalPropertiesVerified = $this->getMockBuilder(PhysicalPropertiesInterface::class)
-            ->disableOriginalConstructor()
-            ->disableOriginalClone()
-            ->disableArgumentCloning()
-            ->disallowMockingUnknownTypes()
-            ->getMock();
-        $physicalPropertiesVerified->method('jsonSerialize')
-            ->willReturn([
-                'weight' => 2000,
-                'length' => 2100,
-                'volume' => 2200,
-                'height' => 2300,
-                'width'  => 2400,
-            ]);
-
         $status = $this->getMockBuilder(ShipmentStatusInterface::class)
             ->disableOriginalConstructor()
             ->disableOriginalClone()
@@ -631,7 +605,6 @@ class ShipmentTest extends TestCase
             ->setTrackingCode('ATRACKINGCODE')
             ->setTrackingUrl('https://tra.ck/ATRACKINGCODE')
             ->setPhysicalProperties($physicalProperties)
-            ->setPhysicalPropertiesVerified($physicalPropertiesVerified)
             ->setShop($shop)
             ->setServiceOptions([$option])
             ->setFiles([$file])
@@ -664,13 +637,6 @@ class ShipmentTest extends TestCase
                     'volume' => 1200,
                     'height' => 1300,
                     'width'  => 1400,
-                ],
-                'physical_properties_verified' => [
-                    'weight' => 2000,
-                    'length' => 2100,
-                    'volume' => 2200,
-                    'height' => 2300,
-                    'width'  => 2400,
                 ],
                 'recipient_address'            => [
                     'street_1'             => 'Diagonally',

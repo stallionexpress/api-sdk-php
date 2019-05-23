@@ -190,17 +190,6 @@ interface ShipmentInterface extends ResourceInterface
     public function getPhysicalProperties();
 
     /**
-     * @param PhysicalPropertiesInterface $physicalProperties
-     * @return $this
-     */
-    public function setPhysicalPropertiesVerified(PhysicalPropertiesInterface $physicalProperties);
-
-    /**
-     * @return PhysicalPropertiesInterface|null
-     */
-    public function getPhysicalPropertiesVerified();
-
-    /**
      * @param FileInterface[] $files
      * @return $this
      */

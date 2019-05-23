@@ -358,25 +358,6 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
     }
 
     /**
-     * @param PhysicalPropertiesInterface $physicalProperties
-     * @return $this
-     */
-    public function setPhysicalPropertiesVerified(PhysicalPropertiesInterface $physicalProperties)
-    {
-        $this->getResource()->setPhysicalPropertiesVerified($physicalProperties);
-
-        return $this;
-    }
-
-    /**
-     * @return PhysicalPropertiesInterface|null
-     */
-    public function getPhysicalPropertiesVerified()
-    {
-        return $this->getResource()->getPhysicalPropertiesVerified();
-    }
-
-    /**
      * @param FileInterface[] $files
      * @return $this
      */
