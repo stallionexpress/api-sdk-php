@@ -79,10 +79,6 @@ class ShipmentProxyTest extends TestCase
         $physicalProperties = $this->getMockBuilder(PhysicalPropertiesInterface::class)->getMock();
         $this->assertEquals($physicalProperties, $this->shipmentProxy->setPhysicalProperties($physicalProperties)->getPhysicalProperties());
 
-        /** @var PhysicalPropertiesInterface $physicalPropertiesVerified */
-        $physicalPropertiesVerified = $this->getMockBuilder(PhysicalPropertiesInterface::class)->getMock();
-        $this->assertEquals($physicalPropertiesVerified, $this->shipmentProxy->setPhysicalPropertiesVerified($physicalPropertiesVerified)->getPhysicalPropertiesVerified());
-
         /** @var ShopInterface $shop */
         $shop = $this->getMockBuilder(ShopInterface::class)->getMock();
         $this->assertEquals($shop, $this->shipmentProxy->setShop($shop)->getShop());
@@ -178,13 +174,6 @@ class ShipmentProxyTest extends TestCase
         $this->assertEquals(50, $this->shipmentProxy->getPhysicalProperties()->getLength());
         $this->assertEquals(0.06, $this->shipmentProxy->getPhysicalProperties()->getVolume());
         $this->assertEquals(24, $this->shipmentProxy->getPhysicalProperties()->getWeight());
-
-        $this->assertInstanceOf(PhysicalPropertiesInterface::class, $this->shipmentProxy->getPhysicalPropertiesVerified());
-        $this->assertEquals(240, $this->shipmentProxy->getPhysicalPropertiesVerified()->getHeight());
-        $this->assertEquals(240, $this->shipmentProxy->getPhysicalPropertiesVerified()->getWeight());
-        $this->assertEquals(500, $this->shipmentProxy->getPhysicalPropertiesVerified()->getLength());
-        $this->assertEquals(60, $this->shipmentProxy->getPhysicalPropertiesVerified()->getVolume());
-        $this->assertEquals(240, $this->shipmentProxy->getPhysicalPropertiesVerified()->getWeight());
 
         $customs = $this->shipmentProxy->getCustoms();
         $this->assertInstanceOf(CustomsInterface::class, $customs);
