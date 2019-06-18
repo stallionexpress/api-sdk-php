@@ -200,18 +200,17 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
             $regionFromAttribute = $properties['attributes']['regions_from'][0];
 
             $countryCode = $regionFromAttribute['country_code'];
-            $regionCode = $regionFromAttribute['region_code'];
+            $regionCode = $regionFromAttribute['region_code'] ?: null;
 
             /** @var RegionInterface $regionFrom */
             $regionFrom = $this->api->getRegions([
-                    'country_code' => $countryCode,
-                    'region_code'  => $regionCode,
-                ]
-            )->get()[0];
+                'country_code' => $countryCode,
+                'region_code'  => $regionCode,
+            ])->get()[0];
 
-            if(!$regionFrom){
+            if (!$regionFrom) {
                 throw new ResourceNotFoundException(
-                    'No region found for country code '.$countryCode.' and region code '. $regionCode
+                    'No region found for country code ' . $countryCode . ' and region code ' . $regionCode ?: 'null'
                 );
             }
 
@@ -224,18 +223,17 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
             $regionToAttribute = $properties['attributes']['regions_to'][0];
 
             $countryCode = $regionToAttribute['country_code'];
-            $regionCode = $regionToAttribute['region_code'];
+            $regionCode = $regionToAttribute['region_code'] ?: null;
 
             /** @var RegionInterface $regionTo */
             $regionTo = $this->api->getRegions([
-                    'country_code' => $countryCode,
-                    'region_code'  => $regionCode,
-                ]
-            )->get()[0];
+                'country_code' => $countryCode,
+                'region_code'  => $regionCode,
+            ])->get()[0];
 
-            if(!$regionTo){
+            if (!$regionTo) {
                 throw new ResourceNotFoundException(
-                    'No region found for country code '.$countryCode.' and region code '. $regionCode
+                    'No region found for country code ' . $countryCode . ' and region code ' . $regionCode ?: 'null'
                 );
             }
 

@@ -298,12 +298,12 @@ class MyParcelComApi implements MyParcelComApiInterface
 
         $url->addQuery($this->arrayToFilters([
             'address_from' => [
-                'country_code'=>$shipment->getSenderAddress()->getCountryCode(),
-                'region_code'=>$shipment->getSenderAddress()->getRegionCode()
+                'country_code' => $shipment->getSenderAddress()->getCountryCode(),
+                'region_code'  => $shipment->getSenderAddress()->getRegionCode(),
             ],
-            'address_to' => [
-                'country_code'=>$shipment->getRecipientAddress()->getCountryCode(),
-                'region_code'=>$shipment->getRecipientAddress()->getRegionCode()
+            'address_to'   => [
+                'country_code' => $shipment->getRecipientAddress()->getCountryCode(),
+                'region_code'  => $shipment->getRecipientAddress()->getRegionCode(),
             ],
         ]));
 
@@ -819,7 +819,7 @@ class MyParcelComApi implements MyParcelComApiInterface
         $filters = [];
         foreach ($array as $name => $value) {
             list($name, $value) = $this->arrayToFilter([$name], $value);
-            $filters["filter".$name] = $value;
+            $filters['filter' . $name] = $value;
         }
 
         return $filters;
@@ -829,16 +829,17 @@ class MyParcelComApi implements MyParcelComApiInterface
      * Converts given array to a filter string for the query params.
      *
      * @param array $keys
-     * @param $values
+     * @param       $values
      * @return array
      */
     private function arrayToFilter($keys, $values)
     {
-        if(!is_array($values)){
-            return ["[".implode("][", $keys)."]", $values];
+        if (!is_array($values)) {
+            return ['[' . implode('][', $keys) . ']', $values];
         }
 
         array_push($keys, key($values));
+
         return $this->arrayToFilter($keys, current($values));
     }
 
