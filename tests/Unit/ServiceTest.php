@@ -216,24 +216,24 @@ class ServiceTest extends TestCase
                 'delivery_days'   => [
                     'Monday',
                 ],
+                'regions_from' => [
+                    [
+                        'id' => 'region-id-1',
+                        'type' => 'regions'
+                    ]
+                ],
+                'regions_to' => [
+                    [
+                        'id' => 'region-id-2',
+                        'type' => 'regions'
+                    ]
+                ]
             ],
             'relationships' => [
                 'carrier'     => [
                     'data' => [
                         'id'   => 'carrier-id-1',
                         'type' => 'carriers',
-                    ],
-                ],
-                'region_from' => [
-                    'data' => [
-                        'id'   => 'region-id-1',
-                        'type' => 'regions',
-                    ],
-                ],
-                'region_to'   => [
-                    'data' => [
-                        'id'   => 'region-id-2',
-                        'type' => 'regions',
                     ],
                 ],
             ],

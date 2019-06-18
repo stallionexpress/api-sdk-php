@@ -273,25 +273,13 @@ class ResourceFactoryTest extends TestCase
                     'Wednesday',
                     'Friday',
                 ],
-                'delivery_method' => 'delivery',
+                'delivery_method' => 'delivery'
             ],
             'relationships' => [
                 'carrier'     => [
                     'data' => [
                         'id'   => 'carrier-id-1',
                         'type' => 'carriers',
-                    ],
-                ],
-                'region_from' => [
-                    'data' => [
-                        'id'   => 'region-id-1',
-                        'type' => 'regions',
-                    ],
-                ],
-                'region_to'   => [
-                    'data' => [
-                        'id'   => 'region-id-2',
-                        'type' => 'regions',
                     ],
                 ],
             ],

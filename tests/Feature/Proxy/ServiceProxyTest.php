@@ -111,24 +111,6 @@ class ServiceProxyTest extends TestCase
     }
 
     /** @test */
-    public function testRegionFromRelationship()
-    {
-        $regionFrom = $this->serviceProxy->getRegionFrom();
-        $this->assertInstanceOf(RegionInterface::class, $regionFrom);
-        $this->assertEquals('c1048135-db45-404e-adac-fdecd0c7134a', $regionFrom->getId());
-        $this->assertEquals(ResourceInterface::TYPE_REGION, $regionFrom->getType());
-    }
-
-    /** @test */
-    public function testRegionToRelationship()
-    {
-        $regionTo = $this->serviceProxy->getRegionTo();
-        $this->assertInstanceOf(RegionInterface::class, $regionTo);
-        $this->assertEquals('c1048135-db45-404e-adac-fdecd0c7134a', $regionTo->getId());
-        $this->assertEquals(ResourceInterface::TYPE_REGION, $regionTo->getType());
-    }
-
-    /** @test */
     public function testServiceRateRelationship()
     {
         $serviceRate_A = $this->createMock(ServiceRateInterface::class);
