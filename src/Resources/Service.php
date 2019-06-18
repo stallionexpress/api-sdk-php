@@ -181,7 +181,7 @@ class Service implements ServiceInterface
      */
     public function setRegionFrom(RegionInterface $region)
     {
-        $this->attributes[self::ATTRIBUTE_REGIONS_FROM][] = $region;
+        $this->attributes[self::ATTRIBUTE_REGIONS_FROM][0] = $region;
 
         return $this;
     }
@@ -199,7 +199,7 @@ class Service implements ServiceInterface
      */
     public function setRegionTo(RegionInterface $region)
     {
-        $this->attributes[self::ATTRIBUTE_REGIONS_TO][] = $region;
+        $this->attributes[self::ATTRIBUTE_REGIONS_TO][0] = $region;
 
         return $this;
     }

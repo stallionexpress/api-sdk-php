@@ -88,6 +88,8 @@ class ServiceProxyTest extends TestCase
         $this->assertEquals(2, $this->serviceProxy->getTransitTimeMin());
         $this->assertEquals(3, $this->serviceProxy->getTransitTimeMax());
         $this->assertEquals('collection', $this->serviceProxy->getHandoverMethod());
+        $this->assertInstanceOf(RegionInterface::class, $this->serviceProxy->getRegionFrom());
+        $this->assertInstanceOf(RegionInterface::class, $this->serviceProxy->getRegionTo());
 
         $this->assertInternalType('array', $this->serviceProxy->getDeliveryDays());
         $this->assertCount(4, $this->serviceProxy->getDeliveryDays());

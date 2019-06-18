@@ -22,13 +22,13 @@
         "regions_from": [
           {
             "country_code": "GB",
-            "region_code": "ENG"
+            "region_code": "NIR"
           }
         ],
         "regions_to": [
           {
             "country_code": "GB",
-            "region_code": "ENG"
+            "region_code": "NIR"
           }
         ]
       },
@@ -54,8 +54,8 @@
     "total_records": 1
   },
   "links": {
-    "self": "https://api/services?filter[delivery_method]=pick-up&filter[has_active_contract]=true&filter[address_to][country_code]=GB&filter[address_to][region_code]=ENG&page[size]=30&page[number]=1",
-    "first": "https://api/services?filter[delivery_method]=pick-up&filter[has_active_contract]=true&filter[address_to][country_code]=GB&filter[address_to][region_code]=ENG&page[size]=30&page[number]=1",
-    "last": "https://api/services?filter[delivery_method]=pick-up&filter[has_active_contract]=true&filter[address_to][country_code]=GB&filter[address_to][region_code]=ENG&page[size]=30&page[number]=1"
+    "self": "https://api/services?filter[delivery_method]=pick-up&filter[has_active_contract]=true&filter[address_to][country_code]=GB&filter[address_to][region_code]=NIR&page[size]=30&page[number]=1",
+    "first": "https://api/services?filter[delivery_method]=pick-up&filter[has_active_contract]=true&filter[address_to][country_code]=GB&filter[address_to][region_code]=NIR&page[size]=30&page[number]=1",
+    "last": "https://api/services?filter[delivery_method]=pick-up&filter[has_active_contract]=true&filter[address_to][country_code]=GB&filter[address_to][region_code]=NIR&page[size]=30&page[number]=1"
   }
 }
