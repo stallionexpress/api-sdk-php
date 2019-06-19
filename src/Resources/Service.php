@@ -21,10 +21,10 @@ class Service implements ServiceInterface
     const ATTRIBUTE_TRANSIT_TIME_MAX = 'max';
     const ATTRIBUTE_HANDOVER_METHOD = 'handover_method';
     const ATTRIBUTE_DELIVERY_METHOD = 'delivery_method';
+    const ATTRIBUTE_REGIONS_FROM = 'regions_from';
+    const ATTRIBUTE_REGIONS_TO = 'regions_to';
 
     const RELATIONSHIP_CARRIER = 'carrier';
-    const RELATIONSHIP_REGION_FROM = 'region_from';
-    const RELATIONSHIP_REGION_TO = 'region_to';
 
     /** @var string */
     private $id;
@@ -42,6 +42,8 @@ class Service implements ServiceInterface
     private $attributes = [
         self::ATTRIBUTE_NAME            => null,
         self::ATTRIBUTE_PACKAGE_TYPE    => null,
+        self::ATTRIBUTE_REGIONS_FROM    => null,
+        self::ATTRIBUTE_REGIONS_TO      => null,
         self::ATTRIBUTE_TRANSIT_TIME    => [
             self::ATTRIBUTE_TRANSIT_TIME_MIN => null,
             self::ATTRIBUTE_TRANSIT_TIME_MAX => null,
@@ -55,13 +57,7 @@ class Service implements ServiceInterface
     private $relationships = [
         self::RELATIONSHIP_CARRIER     => [
             'data' => null,
-        ],
-        self::RELATIONSHIP_REGION_FROM => [
-            'data' => null,
-        ],
-        self::RELATIONSHIP_REGION_TO   => [
-            'data' => null,
-        ],
+        ]
     ];
 
     /**
@@ -185,7 +181,7 @@ class Service implements ServiceInterface
      */
     public function setRegionFrom(RegionInterface $region)
     {
-        $this->relationships[self::RELATIONSHIP_REGION_FROM]['data'] = $region;
+        $this->attributes[self::ATTRIBUTE_REGIONS_FROM][0] = $region;
 
         return $this;
     }
@@ -195,7 +191,7 @@ class Service implements ServiceInterface
      */
     public function getRegionFrom()
     {
-        return $this->relationships[self::RELATIONSHIP_REGION_FROM]['data'];
+        return $this->attributes[self::ATTRIBUTE_REGIONS_FROM][0];
     }
 
     /**
@@ -203,7 +199,7 @@ class Service implements ServiceInterface
      */
     public function setRegionTo(RegionInterface $region)
     {
-        $this->relationships[self::RELATIONSHIP_REGION_TO]['data'] = $region;
+        $this->attributes[self::ATTRIBUTE_REGIONS_TO][0] = $region;
 
         return $this;
     }
@@ -213,7 +209,7 @@ class Service implements ServiceInterface
      */
     public function getRegionTo()
     {
-        return $this->relationships[self::RELATIONSHIP_REGION_TO]['data'];
+        return $this->attributes[self::ATTRIBUTE_REGIONS_TO][0];
     }
 
     /**

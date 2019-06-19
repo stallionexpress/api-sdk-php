@@ -88,6 +88,8 @@ class ServiceProxyTest extends TestCase
         $this->assertEquals(2, $this->serviceProxy->getTransitTimeMin());
         $this->assertEquals(3, $this->serviceProxy->getTransitTimeMax());
         $this->assertEquals('collection', $this->serviceProxy->getHandoverMethod());
+        $this->assertInstanceOf(RegionInterface::class, $this->serviceProxy->getRegionFrom());
+        $this->assertInstanceOf(RegionInterface::class, $this->serviceProxy->getRegionTo());
 
         $this->assertInternalType('array', $this->serviceProxy->getDeliveryDays());
         $this->assertCount(4, $this->serviceProxy->getDeliveryDays());
@@ -108,24 +110,6 @@ class ServiceProxyTest extends TestCase
         $this->assertInstanceOf(CarrierInterface::class, $carrier);
         $this->assertEquals('eef00b32-177e-43d3-9b26-715365e4ce46', $carrier->getId());
         $this->assertEquals(ResourceInterface::TYPE_CARRIER, $carrier->getType());
-    }
-
-    /** @test */
-    public function testRegionFromRelationship()
-    {
-        $regionFrom = $this->serviceProxy->getRegionFrom();
-        $this->assertInstanceOf(RegionInterface::class, $regionFrom);
-        $this->assertEquals('c1048135-db45-404e-adac-fdecd0c7134a', $regionFrom->getId());
-        $this->assertEquals(ResourceInterface::TYPE_REGION, $regionFrom->getType());
-    }
-
-    /** @test */
-    public function testRegionToRelationship()
-    {
-        $regionTo = $this->serviceProxy->getRegionTo();
-        $this->assertInstanceOf(RegionInterface::class, $regionTo);
-        $this->assertEquals('c1048135-db45-404e-adac-fdecd0c7134a', $regionTo->getId());
-        $this->assertEquals(ResourceInterface::TYPE_REGION, $regionTo->getType());
     }
 
     /** @test */

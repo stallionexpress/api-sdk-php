@@ -276,7 +276,7 @@ class MyParcelComApi implements MyParcelComApiInterface
     public function getServices(ShipmentInterface $shipment = null, array $filters = ['has_active_contract' => 'true'])
     {
         $url = new UrlBuilder($this->apiUri . self::PATH_SERVICES);
-        $url->addQuery($this->arrayToFilter($filters));
+        $url->addQuery($this->arrayToFilters($filters));
 
         if ($shipment === null) {
             return $this->getRequestCollection($url->getUrl(), self::TTL_WEEK);
@@ -296,18 +296,15 @@ class MyParcelComApi implements MyParcelComApiInterface
             );
         }
 
-        $regionsFrom = $this->getRegions(
-            $shipment->getSenderAddress()->getCountryCode(),
-            $shipment->getSenderAddress()->getRegionCode()
-        )->get();
-        $regionsTo = $this->getRegions(
-            $shipment->getRecipientAddress()->getCountryCode(),
-            $shipment->getRecipientAddress()->getRegionCode()
-        )->get();
-
-        $url->addQuery($this->arrayToFilter([
-            'region_from' => reset($regionsFrom)->getId(),
-            'region_to'   => reset($regionsTo)->getId(),
+        $url->addQuery($this->arrayToFilters([
+            'address_from' => [
+                'country_code' => $shipment->getSenderAddress()->getCountryCode(),
+                'region_code'  => $shipment->getSenderAddress()->getRegionCode(),
+            ],
+            'address_to'   => [
+                'country_code' => $shipment->getRecipientAddress()->getCountryCode(),
+                'region_code'  => $shipment->getRecipientAddress()->getRegionCode(),
+            ],
         ]));
 
         // Services can be cached for a week.
@@ -338,7 +335,7 @@ class MyParcelComApi implements MyParcelComApiInterface
     public function getServiceRates(array $filters = [])
     {
         $url = new UrlBuilder($this->apiUri . self::PATH_SERVICE_RATES);
-        $url->addQuery($this->arrayToFilter($filters));
+        $url->addQuery($this->arrayToFilters($filters));
 
         return $this->getRequestCollection($url->getUrl(), self::TTL_WEEK);
     }
@@ -817,14 +814,33 @@ class MyParcelComApi implements MyParcelComApiInterface
      * @param array $array
      * @return array
      */
-    private function arrayToFilter(array $array)
+    private function arrayToFilters(array $array)
     {
         $filters = [];
         foreach ($array as $name => $value) {
-            $filters["filter[$name]"] = $value;
+            list($name, $value) = $this->arrayToFilter([$name], $value);
+            $filters['filter' . $name] = $value;
         }
 
         return $filters;
+    }
+
+    /**
+     * Converts given array to a filter string for the query params.
+     *
+     * @param array $keys
+     * @param       $values
+     * @return array
+     */
+    private function arrayToFilter($keys, $values)
+    {
+        if (!is_array($values)) {
+            return ['[' . implode('][', $keys) . ']', $values];
+        }
+
+        array_push($keys, key($values));
+
+        return $this->arrayToFilter($keys, current($values));
     }
 
     /**

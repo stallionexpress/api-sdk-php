@@ -3,6 +3,7 @@
 namespace MyParcelCom\ApiSdk\Resources;
 
 use MyParcelCom\ApiSdk\Exceptions\ResourceFactoryException;
+use MyParcelCom\ApiSdk\Exceptions\ResourceNotFoundException;
 use MyParcelCom\ApiSdk\MyParcelComApiInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
@@ -195,6 +196,52 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
             unset($properties['attributes']['transit_time']['max']);
         }
 
+        if (isset($properties['attributes']['regions_from'][0])) {
+            $regionFromAttribute = $properties['attributes']['regions_from'][0];
+
+            $countryCode = $regionFromAttribute['country_code'];
+            $regionCode = $regionFromAttribute['region_code'] ?: null;
+
+            /** @var RegionInterface $regionFrom */
+            $regionFrom = $this->api->getRegions([
+                'country_code' => $countryCode,
+                'region_code'  => $regionCode,
+            ])->get()[0];
+
+            if (!$regionFrom) {
+                throw new ResourceNotFoundException(
+                    'No region found for country code ' . $countryCode . ' and region code ' . $regionCode ?: 'null'
+                );
+            }
+
+            $service->setRegionFrom($regionFrom);
+
+            unset($properties['attributes']['regions_from']);
+        }
+
+        if (isset($properties['attributes']['regions_to'][0])) {
+            $regionToAttribute = $properties['attributes']['regions_to'][0];
+
+            $countryCode = $regionToAttribute['country_code'];
+            $regionCode = $regionToAttribute['region_code'] ?: null;
+
+            /** @var RegionInterface $regionTo */
+            $regionTo = $this->api->getRegions([
+                'country_code' => $countryCode,
+                'region_code'  => $regionCode,
+            ])->get()[0];
+
+            if (!$regionTo) {
+                throw new ResourceNotFoundException(
+                    'No region found for country code ' . $countryCode . ' and region code ' . $regionCode ?: 'null'
+                );
+            }
+
+            $service->setRegionTo($regionTo);
+
+            unset($properties['attributes']['regions_to']);
+        }
+
         if (isset($properties['id'])) {
             $service->setServiceRatesCallback(function (array $filters = []) use ($properties) {
                 $filters['service'] = $properties['id'];
@@ -373,8 +420,8 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
      *
      * @param string $type
      * @param array  $attributes
-     * @throws ResourceFactoryException
      * @return object
+     * @throws ResourceFactoryException
      */
     protected function createResource($type, array &$attributes = [])
     {
@@ -404,11 +451,11 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
      * other resources need to be created and tries to instantiate them where
      * possible.
      *
-     * @todo Refactor this huge moth.
-     *
      * @param object $resource
      * @param array  $attributes
      * @return object
+     * @todo Refactor this huge moth.
+     *
      */
     protected function hydrate($resource, array $attributes)
     {

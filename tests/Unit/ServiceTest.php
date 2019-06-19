@@ -174,8 +174,8 @@ class ServiceTest extends TestCase
             ->getMock();
         $regionFrom->method('jsonSerialize')
             ->willReturn([
-                'id'   => 'region-id-1',
-                'type' => 'regions',
+                'country_code' => 'GB',
+                'region_code'  => 'ENG',
             ]);
 
         $regionTo = $this->getMockBuilder(RegionInterface::class)
@@ -186,8 +186,8 @@ class ServiceTest extends TestCase
             ->getMock();
         $regionTo->method('jsonSerialize')
             ->willReturn([
-                'id'   => 'region-id-2',
-                'type' => 'regions',
+                'country_code' => 'GB',
+                'region_code'  => 'ENG',
             ]);
 
         $service = (new Service())
@@ -216,24 +216,24 @@ class ServiceTest extends TestCase
                 'delivery_days'   => [
                     'Monday',
                 ],
+                'regions_from'    => [
+                    [
+                        'country_code' => 'GB',
+                        'region_code'  => 'ENG',
+                    ],
+                ],
+                'regions_to'      => [
+                    [
+                        'country_code' => 'GB',
+                        'region_code'  => 'ENG',
+                    ],
+                ],
             ],
             'relationships' => [
-                'carrier'     => [
+                'carrier' => [
                     'data' => [
                         'id'   => 'carrier-id-1',
                         'type' => 'carriers',
-                    ],
-                ],
-                'region_from' => [
-                    'data' => [
-                        'id'   => 'region-id-1',
-                        'type' => 'regions',
-                    ],
-                ],
-                'region_to'   => [
-                    'data' => [
-                        'id'   => 'region-id-2',
-                        'type' => 'regions',
                     ],
                 ],
             ],
