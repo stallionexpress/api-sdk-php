@@ -200,7 +200,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
             $regionFromAttribute = $properties['attributes']['regions_from'][0];
 
             $countryCode = $regionFromAttribute['country_code'];
-            $regionCode = $regionFromAttribute['region_code'] ?: null;
+            $regionCode = isset($regionFromAttribute['region_code']) ? $regionFromAttribute['region_code'] : null;
 
             /** @var RegionInterface $regionFrom */
             $regionFrom = $this->api->getRegions([
@@ -223,7 +223,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
             $regionToAttribute = $properties['attributes']['regions_to'][0];
 
             $countryCode = $regionToAttribute['country_code'];
-            $regionCode = $regionToAttribute['region_code'] ?: null;
+            $regionCode = isset($regionToAttribute['region_code']) ? $regionToAttribute['region_code'] : null;
 
             /** @var RegionInterface $regionTo */
             $regionTo = $this->api->getRegions([
