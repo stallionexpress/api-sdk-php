@@ -53,6 +53,7 @@ class ServiceProxyTest extends TestCase
         $this->assertEquals(12, $this->serviceProxy->setTransitTimeMax(12)->getTransitTimeMax());
         $this->assertEquals('drop-off', $this->serviceProxy->setHandoverMethod('drop-off')->getHandoverMethod());
         $this->assertEquals('an-id-for-a-service', $this->serviceProxy->setId('an-id-for-a-service')->getId());
+        $this->assertFalse($this->serviceProxy->setUsesVolumetricWeight(false)->usesVolumetricWeight());
 
         $this->assertEquals(
             ['Wednesday', 'Friday'],
@@ -90,6 +91,7 @@ class ServiceProxyTest extends TestCase
         $this->assertEquals('collection', $this->serviceProxy->getHandoverMethod());
         $this->assertInstanceOf(RegionInterface::class, $this->serviceProxy->getRegionFrom());
         $this->assertInstanceOf(RegionInterface::class, $this->serviceProxy->getRegionTo());
+        $this->assertFalse($this->serviceProxy->usesVolumetricWeight());
 
         $this->assertInternalType('array', $this->serviceProxy->getDeliveryDays());
         $this->assertCount(4, $this->serviceProxy->getDeliveryDays());

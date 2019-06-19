@@ -28,7 +28,8 @@
           "country_code": "GB",
           "region_code": "NIR"
         }
-      ]
+      ],
+      "uses_volumetric_weight": false
     },
     "links": {
       "self": "https://api/services/433285bb-2e34-435c-9109-1120e7c4bce4",

@@ -23,6 +23,7 @@ class Service implements ServiceInterface
     const ATTRIBUTE_DELIVERY_METHOD = 'delivery_method';
     const ATTRIBUTE_REGIONS_FROM = 'regions_from';
     const ATTRIBUTE_REGIONS_TO = 'regions_to';
+    const ATTRIBUTE_USES_VOLUMETRIC_WEIGHT = 'uses_volumetric_weight';
 
     const RELATIONSHIP_CARRIER = 'carrier';
 
@@ -278,6 +279,24 @@ class Service implements ServiceInterface
         $this->attributes[self::ATTRIBUTE_DELIVERY_METHOD] = $deliveryMethod;
 
         return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setUsesVolumetricWeight($usesVolumetricWeight)
+    {
+        $this->attributes[self::ATTRIBUTE_USES_VOLUMETRIC_WEIGHT] = $usesVolumetricWeight;
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function usesVolumetricWeight()
+    {
+        return $this->attributes[self::ATTRIBUTE_USES_VOLUMETRIC_WEIGHT];
     }
 
     /**

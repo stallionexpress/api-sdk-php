@@ -250,6 +250,26 @@ class ServiceProxy implements ServiceInterface, ResourceProxyInterface
         return $this;
     }
 
+
+    /**
+     * @param bool $usesVolumetricWeight
+     * @return $this
+     */
+    public function setUsesVolumetricWeight($usesVolumetricWeight)
+    {
+        $this->getResource()->setUsesVolumetricWeight($usesVolumetricWeight);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function usesVolumetricWeight()
+    {
+        return $this->getResource()->usesVolumetricWeight();
+    }
+
     /**
      * @param ServiceRateInterface[] $serviceRates
      * @return $this
