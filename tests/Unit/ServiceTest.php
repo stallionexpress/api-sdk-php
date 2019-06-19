@@ -152,6 +152,15 @@ class ServiceTest extends TestCase
     }
 
     /** @test */
+    public function testItIndicatesWhetherAServiceUsesVolumetricWeight()
+    {
+        $service = new Service();
+
+        $service->setUsesVolumetricWeight(true);
+        $this->assertTrue($service->usesVolumetricWeight());
+    }
+
+    /** @test */
     public function testJsonSerialize()
     {
         $carrier = $this->getMockBuilder(CarrierInterface::class)

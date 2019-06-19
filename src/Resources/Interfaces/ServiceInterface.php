@@ -106,6 +106,17 @@ interface ServiceInterface extends ResourceInterface
     public function getHandoverMethod();
 
     /**
+     * @param bool $usesVolumetricWeight
+     * @return $this
+     */
+    public function setUsesVolumetricWeight($usesVolumetricWeight);
+
+    /**
+     * @return bool
+     */
+    public function usesVolumetricWeight();
+
+    /**
      * @param string[] $deliveryDays
      * @return $this
      */
