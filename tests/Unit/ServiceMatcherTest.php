@@ -181,4 +181,12 @@ class ServiceMatcherTest extends TestCase
         );
         $this->assertTrue($this->matcher->matches($shipment, $matchingServiceB));
     }
+
+    /** @test */
+    public function testItConsidersVolumetricWeightWhenServiceUsesIt()
+    {
+        $this->assertTrue(false);
+
+        // TODO: Implement.
+    }
 }

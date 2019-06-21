@@ -125,14 +125,8 @@
           "width": 50,
           "length": 50,
           "volume": 0.06,
-          "weight": 24
-        },
-        "physical_properties_verified": {
-          "height": 240,
-          "width": 500,
-          "length": 500,
-          "volume": 60,
-          "weight": 240
+          "weight": 24,
+          "volumetric_weight": 12
         },
         "register_at": 1526913941,
         "created_at": 1504801719,

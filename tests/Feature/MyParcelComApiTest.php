@@ -593,6 +593,14 @@ class MyParcelComApiTest extends TestCase
     }
 
     /** @test */
+    public function testRetrievingServiceRatesConsidersVolumetricWeight()
+    {
+        $this->assertFalse(true);
+
+        // TODO: Implement.
+    }
+
+    /** @test */
     public function testGetShipments()
     {
         $shipments = $this->api->getShipments();

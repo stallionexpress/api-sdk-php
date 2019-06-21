@@ -55,6 +55,14 @@ class PhysicalPropertiesTest extends TestCase
     }
 
     /** @test */
+    public function testVolumetricWeight()
+    {
+        $this->assertTrue(false);
+
+        // TODO: Implement test.
+    }
+
+    /** @test */
     public function testJsonSerialize()
     {
         $physicalProperties = (new PhysicalProperties())

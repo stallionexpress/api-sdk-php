@@ -189,4 +189,12 @@ class PriceCalculatorTest extends TestCase
         $this->expectExceptionMessage('Cannot calculate shipment price without a set contract.');
         $calculator->calculate($shipment);
     }
+
+    /** @test */
+    public function testItConsidersVolumetricWeightWhenTheServiceUsesIt()
+    {
+        $this->assertTrue(false);
+
+        // TODO: Implement.
+    }
 }

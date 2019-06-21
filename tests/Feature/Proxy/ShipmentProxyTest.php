@@ -176,6 +176,8 @@ class ShipmentProxyTest extends TestCase
         $this->assertEquals(50, $this->shipmentProxy->getPhysicalProperties()->getLength());
         $this->assertEquals(0.06, $this->shipmentProxy->getPhysicalProperties()->getVolume());
         $this->assertEquals(24, $this->shipmentProxy->getPhysicalProperties()->getWeight());
+        $this->assertTrue(false);
+        // TODO: Add Volumetric weight assertion?
 
         $customs = $this->shipmentProxy->getCustoms();
         $this->assertInstanceOf(CustomsInterface::class, $customs);

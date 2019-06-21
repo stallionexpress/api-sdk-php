@@ -131,4 +131,12 @@ class PhysicalProperties implements PhysicalPropertiesInterface
     {
         return $this->volume;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getVolumetricWeight()
+    {
+        // TODO: Implement getVolumetricWeight() method.
+    }
 }

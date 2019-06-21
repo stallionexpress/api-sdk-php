@@ -261,19 +261,20 @@ class ResourceFactoryTest extends TestCase
             'id'            => 'service-id-9001',
             'type'          => 'services',
             'attributes'    => [
-                'name'            => 'Easy Delivery Service',
-                'package_type'    => ServiceInterface::PACKAGE_TYPE_PARCEL,
-                'transit_time'    => [
+                'name'                   => 'Easy Delivery Service',
+                'package_type'           => ServiceInterface::PACKAGE_TYPE_PARCEL,
+                'transit_time'           => [
                     'min' => 2,
                     'max' => 5,
                 ],
-                'handover_method' => 'drop-off',
-                'delivery_days'   => [
+                'handover_method'        => 'drop-off',
+                'delivery_days'          => [
                     'Monday',
                     'Wednesday',
                     'Friday',
                 ],
-                'delivery_method' => 'delivery',
+                'delivery_method'        => 'delivery',
+                'uses_volumetric_weight' => true,
             ],
             'relationships' => [
                 'carrier' => [
@@ -436,11 +437,12 @@ class ResourceFactoryTest extends TestCase
                     'currency' => 'EUR',
                 ],
                 'physical_properties' => [
-                    'weight' => 1000,
-                    'length' => 1100,
-                    'height' => 1300,
-                    'width'  => 1400,
-                    'volume' => 2002,
+                    'weight'            => 1000,
+                    'length'            => 1100,
+                    'height'            => 1300,
+                    'width'             => 1400,
+                    'volume'            => 2002,
+                    'volumetric_weight' => 400400,
                 ],
                 'recipient_address'   => [
                     'street_1'             => 'Diagonally',
@@ -524,13 +526,13 @@ class ResourceFactoryTest extends TestCase
                 'total_value'         => [
                     'amount'   => 1337,
                     'currency' => 'EUR',
-                ],
                 'physical_properties' => [
-                    'weight' => 1000,
-                    'length' => 1100,
-                    'height' => 1300,
-                    'width'  => 1400,
-                    'volume' => 2002,
+                    'weight'            => 1000,
+                    'length'            => 1100,
+                    'height'            => 1300,
+                    'width'             => 1400,
+                    'volume'            => 2002,
+                    'volumetric_weight' => 400400,
                 ],
                 'recipient_address'   => [
                     'street_1'             => 'Diagonally',
