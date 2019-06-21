@@ -217,6 +217,10 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
             $service->setRegionFrom($regionFrom);
 
             unset($properties['attributes']['regions_from']);
+            // The hydrate method in this class overwrites the above code
+            // if there's a region_from relationship in the properties.
+            // TODO: Remove this when we remove the region relationships from services.
+            unset($properties['relationships']['region_from']);
         }
 
         if (isset($properties['attributes']['regions_to'][0])) {
@@ -240,6 +244,11 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
             $service->setRegionTo($regionTo);
 
             unset($properties['attributes']['regions_to']);
+
+            // The hydrate method in this class overwrites the above code
+            // if there's a region_to relationship in the properties.
+            // TODO: Remove this when we remove the region relationships from services.
+            unset($properties['relationships']['region_to']);
         }
 
         if (isset($properties['id'])) {
