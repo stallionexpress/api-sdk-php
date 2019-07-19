@@ -21,6 +21,7 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentStatusInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\StatusInterface;
+use MyParcelCom\ApiSdk\Resources\PhysicalProperties;
 use MyParcelCom\ApiSdk\Resources\Shipment;
 use MyParcelCom\ApiSdk\Tests\Traits\MocksApiCommunication;
 use PHPUnit\Framework\TestCase;
@@ -595,9 +596,35 @@ class MyParcelComApiTest extends TestCase
     /** @test */
     public function testRetrievingServiceRatesConsidersVolumetricWeight()
     {
-        $this->assertFalse(true);
+        $recipient = (new Address())
+            ->setFirstName('Hank')
+            ->setLastName('Mozzy')
+            ->setCity('London')
+            ->setStreet1('Allen Street')
+            ->setStreetNumber(1)
+            ->setPostalCode('W8 6UX')
+            ->setCountryCode('GB');
 
-        // TODO: Implement.
+        $physicalProperties = new PhysicalProperties();
+        $physicalProperties
+            ->setWeight(500)
+            ->setLength(400)
+            ->setHeight(400)
+            ->setWeight(400);
+
+        $shipment = (new Shipment())
+            ->setPhysicalProperties($physicalProperties)
+            ->setRecipientAddress($recipient);
+
+        $volumetricWeight = $shipment->calculateVolumetricWeight();
+
+        $serviceRates = $this->api->getServiceRatesForShipment($shipment);
+        $this->assertInstanceOf(CollectionInterface::class, $serviceRates);
+        foreach ($serviceRates as $serviceRate) {
+            $this->assertInstanceOf(ServiceRateInterface::class, $serviceRate);
+            $this->assertGreaterThanOrEqual(500, $serviceRate->getWeightMax());
+            $this->assertLessThanOrEqual(500, $serviceRate->getWeightMin());
+        }
     }
 
     /** @test */
