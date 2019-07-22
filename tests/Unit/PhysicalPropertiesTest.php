@@ -58,14 +58,21 @@ class PhysicalPropertiesTest extends TestCase
     public function testVolumetricWeight()
     {
         $physicalProperties = new PhysicalProperties();
+
         $physicalProperties->setHeight(60);
         $physicalProperties->setWidth(70);
+
+        // If not all dimensions are set, and volumetric weight isn't set either,
+        // getVolumetricWeight should return null.
+        $this->assertNull($physicalProperties->getVolumetricWeight());
+
         $physicalProperties->setLength(80);
 
-        // Calculates the volumetric weight if not set yet.
+        // It calculates the volumetric weight otherwise.
         $this->assertEquals(68, $physicalProperties->getVolumetricWeight());
 
-        // If volumetric weight is set, it should return the already set value.
+        // If volumetric weight is set, it should return the already set value,
+        // regardless of the dimensions.
         $physicalProperties->setVolumetricWeight(1500);
         $this->assertEquals(1500, $physicalProperties->getVolumetricWeight());
     }
