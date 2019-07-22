@@ -610,7 +610,7 @@ class MyParcelComApiTest extends TestCase
             ->setWeight(500)
             ->setLength(400)
             ->setHeight(400)
-            ->setWeight(400);
+            ->setWidth(400);
 
         $shipment = (new Shipment())
             ->setPhysicalProperties($physicalProperties)

@@ -164,7 +164,7 @@ class ServiceMatcherTest extends TestCase
         $nonMatchingServiceC = $this->getMockedService([], 'pick-up');
         $this->assertFalse($this->matcher->matches($shipment, $nonMatchingServiceC));
 
-        // This service does match the shipment's delivery method and the the service rates match the
+        // This service does match the shipment's delivery method and the service rates match the
         // shipment weight, but it doesn't have the right options.
         $nonMatchingServiceC = $this->getMockedService($nonMatchingServiceRates, 'pick-up');
         $this->assertFalse($this->matcher->matches($shipment, $nonMatchingServiceC));
@@ -180,13 +180,5 @@ class ServiceMatcherTest extends TestCase
             'pick-up'
         );
         $this->assertTrue($this->matcher->matches($shipment, $matchingServiceB));
-    }
-
-    /** @test */
-    public function testItConsidersVolumetricWeightWhenServiceUsesIt()
-    {
-        $this->assertTrue(false);
-
-        // TODO: Implement.
     }
 }

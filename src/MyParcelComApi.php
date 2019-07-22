@@ -354,6 +354,7 @@ class MyParcelComApi implements MyParcelComApiInterface
         $url = new UrlBuilder($this->apiUri . self::PATH_SERVICE_RATES);
         $url->addQuery([
             'filter[weight]'  => $shipment->getPhysicalProperties()->getWeight(),
+            'filter[volumetric_weight]' => $shipment->getPhysicalProperties()->getVolumetricWeight(),
             'filter[service]' => implode(',', $serviceIds),
         ]);
 
@@ -574,7 +575,7 @@ class MyParcelComApi implements MyParcelComApiInterface
     protected function getResourcesArray($uri, $ttl = self::TTL_10MIN)
     {
         $response = $this->doRequest($uri, 'get', [], [], $ttl);
-        $json = json_decode((string)$response->getBody(), true);
+        $json = json_decode((string) $response->getBody(), true);
 
         $resources = $this->jsonToResources($json['data']);
 
@@ -706,7 +707,7 @@ class MyParcelComApi implements MyParcelComApiInterface
 
         $request = $exception->getRequest();
 
-        $body = (string)$request->getBody();
+        $body = (string) $request->getBody();
         $jsonBody = $body
             ? json_decode($body, true)
             : [];
@@ -817,6 +818,7 @@ class MyParcelComApi implements MyParcelComApiInterface
     private function arrayToFilters(array $array)
     {
         $filters = [];
+
         $this->arrayToFilter($filters, ['filter'], $array);
 
         return $filters;
