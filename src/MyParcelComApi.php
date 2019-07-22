@@ -817,10 +817,7 @@ class MyParcelComApi implements MyParcelComApiInterface
     private function arrayToFilters(array $array)
     {
         $filters = [];
-        foreach ($array as $name => $value) {
-            list($name, $value) = $this->arrayToFilter([$name], $value);
-            $filters['filter' . $name] = $value;
-        }
+        $this->arrayToFilter($filters, ['filter'], $array);
 
         return $filters;
     }
@@ -828,19 +825,20 @@ class MyParcelComApi implements MyParcelComApiInterface
     /**
      * Converts given array to a filter string for the query params.
      *
+     * @param array $filters
      * @param array $keys
-     * @param       $values
-     * @return array
+     * @param       $value
+     * @return void
      */
-    private function arrayToFilter($keys, $values)
+    private function arrayToFilter(array &$filters, array $keys, $value)
     {
-        if (!is_array($values)) {
-            return ['[' . implode('][', $keys) . ']', $values];
+        if (is_array($value)) {
+            foreach ($value as $key => $nextValue) {
+                $this->arrayToFilter($filters, array_merge($keys, ['[' . $key . ']']), $nextValue);
+            }
+        } else {
+            $filters[implode('', $keys)] = $value;
         }
-
-        array_push($keys, key($values));
-
-        return $this->arrayToFilter($keys, current($values));
     }
 
     /**
