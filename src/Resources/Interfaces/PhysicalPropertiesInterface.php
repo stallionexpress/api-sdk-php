@@ -68,7 +68,16 @@ interface PhysicalPropertiesInterface extends \JsonSerializable
     public function getVolume();
 
     /**
-     * @return null|int
+     * @param int $volumetricWeight
+     * @return $this
+     */
+    public function setVolumetricWeight($volumetricWeight);
+
+    /**
+     * Returns the volumetric weight if already set.
+     * Calculates the shipment's volumetric weight in grams based on set dimensions otherwise.
+     *
+     * @return null|int Returns null if not all dimensions are set.
      */
     public function getVolumetricWeight();
 }

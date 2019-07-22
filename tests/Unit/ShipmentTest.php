@@ -13,6 +13,7 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentItemInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentStatusInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
+use MyParcelCom\ApiSdk\Resources\PhysicalProperties;
 use MyParcelCom\ApiSdk\Resources\Shipment;
 use PHPUnit\Framework\TestCase;
 
@@ -392,6 +393,26 @@ class ShipmentTest extends TestCase
         $shipment->setTotalValueCurrency('EUR');
 
         $this->assertEquals('EUR', $shipment->getTotalValueCurrency());
+    }
+
+    /** @test */
+    public function testItCalculatesVolumetricWeightIfDimensionsAreSet()
+    {
+        $shipment = new Shipment();
+
+        $physicalProperties = $physicalProperties = $this->getMockBuilder(PhysicalPropertiesInterface::class)
+            ->disableOriginalConstructor()
+            ->disableOriginalClone()
+            ->disableArgumentCloning()
+            ->disallowMockingUnknownTypes()
+            ->getMock();
+
+        $physicalProperties->method('getWidth')->willReturn(400);
+        $physicalProperties->method('getHeight')->willReturn(500);
+        $physicalProperties->method('getLength')->willReturn(600);
+
+        // 400 * 500 * 600 / 5000
+        $this->assertEquals(24000, $shipment->getVolumetricWeight());
     }
 
     /** @test */

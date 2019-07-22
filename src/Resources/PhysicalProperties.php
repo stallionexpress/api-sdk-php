@@ -136,10 +136,28 @@ class PhysicalProperties implements PhysicalPropertiesInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getVolumetricWeight()
     {
-        return $this->volumetricWeight;
+        if ($this->volumetricWeight) {
+            return $this->volumetricWeight;
+        }
+
+        if (!$this->length || !$this->width || !$this->height) {
+            return null;
+        }
+
+        return (int) ceil($this->length * $this->width * $this->height / 5000);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setVolumetricWeight($volumetricWeight)
+    {
+        $this->volumetricWeight = $volumetricWeight;
+
+        return $this;
     }
 }

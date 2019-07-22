@@ -616,14 +616,14 @@ class MyParcelComApiTest extends TestCase
             ->setPhysicalProperties($physicalProperties)
             ->setRecipientAddress($recipient);
 
-        $volumetricWeight = $shipment->calculateVolumetricWeight();
+        $volumetricWeight = $shipment->getVolumetricWeight();
 
         $serviceRates = $this->api->getServiceRatesForShipment($shipment);
         $this->assertInstanceOf(CollectionInterface::class, $serviceRates);
         foreach ($serviceRates as $serviceRate) {
             $this->assertInstanceOf(ServiceRateInterface::class, $serviceRate);
-            $this->assertGreaterThanOrEqual(500, $serviceRate->getWeightMax());
-            $this->assertLessThanOrEqual(500, $serviceRate->getWeightMin());
+            $this->assertGreaterThanOrEqual($volumetricWeight, $serviceRate->getWeightMax());
+            $this->assertLessThanOrEqual($volumetricWeight, $serviceRate->getWeightMin());
         }
     }
 
