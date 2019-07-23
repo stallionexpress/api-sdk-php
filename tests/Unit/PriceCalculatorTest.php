@@ -46,7 +46,7 @@ class PriceCalculatorTest extends TestCase
     }
 
     /** @test */
-    public function testItTotalPriceIsNullWhenOptionPriceIsNull()
+    public function testTheTotalPriceIsNullWhenOptionPriceIsNull()
     {
         $serviceOptionMocks = [
             $this->getMockedServiceOption('service-option-id-uno', 250),
@@ -188,13 +188,5 @@ class PriceCalculatorTest extends TestCase
         $this->expectException(InvalidResourceException::class);
         $this->expectExceptionMessage('Cannot calculate shipment price without a set contract.');
         $calculator->calculate($shipment);
-    }
-
-    /** @test */
-    public function testItConsidersVolumetricWeightWhenTheServiceUsesIt()
-    {
-        $this->assertTrue(false);
-
-        // TODO: Implement.
     }
 }

@@ -352,11 +352,11 @@ class MyParcelComApi implements MyParcelComApiInterface
         }
 
         $url = new UrlBuilder($this->apiUri . self::PATH_SERVICE_RATES);
-        $url->addQuery([
-            'filter[weight]'  => $shipment->getPhysicalProperties()->getWeight(),
-            'filter[volumetric_weight]' => $shipment->getPhysicalProperties()->getVolumetricWeight(),
-            'filter[service]' => implode(',', $serviceIds),
-        ]);
+        $url->addQuery($this->arrayToFilters([
+            'weight'            => $shipment->getPhysicalProperties()->getWeight(),
+            'volumetric_weight' => $shipment->getPhysicalProperties()->getVolumetricWeight(),
+            'service'           => implode(',', $serviceIds),
+        ]));
 
         $serviceRates = $this->getRequestCollection($url->getUrl(), self::TTL_WEEK);
 
