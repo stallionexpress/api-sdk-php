@@ -10,6 +10,7 @@ use MyParcelCom\ApiSdk\Collection\ArrayCollection;
 use MyParcelCom\ApiSdk\Collection\CollectionInterface;
 use MyParcelCom\ApiSdk\Collection\RequestCollection;
 use MyParcelCom\ApiSdk\Exceptions\InvalidResourceException;
+use MyParcelCom\ApiSdk\Exceptions\ResourceNotFoundException;
 use MyParcelCom\ApiSdk\Http\Contracts\HttpClient\RequestExceptionInterface;
 use MyParcelCom\ApiSdk\Http\Exceptions\RequestException;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
@@ -349,6 +350,10 @@ class MyParcelComApi implements MyParcelComApiInterface
         $serviceIds = [];
         foreach ($services as $service) {
             $serviceIds[] = $service->getId();
+        }
+
+        if (empty($serviceIds)) {
+            return new ArrayCollection([]);
         }
 
         $url = new UrlBuilder($this->apiUri . self::PATH_SERVICE_RATES);
