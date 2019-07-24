@@ -531,6 +531,43 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function setTotalValueAmount($totalValueAmount)
+    {
+        $this->getResource()->setTotalValueAmount($totalValueAmount);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getTotalValueAmount()
+    {
+        return $this->getResource()->getTotalValueAmount();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setTotalValueCurrency($totalValueCurrency)
+    {
+        $this->getResource()->setTotalValueCurrency($totalValueCurrency);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getTotalValueCurrency()
+    {
+        return $this->getResource()->getTotalValueCurrency();
+    }
+
+
+    /**
      * This function puts all object properties in an array and returns it.
      *
      * @return array

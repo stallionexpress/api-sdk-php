@@ -381,6 +381,20 @@ class ShipmentTest extends TestCase
     }
 
     /** @test */
+    public function testTotalValue()
+    {
+        $shipment = new Shipment();
+
+        $shipment->setTotalValueAmount(3000);
+
+        $this->assertEquals(3000, $shipment->getTotalValueAmount());
+
+        $shipment->setTotalValueCurrency('EUR');
+
+        $this->assertEquals('EUR', $shipment->getTotalValueCurrency());
+    }
+
+    /** @test */
     public function testJsonSerialize()
     {
         $recipientAddress = $this->getMockBuilder(AddressInterface::class)
@@ -600,6 +614,8 @@ class ShipmentTest extends TestCase
             ->setDescription('order #012ASD')
             ->setPickupLocationCode('CODE123')
             ->setPrice(99)
+            ->setTotalValueAmount(100)
+            ->setTotalValueCurrency('EUR')
             ->setCurrency('USD')
             ->setBarcode('S3BARCODE')
             ->setTrackingCode('ATRACKINGCODE')
@@ -623,22 +639,26 @@ class ShipmentTest extends TestCase
             'id'            => 'shipment-id',
             'type'          => 'shipments',
             'attributes'    => [
-                'barcode'                      => 'S3BARCODE',
-                'tracking_code'                => 'ATRACKINGCODE',
-                'tracking_url'                 => 'https://tra.ck/ATRACKINGCODE',
-                'description'                  => 'order #012ASD',
-                'price'                        => [
+                'barcode'             => 'S3BARCODE',
+                'tracking_code'       => 'ATRACKINGCODE',
+                'tracking_url'        => 'https://tra.ck/ATRACKINGCODE',
+                'description'         => 'order #012ASD',
+                'price'               => [
                     'amount'   => 99,
                     'currency' => 'USD',
                 ],
-                'physical_properties'          => [
+                'total_value'         => [
+                    'amount'   => 100,
+                    'currency' => 'EUR',
+                ],
+                'physical_properties' => [
                     'weight' => 1000,
                     'length' => 1100,
                     'volume' => 1200,
                     'height' => 1300,
                     'width'  => 1400,
                 ],
-                'recipient_address'            => [
+                'recipient_address'   => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 4',
                     'street_number'        => '1',
@@ -653,7 +673,7 @@ class ShipmentTest extends TestCase
                     'email'                => 'rob@tables.com',
                     'phone_number'         => '+31 (0)234 567 890',
                 ],
-                'sender_address'               => [
+                'sender_address'      => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 4',
                     'street_number'        => '2',
@@ -668,7 +688,7 @@ class ShipmentTest extends TestCase
                     'email'                => 'rob@tables.com',
                     'phone_number'         => '+31 (0)234 567 890',
                 ],
-                'return_address'               => [
+                'return_address'      => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 4',
                     'street_number'        => '2',
@@ -683,7 +703,7 @@ class ShipmentTest extends TestCase
                     'email'                => 'rob@tables.com',
                     'phone_number'         => '+31 (0)234 567 890',
                 ],
-                'pickup_location'              => [
+                'pickup_location'     => [
                     'code'    => 'CODE123',
                     'address' => [
                         'street_1'             => 'Diagonally',
@@ -701,7 +721,7 @@ class ShipmentTest extends TestCase
                         'phone_number'         => '+31 (0)234 567 890',
                     ],
                 ],
-                'items'                        => [
+                'items'               => [
                     [
                         'sku'                 => '123456789',
                         'description'         => 'OnePlus X',
@@ -714,13 +734,13 @@ class ShipmentTest extends TestCase
                         'origin_country_code' => 'GB',
                     ],
                 ],
-                'customs'                      => [
+                'customs'             => [
                     'content_type'   => 'documents',
                     'invoice_number' => 'NO.5',
                     'non_delivery'   => 'return',
                     'incoterm'       => 'DDU',
                 ],
-                'register_at'                  => 9001,
+                'register_at'         => 9001,
             ],
             'relationships' => [
                 'shop'            => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],

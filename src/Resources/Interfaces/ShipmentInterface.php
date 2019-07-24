@@ -295,4 +295,26 @@ interface ShipmentInterface extends ResourceInterface
      * @return ContractInterface|null
      */
     public function getContract();
+
+    /**
+     * @param int|null $totalValueAmount
+     * @return $this
+     */
+    public function setTotalValueAmount($totalValueAmount);
+
+    /**
+     * @return int|null
+     */
+    public function getTotalValueAmount();
+
+    /**
+     * @param string|null $totalValueCurrency
+     * @return $this
+     */
+    public function setTotalValueCurrency($totalValueCurrency);
+
+    /**
+     * @return string|null
+     */
+    public function getTotalValueCurrency();
 }

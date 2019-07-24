@@ -39,6 +39,7 @@ class Shipment implements ShipmentInterface
     const ATTRIBUTE_CUSTOMS = 'customs';
     const ATTRIBUTE_ITEMS = 'items';
     const ATTRIBUTE_REGISTER_AT = 'register_at';
+    const ATTRIBUTE_TOTAL_VALUE = 'total_value';
 
     const RELATIONSHIP_CONTRACT = 'contract';
     const RELATIONSHIP_FILES = 'files';
@@ -61,19 +62,23 @@ class Shipment implements ShipmentInterface
 
     /** @var array */
     private $attributes = [
-        self::ATTRIBUTE_BARCODE                      => null,
-        self::ATTRIBUTE_TRACKING_CODE                => null,
-        self::ATTRIBUTE_TRACKING_URL                 => null,
-        self::ATTRIBUTE_DESCRIPTION                  => null,
-        self::ATTRIBUTE_PRICE                        => null,
-        self::ATTRIBUTE_PHYSICAL_PROPERTIES          => null,
-        self::ATTRIBUTE_RECIPIENT_ADDRESS            => null,
-        self::ATTRIBUTE_SENDER_ADDRESS               => null,
-        self::ATTRIBUTE_RETURN_ADDRESS               => null,
-        self::ATTRIBUTE_PICKUP                       => null,
-        self::ATTRIBUTE_CUSTOMS                      => null,
-        self::ATTRIBUTE_ITEMS                        => null,
-        self::ATTRIBUTE_REGISTER_AT                  => null,
+        self::ATTRIBUTE_BARCODE             => null,
+        self::ATTRIBUTE_TRACKING_CODE       => null,
+        self::ATTRIBUTE_TRACKING_URL        => null,
+        self::ATTRIBUTE_DESCRIPTION         => null,
+        self::ATTRIBUTE_PRICE               => null,
+        self::ATTRIBUTE_PHYSICAL_PROPERTIES => null,
+        self::ATTRIBUTE_RECIPIENT_ADDRESS   => null,
+        self::ATTRIBUTE_SENDER_ADDRESS      => null,
+        self::ATTRIBUTE_RETURN_ADDRESS      => null,
+        self::ATTRIBUTE_PICKUP              => null,
+        self::ATTRIBUTE_CUSTOMS             => null,
+        self::ATTRIBUTE_ITEMS               => null,
+        self::ATTRIBUTE_REGISTER_AT         => null,
+        self::ATTRIBUTE_TOTAL_VALUE         => [
+            'amount'   => null,
+            'currency' => null,
+        ],
     ];
 
     /** @var array */
@@ -241,7 +246,7 @@ class Shipment implements ShipmentInterface
      */
     public function setPrice($price)
     {
-        $this->attributes[self::ATTRIBUTE_PRICE][self::ATTRIBUTE_AMOUNT] = (int)$price;
+        $this->attributes[self::ATTRIBUTE_PRICE][self::ATTRIBUTE_AMOUNT] = (int) $price;
 
         return $this;
     }
@@ -618,5 +623,41 @@ class Shipment implements ShipmentInterface
     public function getContract()
     {
         return $this->relationships[self::RELATIONSHIP_CONTRACT]['data'];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setTotalValueAmount($totalValueAmount)
+    {
+        $this->attributes[self::ATTRIBUTE_TOTAL_VALUE]['amount'] = $totalValueAmount;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getTotalValueAmount()
+    {
+        return $this->attributes[self::ATTRIBUTE_TOTAL_VALUE]['amount'];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setTotalValueCurrency($totalValueCurrency)
+    {
+        $this->attributes[self::ATTRIBUTE_TOTAL_VALUE]['currency'] = $totalValueCurrency;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getTotalValueCurrency()
+    {
+        return $this->attributes[self::ATTRIBUTE_TOTAL_VALUE]['currency'];
     }
 }

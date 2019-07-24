@@ -71,6 +71,10 @@
         "amount": 100,
         "currency": "EUR"
       },
+      "total_value": {
+        "amount": 600,
+        "currency": "GBP"
+      },
       "barcode": "3SABCD0123456789",
       "tracking_code": "TR4CK1NGC0D3",
       "tracking_url": "https://track.me/TR4CK1NGC0D3",
