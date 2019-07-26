@@ -167,6 +167,8 @@ class ShipmentProxyTest extends TestCase
         $this->assertEquals('TR4CK1NGC0D3', $this->shipmentProxy->getTrackingCode());
         $this->assertEquals('https://track.me/TR4CK1NGC0D3', $this->shipmentProxy->getTrackingUrl());
         $this->assertEquals(24, $this->shipmentProxy->getWeight());
+        $this->assertEquals(600, $this->shipmentProxy->getTotalValueAmount());
+        $this->assertEquals('GBP', $this->shipmentProxy->getTotalValueCurrency());
 
         $this->assertInstanceOf(PhysicalPropertiesInterface::class, $this->shipmentProxy->getPhysicalProperties());
         $this->assertEquals(24, $this->shipmentProxy->getPhysicalProperties()->getHeight());

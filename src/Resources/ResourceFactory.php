@@ -143,6 +143,15 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
             unset($properties['attributes']['price']);
         }
 
+        if (isset($properties['attributes']['total_value']['amount'])) {
+            $shipment->setTotalValueAmount($properties['attributes']['total_value']['amount']);
+            if (isset($properties['attributes']['total_value']['currency'])) {
+                $shipment->setTotalValueCurrency($properties['attributes']['total_value']['currency']);
+            }
+
+            unset($properties['attributes']['total_value']);
+        }
+
         if (isset($properties['attributes']['pickup_location']['code'])) {
             $shipment->setPickupLocationCode($properties['attributes']['pickup_location']['code']);
         }
