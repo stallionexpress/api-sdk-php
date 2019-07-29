@@ -381,6 +381,31 @@ class Shipment implements ShipmentInterface
     /**
      * {@inheritdoc}
      */
+    public function setVolumetricWeight($volumetricWeight)
+    {
+        if ($this->getPhysicalProperties() === null) {
+            $this->setPhysicalProperties(new PhysicalProperties());
+        }
+        $this->getPhysicalProperties()->setVolumetricWeight($volumetricWeight);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getVolumetricWeight()
+    {
+        if ($this->getPhysicalProperties() === null) {
+            $this->setPhysicalProperties(new PhysicalProperties());
+        }
+
+        return $this->getPhysicalProperties()->getVolumetricWeight();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function setShop(ShopInterface $shop)
     {
         $this->relationships[self::RELATIONSHIP_SHOP]['data'] = $shop;

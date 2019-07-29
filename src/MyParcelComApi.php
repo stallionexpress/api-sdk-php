@@ -10,6 +10,7 @@ use MyParcelCom\ApiSdk\Collection\ArrayCollection;
 use MyParcelCom\ApiSdk\Collection\CollectionInterface;
 use MyParcelCom\ApiSdk\Collection\RequestCollection;
 use MyParcelCom\ApiSdk\Exceptions\InvalidResourceException;
+use MyParcelCom\ApiSdk\Exceptions\ResourceNotFoundException;
 use MyParcelCom\ApiSdk\Http\Contracts\HttpClient\RequestExceptionInterface;
 use MyParcelCom\ApiSdk\Http\Exceptions\RequestException;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
@@ -351,11 +352,16 @@ class MyParcelComApi implements MyParcelComApiInterface
             $serviceIds[] = $service->getId();
         }
 
+        if (empty($serviceIds)) {
+            return new ArrayCollection([]);
+        }
+
         $url = new UrlBuilder($this->apiUri . self::PATH_SERVICE_RATES);
-        $url->addQuery([
-            'filter[weight]'  => $shipment->getPhysicalProperties()->getWeight(),
-            'filter[service]' => implode(',', $serviceIds),
-        ]);
+        $url->addQuery($this->arrayToFilters([
+            'weight'            => $shipment->getPhysicalProperties()->getWeight(),
+            'volumetric_weight' => $shipment->getPhysicalProperties()->getVolumetricWeight(),
+            'service'           => implode(',', $serviceIds),
+        ]));
 
         $serviceRates = $this->getRequestCollection($url->getUrl(), self::TTL_WEEK);
 
@@ -574,7 +580,7 @@ class MyParcelComApi implements MyParcelComApiInterface
     protected function getResourcesArray($uri, $ttl = self::TTL_10MIN)
     {
         $response = $this->doRequest($uri, 'get', [], [], $ttl);
-        $json = json_decode((string)$response->getBody(), true);
+        $json = json_decode((string) $response->getBody(), true);
 
         $resources = $this->jsonToResources($json['data']);
 
@@ -706,7 +712,7 @@ class MyParcelComApi implements MyParcelComApiInterface
 
         $request = $exception->getRequest();
 
-        $body = (string)$request->getBody();
+        $body = (string) $request->getBody();
         $jsonBody = $body
             ? json_decode($body, true)
             : [];
@@ -817,6 +823,7 @@ class MyParcelComApi implements MyParcelComApiInterface
     private function arrayToFilters(array $array)
     {
         $filters = [];
+
         $this->arrayToFilter($filters, ['filter'], $array);
 
         return $filters;

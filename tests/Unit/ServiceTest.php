@@ -209,29 +209,31 @@ class ServiceTest extends TestCase
             ->setDeliveryDays(['Monday'])
             ->setCarrier($carrier)
             ->setRegionFrom($regionFrom)
-            ->setRegionTo($regionTo);
+            ->setRegionTo($regionTo)
+            ->setUsesVolumetricWeight(true);
 
         $this->assertEquals([
             'id'            => 'service-id',
             'type'          => 'services',
             'attributes'    => [
-                'name'            => 'Easy Delivery Service',
-                'package_type'    => Service::PACKAGE_TYPE_PARCEL,
-                'transit_time'    => [
+                'name'                   => 'Easy Delivery Service',
+                'package_type'           => Service::PACKAGE_TYPE_PARCEL,
+                'transit_time'           => [
                     'min' => 7,
                     'max' => 14,
                 ],
-                'handover_method' => 'drop-off',
-                'delivery_days'   => [
+                'handover_method'        => 'drop-off',
+                'delivery_days'          => [
                     'Monday',
                 ],
-                'regions_from'    => [
+                'uses_volumetric_weight' => true,
+                'regions_from'           => [
                     [
                         'country_code' => 'GB',
                         'region_code'  => 'ENG',
                     ],
                 ],
-                'regions_to'      => [
+                'regions_to'             => [
                     [
                         'country_code' => 'GB',
                         'region_code'  => 'ENG',

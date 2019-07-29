@@ -134,19 +134,19 @@ interface ShipmentInterface extends ResourceInterface
     public function getTrackingUrl();
 
     /**
-     * @deprecated Use Shipment::getPhysicalProperties()->setWeight() instead.
-     *
      * @param int    $weight
      * @param string $unit
      * @return $this
+     * @deprecated Use Shipment::getPhysicalProperties()->setWeight() instead.
+     *
      */
     public function setWeight($weight, $unit = PhysicalPropertiesInterface::WEIGHT_GRAM);
 
     /**
-     * @deprecated Use Shipment::getPhysicalProperties()->getWeight() instead.
-     *
      * @param string $unit
      * @return int
+     * @deprecated Use Shipment::getPhysicalProperties()->getWeight() instead.
+     *
      */
     public function getWeight($unit = PhysicalPropertiesInterface::WEIGHT_GRAM);
 
@@ -188,6 +188,17 @@ interface ShipmentInterface extends ResourceInterface
      * @return PhysicalPropertiesInterface|null
      */
     public function getPhysicalProperties();
+
+    /**
+     * @return null|int
+     */
+    public function getVolumetricWeight();
+
+    /**
+     * @param int $volumetricWeight
+     * @return $this
+     */
+    public function setVolumetricWeight($volumetricWeight);
 
     /**
      * @param FileInterface[] $files

@@ -358,6 +358,25 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
     }
 
     /**
+     * @param int $volumetricWeight
+     * @return $this
+     */
+    public function setVolumetricWeight($volumetricWeight)
+    {
+        $this->getResource()->getPhysicalProperties()->setVolumetricWeight($volumetricWeight);
+
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getVolumetricWeight()
+    {
+        return $this->getResource()->getPhysicalProperties()->getVolumetricWeight();
+    }
+
+    /**
      * @param FileInterface[] $files
      * @return $this
      */
