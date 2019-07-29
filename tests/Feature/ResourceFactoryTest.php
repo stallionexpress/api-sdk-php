@@ -526,6 +526,7 @@ class ResourceFactoryTest extends TestCase
                 'total_value'         => [
                     'amount'   => 1337,
                     'currency' => 'EUR',
+                ],
                 'physical_properties' => [
                     'weight'            => 1000,
                     'length'            => 1100,

@@ -396,26 +396,6 @@ class ShipmentTest extends TestCase
     }
 
     /** @test */
-    public function testItCalculatesVolumetricWeightIfDimensionsAreSet()
-    {
-        $shipment = new Shipment();
-
-        $physicalProperties = $physicalProperties = $this->getMockBuilder(PhysicalPropertiesInterface::class)
-            ->disableOriginalConstructor()
-            ->disableOriginalClone()
-            ->disableArgumentCloning()
-            ->disallowMockingUnknownTypes()
-            ->getMock();
-
-        $physicalProperties->method('getWidth')->willReturn(400);
-        $physicalProperties->method('getHeight')->willReturn(500);
-        $physicalProperties->method('getLength')->willReturn(600);
-
-        // 400 * 500 * 600 / 5000
-        $this->assertEquals(24000, $shipment->getVolumetricWeight());
-    }
-
-    /** @test */
     public function testJsonSerialize()
     {
         $recipientAddress = $this->getMockBuilder(AddressInterface::class)
