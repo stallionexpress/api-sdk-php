@@ -152,6 +152,15 @@ class ServiceTest extends TestCase
     }
 
     /** @test */
+    public function testItIndicatesWhetherAServiceUsesVolumetricWeight()
+    {
+        $service = new Service();
+
+        $service->setUsesVolumetricWeight(true);
+        $this->assertTrue($service->usesVolumetricWeight());
+    }
+
+    /** @test */
     public function testJsonSerialize()
     {
         $carrier = $this->getMockBuilder(CarrierInterface::class)
@@ -174,8 +183,8 @@ class ServiceTest extends TestCase
             ->getMock();
         $regionFrom->method('jsonSerialize')
             ->willReturn([
-                'id'   => 'region-id-1',
-                'type' => 'regions',
+                'country_code' => 'GB',
+                'region_code'  => 'ENG',
             ]);
 
         $regionTo = $this->getMockBuilder(RegionInterface::class)
@@ -186,8 +195,8 @@ class ServiceTest extends TestCase
             ->getMock();
         $regionTo->method('jsonSerialize')
             ->willReturn([
-                'id'   => 'region-id-2',
-                'type' => 'regions',
+                'country_code' => 'GB',
+                'region_code'  => 'ENG',
             ]);
 
         $service = (new Service())
@@ -200,40 +209,42 @@ class ServiceTest extends TestCase
             ->setDeliveryDays(['Monday'])
             ->setCarrier($carrier)
             ->setRegionFrom($regionFrom)
-            ->setRegionTo($regionTo);
+            ->setRegionTo($regionTo)
+            ->setUsesVolumetricWeight(true);
 
         $this->assertEquals([
             'id'            => 'service-id',
             'type'          => 'services',
             'attributes'    => [
-                'name'            => 'Easy Delivery Service',
-                'package_type'    => Service::PACKAGE_TYPE_PARCEL,
-                'transit_time'    => [
+                'name'                   => 'Easy Delivery Service',
+                'package_type'           => Service::PACKAGE_TYPE_PARCEL,
+                'transit_time'           => [
                     'min' => 7,
                     'max' => 14,
                 ],
-                'handover_method' => 'drop-off',
-                'delivery_days'   => [
+                'handover_method'        => 'drop-off',
+                'delivery_days'          => [
                     'Monday',
+                ],
+                'uses_volumetric_weight' => true,
+                'regions_from'           => [
+                    [
+                        'country_code' => 'GB',
+                        'region_code'  => 'ENG',
+                    ],
+                ],
+                'regions_to'             => [
+                    [
+                        'country_code' => 'GB',
+                        'region_code'  => 'ENG',
+                    ],
                 ],
             ],
             'relationships' => [
-                'carrier'     => [
+                'carrier' => [
                     'data' => [
                         'id'   => 'carrier-id-1',
                         'type' => 'carriers',
-                    ],
-                ],
-                'region_from' => [
-                    'data' => [
-                        'id'   => 'region-id-1',
-                        'type' => 'regions',
-                    ],
-                ],
-                'region_to'   => [
-                    'data' => [
-                        'id'   => 'region-id-2',
-                        'type' => 'regions',
                     ],
                 ],
             ],

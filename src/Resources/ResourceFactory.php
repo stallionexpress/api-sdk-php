@@ -3,6 +3,7 @@
 namespace MyParcelCom\ApiSdk\Resources;
 
 use MyParcelCom\ApiSdk\Exceptions\ResourceFactoryException;
+use MyParcelCom\ApiSdk\Exceptions\ResourceNotFoundException;
 use MyParcelCom\ApiSdk\MyParcelComApiInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
@@ -142,6 +143,15 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
             unset($properties['attributes']['price']);
         }
 
+        if (isset($properties['attributes']['total_value']['amount'])) {
+            $shipment->setTotalValueAmount($properties['attributes']['total_value']['amount']);
+            if (isset($properties['attributes']['total_value']['currency'])) {
+                $shipment->setTotalValueCurrency($properties['attributes']['total_value']['currency']);
+            }
+
+            unset($properties['attributes']['total_value']);
+        }
+
         if (isset($properties['attributes']['pickup_location']['code'])) {
             $shipment->setPickupLocationCode($properties['attributes']['pickup_location']['code']);
         }
@@ -193,6 +203,61 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
             $service->setTransitTimeMax($properties['attributes']['transit_time']['max']);
 
             unset($properties['attributes']['transit_time']['max']);
+        }
+
+        if (isset($properties['attributes']['regions_from'][0])) {
+            $regionFromAttribute = $properties['attributes']['regions_from'][0];
+
+            $countryCode = $regionFromAttribute['country_code'];
+            $regionCode = isset($regionFromAttribute['region_code']) ? $regionFromAttribute['region_code'] : null;
+
+            /** @var RegionInterface $regionFrom */
+            $regionFrom = $this->api->getRegions([
+                'country_code' => $countryCode,
+                'region_code'  => $regionCode,
+            ])->get()[0];
+
+            if (!$regionFrom) {
+                throw new ResourceNotFoundException(
+                    'No region found for country code ' . $countryCode . ' and region code ' . $regionCode ?: 'null'
+                );
+            }
+
+            $service->setRegionFrom($regionFrom);
+
+            unset($properties['attributes']['regions_from']);
+            // The hydrate method in this class overwrites the above code
+            // if there's a region_from relationship in the properties.
+            // TODO: Remove this when we remove the region relationships from services.
+            unset($properties['relationships']['region_from']);
+        }
+
+        if (isset($properties['attributes']['regions_to'][0])) {
+            $regionToAttribute = $properties['attributes']['regions_to'][0];
+
+            $countryCode = $regionToAttribute['country_code'];
+            $regionCode = isset($regionToAttribute['region_code']) ? $regionToAttribute['region_code'] : null;
+
+            /** @var RegionInterface $regionTo */
+            $regionTo = $this->api->getRegions([
+                'country_code' => $countryCode,
+                'region_code'  => $regionCode,
+            ])->get()[0];
+
+            if (!$regionTo) {
+                throw new ResourceNotFoundException(
+                    'No region found for country code ' . $countryCode . ' and region code ' . $regionCode ?: 'null'
+                );
+            }
+
+            $service->setRegionTo($regionTo);
+
+            unset($properties['attributes']['regions_to']);
+
+            // The hydrate method in this class overwrites the above code
+            // if there's a region_to relationship in the properties.
+            // TODO: Remove this when we remove the region relationships from services.
+            unset($properties['relationships']['region_to']);
         }
 
         if (isset($properties['id'])) {
@@ -373,8 +438,8 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
      *
      * @param string $type
      * @param array  $attributes
-     * @throws ResourceFactoryException
      * @return object
+     * @throws ResourceFactoryException
      */
     protected function createResource($type, array &$attributes = [])
     {
@@ -404,11 +469,11 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
      * other resources need to be created and tries to instantiate them where
      * possible.
      *
-     * @todo Refactor this huge moth.
-     *
      * @param object $resource
      * @param array  $attributes
      * @return object
+     * @todo Refactor this huge moth.
+     *
      */
     protected function hydrate($resource, array $attributes)
     {

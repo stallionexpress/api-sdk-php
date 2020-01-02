@@ -134,19 +134,19 @@ interface ShipmentInterface extends ResourceInterface
     public function getTrackingUrl();
 
     /**
-     * @deprecated Use Shipment::getPhysicalProperties()->setWeight() instead.
-     *
      * @param int    $weight
      * @param string $unit
      * @return $this
+     * @deprecated Use Shipment::getPhysicalProperties()->setWeight() instead.
+     *
      */
     public function setWeight($weight, $unit = PhysicalPropertiesInterface::WEIGHT_GRAM);
 
     /**
-     * @deprecated Use Shipment::getPhysicalProperties()->getWeight() instead.
-     *
      * @param string $unit
      * @return int
+     * @deprecated Use Shipment::getPhysicalProperties()->getWeight() instead.
+     *
      */
     public function getWeight($unit = PhysicalPropertiesInterface::WEIGHT_GRAM);
 
@@ -190,15 +190,15 @@ interface ShipmentInterface extends ResourceInterface
     public function getPhysicalProperties();
 
     /**
-     * @param PhysicalPropertiesInterface $physicalProperties
-     * @return $this
+     * @return null|int
      */
-    public function setPhysicalPropertiesVerified(PhysicalPropertiesInterface $physicalProperties);
+    public function getVolumetricWeight();
 
     /**
-     * @return PhysicalPropertiesInterface|null
+     * @param int $volumetricWeight
+     * @return $this
      */
-    public function getPhysicalPropertiesVerified();
+    public function setVolumetricWeight($volumetricWeight);
 
     /**
      * @param FileInterface[] $files
@@ -306,4 +306,26 @@ interface ShipmentInterface extends ResourceInterface
      * @return ContractInterface|null
      */
     public function getContract();
+
+    /**
+     * @param int|null $totalValueAmount
+     * @return $this
+     */
+    public function setTotalValueAmount($totalValueAmount);
+
+    /**
+     * @return int|null
+     */
+    public function getTotalValueAmount();
+
+    /**
+     * @param string|null $totalValueCurrency
+     * @return $this
+     */
+    public function setTotalValueCurrency($totalValueCurrency);
+
+    /**
+     * @return string|null
+     */
+    public function getTotalValueCurrency();
 }

@@ -10,6 +10,7 @@ use MyParcelCom\ApiSdk\Collection\ArrayCollection;
 use MyParcelCom\ApiSdk\Collection\CollectionInterface;
 use MyParcelCom\ApiSdk\Collection\RequestCollection;
 use MyParcelCom\ApiSdk\Exceptions\InvalidResourceException;
+use MyParcelCom\ApiSdk\Exceptions\ResourceNotFoundException;
 use MyParcelCom\ApiSdk\Http\Contracts\HttpClient\RequestExceptionInterface;
 use MyParcelCom\ApiSdk\Http\Exceptions\RequestException;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
@@ -276,7 +277,7 @@ class MyParcelComApi implements MyParcelComApiInterface
     public function getServices(ShipmentInterface $shipment = null, array $filters = ['has_active_contract' => 'true'])
     {
         $url = new UrlBuilder($this->apiUri . self::PATH_SERVICES);
-        $url->addQuery($this->arrayToFilter($filters));
+        $url->addQuery($this->arrayToFilters($filters));
 
         if ($shipment === null) {
             return $this->getRequestCollection($url->getUrl(), self::TTL_WEEK);
@@ -296,18 +297,15 @@ class MyParcelComApi implements MyParcelComApiInterface
             );
         }
 
-        $regionsFrom = $this->getRegions(
-            $shipment->getSenderAddress()->getCountryCode(),
-            $shipment->getSenderAddress()->getRegionCode()
-        )->get();
-        $regionsTo = $this->getRegions(
-            $shipment->getRecipientAddress()->getCountryCode(),
-            $shipment->getRecipientAddress()->getRegionCode()
-        )->get();
-
-        $url->addQuery($this->arrayToFilter([
-            'region_from' => reset($regionsFrom)->getId(),
-            'region_to'   => reset($regionsTo)->getId(),
+        $url->addQuery($this->arrayToFilters([
+            'address_from' => [
+                'country_code' => $shipment->getSenderAddress()->getCountryCode(),
+                'region_code'  => $shipment->getSenderAddress()->getRegionCode(),
+            ],
+            'address_to'   => [
+                'country_code' => $shipment->getRecipientAddress()->getCountryCode(),
+                'region_code'  => $shipment->getRecipientAddress()->getRegionCode(),
+            ],
         ]));
 
         // Services can be cached for a week.
@@ -338,7 +336,7 @@ class MyParcelComApi implements MyParcelComApiInterface
     public function getServiceRates(array $filters = [])
     {
         $url = new UrlBuilder($this->apiUri . self::PATH_SERVICE_RATES);
-        $url->addQuery($this->arrayToFilter($filters));
+        $url->addQuery($this->arrayToFilters($filters));
 
         return $this->getRequestCollection($url->getUrl(), self::TTL_WEEK);
     }
@@ -354,11 +352,16 @@ class MyParcelComApi implements MyParcelComApiInterface
             $serviceIds[] = $service->getId();
         }
 
+        if (empty($serviceIds)) {
+            return new ArrayCollection([]);
+        }
+
         $url = new UrlBuilder($this->apiUri . self::PATH_SERVICE_RATES);
-        $url->addQuery([
-            'filter[weight]'  => $shipment->getPhysicalProperties()->getWeight(),
-            'filter[service]' => implode(',', $serviceIds),
-        ]);
+        $url->addQuery($this->arrayToFilters([
+            'weight'            => $shipment->getPhysicalProperties()->getWeight(),
+            'volumetric_weight' => $shipment->getPhysicalProperties()->getVolumetricWeight(),
+            'service'           => implode(',', $serviceIds),
+        ]));
 
         $serviceRates = $this->getRequestCollection($url->getUrl(), self::TTL_WEEK);
 
@@ -577,7 +580,7 @@ class MyParcelComApi implements MyParcelComApiInterface
     protected function getResourcesArray($uri, $ttl = self::TTL_10MIN)
     {
         $response = $this->doRequest($uri, 'get', [], [], $ttl);
-        $json = json_decode((string)$response->getBody(), true);
+        $json = json_decode((string) $response->getBody(), true);
 
         $resources = $this->jsonToResources($json['data']);
 
@@ -709,7 +712,7 @@ class MyParcelComApi implements MyParcelComApiInterface
 
         $request = $exception->getRequest();
 
-        $body = (string)$request->getBody();
+        $body = (string) $request->getBody();
         $jsonBody = $body
             ? json_decode($body, true)
             : [];
@@ -817,14 +820,32 @@ class MyParcelComApi implements MyParcelComApiInterface
      * @param array $array
      * @return array
      */
-    private function arrayToFilter(array $array)
+    private function arrayToFilters(array $array)
     {
         $filters = [];
-        foreach ($array as $name => $value) {
-            $filters["filter[$name]"] = $value;
-        }
+
+        $this->arrayToFilter($filters, ['filter'], $array);
 
         return $filters;
+    }
+
+    /**
+     * Converts given array to a filter string for the query params.
+     *
+     * @param array $filters
+     * @param array $keys
+     * @param       $value
+     * @return void
+     */
+    private function arrayToFilter(array &$filters, array $keys, $value)
+    {
+        if (is_array($value)) {
+            foreach ($value as $key => $nextValue) {
+                $this->arrayToFilter($filters, array_merge($keys, ['[' . $key . ']']), $nextValue);
+            }
+        } else {
+            $filters[implode('', $keys)] = $value;
+        }
     }
 
     /**

@@ -358,22 +358,22 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
     }
 
     /**
-     * @param PhysicalPropertiesInterface $physicalProperties
+     * @param int $volumetricWeight
      * @return $this
      */
-    public function setPhysicalPropertiesVerified(PhysicalPropertiesInterface $physicalProperties)
+    public function setVolumetricWeight($volumetricWeight)
     {
-        $this->getResource()->setPhysicalPropertiesVerified($physicalProperties);
+        $this->getResource()->getPhysicalProperties()->setVolumetricWeight($volumetricWeight);
 
         return $this;
     }
 
     /**
-     * @return PhysicalPropertiesInterface|null
+     * @return int|null
      */
-    public function getPhysicalPropertiesVerified()
+    public function getVolumetricWeight()
     {
-        return $this->getResource()->getPhysicalPropertiesVerified();
+        return $this->getResource()->getPhysicalProperties()->getVolumetricWeight();
     }
 
     /**
@@ -548,6 +548,43 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
     {
         return $this->getResource()->getContract();
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setTotalValueAmount($totalValueAmount)
+    {
+        $this->getResource()->setTotalValueAmount($totalValueAmount);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getTotalValueAmount()
+    {
+        return $this->getResource()->getTotalValueAmount();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setTotalValueCurrency($totalValueCurrency)
+    {
+        $this->getResource()->setTotalValueCurrency($totalValueCurrency);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getTotalValueCurrency()
+    {
+        return $this->getResource()->getTotalValueCurrency();
+    }
+
 
     /**
      * This function puts all object properties in an array and returns it.
