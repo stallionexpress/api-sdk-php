@@ -32,8 +32,8 @@ interface MyParcelComApiInterface
      * Authenticate to the API using the given authenticator.
      *
      * @param AuthenticatorInterface $authenticator
-     * @throws MyParcelComException
      * @return $this
+     * @throws MyParcelComException
      */
     public function authenticate(AuthenticatorInterface $authenticator);
 
@@ -55,8 +55,8 @@ interface MyParcelComApiInterface
     /**
      * Get all the carriers from the API.
      *
-     * @throws MyParcelComException
      * @return CollectionInterface
+     * @throws MyParcelComException
      */
     public function getCarriers();
 
@@ -84,8 +84,8 @@ interface MyParcelComApiInterface
     /**
      * Get the shops from the API.
      *
-     * @throws MyParcelComException
      * @return CollectionInterface
+     * @throws MyParcelComException
      */
     public function getShops();
 
@@ -93,8 +93,8 @@ interface MyParcelComApiInterface
      * Get the default shop that will be used when interacting with the API and
      * no specific shop has been set.
      *
-     * @throws MyParcelComException
      * @return ShopInterface
+     * @throws MyParcelComException
      */
     public function getDefaultShop();
 
@@ -103,8 +103,8 @@ interface MyParcelComApiInterface
      * provided, all available services are returned.
      *
      * @param ShipmentInterface|null $shipment
-     * @throws MyParcelComException
      * @return CollectionInterface
+     * @throws MyParcelComException
      */
     public function getServices(ShipmentInterface $shipment = null, array $filters = ['has_active_contract' => 'true']);
 
@@ -112,8 +112,8 @@ interface MyParcelComApiInterface
      * Get all the services that are available for the given carrier.
      *
      * @param CarrierInterface $carrier
-     * @throws MyParcelComException
      * @return CollectionInterface
+     * @throws MyParcelComException
      */
     public function getServicesForCarrier(CarrierInterface $carrier);
 
@@ -140,8 +140,8 @@ interface MyParcelComApiInterface
      * used.
      *
      * @param ShopInterface|null $shop
-     * @throws MyParcelComException
      * @return CollectionInterface
+     * @throws MyParcelComException
      */
     public function getShipments(ShopInterface $shop = null);
 
@@ -149,8 +149,8 @@ interface MyParcelComApiInterface
      * Get a specific shipment from the API.
      *
      * @param string $id
-     * @throws MyParcelComException
      * @return ShipmentInterface
+     * @throws MyParcelComException
      */
     public function getShipment($id);
 
@@ -161,8 +161,8 @@ interface MyParcelComApiInterface
      * used. When no default value is available, an exception should be thrown.
      *
      * @param ShipmentInterface $shipment
-     * @throws MyParcelComException
      * @return ShipmentInterface
+     * @throws MyParcelComException
      */
     public function saveShipment(ShipmentInterface $shipment);
 
@@ -170,8 +170,8 @@ interface MyParcelComApiInterface
      * Update the given shipment and returns the updated version of the shipment.
      *
      * @param ShipmentInterface $shipment
-     * @throws MyParcelComException
      * @return ShipmentInterface
+     * @throws MyParcelComException
      */
     public function updateShipment(ShipmentInterface $shipment);
 
@@ -181,8 +181,8 @@ interface MyParcelComApiInterface
      * used. When no default value is available, an exception should be thrown.
      *
      * @param ShipmentInterface $shipment
-     * @throws MyParcelComException
      * @return ShipmentInterface
+     * @throws MyParcelComException
      */
     public function createShipment(ShipmentInterface $shipment);
 
@@ -191,8 +191,8 @@ interface MyParcelComApiInterface
      *
      * @param string $resourceType
      * @param string $id
-     * @throws MyParcelComException
      * @return ResourceInterface
+     * @throws MyParcelComException
      */
     public function getResourceById($resourceType, $id);
 

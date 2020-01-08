@@ -109,7 +109,7 @@ class Shipment implements ShipmentInterface
     /** @var array */
     private $meta = [
         self::META_LABEL_MIME_TYPE => 'application/pdf',
-        self::META_SERVICE_CODE => null,
+        self::META_SERVICE_CODE    => null,
     ];
 
     /**

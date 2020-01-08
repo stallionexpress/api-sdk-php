@@ -57,9 +57,9 @@ class Service implements ServiceInterface
 
     /** @var array */
     private $relationships = [
-        self::RELATIONSHIP_CARRIER     => [
+        self::RELATIONSHIP_CARRIER => [
             'data' => null,
-        ]
+        ],
     ];
 
     /**
