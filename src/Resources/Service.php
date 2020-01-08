@@ -14,6 +14,7 @@ class Service implements ServiceInterface
     use JsonSerializable;
 
     const ATTRIBUTE_NAME = 'name';
+    const ATTRIBUTE_CODE = 'code';
     const ATTRIBUTE_PACKAGE_TYPE = 'package_type';
     const ATTRIBUTE_TRANSIT_TIME = 'transit_time';
     const ATTRIBUTE_DELIVERY_DAYS = 'delivery_days';
@@ -103,6 +104,24 @@ class Service implements ServiceInterface
     public function getName()
     {
         return $this->attributes[self::ATTRIBUTE_NAME];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setCode($code)
+    {
+        $this->attributes[self::ATTRIBUTE_CODE] = $code;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCode()
+    {
+        return $this->attributes[self::ATTRIBUTE_CODE];
     }
 
     /**
@@ -326,7 +345,7 @@ class Service implements ServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function getServiceRates(array $filters = [])
+    public function getServiceRates(array $filters = ['has_active_contract' => 'true'])
     {
         if (empty($this->serviceRates) && isset($this->serviceRatesCallback)) {
             $this->setServiceRates(call_user_func_array($this->serviceRatesCallback, [$filters]));

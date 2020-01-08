@@ -10,7 +10,6 @@ use MyParcelCom\ApiSdk\Collection\ArrayCollection;
 use MyParcelCom\ApiSdk\Collection\CollectionInterface;
 use MyParcelCom\ApiSdk\Collection\RequestCollection;
 use MyParcelCom\ApiSdk\Exceptions\InvalidResourceException;
-use MyParcelCom\ApiSdk\Exceptions\ResourceNotFoundException;
 use MyParcelCom\ApiSdk\Http\Contracts\HttpClient\RequestExceptionInterface;
 use MyParcelCom\ApiSdk\Http\Exceptions\RequestException;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
@@ -300,11 +299,11 @@ class MyParcelComApi implements MyParcelComApiInterface
         $url->addQuery($this->arrayToFilters([
             'address_from' => [
                 'country_code' => $shipment->getSenderAddress()->getCountryCode(),
-                'region_code'  => $shipment->getSenderAddress()->getRegionCode(),
+                'postal_code'  => $shipment->getSenderAddress()->getPostalCode(),
             ],
             'address_to'   => [
                 'country_code' => $shipment->getRecipientAddress()->getCountryCode(),
-                'region_code'  => $shipment->getRecipientAddress()->getRegionCode(),
+                'postal_code'  => $shipment->getRecipientAddress()->getPostalCode(),
             ],
         ]));
 
@@ -325,7 +324,10 @@ class MyParcelComApi implements MyParcelComApiInterface
     public function getServicesForCarrier(CarrierInterface $carrier)
     {
         $url = new UrlBuilder($this->apiUri . self::PATH_SERVICES);
-        $url->addQuery(['filter[carrier]' => $carrier->getId()]);
+        $url->addQuery([
+            'has_active_contract' => 'true',
+            'filter[carrier]'     => $carrier->getId(),
+        ]);
 
         return $this->getRequestCollection($url->getUrl(), self::TTL_WEEK);
     }
@@ -333,7 +335,7 @@ class MyParcelComApi implements MyParcelComApiInterface
     /**
      * {@inheritdoc}
      */
-    public function getServiceRates(array $filters = [])
+    public function getServiceRates(array $filters = ['has_active_contract' => 'true'])
     {
         $url = new UrlBuilder($this->apiUri . self::PATH_SERVICE_RATES);
         $url->addQuery($this->arrayToFilters($filters));
@@ -358,9 +360,10 @@ class MyParcelComApi implements MyParcelComApiInterface
 
         $url = new UrlBuilder($this->apiUri . self::PATH_SERVICE_RATES);
         $url->addQuery($this->arrayToFilters([
-            'weight'            => $shipment->getPhysicalProperties()->getWeight(),
-            'volumetric_weight' => $shipment->getPhysicalProperties()->getVolumetricWeight(),
-            'service'           => implode(',', $serviceIds),
+            'has_active_contract' => 'true',
+            'weight'              => $shipment->getPhysicalProperties()->getWeight(),
+            'volumetric_weight'   => $shipment->getPhysicalProperties()->getVolumetricWeight(),
+            'service'             => implode(',', $serviceIds),
         ]));
 
         $serviceRates = $this->getRequestCollection($url->getUrl(), self::TTL_WEEK);
@@ -456,7 +459,7 @@ class MyParcelComApi implements MyParcelComApiInterface
 
         if (!$validator->isValid()) {
             $exception = new InvalidResourceException(
-                'Could not create shipment, shipment was invalid or incomplete'
+                'Could not create shipment. ' . implode('. ', $validator->getErrors()) . '.'
             );
             $exception->setErrors($validator->getErrors());
 
@@ -475,7 +478,7 @@ class MyParcelComApi implements MyParcelComApiInterface
 
         if (!$validator->isValid()) {
             $exception = new InvalidResourceException(
-                'Could not update shipment, shipment was invalid or incomplete'
+                'Could not update shipment. ' . implode('. ', $validator->getErrors()) . '.'
             );
             $exception->setErrors($validator->getErrors());
 

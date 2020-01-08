@@ -585,6 +585,23 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
         return $this->getResource()->getTotalValueCurrency();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function setServiceCode($serviceCode)
+    {
+        $this->getResource()->setServiceCode($serviceCode);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getServiceCode()
+    {
+        return $this->getResource()->getServiceCode();
+    }
 
     /**
      * This function puts all object properties in an array and returns it.

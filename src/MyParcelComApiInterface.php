@@ -106,7 +106,7 @@ interface MyParcelComApiInterface
      * @throws MyParcelComException
      * @return CollectionInterface
      */
-    public function getServices(ShipmentInterface $shipment = null);
+    public function getServices(ShipmentInterface $shipment = null, array $filters = ['has_active_contract' => 'true']);
 
     /**
      * Get all the services that are available for the given carrier.
@@ -124,7 +124,7 @@ interface MyParcelComApiInterface
      * @param array $filters
      * @return CollectionInterface
      */
-    public function getServiceRates(array $filters = []);
+    public function getServiceRates(array $filters = ['has_active_contract' => 'true']);
 
     /**
      * Retrieves service rates based on the shipment.
