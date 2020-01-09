@@ -417,6 +417,9 @@ class ResourceFactoryTest extends TestCase
         $this->assertInstanceOf(ShipmentInterface::class, $shipment);
         $this->assertEquals([
             'type' => 'shipments',
+            'meta' => [
+                'label_mime_type' => 'application/pdf',
+            ],
         ], $shipment->jsonSerialize());
     }
 
@@ -501,6 +504,9 @@ class ResourceFactoryTest extends TestCase
                 'shipment_status' => ['data' => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses']],
                 'service_options' => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
                 'files'           => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
+            ],
+            'meta' => [
+                'label_mime_type' => 'application/pdf',
             ],
         ];
 
@@ -630,6 +636,9 @@ class ResourceFactoryTest extends TestCase
                 'shipment_status' => ['data' => ['id' => 'shipment-status-id-1', 'type' => 'shipment-statuses']],
                 'service_options' => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
                 'files'           => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
+            ],
+            'meta' => [
+                'label_mime_type' => 'application/pdf',
             ],
         ];
 

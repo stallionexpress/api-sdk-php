@@ -324,10 +324,10 @@ class MyParcelComApi implements MyParcelComApiInterface
     public function getServicesForCarrier(CarrierInterface $carrier)
     {
         $url = new UrlBuilder($this->apiUri . self::PATH_SERVICES);
-        $url->addQuery([
+        $url->addQuery($this->arrayToFilters([
             'has_active_contract' => 'true',
-            'filter[carrier]'     => $carrier->getId(),
-        ]);
+            'carrier'             => $carrier->getId(),
+        ]));
 
         return $this->getRequestCollection($url->getUrl(), self::TTL_WEEK);
     }

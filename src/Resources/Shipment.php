@@ -630,8 +630,6 @@ class Shipment implements ShipmentInterface
     {
         $this->relationships[self::RELATIONSHIP_SERVICE]['data'] = $service;
 
-        $this->setServiceCode($service->getCode());
-
         return $this;
     }
 
