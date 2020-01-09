@@ -69,6 +69,25 @@ class ServiceProxy implements ServiceInterface, ResourceProxyInterface
     }
 
     /**
+     * @param string $code
+     * @return $this
+     */
+    public function setCode($code)
+    {
+        $this->getResource()->setCode($code);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCode()
+    {
+        return $this->getResource()->getCode();
+    }
+
+    /**
      * @param string $packageType
      * @return $this
      */
@@ -250,7 +269,6 @@ class ServiceProxy implements ServiceInterface, ResourceProxyInterface
         return $this;
     }
 
-
     /**
      * @param bool $usesVolumetricWeight
      * @return $this
@@ -296,7 +314,7 @@ class ServiceProxy implements ServiceInterface, ResourceProxyInterface
      * @param array $filters
      * @return ServiceRateInterface[]
      */
-    public function getServiceRates(array $filters = [])
+    public function getServiceRates(array $filters = ['has_active_contract' => 'true'])
     {
         return $this->getResource()->getServiceRates($filters);
     }

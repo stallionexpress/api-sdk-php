@@ -116,9 +116,10 @@ class PriceCalculator
         $this->validateShipment($shipment);
 
         $serviceRates = $shipment->getService()->getServiceRates([
-            'contract'          => $shipment->getContract(),
-            'weight'            => $shipment->getPhysicalProperties()->getWeight(),
-            'volumetric_weight' => $shipment->getPhysicalProperties()->getVolumetricWeight(),
+            'has_active_contract' => 'true',
+            'contract'            => $shipment->getContract(),
+            'weight'              => $shipment->getPhysicalProperties()->getWeight(),
+            'volumetric_weight'   => $shipment->getPhysicalProperties()->getVolumetricWeight(),
         ]);
 
         $shipmentOptionIds = array_map(function (ServiceOptionInterface $serviceOption) {

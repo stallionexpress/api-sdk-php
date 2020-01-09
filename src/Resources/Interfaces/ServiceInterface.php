@@ -29,6 +29,17 @@ interface ServiceInterface extends ResourceInterface
     public function getName();
 
     /**
+     * @param string $code
+     * @return $this
+     */
+    public function setCode($code);
+
+    /**
+     * @return string
+     */
+    public function getCode();
+
+    /**
      * @param string $packageType
      * @return $this
      */
@@ -160,5 +171,5 @@ interface ServiceInterface extends ResourceInterface
      * @param array $filters
      * @return ServiceRateInterface[]
      */
-    public function getServiceRates(array $filters = []);
+    public function getServiceRates(array $filters = ['has_active_contract' => 'true']);
 }
