@@ -318,13 +318,8 @@ class ResourceFactoryTest extends TestCase
                 'height_max' => 200,
                 'volume_max' => 6,
                 'length_max' => 300,
-                'step_size'  => 1000,
                 'price'      => [
                     'amount'   => 800,
-                    'currency' => 'GBP',
-                ],
-                'step_price' => [
-                    'amount'   => 300,
                     'currency' => 'GBP',
                 ],
             ],

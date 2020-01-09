@@ -65,28 +65,6 @@ class ServiceTest extends TestCase
     }
 
     /** @test */
-    public function testRegionFrom()
-    {
-        $service = new Service();
-
-        $mock = $this->getMockClass(RegionInterface::class);
-        $region = new $mock();
-
-        $this->assertEquals($region, $service->setRegionFrom($region)->getRegionFrom());
-    }
-
-    /** @test */
-    public function testRegionTo()
-    {
-        $service = new Service();
-
-        $mock = $this->getMockClass(RegionInterface::class);
-        $region = new $mock();
-
-        $this->assertEquals($region, $service->setRegionTo($region)->getRegionTo());
-    }
-
-    /** @test */
     public function testItSetsAddsAndGetsServiceRates()
     {
         $service = new Service();
@@ -175,30 +153,6 @@ class ServiceTest extends TestCase
                 'type' => 'carriers',
             ]);
 
-        $regionFrom = $this->getMockBuilder(RegionInterface::class)
-            ->disableOriginalConstructor()
-            ->disableOriginalClone()
-            ->disableArgumentCloning()
-            ->disallowMockingUnknownTypes()
-            ->getMock();
-        $regionFrom->method('jsonSerialize')
-            ->willReturn([
-                'country_code' => 'GB',
-                'region_code'  => 'ENG',
-            ]);
-
-        $regionTo = $this->getMockBuilder(RegionInterface::class)
-            ->disableOriginalConstructor()
-            ->disableOriginalClone()
-            ->disableArgumentCloning()
-            ->disallowMockingUnknownTypes()
-            ->getMock();
-        $regionTo->method('jsonSerialize')
-            ->willReturn([
-                'country_code' => 'GB',
-                'region_code'  => 'ENG',
-            ]);
-
         $service = (new Service())
             ->setId('service-id')
             ->setName('Easy Delivery Service')
@@ -208,8 +162,6 @@ class ServiceTest extends TestCase
             ->setHandoverMethod('drop-off')
             ->setDeliveryDays(['Monday'])
             ->setCarrier($carrier)
-            ->setRegionFrom($regionFrom)
-            ->setRegionTo($regionTo)
             ->setUsesVolumetricWeight(true);
 
         $this->assertEquals([
@@ -227,18 +179,6 @@ class ServiceTest extends TestCase
                     'Monday',
                 ],
                 'uses_volumetric_weight' => true,
-                'regions_from'           => [
-                    [
-                        'country_code' => 'GB',
-                        'region_code'  => 'ENG',
-                    ],
-                ],
-                'regions_to'             => [
-                    [
-                        'country_code' => 'GB',
-                        'region_code'  => 'ENG',
-                    ],
-                ],
             ],
             'relationships' => [
                 'carrier' => [

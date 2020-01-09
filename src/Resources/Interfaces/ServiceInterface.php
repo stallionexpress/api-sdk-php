@@ -84,28 +84,6 @@ interface ServiceInterface extends ResourceInterface
     public function getCarrier();
 
     /**
-     * @param RegionInterface $region
-     * @return $this
-     */
-    public function setRegionFrom(RegionInterface $region);
-
-    /**
-     * @return RegionInterface
-     */
-    public function getRegionFrom();
-
-    /**
-     * @param RegionInterface $region
-     * @return $this
-     */
-    public function setRegionTo(RegionInterface $region);
-
-    /**
-     * @return RegionInterface
-     */
-    public function getRegionTo();
-
-    /**
      * @param string $handoverMethod
      * @return $this
      */

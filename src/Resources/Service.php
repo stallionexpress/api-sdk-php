@@ -197,42 +197,6 @@ class Service implements ServiceInterface
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function setRegionFrom(RegionInterface $region)
-    {
-        $this->attributes[self::ATTRIBUTE_REGIONS_FROM][0] = $region;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getRegionFrom()
-    {
-        return $this->attributes[self::ATTRIBUTE_REGIONS_FROM][0];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setRegionTo(RegionInterface $region)
-    {
-        $this->attributes[self::ATTRIBUTE_REGIONS_TO][0] = $region;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getRegionTo()
-    {
-        return $this->attributes[self::ATTRIBUTE_REGIONS_TO][0];
-    }
-
-    /**
      * @inheritdoc
      */
     public function setHandoverMethod($handoverMethod)

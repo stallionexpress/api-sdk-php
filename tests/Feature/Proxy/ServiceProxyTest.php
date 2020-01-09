@@ -68,15 +68,6 @@ class ServiceProxyTest extends TestCase
         /** @var CarrierInterface $carrier */
         $carrier = $this->getMockBuilder(CarrierInterface::class)->getMock();
         $this->assertEquals($carrier, $this->serviceProxy->setCarrier($carrier)->getCarrier());
-
-        $regionBuilder = $this->getMockBuilder(RegionInterface::class);
-        /** @var RegionInterface $regionTo */
-        $regionTo = $regionBuilder->getMock();
-        $this->assertEquals($regionTo, $this->serviceProxy->setRegionTo($regionTo)->getRegionTo());
-
-        /** @var RegionInterface $regionFrom */
-        $regionFrom = $regionBuilder->getMock();
-        $this->assertEquals($regionFrom, $this->serviceProxy->setRegionFrom($regionFrom)->getRegionFrom());
     }
 
     /** @test */
@@ -89,8 +80,6 @@ class ServiceProxyTest extends TestCase
         $this->assertEquals(2, $this->serviceProxy->getTransitTimeMin());
         $this->assertEquals(3, $this->serviceProxy->getTransitTimeMax());
         $this->assertEquals('collection', $this->serviceProxy->getHandoverMethod());
-        $this->assertInstanceOf(RegionInterface::class, $this->serviceProxy->getRegionFrom());
-        $this->assertInstanceOf(RegionInterface::class, $this->serviceProxy->getRegionTo());
         $this->assertFalse($this->serviceProxy->usesVolumetricWeight());
 
         $this->assertInternalType('array', $this->serviceProxy->getDeliveryDays());
@@ -159,7 +148,6 @@ class ServiceProxyTest extends TestCase
         $firstProxy
             ->setMyParcelComApi($this->api)
             ->setId('433285bb-2e34-435c-9109-1120e7c4bce4');
-        $firstProxy->getRegionTo();
         $firstProxy->getDeliveryDays();
 
         $this->assertEquals(1, $this->clientCalls['https://api/services/433285bb-2e34-435c-9109-1120e7c4bce4']);

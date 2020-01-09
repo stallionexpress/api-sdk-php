@@ -164,44 +164,6 @@ class ServiceProxy implements ServiceInterface, ResourceProxyInterface
     }
 
     /**
-     * @param RegionInterface $region
-     * @return $this
-     */
-    public function setRegionFrom(RegionInterface $region)
-    {
-        $this->getResource()->setRegionFrom($region);
-
-        return $this;
-    }
-
-    /**
-     * @return RegionInterface
-     */
-    public function getRegionFrom()
-    {
-        return $this->getResource()->getRegionFrom();
-    }
-
-    /**
-     * @param RegionInterface $region
-     * @return $this
-     */
-    public function setRegionTo(RegionInterface $region)
-    {
-        $this->getResource()->setRegionTo($region);
-
-        return $this;
-    }
-
-    /**
-     * @return RegionInterface
-     */
-    public function getRegionTo()
-    {
-        return $this->getResource()->getRegionTo();
-    }
-
-    /**
      * @param string $handoverMethod
      * @return $this
      */
