@@ -262,6 +262,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
 
         if (isset($properties['id'])) {
             $service->setServiceRatesCallback(function (array $filters = []) use ($properties) {
+                $filters['has_active_contract'] = 'true';
                 $filters['service'] = $properties['id'];
 
                 return $this->api->getServiceRates($filters)->get();

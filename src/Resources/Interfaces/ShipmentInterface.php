@@ -138,7 +138,6 @@ interface ShipmentInterface extends ResourceInterface
      * @param string $unit
      * @return $this
      * @deprecated Use Shipment::getPhysicalProperties()->setWeight() instead.
-     *
      */
     public function setWeight($weight, $unit = PhysicalPropertiesInterface::WEIGHT_GRAM);
 
@@ -146,7 +145,6 @@ interface ShipmentInterface extends ResourceInterface
      * @param string $unit
      * @return int
      * @deprecated Use Shipment::getPhysicalProperties()->getWeight() instead.
-     *
      */
     public function getWeight($unit = PhysicalPropertiesInterface::WEIGHT_GRAM);
 
@@ -328,4 +326,15 @@ interface ShipmentInterface extends ResourceInterface
      * @return string|null
      */
     public function getTotalValueCurrency();
+
+    /**
+     * @param string|null $serviceCode
+     * @return $this
+     */
+    public function setServiceCode($serviceCode);
+
+    /**
+     * @return string|null
+     */
+    public function getServiceCode();
 }

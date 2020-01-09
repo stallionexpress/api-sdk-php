@@ -48,6 +48,9 @@ class Shipment implements ShipmentInterface
     const RELATIONSHIP_STATUS = 'shipment_status';
     const RELATIONSHIP_SHOP = 'shop';
 
+    const META_LABEL_MIME_TYPE = 'label_mime_type';
+    const META_SERVICE_CODE = 'service_code';
+
     /** @var string */
     private $id;
 
@@ -101,6 +104,12 @@ class Shipment implements ShipmentInterface
         self::RELATIONSHIP_CONTRACT        => [
             'data' => null,
         ],
+    ];
+
+    /** @var array */
+    private $meta = [
+        self::META_LABEL_MIME_TYPE => 'application/pdf',
+        self::META_SERVICE_CODE    => null,
     ];
 
     /**
@@ -684,5 +693,23 @@ class Shipment implements ShipmentInterface
     public function getTotalValueCurrency()
     {
         return $this->attributes[self::ATTRIBUTE_TOTAL_VALUE]['currency'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setServiceCode($serviceCode)
+    {
+        $this->meta[self::META_SERVICE_CODE] = $serviceCode;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getServiceCode()
+    {
+        return $this->meta[self::META_SERVICE_CODE];
     }
 }
