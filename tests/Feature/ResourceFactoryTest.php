@@ -500,7 +500,7 @@ class ResourceFactoryTest extends TestCase
                 'service_options' => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
                 'files'           => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
             ],
-            'meta' => [
+            'meta'          => [
                 'label_mime_type' => 'application/pdf',
             ],
         ];
@@ -632,7 +632,7 @@ class ResourceFactoryTest extends TestCase
                 'service_options' => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
                 'files'           => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
             ],
-            'meta' => [
+            'meta'          => [
                 'label_mime_type' => 'application/pdf',
             ],
         ];

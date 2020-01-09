@@ -3,7 +3,6 @@
 namespace MyParcelCom\ApiSdk\Resources;
 
 use MyParcelCom\ApiSdk\Exceptions\ResourceFactoryException;
-use MyParcelCom\ApiSdk\Exceptions\ResourceNotFoundException;
 use MyParcelCom\ApiSdk\MyParcelComApiInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
