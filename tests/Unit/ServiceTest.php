@@ -3,7 +3,6 @@
 namespace MyParcelCom\ApiSdk\Tests\Unit;
 
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceRateInterface;
 use MyParcelCom\ApiSdk\Resources\Service;
 use MyParcelCom\ApiSdk\Resources\ServiceRate;
@@ -62,28 +61,6 @@ class ServiceTest extends TestCase
         $carrier = new $mock();
 
         $this->assertEquals($carrier, $service->setCarrier($carrier)->getCarrier());
-    }
-
-    /** @test */
-    public function testRegionFrom()
-    {
-        $service = new Service();
-
-        $mock = $this->getMockClass(RegionInterface::class);
-        $region = new $mock();
-
-        $this->assertEquals($region, $service->setRegionFrom($region)->getRegionFrom());
-    }
-
-    /** @test */
-    public function testRegionTo()
-    {
-        $service = new Service();
-
-        $mock = $this->getMockClass(RegionInterface::class);
-        $region = new $mock();
-
-        $this->assertEquals($region, $service->setRegionTo($region)->getRegionTo());
     }
 
     /** @test */
@@ -175,30 +152,6 @@ class ServiceTest extends TestCase
                 'type' => 'carriers',
             ]);
 
-        $regionFrom = $this->getMockBuilder(RegionInterface::class)
-            ->disableOriginalConstructor()
-            ->disableOriginalClone()
-            ->disableArgumentCloning()
-            ->disallowMockingUnknownTypes()
-            ->getMock();
-        $regionFrom->method('jsonSerialize')
-            ->willReturn([
-                'country_code' => 'GB',
-                'region_code'  => 'ENG',
-            ]);
-
-        $regionTo = $this->getMockBuilder(RegionInterface::class)
-            ->disableOriginalConstructor()
-            ->disableOriginalClone()
-            ->disableArgumentCloning()
-            ->disallowMockingUnknownTypes()
-            ->getMock();
-        $regionTo->method('jsonSerialize')
-            ->willReturn([
-                'country_code' => 'GB',
-                'region_code'  => 'ENG',
-            ]);
-
         $service = (new Service())
             ->setId('service-id')
             ->setName('Easy Delivery Service')
@@ -208,8 +161,6 @@ class ServiceTest extends TestCase
             ->setHandoverMethod('drop-off')
             ->setDeliveryDays(['Monday'])
             ->setCarrier($carrier)
-            ->setRegionFrom($regionFrom)
-            ->setRegionTo($regionTo)
             ->setUsesVolumetricWeight(true);
 
         $this->assertEquals([
@@ -227,18 +178,6 @@ class ServiceTest extends TestCase
                     'Monday',
                 ],
                 'uses_volumetric_weight' => true,
-                'regions_from'           => [
-                    [
-                        'country_code' => 'GB',
-                        'region_code'  => 'ENG',
-                    ],
-                ],
-                'regions_to'             => [
-                    [
-                        'country_code' => 'GB',
-                        'region_code'  => 'ENG',
-                    ],
-                ],
             ],
             'relationships' => [
                 'carrier' => [

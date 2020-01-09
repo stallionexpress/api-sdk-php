@@ -3,7 +3,6 @@
 namespace MyParcelCom\ApiSdk\Resources\Proxy;
 
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
@@ -161,44 +160,6 @@ class ServiceProxy implements ServiceInterface, ResourceProxyInterface
     public function getCarrier()
     {
         return $this->getResource()->getCarrier();
-    }
-
-    /**
-     * @param RegionInterface $region
-     * @return $this
-     */
-    public function setRegionFrom(RegionInterface $region)
-    {
-        $this->getResource()->setRegionFrom($region);
-
-        return $this;
-    }
-
-    /**
-     * @return RegionInterface
-     */
-    public function getRegionFrom()
-    {
-        return $this->getResource()->getRegionFrom();
-    }
-
-    /**
-     * @param RegionInterface $region
-     * @return $this
-     */
-    public function setRegionTo(RegionInterface $region)
-    {
-        $this->getResource()->setRegionTo($region);
-
-        return $this;
-    }
-
-    /**
-     * @return RegionInterface
-     */
-    public function getRegionTo()
-    {
-        return $this->getResource()->getRegionTo();
     }
 
     /**

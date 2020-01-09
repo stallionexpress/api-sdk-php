@@ -10,7 +10,6 @@
         "height_max": 560,
         "volume_max": 126,
         "length_max": 750,
-        "step_size": 1000,
         "price": {
           "amount": 400,
           "currency": "EUR"
