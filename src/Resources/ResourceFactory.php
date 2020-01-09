@@ -204,6 +204,10 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
             unset($properties['attributes']['transit_time']['max']);
         }
 
+        // TODO: Remove this when we remove the region relationships from services.
+        unset($properties['relationships']['region_from']);
+        unset($properties['relationships']['region_to']);
+
         if (isset($properties['id'])) {
             $service->setServiceRatesCallback(function (array $filters = []) use ($properties) {
                 $filters['has_active_contract'] = 'true';
