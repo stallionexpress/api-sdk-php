@@ -318,13 +318,8 @@ class ResourceFactoryTest extends TestCase
                 'height_max' => 200,
                 'volume_max' => 6,
                 'length_max' => 300,
-                'step_size'  => 1000,
                 'price'      => [
                     'amount'   => 800,
-                    'currency' => 'GBP',
-                ],
-                'step_price' => [
-                    'amount'   => 300,
                     'currency' => 'GBP',
                 ],
             ],
@@ -505,7 +500,7 @@ class ResourceFactoryTest extends TestCase
                 'service_options' => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
                 'files'           => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
             ],
-            'meta' => [
+            'meta'          => [
                 'label_mime_type' => 'application/pdf',
             ],
         ];
@@ -637,7 +632,7 @@ class ResourceFactoryTest extends TestCase
                 'service_options' => ['data' => [['id' => 'option-id-1', 'type' => 'service-options']]],
                 'files'           => ['data' => [['id' => 'file-id-1', 'type' => 'files']]],
             ],
-            'meta' => [
+            'meta'          => [
                 'label_mime_type' => 'application/pdf',
             ],
         ];
