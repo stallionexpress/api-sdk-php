@@ -68,6 +68,17 @@ interface ShipmentInterface extends ResourceInterface
     public function getPickupLocationAddress();
 
     /**
+     * @param string $channel
+     * @return $this
+     */
+    public function setChannel($channel);
+
+    /**
+     * @return string|null
+     */
+    public function getChannel();
+
+    /**
      * @param string $description
      * @return $this
      */

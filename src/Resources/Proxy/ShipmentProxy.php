@@ -155,6 +155,25 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
     }
 
     /**
+     * @param string $channel
+     * @return $this
+     */
+    public function setChannel($channel)
+    {
+        $this->getResource()->setChannel($channel);
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getChannel()
+    {
+        return $this->getResource()->getChannel();
+    }
+
+    /**
      * @param string $description
      * @return $this
      */
