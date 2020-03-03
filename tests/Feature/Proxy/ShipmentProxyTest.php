@@ -57,6 +57,7 @@ class ShipmentProxyTest extends TestCase
         $this->assertEquals('AED', $this->shipmentProxy->setCurrency('AED')->getCurrency());
         $this->assertEquals('Tracking-code_134', $this->shipmentProxy->setTrackingCode('Tracking-code_134')->getTrackingCode());
         $this->assertEquals('https://I.Track.U/134', $this->shipmentProxy->setTrackingUrl('https://I.Track.U/134')->getTrackingUrl());
+        $this->assertEquals('Cartoon Network', $this->shipmentProxy->setChannel('Cartoon Network')->getChannel());
         $this->assertEquals('Something living with hair', $this->shipmentProxy->setDescription('Something living with hair')->getDescription());
         $this->assertEquals('|||||||||||||', $this->shipmentProxy->setBarcode('|||||||||||||')->getBarcode());
         $this->assertEquals(12, $this->shipmentProxy->setWeight(12)->getWeight());

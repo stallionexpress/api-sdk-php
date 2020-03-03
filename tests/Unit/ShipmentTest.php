@@ -84,6 +84,13 @@ class ShipmentTest extends TestCase
     }
 
     /** @test */
+    public function testChannel()
+    {
+        $shipment = new Shipment();
+        $this->assertEquals('Cartoon Network', $shipment->setChannel('Cartoon Network')->getChannel());
+    }
+
+    /** @test */
     public function testDescription()
     {
         $shipment = new Shipment();
@@ -611,6 +618,7 @@ class ShipmentTest extends TestCase
 
         $shipment = (new Shipment())
             ->setId('shipment-id')
+            ->setChannel('Cartoon Network')
             ->setDescription('order #012ASD')
             ->setPickupLocationCode('CODE123')
             ->setPrice(99)
@@ -642,6 +650,7 @@ class ShipmentTest extends TestCase
                 'barcode'             => 'S3BARCODE',
                 'tracking_code'       => 'ATRACKINGCODE',
                 'tracking_url'        => 'https://tra.ck/ATRACKINGCODE',
+                'channel'             => 'Cartoon Network',
                 'description'         => 'order #012ASD',
                 'price'               => [
                     'amount'   => 99,
