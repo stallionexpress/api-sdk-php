@@ -25,6 +25,7 @@ class Shipment implements ShipmentInterface
     const ATTRIBUTE_BARCODE = 'barcode';
     const ATTRIBUTE_TRACKING_CODE = 'tracking_code';
     const ATTRIBUTE_TRACKING_URL = 'tracking_url';
+    const ATTRIBUTE_CHANNEL = 'channel';
     const ATTRIBUTE_DESCRIPTION = 'description';
     const ATTRIBUTE_AMOUNT = 'amount';
     const ATTRIBUTE_PRICE = 'price';
@@ -68,6 +69,7 @@ class Shipment implements ShipmentInterface
         self::ATTRIBUTE_BARCODE             => null,
         self::ATTRIBUTE_TRACKING_CODE       => null,
         self::ATTRIBUTE_TRACKING_URL        => null,
+        self::ATTRIBUTE_CHANNEL             => null,
         self::ATTRIBUTE_DESCRIPTION         => null,
         self::ATTRIBUTE_PRICE               => null,
         self::ATTRIBUTE_PHYSICAL_PROPERTIES => null,
@@ -235,6 +237,24 @@ class Shipment implements ShipmentInterface
     /**
      * {@inheritdoc}
      */
+    public function setChannel($channel)
+    {
+        $this->attributes[self::ATTRIBUTE_CHANNEL] = $channel;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getChannel()
+    {
+        return $this->attributes[self::ATTRIBUTE_CHANNEL];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function setDescription($description)
     {
         $this->attributes[self::ATTRIBUTE_DESCRIPTION] = $description;
@@ -346,6 +366,7 @@ class Shipment implements ShipmentInterface
 
     /**
      * {@inheritdoc}
+     * @deprecated Use Shipment::getPhysicalProperties()->setWeight() instead.
      */
     public function setWeight($weight, $unit = PhysicalPropertiesInterface::WEIGHT_GRAM)
     {
@@ -359,6 +380,7 @@ class Shipment implements ShipmentInterface
 
     /**
      * {@inheritdoc}
+     * @deprecated Use Shipment::getPhysicalProperties()->getWeight() instead.
      */
     public function getWeight($unit = PhysicalPropertiesInterface::WEIGHT_GRAM)
     {
