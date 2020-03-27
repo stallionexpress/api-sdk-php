@@ -59,6 +59,7 @@ class ShipmentProxyTest extends TestCase
         $this->assertEquals('https://I.Track.U/134', $this->shipmentProxy->setTrackingUrl('https://I.Track.U/134')->getTrackingUrl());
         $this->assertEquals('Cartoon Network', $this->shipmentProxy->setChannel('Cartoon Network')->getChannel());
         $this->assertEquals('Something living with hair', $this->shipmentProxy->setDescription('Something living with hair')->getDescription());
+        $this->assertEquals('#1234', $this->shipmentProxy->setCustomerReference('#1234')->getCustomerReference());
         $this->assertEquals('|||||||||||||', $this->shipmentProxy->setBarcode('|||||||||||||')->getBarcode());
         $this->assertEquals(12, $this->shipmentProxy->setWeight(12)->getWeight());
         $this->assertEquals('80-90A', $this->shipmentProxy->setPickupLocationCode('80-90A')->getPickupLocationCode());
@@ -162,6 +163,7 @@ class ShipmentProxyTest extends TestCase
         $this->assertEquals('Doe', $this->shipmentProxy->getPickupLocationAddress()->getLastName());
 
         $this->assertEquals('Playstation 4', $this->shipmentProxy->setDescription('Playstation 4')->getDescription());
+        $this->assertEquals('#1234', $this->shipmentProxy->setCustomerReference('#1234')->getCustomerReference());
         $this->assertEquals(50, $this->shipmentProxy->setPrice(50)->getPrice());
         $this->assertEquals('EUR', $this->shipmentProxy->getCurrency());
         $this->assertEquals('3SABCD0123456789', $this->shipmentProxy->getBarcode());

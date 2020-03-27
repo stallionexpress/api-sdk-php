@@ -27,6 +27,7 @@ class Shipment implements ShipmentInterface
     const ATTRIBUTE_TRACKING_URL = 'tracking_url';
     const ATTRIBUTE_CHANNEL = 'channel';
     const ATTRIBUTE_DESCRIPTION = 'description';
+    const ATTRIBUTE_CUSTOMER_REFERENCE= 'customer_reference';
     const ATTRIBUTE_AMOUNT = 'amount';
     const ATTRIBUTE_PRICE = 'price';
     const ATTRIBUTE_CURRENCY = 'currency';
@@ -71,6 +72,7 @@ class Shipment implements ShipmentInterface
         self::ATTRIBUTE_TRACKING_URL        => null,
         self::ATTRIBUTE_CHANNEL             => null,
         self::ATTRIBUTE_DESCRIPTION         => null,
+        self::ATTRIBUTE_CUSTOMER_REFERENCE  => null,
         self::ATTRIBUTE_PRICE               => null,
         self::ATTRIBUTE_PHYSICAL_PROPERTIES => null,
         self::ATTRIBUTE_RECIPIENT_ADDRESS   => null,
@@ -268,6 +270,24 @@ class Shipment implements ShipmentInterface
     public function getDescription()
     {
         return $this->attributes[self::ATTRIBUTE_DESCRIPTION];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setCustomerReference($customerReference)
+    {
+        $this->attributes[self::ATTRIBUTE_CUSTOMER_REFERENCE] = $customerReference;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCustomerReference()
+    {
+        return $this->attributes[self::ATTRIBUTE_CUSTOMER_REFERENCE];
     }
 
     /**

@@ -193,6 +193,25 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
     }
 
     /**
+     * @param string $customerReference
+     * @return $this
+     */
+    public function setCustomerReference($customerReference)
+    {
+        $this->getResource()->setCustomerReference($customerReference);
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCustomerReference()
+    {
+        return $this->getResource()->getCustomerReference();
+    }
+
+    /**
      * @param int $price
      * @return $this
      */
