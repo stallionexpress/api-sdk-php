@@ -94,7 +94,14 @@ class ShipmentTest extends TestCase
     public function testDescription()
     {
         $shipment = new Shipment();
-        $this->assertEquals('order #012ASD', $shipment->setDescription('order #012ASD')->getDescription());
+        $this->assertEquals('Fidget spinners', $shipment->setDescription('Fidget spinners')->getDescription());
+    }
+
+    /** @test */
+    public function testCustomerReference()
+    {
+        $shipment = new Shipment();
+        $this->assertEquals('#012ASD', $shipment->setCustomerReference('#012ASD')->getCustomerReference());
     }
 
     /** @test */
@@ -619,7 +626,8 @@ class ShipmentTest extends TestCase
         $shipment = (new Shipment())
             ->setId('shipment-id')
             ->setChannel('Cartoon Network')
-            ->setDescription('order #012ASD')
+            ->setDescription('Fidget spinners')
+            ->setCustomerReference('#012ASD')
             ->setPickupLocationCode('CODE123')
             ->setPrice(99)
             ->setTotalValueAmount(100)
@@ -651,7 +659,8 @@ class ShipmentTest extends TestCase
                 'tracking_code'       => 'ATRACKINGCODE',
                 'tracking_url'        => 'https://tra.ck/ATRACKINGCODE',
                 'channel'             => 'Cartoon Network',
-                'description'         => 'order #012ASD',
+                'description'         => 'Fidget spinners',
+                'customer_reference'  => '#012ASD',
                 'price'               => [
                     'amount'   => 99,
                     'currency' => 'USD',
