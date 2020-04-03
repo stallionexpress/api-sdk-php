@@ -403,9 +403,9 @@ class MyParcelComApi implements MyParcelComApiInterface
     /**
      * {@inheritdoc}
      */
-    public function getShipment($id)
+    public function getShipment($id, $ttl = null)
     {
-        return $this->getResourceById(ResourceInterface::TYPE_SHIPMENT, $id);
+        return $this->getResourceById(ResourceInterface::TYPE_SHIPMENT, $id, $ttl);
     }
 
     /**
@@ -731,13 +731,15 @@ class MyParcelComApi implements MyParcelComApiInterface
     /**
      * @param string $resourceType
      * @param string $id
+     * @param int    $ttl
      * @return ResourceInterface
      * @throws RequestException
      */
-    public function getResourceById($resourceType, $id)
+    public function getResourceById($resourceType, $id, $ttl = self::TTL_10MIN)
     {
         $resources = $this->getResourcesArray(
-            $this->getResourceUri($resourceType, $id)
+            $this->getResourceUri($resourceType, $id),
+            $ttl
         );
 
         return reset($resources);

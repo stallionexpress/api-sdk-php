@@ -149,10 +149,11 @@ interface MyParcelComApiInterface
      * Get a specific shipment from the API.
      *
      * @param string $id
+     * @param int    $ttl
      * @return ShipmentInterface
      * @throws MyParcelComException
      */
-    public function getShipment($id);
+    public function getShipment($id, $ttl = null);
 
     /**
      * Creates a given shipment or updates it depending on if the id is already set.
@@ -191,10 +192,11 @@ interface MyParcelComApiInterface
      *
      * @param string $resourceType
      * @param string $id
+     * @param int    $ttl
      * @return ResourceInterface
      * @throws MyParcelComException
      */
-    public function getResourceById($resourceType, $id);
+    public function getResourceById($resourceType, $id, $ttl = self::TTL_10MIN);
 
     /**
      * Get an array of all the resources from given uri.
