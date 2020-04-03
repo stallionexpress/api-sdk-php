@@ -48,17 +48,19 @@ interface MyParcelComApiInterface
      * @see https://docs.myparcel.com/api/resources/regions/#parameters
      *
      * @param array $filters
+     * @param int   $ttl            Cache time to live (in seconds)
      * @return CollectionInterface
      */
-    public function getRegions($filters = []);
+    public function getRegions($filters = [], $ttl = self::TTL_WEEK);
 
     /**
      * Get all the carriers from the API.
      *
+     * @param int   $ttl            Cache time to live (in seconds)
      * @return CollectionInterface
      * @throws MyParcelComException
      */
-    public function getCarriers();
+    public function getCarriers($ttl = self::TTL_WEEK);
 
     /**
      * Get the pick up/drop off locations around a given location. If no carrier
@@ -70,6 +72,7 @@ interface MyParcelComApiInterface
      * @param string|null           $streetNumber
      * @param CarrierInterface|null $specificCarrier
      * @param bool                  $onlyActiveContracts
+     * @param int                   $ttl                    Cache time to live (in seconds)
      * @return CollectionInterface
      */
     public function getPickUpDropOffLocations(
@@ -78,72 +81,85 @@ interface MyParcelComApiInterface
         $streetName = null,
         $streetNumber = null,
         CarrierInterface $specificCarrier = null,
-        $onlyActiveContracts = true
+        $onlyActiveContracts = true,
+        $ttl = self::TTL_WEEK
     );
 
     /**
      * Get the shops from the API.
      *
+     * @param int $ttl              Cache time to live (in seconds)
      * @return CollectionInterface
      * @throws MyParcelComException
      */
-    public function getShops();
+    public function getShops($ttl = self::TTL_WEEK);
 
     /**
      * Get the default shop that will be used when interacting with the API and
      * no specific shop has been set.
      *
+     * @param int $ttl              Cache time to live (in seconds)
      * @return ShopInterface
      * @throws MyParcelComException
      */
-    public function getDefaultShop();
+    public function getDefaultShop($ttl = self::TTL_WEEK);
 
     /**
      * Get all services that can be used for given shipment. If no shipment is
      * provided, all available services are returned.
      *
      * @param ShipmentInterface|null $shipment
+     * @param array                  $filters
+     * @param int                    $ttl       Cache time to live (in seconds)
      * @return CollectionInterface
      * @throws MyParcelComException
      */
-    public function getServices(ShipmentInterface $shipment = null, array $filters = ['has_active_contract' => 'true']);
+    public function getServices(
+        ShipmentInterface $shipment = null,
+        array $filters = ['has_active_contract' => 'true'],
+        $ttl = self::TTL_WEEK
+    );
 
     /**
      * Get all the services that are available for the given carrier.
      *
      * @param CarrierInterface $carrier
+     * @param int              $ttl     Cache time to live (in seconds)
      * @return CollectionInterface
      * @throws MyParcelComException
      */
-    public function getServicesForCarrier(CarrierInterface $carrier);
+    public function getServicesForCarrier(CarrierInterface $carrier, $ttl = self::TTL_WEEK);
 
     /**
      * Retrieves service rates based on the set filters.
      * Available filters are: service, contract and weight.
      *
      * @param array $filters
+     * @param int   $ttl           Cache time to live (in seconds)
      * @return CollectionInterface
      */
-    public function getServiceRates(array $filters = ['has_active_contract' => 'true']);
+    public function getServiceRates(array $filters = ['has_active_contract' => 'true'], $ttl = self::TTL_WEEK);
 
     /**
      * Retrieves service rates based on the shipment.
      * The shipment needs to have a recipient/sender_address and a weight set.
      *
      * @param ShipmentInterface $shipment
+     * @param int               $ttl      Cache time to live (in seconds)
      * @return CollectionInterface
      */
-    public function getServiceRatesForShipment(ShipmentInterface $shipment);
+    public function getServiceRatesForShipment(ShipmentInterface $shipment, $ttl = self::TTL_WEEK);
 
     /**
      * Get shipments for a given shop. If no shop is given the default shop is
      * used.
      *
      * @param ShopInterface|null $shop
+     * @param int                $ttl  Cache time to live (in seconds)
      * @return CollectionInterface
      * @throws MyParcelComException
      */
-    public function getShipments(ShopInterface $shop = null);
+    public function getShipments(ShopInterface $shop = null, $ttl = self::TTL_WEEK);
 
     /**
      * Get a specific shipment from the API.
