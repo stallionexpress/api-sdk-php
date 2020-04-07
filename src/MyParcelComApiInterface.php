@@ -24,6 +24,7 @@ interface MyParcelComApiInterface
     const PATH_SHIPMENT_STATUSES = '/shipments/{shipment_id}/statuses';
     const PATH_SHOPS = '/shops';
 
+    const TTL_NO_CACHE = 0;
     const TTL_10MIN = 600;
     const TTL_WEEK = 604800;
     const TTL_MONTH = 2592000;
