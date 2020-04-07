@@ -108,7 +108,8 @@
           "non_delivery": "return",
           "incoterm": "DDU"
         },
-        "description": "order #8008135",
+        "description": "Fidget spinners",
+        "customer_reference": "#8008135",
         "price": {
           "amount": 100,
           "currency": "EUR"

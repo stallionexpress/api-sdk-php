@@ -425,7 +425,8 @@ class ResourceFactoryTest extends TestCase
             'type'          => 'shipments',
             'attributes'    => [
                 'barcode'             => 'S3BARCODE',
-                'description'         => 'order #012ASD',
+                'description'         => 'Fidget spinners',
+                'customer_reference'  => '#012ASD',
                 'price'               => [
                     'amount'   => 99,
                     'currency' => 'USD',
@@ -519,7 +520,8 @@ class ResourceFactoryTest extends TestCase
             'type'          => 'shipments',
             'attributes'    => [
                 'barcode'             => 'S3BARCODE',
-                'description'         => 'order #012ASD',
+                'description'         => 'Fidget spinners',
+                'customer_reference'  => '#012ASD',
                 'price'               => [
                     'amount'   => 99,
                     'currency' => 'USD',

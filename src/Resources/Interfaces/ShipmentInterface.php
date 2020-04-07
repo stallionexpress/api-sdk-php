@@ -90,6 +90,17 @@ interface ShipmentInterface extends ResourceInterface
     public function getDescription();
 
     /**
+     * @param string $customerReference
+     * @return $this
+     */
+    public function setCustomerReference($customerReference);
+
+    /**
+     * @return string|null
+     */
+    public function getCustomerReference();
+
+    /**
      * @param int $price
      * @return $this
      */
