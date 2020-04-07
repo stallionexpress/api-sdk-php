@@ -407,7 +407,7 @@ class MyParcelComApi implements MyParcelComApiInterface
     /**
      * {@inheritdoc}
      */
-    public function getShipment($id, $ttl = null)
+    public function getShipment($id, $ttl = self::TTL_NO_CACHE)
     {
         return $this->getResourceById(ResourceInterface::TYPE_SHIPMENT, $id, $ttl);
     }
