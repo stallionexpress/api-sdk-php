@@ -359,4 +359,26 @@ interface ShipmentInterface extends ResourceInterface
      * @return string|null
      */
     public function getServiceCode();
+
+    /**
+     * @param array $tags
+     * @return $this
+     */
+    public function setTags(array $tags);
+
+    /**
+     * @param mixed $tag
+     * @return $this
+     */
+    public function addTag($tag);
+
+    /**
+     * @return array|null
+     */
+    public function getTags();
+
+    /**
+     * @return $this
+     */
+    public function clearTags();
 }

@@ -642,6 +642,38 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function setTags(array $tags)
+    {
+        return $this->getResource()->setTags($tags);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function addTag($tag)
+    {
+        return $this->getResource()->addTag($tag);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getTags()
+    {
+        return $this->getResource()->getTags();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function clearTags()
+    {
+        return $this->getResource()->clearTags();
+    }
+
+    /**
      * This function puts all object properties in an array and returns it.
      *
      * @return array

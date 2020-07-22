@@ -27,7 +27,7 @@ class Shipment implements ShipmentInterface
     const ATTRIBUTE_TRACKING_URL = 'tracking_url';
     const ATTRIBUTE_CHANNEL = 'channel';
     const ATTRIBUTE_DESCRIPTION = 'description';
-    const ATTRIBUTE_CUSTOMER_REFERENCE= 'customer_reference';
+    const ATTRIBUTE_CUSTOMER_REFERENCE = 'customer_reference';
     const ATTRIBUTE_AMOUNT = 'amount';
     const ATTRIBUTE_PRICE = 'price';
     const ATTRIBUTE_CURRENCY = 'currency';
@@ -42,6 +42,7 @@ class Shipment implements ShipmentInterface
     const ATTRIBUTE_ITEMS = 'items';
     const ATTRIBUTE_REGISTER_AT = 'register_at';
     const ATTRIBUTE_TOTAL_VALUE = 'total_value';
+    const ATTRIBUTE_TAGS = 'tags';
 
     const RELATIONSHIP_CONTRACT = 'contract';
     const RELATIONSHIP_FILES = 'files';
@@ -86,6 +87,7 @@ class Shipment implements ShipmentInterface
             'amount'   => null,
             'currency' => null,
         ],
+        self::ATTRIBUTE_TAGS                => null,
     ];
 
     /** @var array */
@@ -753,5 +755,43 @@ class Shipment implements ShipmentInterface
     public function getServiceCode()
     {
         return $this->meta[self::META_SERVICE_CODE];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setTags(array $tags)
+    {
+        $this->attributes[self::ATTRIBUTE_TAGS] = $tags;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function addTag($tag)
+    {
+        $this->attributes[self::ATTRIBUTE_TAGS][] = $tag;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getTags()
+    {
+        return $this->attributes[self::ATTRIBUTE_TAGS];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function clearTags()
+    {
+        $this->attributes[self::ATTRIBUTE_TAGS] = null;
+
+        return $this;
     }
 }

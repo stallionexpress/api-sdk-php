@@ -409,6 +409,24 @@ class ShipmentTest extends TestCase
     }
 
     /** @test */
+    public function testTags()
+    {
+        $shipment = new Shipment();
+
+        $shipment->setTags(['you', 'are']);
+        $this->assertEquals(['you', 'are'], $shipment->getTags());
+
+        $shipment->addTag('it');
+        $this->assertEquals(['you', 'are', 'it'], $shipment->getTags());
+
+        $shipment->setTags(['overwritten', 'tags']);
+        $this->assertEquals(['overwritten', 'tags'], $shipment->getTags());
+
+        $shipment->clearTags();
+        $this->assertNull($shipment->getTags());
+    }
+
+    /** @test */
     public function testJsonSerialize()
     {
         $recipientAddress = $this->getMockBuilder(AddressInterface::class)
@@ -649,7 +667,8 @@ class ShipmentTest extends TestCase
             ->setPickupLocationAddress($pudoAddress)
             ->setCustoms($customs)
             ->setItems([$item])
-            ->setRegisterAt(9001);
+            ->setRegisterAt(9001)
+            ->setTags(['you', 'are', 'it']);
 
         $this->assertEquals([
             'id'            => 'shipment-id',
@@ -759,6 +778,7 @@ class ShipmentTest extends TestCase
                     'incoterm'       => 'DDU',
                 ],
                 'register_at'         => 9001,
+                'tags'                => ['you', 'are', 'it'],
             ],
             'relationships' => [
                 'shop'            => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
