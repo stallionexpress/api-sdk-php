@@ -49,7 +49,7 @@ interface MyParcelComApiInterface
      * @see https://docs.myparcel.com/api/resources/regions/#parameters
      *
      * @param array $filters
-     * @param int   $ttl            Cache time to live (in seconds)
+     * @param int   $ttl Cache time to live (in seconds)
      * @return CollectionInterface
      */
     public function getRegions($filters = [], $ttl = self::TTL_WEEK);
@@ -57,7 +57,7 @@ interface MyParcelComApiInterface
     /**
      * Get all the carriers from the API.
      *
-     * @param int   $ttl            Cache time to live (in seconds)
+     * @param int $ttl Cache time to live (in seconds)
      * @return CollectionInterface
      * @throws MyParcelComException
      */
@@ -73,7 +73,7 @@ interface MyParcelComApiInterface
      * @param string|null           $streetNumber
      * @param CarrierInterface|null $specificCarrier
      * @param bool                  $onlyActiveContracts
-     * @param int                   $ttl                    Cache time to live (in seconds)
+     * @param int                   $ttl Cache time to live (in seconds)
      * @return CollectionInterface
      */
     public function getPickUpDropOffLocations(
@@ -89,7 +89,7 @@ interface MyParcelComApiInterface
     /**
      * Get the shops from the API.
      *
-     * @param int $ttl              Cache time to live (in seconds)
+     * @param int $ttl Cache time to live (in seconds)
      * @return CollectionInterface
      * @throws MyParcelComException
      */
@@ -99,7 +99,7 @@ interface MyParcelComApiInterface
      * Get the default shop that will be used when interacting with the API and
      * no specific shop has been set.
      *
-     * @param int $ttl              Cache time to live (in seconds)
+     * @param int $ttl Cache time to live (in seconds)
      * @return ShopInterface
      * @throws MyParcelComException
      */
@@ -111,7 +111,7 @@ interface MyParcelComApiInterface
      *
      * @param ShipmentInterface|null $shipment
      * @param array                  $filters
-     * @param int                    $ttl       Cache time to live (in seconds)
+     * @param int                    $ttl Cache time to live (in seconds)
      * @return CollectionInterface
      * @throws MyParcelComException
      */
@@ -125,7 +125,7 @@ interface MyParcelComApiInterface
      * Get all the services that are available for the given carrier.
      *
      * @param CarrierInterface $carrier
-     * @param int              $ttl     Cache time to live (in seconds)
+     * @param int              $ttl Cache time to live (in seconds)
      * @return CollectionInterface
      * @throws MyParcelComException
      */
@@ -136,7 +136,7 @@ interface MyParcelComApiInterface
      * Available filters are: service, contract and weight.
      *
      * @param array $filters
-     * @param int   $ttl           Cache time to live (in seconds)
+     * @param int   $ttl Cache time to live (in seconds)
      * @return CollectionInterface
      */
     public function getServiceRates(array $filters = ['has_active_contract' => 'true'], $ttl = self::TTL_WEEK);
@@ -146,7 +146,7 @@ interface MyParcelComApiInterface
      * The shipment needs to have a recipient/sender_address and a weight set.
      *
      * @param ShipmentInterface $shipment
-     * @param int               $ttl      Cache time to live (in seconds)
+     * @param int               $ttl Cache time to live (in seconds)
      * @return CollectionInterface
      */
     public function getServiceRatesForShipment(ShipmentInterface $shipment, $ttl = self::TTL_WEEK);
@@ -156,7 +156,7 @@ interface MyParcelComApiInterface
      * used.
      *
      * @param ShopInterface|null $shop
-     * @param int                $ttl  Cache time to live (in seconds)
+     * @param int                $ttl Cache time to live (in seconds)
      * @return CollectionInterface
      * @throws MyParcelComException
      */
