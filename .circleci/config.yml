@@ -28,6 +28,7 @@ jobs:
             ./mp.sh test --no-coverage --stop-on-failure
 
       - run:
-          name: Run tests on PHP 7.2
+          name: Run tests on PHP 7.2 with symfony/cache ^5.0
           command: |
+            ./mp.sh composer require symfony/cache:^5.0
             ./mp.sh test --no-coverage --stop-on-failure
