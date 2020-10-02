@@ -28,6 +28,8 @@ use MyParcelCom\ApiSdk\Validators\ShipmentValidator;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\SimpleCache\CacheInterface;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\Cache\Psr16Cache;
 use Symfony\Component\Cache\Simple\FilesystemCache;
 use function GuzzleHttp\Psr7\parse_response;
 use function GuzzleHttp\Psr7\str;
@@ -111,10 +113,17 @@ class MyParcelComApi implements MyParcelComApiInterface
             ->setHttpClient($httpClient)
             ->setApiUri($apiUri);
 
-        // Either use the given cache or instantiate a new one that uses the
-        // filesystem as cache. By default the `FilesystemCache` will use the
-        // system temp directory as a cache.
-        $this->setCache($cache ?: new FilesystemCache('myparcelcom'));
+        // Either use the given cache or instantiate a new one that uses the filesystem temp directory as a cache.
+        if (!$cache) {
+            // Symfony 5.0.0 removed their PSR-16 cache classes. Their PSR-6 cache classes can be wrapped in Psr16Cache.
+            if (class_exists('\Symfony\Component\Cache\Psr16Cache')) {
+                $psr6Cache = new FilesystemAdapter('myparcelcom');
+                $cache = new Psr16Cache($psr6Cache);
+            } else {
+                $cache = new FilesystemCache('myparcelcom');
+            }
+        }
+        $this->setCache($cache);
 
         // Either use the given resource factory or instantiate a new one.
         $this->setResourceFactory($resourceFactory ?: new ResourceFactory());
