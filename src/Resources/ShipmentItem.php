@@ -12,13 +12,16 @@ class ShipmentItem implements ShipmentItemInterface
     const AMOUNT = 'amount';
     const CURRENCY = 'currency';
 
-    /** @var string */
+    /** @var string|null */
     private $sku;
 
     /** @var string */
     private $description;
 
-    /** @var string */
+    /** @var string|null */
+    private $imageUrl;
+
+    /** @var string|null */
     private $hsCode;
 
     /** @var int */
@@ -30,11 +33,11 @@ class ShipmentItem implements ShipmentItemInterface
         self::CURRENCY => null,
     ];
 
-    /** @var string */
+    /** @var string|null */
     private $originCountryCode;
 
     /**
-     * @param string $sku
+     * @param string|null $sku
      * @return $this
      */
     public function setSku($sku)
@@ -45,7 +48,7 @@ class ShipmentItem implements ShipmentItemInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getSku()
     {
@@ -72,7 +75,26 @@ class ShipmentItem implements ShipmentItemInterface
     }
 
     /**
-     * @param string $hsCode
+     * @param string|null $imageUrl
+     * @return $this
+     */
+    public function setImageUrl($imageUrl)
+    {
+        $this->imageUrl = $imageUrl;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getImageUrl()
+    {
+        return $this->imageUrl;
+    }
+
+    /**
+     * @param string|null $hsCode
      * @return $this
      */
     public function setHsCode($hsCode)
@@ -83,7 +105,7 @@ class ShipmentItem implements ShipmentItemInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getHsCode()
     {
@@ -148,7 +170,7 @@ class ShipmentItem implements ShipmentItemInterface
     }
 
     /**
-     * @param string $countryCode
+     * @param string|null $countryCode
      * @return $this
      */
     public function setOriginCountryCode($countryCode)
@@ -159,7 +181,7 @@ class ShipmentItem implements ShipmentItemInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getOriginCountryCode()
     {

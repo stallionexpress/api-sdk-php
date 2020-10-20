@@ -22,6 +22,13 @@ class ShipmentItemTest extends TestCase
     }
 
     /** @test */
+    public function testImageUrl()
+    {
+        $item = new ShipmentItem();
+        $this->assertEquals('//tea.cup', $item->setImageUrl('//tea.cup')->getImageUrl());
+    }
+
+    /** @test */
     public function testHsCode()
     {
         $item = new ShipmentItem();
@@ -62,6 +69,7 @@ class ShipmentItemTest extends TestCase
         $item = (new ShipmentItem())
             ->setSku('CM01-W')
             ->setDescription('Tea cup')
+            ->setImageUrl('//tea.cup')
             ->setHsCode('8321.21.28')
             ->setQuantity(12)
             ->setItemValue(349)
@@ -71,6 +79,7 @@ class ShipmentItemTest extends TestCase
             [
                 'sku'                 => 'CM01-W',
                 'description'         => 'Tea cup',
+                'image_url'           => '//tea.cup',
                 'hs_code'             => '8321.21.28',
                 'quantity'            => 12,
                 'item_value'          => [
