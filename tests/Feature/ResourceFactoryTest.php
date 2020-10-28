@@ -622,7 +622,7 @@ class ResourceFactoryTest extends TestCase
                     'content_type'   => 'documents',
                     'invoice_number' => 'NO.5',
                     'non_delivery'   => 'return',
-                    'incoterm'       => 'DDU',
+                    'incoterm'       => 'DAP',
                 ],
                 'register_at'         => 1526913941,
             ],
