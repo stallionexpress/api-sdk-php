@@ -13,7 +13,7 @@ interface CustomsInterface extends \JsonSerializable
     const NON_DELIVERY_RETURN = 'return';
     const NON_DELIVERY_ABANDON = 'abandon';
 
-    const INCOTERM_DDU = 'DDU';
+    const INCOTERM_DAP = 'DAP';
     const INCOTERM_DDP = 'DDP';
 
     /**
