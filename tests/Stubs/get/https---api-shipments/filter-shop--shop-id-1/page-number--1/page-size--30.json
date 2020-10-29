@@ -106,7 +106,7 @@
           "content_type": "documents",
           "invoice_number": "NO.5",
           "non_delivery": "return",
-          "incoterm": "DDU"
+          "incoterm": "DAP"
         },
         "description": "Fidget spinners",
         "customer_reference": "#8008135",

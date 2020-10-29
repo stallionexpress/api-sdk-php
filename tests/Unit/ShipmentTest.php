@@ -619,7 +619,7 @@ class ShipmentTest extends TestCase
                 'content_type'   => 'documents',
                 'invoice_number' => 'NO.5',
                 'non_delivery'   => 'return',
-                'incoterm'       => 'DDU',
+                'incoterm'       => 'DAP',
             ]);
 
         $item = $this->getMockBuilder(ShipmentItemInterface::class)
@@ -775,7 +775,7 @@ class ShipmentTest extends TestCase
                     'content_type'   => 'documents',
                     'invoice_number' => 'NO.5',
                     'non_delivery'   => 'return',
-                    'incoterm'       => 'DDU',
+                    'incoterm'       => 'DAP',
                 ],
                 'register_at'         => 9001,
                 'tags'                => ['you', 'are', 'it'],

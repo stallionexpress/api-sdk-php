@@ -40,7 +40,7 @@ class CustomsTest extends TestCase
     public function testJsonSerialize()
     {
         $customs = (new Customs())
-            ->setIncoterm(CustomsInterface::INCOTERM_DDU)
+            ->setIncoterm(CustomsInterface::INCOTERM_DAP)
             ->setNonDelivery(CustomsInterface::NON_DELIVERY_RETURN)
             ->setInvoiceNumber('NO.5')
             ->setContentType(CustomsInterface::CONTENT_TYPE_DOCUMENTS);
@@ -49,7 +49,7 @@ class CustomsTest extends TestCase
             'content_type'   => 'documents',
             'invoice_number' => 'NO.5',
             'non_delivery'   => 'return',
-            'incoterm'       => 'DDU',
+            'incoterm'       => 'DAP',
         ], $customs->jsonSerialize());
     }
 }

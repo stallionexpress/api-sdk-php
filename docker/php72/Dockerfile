@@ -18,7 +18,6 @@ RUN apt-get update \
     && apt-get update \
     && apt-get install -y php7.2-cli php7.2-xdebug php7.2-dom php7.2-mbstring php7.2-curl \
     && php -r "readfile('http://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer \
-    && composer global require hirak/prestissimo \
     && mkdir /run/php \
     && apt-get remove -y --purge software-properties-common \
     && apt-get -y autoremove \
