@@ -299,14 +299,10 @@ class MyParcelComApi implements MyParcelComApiInterface
             $shipment->setSenderAddress($this->getDefaultShop()->getReturnAddress());
         }
         if ($shipment->getRecipientAddress() === null) {
-            throw new InvalidResourceException(
-                'Missing `recipient_address` on `shipments` resource'
-            );
+            throw new InvalidResourceException('Missing `recipient_address` on `shipments` resource');
         }
         if ($shipment->getSenderAddress() === null) {
-            throw new InvalidResourceException(
-                'Missing `sender_address` on `shipments` resource'
-            );
+            throw new InvalidResourceException('Missing `sender_address` on `shipments` resource');
         }
 
         $url->addQuery($this->arrayToFilters([

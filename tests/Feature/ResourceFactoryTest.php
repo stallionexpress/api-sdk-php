@@ -458,6 +458,7 @@ class ResourceFactoryTest extends TestCase
                     'email'                => 'rob@tables.com',
                     'phone_number'         => '+31 (0)234 567 890',
                 ],
+                'recipient_tax_number' => 'H111111-11',
                 'sender_address'      => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 9',
@@ -552,6 +553,7 @@ class ResourceFactoryTest extends TestCase
                     'email'                => 'rob@tables.com',
                     'phone_number'         => '+31 (0)234 567 890',
                 ],
+                'recipient_tax_number' => 'H111111-11',
                 'sender_address'      => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 9',

@@ -18,6 +18,7 @@
         "email": "john@doe.com",
         "phone_number": "+31 234 567 890"
       },
+      "recipient_tax_number": "H111111-11",
       "sender_address": {
         "street_1": "Some road",
         "street_2": "Room 3",

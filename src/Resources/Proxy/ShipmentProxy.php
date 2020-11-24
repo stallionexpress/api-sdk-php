@@ -79,6 +79,25 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
     }
 
     /**
+     * @param string $recipientTaxNumber
+     * @return $this
+     */
+    public function setRecipientTaxNumber($recipientTaxNumber)
+    {
+        $this->getResource()->setRecipientTaxNumber($recipientTaxNumber);
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getRecipientTaxNumber()
+    {
+        return $this->getResource()->getRecipientTaxNumber();
+    }
+
+    /**
      * @param AddressInterface $senderAddress
      * @return $this
      */

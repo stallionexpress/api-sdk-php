@@ -81,8 +81,7 @@ class MyParcelComApiTest extends TestCase
             ->setPostalCode('B48 7QN')
             ->setCountryCode('GB');
 
-        // Minimum required data should be a recipient address and weight. All
-        // other data should be filled with defaults.
+        // Minimum required data should be recipient address and weight. All other data should be filled with defaults.
         $shipment = (new Shipment())
             ->setWeight(500)
             ->setRecipientAddress($recipient);
