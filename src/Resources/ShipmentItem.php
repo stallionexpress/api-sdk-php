@@ -2,6 +2,8 @@
 
 namespace MyParcelCom\ApiSdk\Resources;
 
+use MyParcelCom\ApiSdk\Exceptions\MyParcelComException;
+use MyParcelCom\ApiSdk\Resources\Interfaces\PhysicalPropertiesInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentItemInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 
@@ -35,6 +37,9 @@ class ShipmentItem implements ShipmentItemInterface
 
     /** @var string|null */
     private $originCountryCode;
+
+    /** @var int|null */
+    private $itemWeight;
 
     /**
      * @param string|null $sku
@@ -186,5 +191,34 @@ class ShipmentItem implements ShipmentItemInterface
     public function getOriginCountryCode()
     {
         return $this->originCountryCode;
+    }
+
+    /**
+     * @param int|null $weight
+     * @param string   $unit
+     * @return $this
+     */
+    public function setItemWeight($weight, $unit = PhysicalPropertiesInterface::WEIGHT_GRAM)
+    {
+        if (!isset(PhysicalProperties::$unitConversion[$unit])) {
+            throw new MyParcelComException('invalid unit: ' . $unit);
+        }
+
+        $this->itemWeight = (int) round($weight * PhysicalProperties::$unitConversion[$unit]);
+
+        return $this;
+    }
+
+    /**
+     * @param string $unit
+     * @return int|null
+     */
+    public function getItemWeight($unit = PhysicalPropertiesInterface::WEIGHT_GRAM)
+    {
+        if (!isset(PhysicalProperties::$unitConversion[$unit])) {
+            throw new MyParcelComException('invalid unit: ' . $unit);
+        }
+
+        return (int) round($this->itemWeight / PhysicalProperties::$unitConversion[$unit]);
     }
 }

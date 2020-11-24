@@ -95,6 +95,7 @@
             "amount": 100,
             "currency": "GBP"
           },
+          "item_weight": 128,
           "quantity": 2,
           "hs_code": "8517.12.00",
           "origin_country_code": "GB"
@@ -106,6 +107,7 @@
             "amount": 200,
             "currency": "GBP"
           },
+          "item_weight": 256,
           "quantity": 3,
           "hs_code": "8517.12.00",
           "origin_country_code": "GB"
@@ -117,6 +119,7 @@
             "amount": 300,
             "currency": "GBP"
           },
+          "item_weight": 512,
           "quantity": 1,
           "hs_code": "8517.12.00",
           "origin_country_code": "GB"

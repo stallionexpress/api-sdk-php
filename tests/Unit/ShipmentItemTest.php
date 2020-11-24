@@ -2,6 +2,7 @@
 
 namespace MyParcelCom\ApiSdk\Tests\Unit;
 
+use MyParcelCom\ApiSdk\Resources\Interfaces\PhysicalPropertiesInterface;
 use MyParcelCom\ApiSdk\Resources\ShipmentItem;
 use PHPUnit\Framework\TestCase;
 
@@ -64,6 +65,15 @@ class ShipmentItemTest extends TestCase
     }
 
     /** @test */
+    public function testItemWeight()
+    {
+        $item = new ShipmentItem();
+        $this->assertEquals(3000, $item->setItemWeight(3000)->getItemWeight());
+        $this->assertEquals(3000, $item->setItemWeight(3, PhysicalPropertiesInterface::WEIGHT_KILOGRAM)->getItemWeight());
+        $this->assertEquals(3, $item->setItemWeight(3000)->getItemWeight(PhysicalPropertiesInterface::WEIGHT_KILOGRAM));
+    }
+
+    /** @test */
     public function testJsonSerialize()
     {
         $item = (new ShipmentItem())
@@ -73,6 +83,7 @@ class ShipmentItemTest extends TestCase
             ->setHsCode('8321.21.28')
             ->setQuantity(12)
             ->setItemValue(349)
+            ->setItemWeight(128)
             ->setCurrency('GBP')
             ->setOriginCountryCode('GB');
         $this->assertEquals(
@@ -86,6 +97,7 @@ class ShipmentItemTest extends TestCase
                     'amount'   => 349,
                     'currency' => 'GBP',
                 ],
+                'item_weight'         => 128,
                 'origin_country_code' => 'GB',
 
             ],
