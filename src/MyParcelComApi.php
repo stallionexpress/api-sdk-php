@@ -299,14 +299,10 @@ class MyParcelComApi implements MyParcelComApiInterface
             $shipment->setSenderAddress($this->getDefaultShop()->getReturnAddress());
         }
         if ($shipment->getRecipientAddress() === null) {
-            throw new InvalidResourceException(
-                'Missing `recipient_address` on `shipments` resource'
-            );
+            throw new InvalidResourceException('Missing `recipient_address` on `shipments` resource');
         }
         if ($shipment->getSenderAddress() === null) {
-            throw new InvalidResourceException(
-                'Missing `sender_address` on `shipments` resource'
-            );
+            throw new InvalidResourceException('Missing `sender_address` on `shipments` resource');
         }
 
         $url->addQuery($this->arrayToFilters([
@@ -449,8 +445,7 @@ class MyParcelComApi implements MyParcelComApiInterface
             $shipment->setShop($this->getDefaultShop());
         }
 
-        // If no sender address is set use one of the addresses in the following
-        // order: shop sender > shipment return > shop return
+        // If no sender address is set, use the sender address of the shop (or the return address of the shipment).
         $shop = $shipment->getShop();
         if ($shipment->getSenderAddress() === null) {
             $shipment->setSenderAddress(
@@ -459,8 +454,7 @@ class MyParcelComApi implements MyParcelComApiInterface
                     ?: $shop->getReturnAddress()
             );
         }
-        // If no return address is set use the return address of the shop or the
-        // sender address on the shipment.
+        // If no return address is set, use the return address of the shop (or the sender address of the shipment).
         if ($shipment->getReturnAddress() === null) {
             $shipment->setReturnAddress(
                 $shop->getReturnAddress()

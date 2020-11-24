@@ -152,6 +152,8 @@ class ShipmentProxyTest extends TestCase
         $this->assertEquals('Some road', $this->shipmentProxy->getRecipientAddress()->getStreet1());
         $this->assertEquals('1GL HF1', $this->shipmentProxy->getRecipientAddress()->getPostalCode());
 
+        $this->assertEquals('H111111-11', $this->shipmentProxy->getRecipientTaxNumber());
+
         $this->assertInstanceOf(AddressInterface::class, $this->shipmentProxy->getSenderAddress());
         $this->assertEquals(17, $this->shipmentProxy->getSenderAddress()->getStreetNumber());
         $this->assertEquals('Cardiff', $this->shipmentProxy->getSenderAddress()->getCity());
