@@ -665,7 +665,7 @@ class ResourceFactoryTest extends TestCase
             'type'       => 'shops',
             'attributes' => [
                 'name'            => 'MyParcel.com Test Shop',
-                'billing_address' => [
+                'sender_address' => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 3',
                     'street_number'        => '4',
