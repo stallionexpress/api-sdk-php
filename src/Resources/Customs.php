@@ -21,6 +21,12 @@ class Customs implements CustomsInterface
     /** @var string */
     private $incoterm;
 
+    /** @var string|null */
+    private $licenseNumber;
+
+    /** @var string|null */
+    private $certificateNumber;
+
     /**
      * {@inheritdoc}
      */
@@ -89,6 +95,42 @@ class Customs implements CustomsInterface
     public function setIncoterm($incoterm)
     {
         $this->incoterm = $incoterm;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getLicenseNumber()
+    {
+        return $this->licenseNumber;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setLicenseNumber($licenseNumber)
+    {
+        $this->licenseNumber = $licenseNumber;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCertificateNumber()
+    {
+        return $this->certificateNumber;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setCertificateNumber($certificateNumber)
+    {
+        $this->certificateNumber = $certificateNumber;
 
         return $this;
     }

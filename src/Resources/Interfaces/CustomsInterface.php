@@ -59,4 +59,26 @@ interface CustomsInterface extends \JsonSerializable
      * @return string
      */
     public function getIncoterm();
+
+    /**
+     * @param string $licenseNumber
+     * @return $this
+     */
+    public function setLicenseNumber($licenseNumber);
+
+    /**
+     * @return string|null
+     */
+    public function getLicenseNumber();
+
+    /**
+     * @param string $certificateNumber
+     * @return $this
+     */
+    public function setCertificateNumber($certificateNumber);
+
+    /**
+     * @return string|null
+     */
+    public function getCertificateNumber();
 }

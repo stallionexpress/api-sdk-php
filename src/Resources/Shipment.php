@@ -33,6 +33,7 @@ class Shipment implements ShipmentInterface
     const ATTRIBUTE_CURRENCY = 'currency';
     const ATTRIBUTE_PHYSICAL_PROPERTIES = 'physical_properties';
     const ATTRIBUTE_RECIPIENT_ADDRESS = 'recipient_address';
+    const ATTRIBUTE_RECIPIENT_TAX_NUMBER = 'recipient_tax_number';
     const ATTRIBUTE_SENDER_ADDRESS = 'sender_address';
     const ATTRIBUTE_RETURN_ADDRESS = 'return_address';
     const ATTRIBUTE_PICKUP = 'pickup_location';
@@ -68,26 +69,27 @@ class Shipment implements ShipmentInterface
 
     /** @var array */
     private $attributes = [
-        self::ATTRIBUTE_BARCODE             => null,
-        self::ATTRIBUTE_TRACKING_CODE       => null,
-        self::ATTRIBUTE_TRACKING_URL        => null,
-        self::ATTRIBUTE_CHANNEL             => null,
-        self::ATTRIBUTE_DESCRIPTION         => null,
-        self::ATTRIBUTE_CUSTOMER_REFERENCE  => null,
-        self::ATTRIBUTE_PRICE               => null,
-        self::ATTRIBUTE_PHYSICAL_PROPERTIES => null,
-        self::ATTRIBUTE_RECIPIENT_ADDRESS   => null,
-        self::ATTRIBUTE_SENDER_ADDRESS      => null,
-        self::ATTRIBUTE_RETURN_ADDRESS      => null,
-        self::ATTRIBUTE_PICKUP              => null,
-        self::ATTRIBUTE_CUSTOMS             => null,
-        self::ATTRIBUTE_ITEMS               => null,
-        self::ATTRIBUTE_REGISTER_AT         => null,
-        self::ATTRIBUTE_TOTAL_VALUE         => [
+        self::ATTRIBUTE_BARCODE              => null,
+        self::ATTRIBUTE_TRACKING_CODE        => null,
+        self::ATTRIBUTE_TRACKING_URL         => null,
+        self::ATTRIBUTE_CHANNEL              => null,
+        self::ATTRIBUTE_DESCRIPTION          => null,
+        self::ATTRIBUTE_CUSTOMER_REFERENCE   => null,
+        self::ATTRIBUTE_PRICE                => null,
+        self::ATTRIBUTE_PHYSICAL_PROPERTIES  => null,
+        self::ATTRIBUTE_RECIPIENT_ADDRESS    => null,
+        self::ATTRIBUTE_RECIPIENT_TAX_NUMBER => null,
+        self::ATTRIBUTE_SENDER_ADDRESS       => null,
+        self::ATTRIBUTE_RETURN_ADDRESS       => null,
+        self::ATTRIBUTE_PICKUP               => null,
+        self::ATTRIBUTE_CUSTOMS              => null,
+        self::ATTRIBUTE_ITEMS                => null,
+        self::ATTRIBUTE_REGISTER_AT          => null,
+        self::ATTRIBUTE_TOTAL_VALUE          => [
             'amount'   => null,
             'currency' => null,
         ],
-        self::ATTRIBUTE_TAGS                => null,
+        self::ATTRIBUTE_TAGS                 => null,
     ];
 
     /** @var array */
@@ -160,6 +162,24 @@ class Shipment implements ShipmentInterface
     public function getRecipientAddress()
     {
         return $this->attributes[self::ATTRIBUTE_RECIPIENT_ADDRESS];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setRecipientTaxNumber($recipientTaxNumber)
+    {
+        $this->attributes[self::ATTRIBUTE_RECIPIENT_TAX_NUMBER] = $recipientTaxNumber;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRecipientTaxNumber()
+    {
+        return $this->attributes[self::ATTRIBUTE_RECIPIENT_TAX_NUMBER];
     }
 
     /**
