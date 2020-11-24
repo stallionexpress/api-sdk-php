@@ -110,7 +110,9 @@
           "content_type": "documents",
           "invoice_number": "NO.5",
           "non_delivery": "return",
-          "incoterm": "DAP"
+          "incoterm": "DAP",
+          "license_number": "512842382",
+          "certificate_number": "2112211"
         },
         "description": "Fidget spinners",
         "customer_reference": "#8008135",

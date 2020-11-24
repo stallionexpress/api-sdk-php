@@ -424,18 +424,18 @@ class ResourceFactoryTest extends TestCase
         $shipmentProperties = [
             'type'          => 'shipments',
             'attributes'    => [
-                'barcode'             => 'S3BARCODE',
-                'description'         => 'Fidget spinners',
-                'customer_reference'  => '#012ASD',
-                'price'               => [
+                'barcode'              => 'S3BARCODE',
+                'description'          => 'Fidget spinners',
+                'customer_reference'   => '#012ASD',
+                'price'                => [
                     'amount'   => 99,
                     'currency' => 'USD',
                 ],
-                'total_value'         => [
+                'total_value'          => [
                     'amount'   => 1337,
                     'currency' => 'EUR',
                 ],
-                'physical_properties' => [
+                'physical_properties'  => [
                     'weight'            => 1000,
                     'length'            => 1100,
                     'height'            => 1300,
@@ -443,7 +443,7 @@ class ResourceFactoryTest extends TestCase
                     'volume'            => 2002,
                     'volumetric_weight' => 400400,
                 ],
-                'recipient_address'   => [
+                'recipient_address'    => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 4',
                     'street_number'        => '1',
@@ -459,7 +459,7 @@ class ResourceFactoryTest extends TestCase
                     'phone_number'         => '+31 (0)234 567 890',
                 ],
                 'recipient_tax_number' => 'H111111-11',
-                'sender_address'      => [
+                'sender_address'       => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 9',
                     'street_number'        => '4',
@@ -474,7 +474,7 @@ class ResourceFactoryTest extends TestCase
                     'email'                => 'rob@tables.com',
                     'phone_number'         => '+31 (0)234 567 890',
                 ],
-                'pickup_location'     => [
+                'pickup_location'      => [
                     'code'    => 'CODE123',
                     'address' => [
                         'street_1'             => 'Diagonally',
@@ -492,7 +492,7 @@ class ResourceFactoryTest extends TestCase
                         'phone_number'         => '+31 (0)234 567 890',
                     ],
                 ],
-                'register_at'         => 1526913941,
+                'register_at'          => 1526913941,
             ],
             'relationships' => [
                 'shop'            => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
@@ -520,18 +520,18 @@ class ResourceFactoryTest extends TestCase
         $shipmentProperties = [
             'type'          => 'shipments',
             'attributes'    => [
-                'barcode'             => 'S3BARCODE',
-                'description'         => 'Fidget spinners',
-                'customer_reference'  => '#012ASD',
-                'price'               => [
+                'barcode'              => 'S3BARCODE',
+                'description'          => 'Fidget spinners',
+                'customer_reference'   => '#012ASD',
+                'price'                => [
                     'amount'   => 99,
                     'currency' => 'USD',
                 ],
-                'total_value'         => [
+                'total_value'          => [
                     'amount'   => 1337,
                     'currency' => 'EUR',
                 ],
-                'physical_properties' => [
+                'physical_properties'  => [
                     'weight'            => 1000,
                     'length'            => 1100,
                     'height'            => 1300,
@@ -539,7 +539,7 @@ class ResourceFactoryTest extends TestCase
                     'volume'            => 2002,
                     'volumetric_weight' => 400400,
                 ],
-                'recipient_address'   => [
+                'recipient_address'    => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 4',
                     'street_number'        => '1',
@@ -554,7 +554,7 @@ class ResourceFactoryTest extends TestCase
                     'phone_number'         => '+31 (0)234 567 890',
                 ],
                 'recipient_tax_number' => 'H111111-11',
-                'sender_address'      => [
+                'sender_address'       => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 9',
                     'street_number'        => '4',
@@ -568,7 +568,7 @@ class ResourceFactoryTest extends TestCase
                     'email'                => 'rob@tables.com',
                     'phone_number'         => '+31 (0)234 567 890',
                 ],
-                'pickup_location'     => [
+                'pickup_location'      => [
                     'code'    => 'CODE123',
                     'address' => [
                         'street_1'             => 'Diagonally',
@@ -585,7 +585,7 @@ class ResourceFactoryTest extends TestCase
                         'phone_number'         => '+31 (0)234 567 890',
                     ],
                 ],
-                'items'               => [
+                'items'                => [
                     [
                         'sku'                 => '123456789',
                         'description'         => 'OnePlus X',
@@ -623,13 +623,15 @@ class ResourceFactoryTest extends TestCase
                         'origin_country_code' => 'GB',
                     ],
                 ],
-                'customs'             => [
-                    'content_type'   => 'documents',
-                    'invoice_number' => 'NO.5',
-                    'non_delivery'   => 'return',
-                    'incoterm'       => 'DAP',
+                'customs'              => [
+                    'content_type'       => 'documents',
+                    'invoice_number'     => 'NO.5',
+                    'non_delivery'       => 'return',
+                    'incoterm'           => 'DAP',
+                    'license_number'     => '512842382',
+                    'certificate_number' => '2112211',
                 ],
-                'register_at'         => 1526913941,
+                'register_at'          => 1526913941,
             ],
             'relationships' => [
                 'shop'            => ['data' => ['id' => 'shop-id-1', 'type' => 'shops']],
@@ -669,7 +671,7 @@ class ResourceFactoryTest extends TestCase
         $shopProperties = [
             'type'       => 'shops',
             'attributes' => [
-                'name'            => 'MyParcel.com Test Shop',
+                'name'           => 'MyParcel.com Test Shop',
                 'sender_address' => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 3',
@@ -685,7 +687,7 @@ class ResourceFactoryTest extends TestCase
                     'email'                => 'rob@tables.com',
                     'phone_number'         => '+31 (0)234 567 890',
                 ],
-                'return_address'  => [
+                'return_address' => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 1',
                     'street_number'        => '4',
