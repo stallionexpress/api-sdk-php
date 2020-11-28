@@ -474,6 +474,7 @@ class ResourceFactoryTest extends TestCase
                     'email'                => 'rob@tables.com',
                     'phone_number'         => '+31 (0)234 567 890',
                 ],
+                'sender_tax_number'    => 'G666666-66',
                 'pickup_location'      => [
                     'code'    => 'CODE123',
                     'address' => [
@@ -568,6 +569,7 @@ class ResourceFactoryTest extends TestCase
                     'email'                => 'rob@tables.com',
                     'phone_number'         => '+31 (0)234 567 890',
                 ],
+                'sender_tax_number'    => 'G666666-66',
                 'pickup_location'      => [
                     'code'    => 'CODE123',
                     'address' => [

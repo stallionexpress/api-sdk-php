@@ -158,6 +158,8 @@ class ShipmentProxyTest extends TestCase
         $this->assertEquals(17, $this->shipmentProxy->getSenderAddress()->getStreetNumber());
         $this->assertEquals('Cardiff', $this->shipmentProxy->getSenderAddress()->getCity());
 
+        $this->assertEquals('G666666-66', $this->shipmentProxy->getSenderTaxNumber());
+
         $this->assertEquals('123456', $this->shipmentProxy->getPickupLocationCode());
         $this->assertInstanceOf(AddressInterface::class, $this->shipmentProxy->getPickupLocationAddress());
         $this->assertEquals('GB', $this->shipmentProxy->getPickupLocationAddress()->getCountryCode());
