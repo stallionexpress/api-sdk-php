@@ -62,6 +62,13 @@ class ShipmentTest extends TestCase
     }
 
     /** @test */
+    public function testSenderTaxNumber()
+    {
+        $shipment = new Shipment();
+        $this->assertEquals('G666666-66', $shipment->setSenderTaxNumber('G666666-66')->getSenderTaxNumber());
+    }
+
+    /** @test */
     public function testReturnAddress()
     {
         $shipment = new Shipment();
@@ -673,6 +680,7 @@ class ShipmentTest extends TestCase
             ->setRecipientAddress($recipientAddress)
             ->setRecipientTaxNumber('H111111-11')
             ->setSenderAddress($senderAddress)
+            ->setSenderTaxNumber('G666666-66')
             ->setReturnAddress($returnAddress)
             ->setPickupLocationAddress($pudoAddress)
             ->setCustoms($customs)
@@ -736,6 +744,7 @@ class ShipmentTest extends TestCase
                     'email'                => 'rob@tables.com',
                     'phone_number'         => '+31 (0)234 567 890',
                 ],
+                'sender_tax_number'    => 'G666666-66',
                 'return_address'       => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 4',
