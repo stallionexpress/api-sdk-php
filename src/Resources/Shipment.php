@@ -35,6 +35,7 @@ class Shipment implements ShipmentInterface
     const ATTRIBUTE_RECIPIENT_ADDRESS = 'recipient_address';
     const ATTRIBUTE_RECIPIENT_TAX_NUMBER = 'recipient_tax_number';
     const ATTRIBUTE_SENDER_ADDRESS = 'sender_address';
+    const ATTRIBUTE_SENDER_TAX_NUMBER = 'sender_tax_number';
     const ATTRIBUTE_RETURN_ADDRESS = 'return_address';
     const ATTRIBUTE_PICKUP = 'pickup_location';
     const ATTRIBUTE_PICKUP_CODE = 'code';
@@ -80,6 +81,7 @@ class Shipment implements ShipmentInterface
         self::ATTRIBUTE_RECIPIENT_ADDRESS    => null,
         self::ATTRIBUTE_RECIPIENT_TAX_NUMBER => null,
         self::ATTRIBUTE_SENDER_ADDRESS       => null,
+        self::ATTRIBUTE_SENDER_TAX_NUMBER    => null,
         self::ATTRIBUTE_RETURN_ADDRESS       => null,
         self::ATTRIBUTE_PICKUP               => null,
         self::ATTRIBUTE_CUSTOMS              => null,
@@ -198,6 +200,24 @@ class Shipment implements ShipmentInterface
     public function getSenderAddress()
     {
         return $this->attributes[self::ATTRIBUTE_SENDER_ADDRESS];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setSenderTaxNumber($senderTaxNumber)
+    {
+        $this->attributes[self::ATTRIBUTE_SENDER_TAX_NUMBER] = $senderTaxNumber;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSenderTaxNumber()
+    {
+        return $this->attributes[self::ATTRIBUTE_SENDER_TAX_NUMBER];
     }
 
     /**

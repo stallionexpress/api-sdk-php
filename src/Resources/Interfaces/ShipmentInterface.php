@@ -24,7 +24,7 @@ interface ShipmentInterface extends ResourceInterface
     public function getRecipientAddress();
 
     /**
-     * @param string $recipientTaxNumber
+     * @param string|null $recipientTaxNumber
      * @return $this
      */
     public function setRecipientTaxNumber($recipientTaxNumber);
@@ -44,6 +44,17 @@ interface ShipmentInterface extends ResourceInterface
      * @return AddressInterface
      */
     public function getSenderAddress();
+
+    /**
+     * @param string|null $senderTaxNumber
+     * @return $this
+     */
+    public function setSenderTaxNumber($senderTaxNumber);
+
+    /**
+     * @return string|null
+     */
+    public function getSenderTaxNumber();
 
     /**
      * @param AddressInterface $returnAddress
