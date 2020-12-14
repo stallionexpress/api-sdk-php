@@ -441,6 +441,18 @@ class ShipmentTest extends TestCase
     }
 
     /** @test */
+    public function testLabelMimeType()
+    {
+        $shipment = new Shipment();
+
+        $this->assertEquals(FileInterface::MIME_TYPE_PDF, $shipment->jsonSerialize()['meta']['label_mime_type']);
+
+        $shipment->setLabelMimeType(FileInterface::MIME_TYPE_ZPL);
+
+        $this->assertEquals(FileInterface::MIME_TYPE_ZPL, $shipment->jsonSerialize()['meta']['label_mime_type']);
+    }
+
+    /** @test */
     public function testJsonSerialize()
     {
         $recipientAddress = $this->getMockBuilder(AddressInterface::class)

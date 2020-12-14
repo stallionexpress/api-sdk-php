@@ -712,6 +712,14 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function setLabelMimeType($labelMimeType)
+    {
+        return $this->getResource()->setLabelMimeType($labelMimeType);
+    }
+
+    /**
      * This function puts all object properties in an array and returns it.
      *
      * @return array
