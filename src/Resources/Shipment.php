@@ -149,6 +149,14 @@ class Shipment implements ShipmentInterface
     }
 
     /**
+     * @return array
+     */
+    public function getMeta()
+    {
+        return $this->meta;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function setRecipientAddress(AddressInterface $recipientAddress)

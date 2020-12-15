@@ -473,7 +473,7 @@ class MyParcelComApi implements MyParcelComApiInterface
             throw $exception;
         }
 
-        return $this->postResource($shipment);
+        return $this->postResource($shipment, $shipment->getMeta());
     }
 
     /**
@@ -492,7 +492,7 @@ class MyParcelComApi implements MyParcelComApiInterface
             throw $exception;
         }
 
-        return $this->patchResource($shipment);
+        return $this->patchResource($shipment, $shipment->getMeta());
     }
 
     /**
@@ -764,24 +764,26 @@ class MyParcelComApi implements MyParcelComApiInterface
      * Patch given resource and return the resource that was returned by the request.
      *
      * @param ResourceInterface $resource
+     * @param array             $meta
      * @return ResourceInterface|null
      * @throws RequestException
      */
-    protected function patchResource(ResourceInterface $resource)
+    protected function patchResource(ResourceInterface $resource, $meta = [])
     {
-        return $this->sendResource($resource, 'patch');
+        return $this->sendResource($resource, 'patch', $meta);
     }
 
     /**
      * Post given resource and return the resource that was returned by the request.
      *
      * @param ResourceInterface $resource
+     * @param array             $meta
      * @return ResourceInterface|null
      * @throws RequestException
      */
-    protected function postResource(ResourceInterface $resource)
+    protected function postResource(ResourceInterface $resource, $meta = [])
     {
-        return $this->sendResource($resource);
+        return $this->sendResource($resource, 'post', $meta);
     }
 
     /**
@@ -789,15 +791,19 @@ class MyParcelComApi implements MyParcelComApiInterface
      *
      * @param ResourceInterface $resource
      * @param string            $method
+     * @param array             $meta
      * @return ResourceInterface|null
      * @throws RequestException
      */
-    protected function sendResource(ResourceInterface $resource, $method = 'post')
+    protected function sendResource(ResourceInterface $resource, $method = 'post', $meta = [])
     {
         $response = $this->doRequest(
             $this->getResourceUri($resource->getType(), $resource->getId()),
             $method,
-            ['data' => $resource],
+            array_filter([
+                'data' => $resource,
+                'meta' => array_filter($meta),
+            ]),
             $this->authenticator->getAuthorizationHeader() + [
                 AuthenticatorInterface::HEADER_ACCEPT => AuthenticatorInterface::MIME_TYPE_JSONAPI,
             ]

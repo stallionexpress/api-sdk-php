@@ -60,6 +60,14 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
     }
 
     /**
+     * @return array
+     */
+    public function getMeta()
+    {
+        return $this->getResource()->getMeta();
+    }
+
+    /**
      * @param AddressInterface $recipientAddress
      * @return $this
      */
