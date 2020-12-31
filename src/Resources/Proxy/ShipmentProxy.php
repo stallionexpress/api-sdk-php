@@ -60,6 +60,14 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
     }
 
     /**
+     * @return array
+     */
+    public function getMeta()
+    {
+        return $this->getResource()->getMeta();
+    }
+
+    /**
      * @param AddressInterface $recipientAddress
      * @return $this
      */
@@ -709,6 +717,14 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
     public function clearTags()
     {
         return $this->getResource()->clearTags();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setLabelMimeType($labelMimeType)
+    {
+        return $this->getResource()->setLabelMimeType($labelMimeType);
     }
 
     /**

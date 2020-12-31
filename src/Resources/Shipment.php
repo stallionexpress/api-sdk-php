@@ -118,7 +118,7 @@ class Shipment implements ShipmentInterface
 
     /** @var array */
     private $meta = [
-        self::META_LABEL_MIME_TYPE => 'application/pdf',
+        self::META_LABEL_MIME_TYPE => FileInterface::MIME_TYPE_PDF,
         self::META_SERVICE_CODE    => null,
     ];
 
@@ -146,6 +146,14 @@ class Shipment implements ShipmentInterface
     public function getType()
     {
         return $this->type;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMeta()
+    {
+        return $this->meta;
     }
 
     /**
@@ -831,6 +839,18 @@ class Shipment implements ShipmentInterface
     public function clearTags()
     {
         $this->attributes[self::ATTRIBUTE_TAGS] = null;
+
+        return $this;
+    }
+
+    /**
+     * Supported values are FileInterface::MIME_TYPE_PDF or FileInterface::MIME_TYPE_ZPL
+     * @param $labelMimeType
+     * @return $this
+     */
+    public function setLabelMimeType($labelMimeType)
+    {
+        $this->meta[self::META_LABEL_MIME_TYPE] = $labelMimeType;
 
         return $this;
     }

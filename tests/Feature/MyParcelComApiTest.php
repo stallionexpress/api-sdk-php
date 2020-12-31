@@ -219,6 +219,7 @@ class MyParcelComApiTest extends TestCase
             $this->assertNotEmpty($carrier->getName());
             $this->assertNotEmpty($carrier->getCode());
             $this->assertNotEmpty($carrier->getCredentialsFormat());
+            $this->assertNotEmpty($carrier->getLabelMimeTypes());
         }
     }
 
