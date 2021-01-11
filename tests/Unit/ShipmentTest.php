@@ -646,6 +646,10 @@ class ShipmentTest extends TestCase
                 'invoice_number'     => 'NO.5',
                 'non_delivery'       => 'return',
                 'incoterm'           => 'DAP',
+                'shipping_value'     => [
+                    'amount'   => 3232,
+                    'currency' => 'EUR',
+                ],
                 'license_number'     => '512842382',
                 'certificate_number' => '2112211',
             ]);
@@ -808,6 +812,10 @@ class ShipmentTest extends TestCase
                     'invoice_number'     => 'NO.5',
                     'non_delivery'       => 'return',
                     'incoterm'           => 'DAP',
+                    'shipping_value'     => [
+                        'amount'   => 3232,
+                        'currency' => 'EUR',
+                    ],
                     'license_number'     => '512842382',
                     'certificate_number' => '2112211',
                 ],
