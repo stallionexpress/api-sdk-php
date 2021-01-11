@@ -51,6 +51,14 @@ class CustomsTest extends TestCase
     }
 
     /** @test */
+    public function testShippingValue()
+    {
+        $customs = new Customs();
+        $this->assertEquals(4242, $customs->setShippingValueAmount(4242)->getShippingValueAmount());
+        $this->assertEquals('GBP', $customs->setShippingValueCurrency('GBP')->getShippingValueCurrency());
+    }
+
+    /** @test */
     public function testJsonSerialize()
     {
         $customs = (new Customs())
