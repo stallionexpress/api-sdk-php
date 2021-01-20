@@ -27,6 +27,12 @@ class Customs implements CustomsInterface
     /** @var string|null */
     private $certificateNumber;
 
+    /** @var int|null */
+    private $shippingValueAmount;
+
+    /** @var string|null */
+    private $shippingValueCurrency;
+
     /**
      * {@inheritdoc}
      */
@@ -131,6 +137,44 @@ class Customs implements CustomsInterface
     public function setCertificateNumber($certificateNumber)
     {
         $this->certificateNumber = $certificateNumber;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getShippingValueCurrency()
+    {
+        return $this->shippingValueCurrency;
+    }
+
+    /**
+     * @param string|null $shippingValueCurrency
+     * @return $this
+     */
+    public function setShippingValueCurrency($shippingValueCurrency)
+    {
+        $this->shippingValueCurrency = $shippingValueCurrency;
+
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getShippingValueAmount()
+    {
+        return $this->shippingValueAmount;
+    }
+
+    /**
+     * @param int|null $shippingValueAmount
+     * @return $this
+     */
+    public function setShippingValueAmount($shippingValueAmount)
+    {
+        $this->shippingValueAmount = $shippingValueAmount;
 
         return $this;
     }
