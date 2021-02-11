@@ -483,6 +483,11 @@ class MyParcelComApi implements MyParcelComApiInterface
     {
         $validator = new ShipmentValidator($shipment);
 
+        if (!$shipment->getId()) {
+            throw new InvalidResourceException(
+                'Could not update shipment. This shipment does not have an id, use createShipment() to save it.'
+            );
+        }
         if (!$validator->isValid()) {
             $exception = new InvalidResourceException(
                 'Could not update shipment. ' . implode('. ', $validator->getErrors()) . '.'
