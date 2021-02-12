@@ -9,6 +9,9 @@ class Customs implements CustomsInterface
 {
     use JsonSerializable;
 
+    const AMOUNT = 'amount';
+    const CURRENCY = 'currency';
+
     /** @var string */
     private $contentType;
 
@@ -27,11 +30,11 @@ class Customs implements CustomsInterface
     /** @var string|null */
     private $certificateNumber;
 
-    /** @var int|null */
-    private $shippingValueAmount;
-
-    /** @var string|null */
-    private $shippingValueCurrency;
+    /** @var array */
+    private $shippingValue = [
+        self::AMOUNT   => null,
+        self::CURRENCY => null,
+    ];
 
     /**
      * {@inheritdoc}
@@ -146,7 +149,7 @@ class Customs implements CustomsInterface
      */
     public function getShippingValueCurrency()
     {
-        return $this->shippingValueCurrency;
+        return $this->shippingValue[self::CURRENCY];
     }
 
     /**
@@ -155,7 +158,7 @@ class Customs implements CustomsInterface
      */
     public function setShippingValueCurrency($shippingValueCurrency)
     {
-        $this->shippingValueCurrency = $shippingValueCurrency;
+        $this->shippingValue[self::CURRENCY] = $shippingValueCurrency;
 
         return $this;
     }
@@ -165,7 +168,7 @@ class Customs implements CustomsInterface
      */
     public function getShippingValueAmount()
     {
-        return $this->shippingValueAmount;
+        return $this->shippingValue[self::AMOUNT];
     }
 
     /**
@@ -174,7 +177,7 @@ class Customs implements CustomsInterface
      */
     public function setShippingValueAmount($shippingValueAmount)
     {
-        $this->shippingValueAmount = $shippingValueAmount;
+        $this->shippingValue[self::AMOUNT] = (int) $shippingValueAmount;
 
         return $this;
     }

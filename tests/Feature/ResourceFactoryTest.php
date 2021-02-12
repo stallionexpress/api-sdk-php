@@ -630,6 +630,10 @@ class ResourceFactoryTest extends TestCase
                     'invoice_number'     => 'NO.5',
                     'non_delivery'       => 'return',
                     'incoterm'           => 'DAP',
+                    'shipping_value'     => [
+                        'amount'   => 995,
+                        'currency' => 'EUR',
+                    ],
                     'license_number'     => '512842382',
                     'certificate_number' => '2112211',
                 ],
