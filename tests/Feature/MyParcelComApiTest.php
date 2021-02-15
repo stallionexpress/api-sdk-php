@@ -208,6 +208,15 @@ class MyParcelComApiTest extends TestCase
     }
 
     /** @test */
+    public function testUpdateInvalidShipmentMissingId()
+    {
+        $shipment = new Shipment();
+
+        $this->expectException(InvalidResourceException::class);
+        $this->api->updateShipment($shipment);
+    }
+
+    /** @test */
     public function testGetCarriers()
     {
         $carriers = $this->api->getCarriers();
