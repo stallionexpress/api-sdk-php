@@ -234,7 +234,7 @@ class MyParcelComApi implements MyParcelComApiInterface
                 // carrier, we want to be able to distinct between 'no results'
                 // or 'something went wrong'. However, when we're not looking
                 // for carrier specific pudo locations, we just want to show
-                // pudo locations for the failing carrier as not aviilable (null).
+                // pudo locations for the failing carrier as not available (null).
                 if ($specificCarrier) {
                     throw $exception;
                 }
@@ -357,7 +357,7 @@ class MyParcelComApi implements MyParcelComApiInterface
      */
     public function getServiceRatesForShipment(ShipmentInterface $shipment, $ttl = self::TTL_WEEK)
     {
-        $services = $this->getServices($shipment);
+        $services = $this->getServices($shipment, ['has_active_contract' => 'true'], $ttl);
         $serviceIds = [];
         foreach ($services as $service) {
             $serviceIds[] = $service->getId();
@@ -680,9 +680,7 @@ class MyParcelComApi implements MyParcelComApiInterface
             $body = json_encode($body);
         }
 
-        $request = new Request($method, $uri, $headers, $body);
-
-        return $request;
+        return new Request($method, $uri, $headers, $body);
     }
 
     /**
