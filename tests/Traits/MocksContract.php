@@ -22,7 +22,8 @@ trait MocksContract
         array $serviceOptions = [],
         $price = null,
         $weightMin = null,
-        $weightMax = null
+        $weightMax = null,
+        $fuelSurcharge = null
     ) {
         $mock = $this->getMockBuilder(ServiceRateInterface::class)
             ->disableOriginalConstructor()
@@ -33,6 +34,9 @@ trait MocksContract
         $mock
             ->method('getPrice')
             ->willReturn($price);
+        $mock
+            ->method('getFuelSurchargeAmount')
+            ->willReturn($fuelSurcharge);
         $mock
             ->method('getServiceOptions')
             ->willReturn($serviceOptions);

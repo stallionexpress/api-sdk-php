@@ -151,6 +151,8 @@ class ServiceRateTest extends TestCase
             ->setVolumeMax(321)
             ->setCurrency('GBP')
             ->setPrice(741)
+            ->setFuelSurchargeAmount(19)
+            ->setFuelSurchargeCurrency('GBP')
             ->setService($serviceMock)
             ->setContract($contractMock)
             ->setServiceOptions([
@@ -163,16 +165,20 @@ class ServiceRateTest extends TestCase
             'id'            => 'service-rate-id',
             'type'          => 'service-rates',
             'attributes'    => [
-                'price'      => [
+                'price'          => [
                     'amount'   => 741,
                     'currency' => 'GBP',
                 ],
-                'weight_min' => 123,
-                'weight_max' => 456,
-                'length_max' => 789,
-                'width_max'  => 987,
-                'height_max' => 654,
-                'volume_max' => 321,
+                'fuel_surcharge' => [
+                    'amount'   => 19,
+                    'currency' => 'GBP',
+                ],
+                'weight_min'     => 123,
+                'weight_max'     => 456,
+                'length_max'     => 789,
+                'width_max'      => 987,
+                'height_max'     => 654,
+                'volume_max'     => 321,
             ],
             'relationships' => [
                 'service'         => [
