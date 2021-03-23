@@ -312,14 +312,18 @@ class ResourceFactoryTest extends TestCase
             'type'          => 'service-rates',
             'id'            => 'service-rate-id',
             'attributes'    => [
-                'weight_min' => 2000,
-                'weight_max' => 5000,
-                'width_max'  => 100,
-                'height_max' => 200,
-                'volume_max' => 6,
-                'length_max' => 300,
-                'price'      => [
+                'weight_min'     => 2000,
+                'weight_max'     => 5000,
+                'width_max'      => 100,
+                'height_max'     => 200,
+                'volume_max'     => 6,
+                'length_max'     => 300,
+                'price'          => [
                     'amount'   => 800,
+                    'currency' => 'GBP',
+                ],
+                'fuel_surcharge' => [
+                    'amount'   => 19,
                     'currency' => 'GBP',
                 ],
             ],

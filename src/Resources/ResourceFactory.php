@@ -240,6 +240,13 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
             unset($properties['attributes']['price']);
         }
 
+        if (isset($properties['attributes']['fuel_surcharge']['amount'])) {
+            $serviceRate->setFuelSurchargeAmount($properties['attributes']['fuel_surcharge']['amount']);
+            $serviceRate->setFuelSurchargeCurrency($properties['attributes']['fuel_surcharge']['currency']);
+
+            unset($properties['attributes']['fuel_surcharge']);
+        }
+
         if (isset($properties['relationships']['service_options'])) {
             $serviceOptions = $properties['relationships']['service_options']['data'];
 
