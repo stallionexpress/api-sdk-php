@@ -65,16 +65,17 @@ class ServiceRateTest extends TestCase
     public function attributeDataProvider()
     {
         return [
-            'id'         => ['setId', 'service-rate-id', 'getId'],
-            'type'       => ['setType', 'service-rates', 'getType'],
-            'weight_min' => ['setWeightMin', 123, 'getWeightMin'],
-            'weight_max' => ['setWeightMax', 456, 'getWeightMax'],
-            'length_max' => ['setLengthMax', 789, 'getLengthMax'],
-            'height_max' => ['setHeightMax', 987, 'getHeightMax'],
-            'width_max'  => ['setWidthMax', 654, 'getWidthMax'],
-            'volume_max' => ['setVolumeMax', 321, 'getVolumeMax'],
-            'currency'   => ['setCurrency', 'GBP', 'getCurrency'],
-            'price'      => ['setPrice', 500, 'getPrice'],
+            'id'             => ['setId', 'service-rate-id', 'getId'],
+            'type'           => ['setType', 'service-rates', 'getType'],
+            'weight_min'     => ['setWeightMin', 123, 'getWeightMin'],
+            'weight_max'     => ['setWeightMax', 456, 'getWeightMax'],
+            'length_max'     => ['setLengthMax', 789, 'getLengthMax'],
+            'height_max'     => ['setHeightMax', 987, 'getHeightMax'],
+            'width_max'      => ['setWidthMax', 654, 'getWidthMax'],
+            'volume_max'     => ['setVolumeMax', 321, 'getVolumeMax'],
+            'currency'       => ['setCurrency', 'GBP', 'getCurrency'],
+            'price'          => ['setPrice', 500, 'getPrice'],
+            'fuel_surcharge' => ['setFuelSurchargeAmount', 19, 'getFuelSurchargeAmount'],
         ];
     }
 

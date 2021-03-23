@@ -13,9 +13,10 @@ trait MocksContract
 {
     /**
      * @param ServiceOptionInterface[] $serviceOptions
-     * @param int                      $price
-     * @param int                      $weightMin
-     * @param int                      $weightMax
+     * @param int|null                 $price
+     * @param int|null                 $weightMin
+     * @param int|null                 $weightMax
+     * @param int|null                 $fuelSurcharge
      * @return ServiceRateInterface
      */
     protected function getMockedServiceRate(

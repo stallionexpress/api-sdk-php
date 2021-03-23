@@ -258,7 +258,7 @@ class ServiceRate implements ServiceRateInterface
      */
     public function getFuelSurchargeAmount()
     {
-        return $this->attributes[self::ATTRIBUTE_PRICE][self::ATTRIBUTE_AMOUNT];
+        return $this->attributes[self::ATTRIBUTE_FUEL_SURCHARGE][self::ATTRIBUTE_AMOUNT];
     }
 
     /**
