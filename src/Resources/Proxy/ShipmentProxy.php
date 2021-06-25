@@ -16,6 +16,7 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentItemInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentStatusInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
+use MyParcelCom\ApiSdk\Resources\TaxIdentificationNumber;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 use MyParcelCom\ApiSdk\Resources\Traits\ProxiesResource;
 
@@ -108,6 +109,34 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function setRecipientTaxIdentificationNumbers(array $taxIdentificationNumbers)
+    {
+        $this->getResource()->setRecipientTaxIdentificationNumbers($taxIdentificationNumbers);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addRecipientTaxIdentificationNumber(TaxIdentificationNumber $taxIdentificationNumber)
+    {
+        $this->getResource()->addRecipientTaxIdentificationNumber($taxIdentificationNumber);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRecipientTaxIdentificationNumbers()
+    {
+        return $this->getResource()->getRecipientTaxIdentificationNumbers();
+    }
+
+    /**
      * @param AddressInterface $senderAddress
      * @return $this
      */
@@ -145,6 +174,34 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
     public function getSenderTaxNumber()
     {
         return $this->getResource()->getSenderTaxNumber();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setSenderTaxIdentificationNumbers(array $taxIdentificationNumbers)
+    {
+        $this->getResource()->setSenderTaxIdentificationNumbers($taxIdentificationNumbers);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addSenderTaxIdentificationNumber(TaxIdentificationNumber $taxIdentificationNumber)
+    {
+        $this->getResource()->addSenderTaxIdentificationNumber($taxIdentificationNumber);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSenderTaxIdentificationNumbers()
+    {
+        return $this->getResource()->getSenderTaxIdentificationNumbers();
     }
 
     /**

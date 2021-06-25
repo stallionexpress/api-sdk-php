@@ -3,6 +3,7 @@
 namespace MyParcelCom\ApiSdk\Resources\Interfaces;
 
 use DateTime;
+use MyParcelCom\ApiSdk\Resources\TaxIdentificationNumber;
 
 interface ShipmentInterface extends ResourceInterface
 {
@@ -37,6 +38,23 @@ interface ShipmentInterface extends ResourceInterface
     public function getRecipientTaxNumber();
 
     /**
+     * @param TaxIdentificationNumber[] $taxIdentificationNumbers
+     * @return $this
+     */
+    public function setRecipientTaxIdentificationNumbers(array $taxIdentificationNumbers);
+
+    /**
+     * @param TaxIdentificationNumber $taxIdentificationNumber
+     * @return $this
+     */
+    public function addRecipientTaxIdentificationNumber(TaxIdentificationNumber $taxIdentificationNumber);
+
+    /**
+     * @return TaxIdentificationNumber[]
+     */
+    public function getRecipientTaxIdentificationNumbers();
+
+    /**
      * @param AddressInterface $senderAddress
      * @return $this
      */
@@ -59,6 +77,23 @@ interface ShipmentInterface extends ResourceInterface
      * @deprecated
      */
     public function getSenderTaxNumber();
+
+    /**
+     * @param TaxIdentificationNumber[] $taxIdentificationNumbers
+     * @return $this
+     */
+    public function setSenderTaxIdentificationNumbers(array $taxIdentificationNumbers);
+
+    /**
+     * @param TaxIdentificationNumber $taxIdentificationNumber
+     * @return $this
+     */
+    public function addSenderTaxIdentificationNumber(TaxIdentificationNumber $taxIdentificationNumber);
+
+    /**
+     * @return TaxIdentificationNumber[]
+     */
+    public function getSenderTaxIdentificationNumbers();
 
     /**
      * @param AddressInterface $returnAddress
