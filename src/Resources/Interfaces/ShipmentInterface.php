@@ -26,11 +26,13 @@ interface ShipmentInterface extends ResourceInterface
     /**
      * @param string|null $recipientTaxNumber
      * @return $this
+     * @deprecated
      */
     public function setRecipientTaxNumber($recipientTaxNumber);
 
     /**
      * @return string|null
+     * @deprecated
      */
     public function getRecipientTaxNumber();
 
@@ -48,11 +50,13 @@ interface ShipmentInterface extends ResourceInterface
     /**
      * @param string|null $senderTaxNumber
      * @return $this
+     * @deprecated
      */
     public function setSenderTaxNumber($senderTaxNumber);
 
     /**
      * @return string|null
+     * @deprecated
      */
     public function getSenderTaxNumber();
 

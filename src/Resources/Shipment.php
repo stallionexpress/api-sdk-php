@@ -176,6 +176,7 @@ class Shipment implements ShipmentInterface
 
     /**
      * {@inheritdoc}
+     * @deprecated
      */
     public function setRecipientTaxNumber($recipientTaxNumber)
     {
@@ -186,6 +187,7 @@ class Shipment implements ShipmentInterface
 
     /**
      * {@inheritdoc}
+     * @deprecated
      */
     public function getRecipientTaxNumber()
     {
@@ -212,6 +214,7 @@ class Shipment implements ShipmentInterface
 
     /**
      * {@inheritdoc}
+     * @deprecated
      */
     public function setSenderTaxNumber($senderTaxNumber)
     {
@@ -222,6 +225,7 @@ class Shipment implements ShipmentInterface
 
     /**
      * {@inheritdoc}
+     * @deprecated
      */
     public function getSenderTaxNumber()
     {

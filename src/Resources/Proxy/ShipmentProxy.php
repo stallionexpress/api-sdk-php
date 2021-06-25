@@ -89,6 +89,7 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
     /**
      * @param string $recipientTaxNumber
      * @return $this
+     * @deprecated
      */
     public function setRecipientTaxNumber($recipientTaxNumber)
     {
@@ -99,6 +100,7 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
 
     /**
      * @return string|null
+     * @deprecated
      */
     public function getRecipientTaxNumber()
     {
@@ -127,6 +129,7 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
     /**
      * @param string|null $senderTaxNumber
      * @return $this
+     * @deprecated
      */
     public function setSenderTaxNumber($senderTaxNumber)
     {
@@ -137,6 +140,7 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
 
     /**
      * @return string|null
+     * @deprecated
      */
     public function getSenderTaxNumber()
     {
