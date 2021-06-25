@@ -2,6 +2,7 @@
 
 namespace MyParcelCom\ApiSdk\Tests\Unit;
 
+use MyParcelCom\ApiSdk\Exceptions\MyParcelComException;
 use MyParcelCom\ApiSdk\Resources\Interfaces\PhysicalPropertiesInterface;
 use MyParcelCom\ApiSdk\Resources\ShipmentItem;
 use PHPUnit\Framework\TestCase;
@@ -79,6 +80,22 @@ class ShipmentItemTest extends TestCase
         $item = new ShipmentItem();
         $this->assertNull($item->getVatPercentage());
         $this->assertEquals(20, $item->setVatPercentage(20)->getVatPercentage());
+    }
+
+    /** @test */
+    public function testInvalidVatPercentageException()
+    {
+        $this->expectException(MyParcelComException::class);
+
+        (new ShipmentItem())->setVatPercentage(101);
+    }
+
+    /** @test */
+    public function testNegativeVatPercentageException()
+    {
+        $this->expectException(MyParcelComException::class);
+
+        (new ShipmentItem())->setVatPercentage(-1);
     }
 
     /** @test */
