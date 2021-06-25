@@ -74,6 +74,14 @@ class ShipmentItemTest extends TestCase
     }
 
     /** @test */
+    public function testVatPercentage()
+    {
+        $item = new ShipmentItem();
+        $this->assertNull($item->getVatPercentage());
+        $this->assertEquals(20, $item->setVatPercentage(20)->getVatPercentage());
+    }
+
+    /** @test */
     public function testJsonSerialize()
     {
         $item = (new ShipmentItem())
@@ -85,6 +93,7 @@ class ShipmentItemTest extends TestCase
             ->setItemValue(349)
             ->setItemWeight(128)
             ->setCurrency('GBP')
+            ->setVatPercentage(20)
             ->setOriginCountryCode('GB');
         $this->assertEquals(
             [
@@ -98,8 +107,8 @@ class ShipmentItemTest extends TestCase
                     'currency' => 'GBP',
                 ],
                 'item_weight'         => 128,
+                'vat_percentage'      => 20,
                 'origin_country_code' => 'GB',
-
             ],
             $item->jsonSerialize()
         );
