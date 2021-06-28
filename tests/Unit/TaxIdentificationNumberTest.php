@@ -2,6 +2,7 @@
 
 namespace MyParcelCom\ApiSdk\Tests\Unit;
 
+use MyParcelCom\ApiSdk\Enums\TaxTypeEnum;
 use MyParcelCom\ApiSdk\Exceptions\MyParcelComException;
 use MyParcelCom\ApiSdk\Resources\TaxIdentificationNumber;
 use PHPUnit\Framework\TestCase;
@@ -34,7 +35,7 @@ class TaxIdentificationNumberTest extends TestCase
     public function testType()
     {
         $number = new TaxIdentificationNumber();
-        $this->assertEquals('eori', $number->setType(TaxIdentificationNumber::EORI)->getType());
+        $this->assertEquals('eori', $number->setType(TaxTypeEnum::EORI())->getType()->getValue());
     }
 
     /** @test */
@@ -52,7 +53,7 @@ class TaxIdentificationNumberTest extends TestCase
             ->setCountryCode('GB')
             ->setNumber('IOSS123')
             ->setDescription('Test number')
-            ->setType(TaxIdentificationNumber::IOSS);
+            ->setType(TaxTypeEnum::IOSS());
         $this->assertEquals(
             [
                 'country_code' => 'GB',

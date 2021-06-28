@@ -2,6 +2,7 @@
 
 namespace MyParcelCom\ApiSdk\Tests\Unit;
 
+use MyParcelCom\ApiSdk\Enums\TaxTypeEnum;
 use MyParcelCom\ApiSdk\Exceptions\MyParcelComException;
 use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
@@ -57,11 +58,11 @@ class ShipmentTest extends TestCase
         $vatNumber = (new TaxIdentificationNumber())
             ->setCountryCode('GB')
             ->setNumber('123')
-            ->setType(TaxIdentificationNumber::VAT);
+            ->setType(TaxTypeEnum::VAT());
         $iossNumber = (new TaxIdentificationNumber())
             ->setCountryCode('GB')
             ->setNumber('456')
-            ->setType(TaxIdentificationNumber::IOSS);
+            ->setType(TaxTypeEnum::IOSS());
 
         $shipment = (new Shipment())
             ->setRecipientTaxIdentificationNumbers([$vatNumber])
@@ -94,11 +95,11 @@ class ShipmentTest extends TestCase
         $vatNumber = (new TaxIdentificationNumber())
             ->setCountryCode('GB')
             ->setNumber('123')
-            ->setType(TaxIdentificationNumber::VAT);
+            ->setType(TaxTypeEnum::VAT());
         $iossNumber = (new TaxIdentificationNumber())
             ->setCountryCode('GB')
             ->setNumber('456')
-            ->setType(TaxIdentificationNumber::IOSS);
+            ->setType(TaxTypeEnum::IOSS());
 
         $shipment = (new Shipment())
             ->setSenderTaxIdentificationNumbers([$vatNumber])

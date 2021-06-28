@@ -2,16 +2,13 @@
 
 namespace MyParcelCom\ApiSdk\Resources;
 
+use MyParcelCom\ApiSdk\Enums\TaxTypeEnum;
 use MyParcelCom\ApiSdk\Exceptions\MyParcelComException;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 
 class TaxIdentificationNumber
 {
     use JsonSerializable;
-
-    const EORI = 'eori';
-    const IOSS = 'ioss';
-    const VAT = 'vat';
 
     /** @var string */
     private $countryCode;
@@ -83,25 +80,25 @@ class TaxIdentificationNumber
     }
 
     /**
-     * @param string $type
+     * @param TaxTypeEnum $type
      * @return $this
      */
     public function setType($type)
     {
-        if (!in_array($type, [self::EORI, self::IOSS, self::VAT])) {
-            throw new MyParcelComException('Invalid TaxIdentificationNumber type: ' . $type);
+        if (!($type instanceof TaxTypeEnum)) {
+            throw new MyParcelComException('Expected parameter of type \MyParcelCom\ApiSdk\Enums\TaxTypeEnum');
         }
 
-        $this->type = $type;
+        $this->type = $type->getValue();
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return TaxTypeEnum|null
      */
     public function getType()
     {
-        return $this->type;
+        return $this->type ? new TaxTypeEnum($this->type) : null;
     }
 }
