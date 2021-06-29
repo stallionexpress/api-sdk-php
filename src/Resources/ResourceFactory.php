@@ -2,6 +2,7 @@
 
 namespace MyParcelCom\ApiSdk\Resources;
 
+use MyParcelCom\ApiSdk\Enums\TaxTypeEnum;
 use MyParcelCom\ApiSdk\Exceptions\ResourceFactoryException;
 use MyParcelCom\ApiSdk\MyParcelComApiInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
@@ -180,6 +181,32 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
                     )
                 );
             });
+        }
+
+        if (isset($properties['attributes']['sender_tax_identification_numbers'])) {
+            foreach ($properties['attributes']['sender_tax_identification_numbers'] as $taxIdentificationNumber) {
+                $shipment->addSenderTaxIdentificationNumber(
+                    (new TaxIdentificationNumber())
+                        ->setType(new TaxTypeEnum($taxIdentificationNumber['type']))
+                        ->setNumber($taxIdentificationNumber['number'])
+                        ->setCountryCode($taxIdentificationNumber['country_code'])
+                        ->setDescription($taxIdentificationNumber['description'])
+                );
+            }
+            unset($properties['attributes']['sender_tax_identification_numbers']);
+        }
+
+        if (isset($properties['attributes']['recipient_tax_identification_numbers'])) {
+            foreach ($properties['attributes']['recipient_tax_identification_numbers'] as $taxIdentificationNumber) {
+                $shipment->addRecipientTaxIdentificationNumber(
+                    (new TaxIdentificationNumber())
+                        ->setType(new TaxTypeEnum($taxIdentificationNumber['type']))
+                        ->setNumber($taxIdentificationNumber['number'])
+                        ->setCountryCode($taxIdentificationNumber['country_code'])
+                        ->setDescription($taxIdentificationNumber['description'])
+                );
+            }
+            unset($properties['attributes']['recipient_tax_identification_numbers']);
         }
 
         return $shipment;
