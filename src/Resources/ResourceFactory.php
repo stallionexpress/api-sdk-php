@@ -190,7 +190,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
                         ->setType(new TaxTypeEnum($taxIdentificationNumber['type']))
                         ->setNumber($taxIdentificationNumber['number'])
                         ->setCountryCode($taxIdentificationNumber['country_code'])
-                        ->setDescription($taxIdentificationNumber['description'])
+                        ->setDescription(isset($taxIdentificationNumber['description']) ? $taxIdentificationNumber['description'] : null)
                 );
             }
             unset($properties['attributes']['sender_tax_identification_numbers']);
@@ -203,7 +203,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
                         ->setType(new TaxTypeEnum($taxIdentificationNumber['type']))
                         ->setNumber($taxIdentificationNumber['number'])
                         ->setCountryCode($taxIdentificationNumber['country_code'])
-                        ->setDescription($taxIdentificationNumber['description'])
+                        ->setDescription(isset($taxIdentificationNumber['description']) ? $taxIdentificationNumber['description'] : null)
                 );
             }
             unset($properties['attributes']['recipient_tax_identification_numbers']);
