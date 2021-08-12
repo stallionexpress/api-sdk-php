@@ -368,6 +368,8 @@ class MyParcelComApi implements MyParcelComApiInterface
             'volumetric_weight'   => $shipment->getPhysicalProperties()->getVolumetricWeight(),
             'service'             => implode(',', $serviceIds),
         ]));
+        // Include the services to avoid extra http requests when the result is looped with: $serviceRate->getService().
+        $url->addQuery(['include' => 'service']);
 
         $serviceRates = $this->getRequestCollection($url->getUrl(), $ttl);
 
@@ -590,8 +592,9 @@ class MyParcelComApi implements MyParcelComApiInterface
     {
         $response = $this->doRequest($uri, 'get', [], [], $ttl);
         $json = json_decode((string) $response->getBody(), true);
+        $included = isset($json['included']) ? $json['included'] : null;
 
-        $resources = $this->jsonToResources($json['data']);
+        $resources = $this->jsonToResources($json['data'], $included);
 
         // If there is no next link, we don't have to retrieve any more data
         if (!isset($json['links']['next'])) {
@@ -619,8 +622,8 @@ class MyParcelComApi implements MyParcelComApiInterface
             ])->getUrl();
 
             return $this->doRequest($url, 'get', [], [], $ttl);
-        }, function ($data) {
-            return $this->jsonToResources($data);
+        }, function ($data, $included = null) {
+            return $this->jsonToResources($data, $included);
         });
     }
 
@@ -680,10 +683,11 @@ class MyParcelComApi implements MyParcelComApiInterface
     /**
      * Convert the data from a json request to an array of resources.
      *
-     * @param array $json
+     * @param array      $json
+     * @param array|null $included
      * @return array
      */
-    protected function jsonToResources(array $json)
+    protected function jsonToResources(array $json, $included = null)
     {
         $resources = [];
 
@@ -692,7 +696,14 @@ class MyParcelComApi implements MyParcelComApiInterface
         }
 
         foreach ($json as $resourceData) {
-            $resources[] = $this->resourceFactory->create($resourceData['type'], $resourceData);
+            $resource = $this->resourceFactory->create($resourceData['type'], $resourceData);
+
+            if (isset($included)) {
+                $includedResources = $this->jsonToResources($included);
+                $resource->processIncludedResources($includedResources);
+            }
+
+            $resources[] = $resource;
         }
 
         return $resources;
@@ -807,7 +818,8 @@ class MyParcelComApi implements MyParcelComApiInterface
         );
 
         $json = json_decode($response->getBody(), true);
-        $resources = $this->jsonToResources($json['data']);
+        $included = isset($json['included']) ? $json['included'] : null;
+        $resources = $this->jsonToResources($json['data'], $included);
 
         return reset($resources);
     }

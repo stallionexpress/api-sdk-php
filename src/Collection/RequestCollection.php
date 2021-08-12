@@ -103,7 +103,8 @@ class RequestCollection implements CollectionInterface
         $body = json_decode($response->getBody(), true);
 
         $this->count = $body['meta']['total_records'];
-        $resources = call_user_func($this->resourceCreator, $body['data']);
+        $included = isset($body['included']) ? $body['included'] : null;
+        $resources = call_user_func($this->resourceCreator, $body['data'], $included);
 
         $resourceNumber = ($pageNumber - 1) * $this->limit;
 
