@@ -393,19 +393,12 @@ class MyParcelComApiTest extends TestCase
     /** @test */
     public function testGetRegions()
     {
-        $collection = $this->api->getRegions();
-        $allRegions = [];
-        for ($offset = 0; $offset < $collection->count(); $offset += 30) {
-            $allRegions = array_merge($allRegions, $collection->offset($offset)->get());
+        $shipments = $this->api->getRegions();
+
+        $this->assertInstanceOf(CollectionInterface::class, $shipments);
+        foreach ($shipments as $shipment) {
+            $this->assertInstanceOf(RegionInterface::class, $shipment);
         }
-
-        $this->assertInstanceOf(CollectionInterface::class, $collection);
-        $this->assertEquals(78, $collection->count());
-        $this->assertCount(78, $allRegions);
-
-        array_walk($allRegions, function ($region) {
-            $this->assertInstanceOf(RegionInterface::class, $region);
-        });
     }
 
     /** @test */
