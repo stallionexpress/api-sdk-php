@@ -134,8 +134,58 @@
   ],
   "meta": {
     "total_pages": 1,
-    "total_records": 2
+    "total_records": 1
   },
+  "included": [
+    {
+      "id": "a3057e77-005b-4945-a41c-20ddbe4dab08",
+      "type": "services",
+      "attributes": {
+        "name": "Letter Test",
+        "code": "letter-test",
+        "package_type": "letter",
+        "transit_time": {
+          "min": 1,
+          "max": 3
+        },
+        "handover_method": "drop-off",
+        "delivery_days": [
+          "Monday",
+          "Wednesday",
+          "Saturday"
+        ],
+        "delivery_method": "delivery",
+        "regions_from": [
+          {
+            "country_code": "GB",
+            "region_code": "NIR"
+          }
+        ],
+        "regions_to": [
+          {
+            "country_code": "GB",
+            "region_code": "NIR"
+          }
+        ],
+        "uses_volumetric_weight": true
+      },
+      "links": {
+        "self": "https://api/services/a3057e77-005b-4945-a41c-20ddbe4dab08",
+        "contracts": "https://api/services/a3057e77-005b-4945-a41c-20ddbe4dab08/contracts"
+      },
+      "relationships": {
+        "carrier": {
+          "links": {
+            "related": "https://api/carriers/eef00b32-177e-43d3-9b26-715365e4ce46"
+          },
+          "data": {
+            "id": "eef00b32-177e-43d3-9b26-715365e4ce46",
+            "type": "carriers"
+          }
+        }
+      }
+    }
+  ],
   "links": {
     "self": "https://api/service-rates?filter[service]=a3057e77-005b-4945-a41c-20ddbe4dab08&filter[weight]=500&page[size]=30&page[number]=1",
     "first": "https://api/service-rates?filter[service]=a3057e77-005b-4945-a41c-20ddbe4dab08&filter[weight]=500&page[size]=30&page[number]=1",

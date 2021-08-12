@@ -591,6 +591,8 @@ class MyParcelComApiTest extends TestCase
             $this->assertInstanceOf(ServiceRateInterface::class, $serviceRate);
             $this->assertGreaterThanOrEqual(500, $serviceRate->getWeightMax());
             $this->assertLessThanOrEqual(500, $serviceRate->getWeightMin());
+            $this->assertEquals('Letter Test', $serviceRate->getService()->getName(), 'Included service name');
+            $this->assertEquals('letter-test', $serviceRate->getService()->getCode(), 'Included service code');
         }
     }
 
