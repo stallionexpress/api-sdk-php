@@ -16,13 +16,11 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceFactoryInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\ApiSdk\Resources\ResourceFactory;
 use MyParcelCom\ApiSdk\Resources\Service;
-use MyParcelCom\ApiSdk\Shipments\ServiceMatcher;
 use MyParcelCom\ApiSdk\Utils\UrlBuilder;
 use MyParcelCom\ApiSdk\Validators\ShipmentValidator;
 use Psr\Http\Message\RequestInterface;
@@ -165,7 +163,6 @@ class MyParcelComApi implements MyParcelComApiInterface
             }
         }
 
-        // These resources can be stored for a week.
         $regions = $this->getRequestCollection($url->getUrl(), $ttl);
 
         if ($regions->count() > 0 || !isset($filters['region_code'])) {
@@ -183,7 +180,6 @@ class MyParcelComApi implements MyParcelComApiInterface
      */
     public function getCarriers($ttl = self::TTL_10MIN)
     {
-        // These resources can be stored for a week.
         return $this->getRequestCollection($this->apiUri . self::PATH_CARRIERS, $ttl);
     }
 
@@ -226,7 +222,6 @@ class MyParcelComApi implements MyParcelComApiInterface
         foreach ($carriers as $carrier) {
             $carrierUri = str_replace('{carrier_id}', $carrier->getId(), $uri->getUrl());
 
-            // These resources can be stored for a week.
             try {
                 $resources = $this->getResourcesArray($carrierUri, $ttl);
             } catch (RequestException $exception) {
@@ -260,8 +255,6 @@ class MyParcelComApi implements MyParcelComApiInterface
      */
     public function getShops($ttl = self::TTL_10MIN)
     {
-        // These resources can be stored for a week. Or should be removed from
-        // cache when updated
         return $this->getRequestCollection($this->apiUri . self::PATH_SHOPS, $ttl);
     }
 
@@ -291,40 +284,30 @@ class MyParcelComApi implements MyParcelComApiInterface
         $url = new UrlBuilder($this->apiUri . self::PATH_SERVICES);
         $url->addQuery($this->arrayToFilters($filters));
 
-        if ($shipment === null) {
-            return $this->getRequestCollection($url->getUrl(), $ttl);
+        if ($shipment) {
+            if ($shipment->getSenderAddress() === null) {
+                $shipment->setSenderAddress($this->getDefaultShop()->getReturnAddress());
+            }
+            if ($shipment->getRecipientAddress() === null) {
+                throw new InvalidResourceException('Missing `recipient_address` on `shipments` resource');
+            }
+            if ($shipment->getSenderAddress() === null) {
+                throw new InvalidResourceException('Missing `sender_address` on `shipments` resource');
+            }
+
+            $url->addQuery($this->arrayToFilters([
+                'address_from' => [
+                    'country_code' => $shipment->getSenderAddress()->getCountryCode(),
+                    'postal_code'  => $shipment->getSenderAddress()->getPostalCode(),
+                ],
+                'address_to'   => [
+                    'country_code' => $shipment->getRecipientAddress()->getCountryCode(),
+                    'postal_code'  => $shipment->getRecipientAddress()->getPostalCode(),
+                ],
+            ]));
         }
 
-        if ($shipment->getSenderAddress() === null) {
-            $shipment->setSenderAddress($this->getDefaultShop()->getReturnAddress());
-        }
-        if ($shipment->getRecipientAddress() === null) {
-            throw new InvalidResourceException('Missing `recipient_address` on `shipments` resource');
-        }
-        if ($shipment->getSenderAddress() === null) {
-            throw new InvalidResourceException('Missing `sender_address` on `shipments` resource');
-        }
-
-        $url->addQuery($this->arrayToFilters([
-            'address_from' => [
-                'country_code' => $shipment->getSenderAddress()->getCountryCode(),
-                'postal_code'  => $shipment->getSenderAddress()->getPostalCode(),
-            ],
-            'address_to'   => [
-                'country_code' => $shipment->getRecipientAddress()->getCountryCode(),
-                'postal_code'  => $shipment->getRecipientAddress()->getPostalCode(),
-            ],
-        ]));
-
-        // Services can be cached for a week.
-        $services = $this->getResourcesArray($url->getUrl(), $ttl);
-
-        $matcher = new ServiceMatcher();
-        $services = array_values(array_filter($services, function (ServiceInterface $service) use ($shipment, $matcher) {
-            return $matcher->matches($shipment, $service);
-        }));
-
-        return new ArrayCollection($services);
+        return $this->getRequestCollection($url->getUrl(), $ttl);
     }
 
     /**
