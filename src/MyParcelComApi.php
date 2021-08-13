@@ -16,11 +16,13 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceFactoryInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\ApiSdk\Resources\ResourceFactory;
 use MyParcelCom\ApiSdk\Resources\Service;
+use MyParcelCom\ApiSdk\Shipments\ServiceMatcher;
 use MyParcelCom\ApiSdk\Utils\UrlBuilder;
 use MyParcelCom\ApiSdk\Validators\ShipmentValidator;
 use Psr\Http\Message\RequestInterface;
@@ -307,7 +309,16 @@ class MyParcelComApi implements MyParcelComApiInterface
             ]));
         }
 
-        return $this->getRequestCollection($url->getUrl(), $ttl);
+        $services = $this->getResourcesArray($url->getUrl(), $ttl);
+
+        if ($shipment) {
+            $matcher = new ServiceMatcher();
+            $services = array_values(array_filter($services, function (ServiceInterface $service) use ($shipment, $matcher) {
+                return $matcher->matchesDeliveryMethod($shipment, $service);
+            }));
+        }
+
+        return new ArrayCollection($services);
     }
 
     /**
