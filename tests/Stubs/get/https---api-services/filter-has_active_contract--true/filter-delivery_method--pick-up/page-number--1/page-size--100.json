@@ -5,6 +5,7 @@
       "type": "services",
       "attributes": {
         "name": "Ship To Shop",
+        "code": "ship-to-shop",
         "package_type": "parcel",
         "delivery_days": [
           "Friday",

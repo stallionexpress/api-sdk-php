@@ -4,6 +4,7 @@
     "type": "services",
     "attributes": {
       "name": "Letterbox Test",
+      "code": "letterbox-test",
       "package_type": "letterbox",
       "transit_time": {
         "min": 2,

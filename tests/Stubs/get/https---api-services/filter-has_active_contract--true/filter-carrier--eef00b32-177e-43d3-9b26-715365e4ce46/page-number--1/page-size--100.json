@@ -5,6 +5,7 @@
       "type": "services",
       "attributes": {
         "name": "Letter Test",
+        "code": "letter-test",
         "package_type": "letter",
         "transit_time": {
           "min": 1,
