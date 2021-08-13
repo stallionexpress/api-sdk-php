@@ -369,7 +369,7 @@ class MyParcelComApi implements MyParcelComApiInterface
             'service'             => implode(',', $serviceIds),
         ]));
         // Include the services to avoid extra http requests when the result is looped with: $serviceRate->getService().
-        $url->addQuery(['include' => 'service']);
+        $url->addQuery(['include' => 'contract,service']);
 
         $serviceRates = $this->getRequestCollection($url->getUrl(), $ttl);
 
