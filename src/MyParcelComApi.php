@@ -286,37 +286,37 @@ class MyParcelComApi implements MyParcelComApiInterface
         $url = new UrlBuilder($this->apiUri . self::PATH_SERVICES);
         $url->addQuery($this->arrayToFilters($filters));
 
-        if ($shipment) {
-            if ($shipment->getSenderAddress() === null) {
-                $shipment->setSenderAddress($this->getDefaultShop()->getReturnAddress());
-            }
-            if ($shipment->getRecipientAddress() === null) {
-                throw new InvalidResourceException('Missing `recipient_address` on `shipments` resource');
-            }
-            if ($shipment->getSenderAddress() === null) {
-                throw new InvalidResourceException('Missing `sender_address` on `shipments` resource');
-            }
-
-            $url->addQuery($this->arrayToFilters([
-                'address_from' => [
-                    'country_code' => $shipment->getSenderAddress()->getCountryCode(),
-                    'postal_code'  => $shipment->getSenderAddress()->getPostalCode(),
-                ],
-                'address_to'   => [
-                    'country_code' => $shipment->getRecipientAddress()->getCountryCode(),
-                    'postal_code'  => $shipment->getRecipientAddress()->getPostalCode(),
-                ],
-            ]));
+        if ($shipment === null) {
+            return $this->getRequestCollection($url->getUrl(), $ttl);
         }
+
+        if ($shipment->getSenderAddress() === null) {
+            $shipment->setSenderAddress($this->getDefaultShop()->getReturnAddress());
+        }
+        if ($shipment->getRecipientAddress() === null) {
+            throw new InvalidResourceException('Missing `recipient_address` on `shipments` resource');
+        }
+        if ($shipment->getSenderAddress() === null) {
+            throw new InvalidResourceException('Missing `sender_address` on `shipments` resource');
+        }
+
+        $url->addQuery($this->arrayToFilters([
+            'address_from' => [
+                'country_code' => $shipment->getSenderAddress()->getCountryCode(),
+                'postal_code'  => $shipment->getSenderAddress()->getPostalCode(),
+            ],
+            'address_to'   => [
+                'country_code' => $shipment->getRecipientAddress()->getCountryCode(),
+                'postal_code'  => $shipment->getRecipientAddress()->getPostalCode(),
+            ],
+        ]));
 
         $services = $this->getResourcesArray($url->getUrl(), $ttl);
 
-        if ($shipment) {
-            $matcher = new ServiceMatcher();
-            $services = array_values(array_filter($services, function (ServiceInterface $service) use ($shipment, $matcher) {
-                return $matcher->matchesDeliveryMethod($shipment, $service);
-            }));
-        }
+        $matcher = new ServiceMatcher();
+        $services = array_values(array_filter($services, function (ServiceInterface $service) use ($shipment, $matcher) {
+            return $matcher->matchesDeliveryMethod($shipment, $service);
+        }));
 
         return new ArrayCollection($services);
     }
