@@ -5,6 +5,7 @@
       "type": "services",
       "attributes": {
         "name": "Letter Test",
+        "code": "letter-test",
         "package_type": "letter",
         "transit_time": {
           "min": 1,
@@ -52,6 +53,7 @@
       "type": "services",
       "attributes": {
         "name": "Letterbox Test",
+        "code": "letterbox-test",
         "package_type": "letterbox",
         "transit_time": {
           "min": 2,
@@ -100,6 +102,7 @@
       "type": "services",
       "attributes": {
         "name": "Parcel Test",
+        "code": "parcel-test",
         "package_type": "parcel",
         "transit_time": {
           "min": 2,

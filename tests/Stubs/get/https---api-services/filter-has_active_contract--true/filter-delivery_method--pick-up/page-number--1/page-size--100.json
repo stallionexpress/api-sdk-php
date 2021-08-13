@@ -5,6 +5,7 @@
       "type": "services",
       "attributes": {
         "name": "Ship To Shop",
+        "code": "ship-to-shop",
         "package_type": "parcel",
         "delivery_days": [
           "Friday",
@@ -55,8 +56,8 @@
     "total_records": 1
   },
   "links": {
-    "self": "https://api/services?filter[carrier]=eef00b32-177e-43d3-9b26-715365e4ce46&filter[delivery_method]=pick-up&filter[has_active_contract]=true&page[size]=30&page[number]=1",
-    "first": "https://api/services?filter[carrier]=eef00b32-177e-43d3-9b26-715365e4ce46&filter[delivery_method]=pick-up&filter[has_active_contract]=true&page[size]=30&page[number]=1",
-    "last": "https://api/services?filter[carrier]=eef00b32-177e-43d3-9b26-715365e4ce46&filter[delivery_method]=pick-up&filter[has_active_contract]=true&page[size]=30&page[number]=1"
+    "self": "https://api/services?filter[delivery_method]=pick-up&filter[has_active_contract]=true&filter[address_to][country_code]=GB&filter[address_to][region_code]=NIR&page[size]=30&page[number]=1",
+    "first": "https://api/services?filter[delivery_method]=pick-up&filter[has_active_contract]=true&filter[address_to][country_code]=GB&filter[address_to][region_code]=NIR&page[size]=30&page[number]=1",
+    "last": "https://api/services?filter[delivery_method]=pick-up&filter[has_active_contract]=true&filter[address_to][country_code]=GB&filter[address_to][region_code]=NIR&page[size]=30&page[number]=1"
   }
 }

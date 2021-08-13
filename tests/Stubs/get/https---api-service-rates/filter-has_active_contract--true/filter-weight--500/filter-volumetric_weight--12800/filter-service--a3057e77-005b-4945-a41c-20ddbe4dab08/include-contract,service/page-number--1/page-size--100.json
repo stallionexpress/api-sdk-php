@@ -130,74 +130,96 @@
           }
         }
       }
-    },
+    }
+  ],
+  "meta": {
+    "total_pages": 1,
+    "total_records": 1
+  },
+  "included": [
     {
-      "id": "897ab6cf-101d-4886-87a8-398aef225cbe",
-      "type": "service-rates",
+      "id": "a33dadb9-de8e-4731-90d2-cf760e3f7cff",
+      "type": "contracts",
       "attributes": {
-        "weight_min": 400,
-        "weight_max": 1000,
-        "length_max": 200,
-        "price": {
-          "amount": 589,
-          "currency": "GBP"
-        }
+        "currency": "GBP",
+        "status": "active",
+        "name": "Contract X",
+        "created_at": 1623395635,
+        "updated_at": 1623395666
       },
       "links": {
-        "self": "https://api/service-rates/897ab6cf-101d-4886-87a8-398aef225cbe"
+        "self": "https://api/contracts/a33dadb9-de8e-4731-90d2-cf760e3f7cff"
       },
       "relationships": {
-        "service_options": {
-          "data": [
-            {
-              "id": "3760473a-f588-445d-9738-d84933efab5f",
-              "type": "service-options",
-              "meta": {
-                "included": false,
-                "price": {
-                  "currency": "GBP",
-                  "amount": 650
-                }
-              }
-            },
-            {
-              "id": "a3119bf8-0e96-476f-afc7-6f403b302bd4",
-              "type": "service-options",
-              "meta": {
-                "included": true,
-                "price": {
-                  "currency": "GBP",
-                  "amount": 90
-                }
-              }
-            }
-          ]
-        },
-        "service": {
+        "carrier": {
           "data": {
-            "id": "a3057e77-005b-4945-a41c-20ddbe4dab08",
-            "type": "services"
+            "id": "eef00b32-177e-43d3-9b26-715365e4ce46",
+            "type": "carriers"
           },
           "links": {
-            "related": "https://api/services/a3057e77-005b-4945-a41c-20ddbe4dab08"
+            "related": "https://api/carriers/eef00b32-177e-43d3-9b26-715365e4ce46"
           }
         },
-        "contract": {
+        "owner": {
           "data": {
-            "id": "2e3bfa85-e5a9-4538-b81a-46b85d244bfb",
-            "type": "contracts"
+            "id": "9056afa7-e88a-4c94-8a98-6cc124382112",
+            "type": "brokers"
           },
           "links": {
-            "related": "https://api/contracts/2e3bfa85-e5a9-4538-b81a-46b85d244bfb"
+            "related": "https://api/brokers/9056afa7-e88a-4c94-8a98-6cc124382112"
+          }
+        }
+      }
+    },
+    {
+      "id": "a3057e77-005b-4945-a41c-20ddbe4dab08",
+      "type": "services",
+      "attributes": {
+        "name": "Letter Test",
+        "code": "letter-test",
+        "package_type": "letter",
+        "transit_time": {
+          "min": 1,
+          "max": 3
+        },
+        "handover_method": "drop-off",
+        "delivery_days": [
+          "Monday",
+          "Wednesday",
+          "Saturday"
+        ],
+        "delivery_method": "delivery",
+        "regions_from": [
+          {
+            "country_code": "GB",
+            "region_code": "NIR"
+          }
+        ],
+        "regions_to": [
+          {
+            "country_code": "GB",
+            "region_code": "NIR"
+          }
+        ],
+        "uses_volumetric_weight": true
+      },
+      "links": {
+        "self": "https://api/services/a3057e77-005b-4945-a41c-20ddbe4dab08",
+        "contracts": "https://api/services/a3057e77-005b-4945-a41c-20ddbe4dab08/contracts"
+      },
+      "relationships": {
+        "carrier": {
+          "links": {
+            "related": "https://api/carriers/eef00b32-177e-43d3-9b26-715365e4ce46"
+          },
+          "data": {
+            "id": "eef00b32-177e-43d3-9b26-715365e4ce46",
+            "type": "carriers"
           }
         }
       }
     }
   ],
-  "meta": {
-    "total_pages": 1,
-    "total_records": 2
-  },
   "links": {
     "self": "https://api/service-rates?filter[service]=a3057e77-005b-4945-a41c-20ddbe4dab08&filter[weight]=500&page[size]=30&page[number]=1",
     "first": "https://api/service-rates?filter[service]=a3057e77-005b-4945-a41c-20ddbe4dab08&filter[weight]=500&page[size]=30&page[number]=1",
