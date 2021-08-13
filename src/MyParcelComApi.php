@@ -165,7 +165,6 @@ class MyParcelComApi implements MyParcelComApiInterface
             }
         }
 
-        // These resources can be stored for a week.
         $regions = $this->getRequestCollection($url->getUrl(), $ttl);
 
         if ($regions->count() > 0 || !isset($filters['region_code'])) {
@@ -183,7 +182,6 @@ class MyParcelComApi implements MyParcelComApiInterface
      */
     public function getCarriers($ttl = self::TTL_10MIN)
     {
-        // These resources can be stored for a week.
         return $this->getRequestCollection($this->apiUri . self::PATH_CARRIERS, $ttl);
     }
 
@@ -226,7 +224,6 @@ class MyParcelComApi implements MyParcelComApiInterface
         foreach ($carriers as $carrier) {
             $carrierUri = str_replace('{carrier_id}', $carrier->getId(), $uri->getUrl());
 
-            // These resources can be stored for a week.
             try {
                 $resources = $this->getResourcesArray($carrierUri, $ttl);
             } catch (RequestException $exception) {
@@ -260,8 +257,6 @@ class MyParcelComApi implements MyParcelComApiInterface
      */
     public function getShops($ttl = self::TTL_10MIN)
     {
-        // These resources can be stored for a week. Or should be removed from
-        // cache when updated
         return $this->getRequestCollection($this->apiUri . self::PATH_SHOPS, $ttl);
     }
 
@@ -316,12 +311,11 @@ class MyParcelComApi implements MyParcelComApiInterface
             ],
         ]));
 
-        // Services can be cached for a week.
         $services = $this->getResourcesArray($url->getUrl(), $ttl);
 
         $matcher = new ServiceMatcher();
         $services = array_values(array_filter($services, function (ServiceInterface $service) use ($shipment, $matcher) {
-            return $matcher->matches($shipment, $service);
+            return $matcher->matchesDeliveryMethod($shipment, $service);
         }));
 
         return new ArrayCollection($services);
