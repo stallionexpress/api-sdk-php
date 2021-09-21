@@ -368,6 +368,11 @@ class MyParcelComApi implements MyParcelComApiInterface
             'volumetric_weight'   => $shipment->getPhysicalProperties()->getVolumetricWeight(),
             'service'             => implode(',', $serviceIds),
         ]));
+        if ($shipment->getShop()) {
+            $url->addQuery($this->arrayToFilters([
+                'organization' => $shipment->getShop()->getOrganization()->getId(),
+            ]));
+        }
         // Include the services to avoid extra http requests when the result is looped with: $serviceRate->getService().
         $url->addQuery(['include' => 'contract,service']);
 
