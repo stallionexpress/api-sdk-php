@@ -13,6 +13,7 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\CustomsInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ErrorInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\OpeningHourInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\OrganizationInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\PhysicalPropertiesInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\PickUpDropOffLocationInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\PositionInterface;
@@ -32,6 +33,7 @@ use MyParcelCom\ApiSdk\Resources\Proxy\CarrierProxy;
 use MyParcelCom\ApiSdk\Resources\Proxy\ContractProxy;
 use MyParcelCom\ApiSdk\Resources\Proxy\FileProxy;
 use MyParcelCom\ApiSdk\Resources\Proxy\FileStreamProxy;
+use MyParcelCom\ApiSdk\Resources\Proxy\OrganizationProxy;
 use MyParcelCom\ApiSdk\Resources\Proxy\RegionProxy;
 use MyParcelCom\ApiSdk\Resources\Proxy\ServiceOptionProxy;
 use MyParcelCom\ApiSdk\Resources\Proxy\ServiceProxy;
@@ -57,6 +59,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
     private $typeFactory = [
         ResourceInterface::TYPE_CARRIER         => Carrier::class,
         ResourceInterface::TYPE_CONTRACT        => Contract::class,
+        ResourceInterface::TYPE_ORGANIZATIONS   => Organization::class,
         ResourceInterface::TYPE_PUDO_LOCATION   => PickUpDropOffLocation::class,
         ResourceInterface::TYPE_REGION          => Region::class,
         ResourceInterface::TYPE_SERVICE_OPTION  => ServiceOption::class,
@@ -71,6 +74,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         CustomsInterface::class               => Customs::class,
         ErrorInterface::class                 => Error::class,
         OpeningHourInterface::class           => OpeningHour::class,
+        OrganizationInterface::class          => Organization::class,
         PhysicalPropertiesInterface::class    => PhysicalProperties::class,
         PositionInterface::class              => Position::class,
         PickUpDropOffLocationInterface::class => PickUpDropOffLocation::class,
@@ -91,6 +95,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         ResourceInterface::TYPE_CARRIER         => CarrierProxy::class,
         ResourceInterface::TYPE_CONTRACT        => ContractProxy::class,
         ResourceInterface::TYPE_FILE            => FileProxy::class,
+        ResourceInterface::TYPE_ORGANIZATIONS   => OrganizationProxy::class,
         ResourceInterface::TYPE_REGION          => RegionProxy::class,
         ResourceInterface::TYPE_SERVICE         => ServiceProxy::class,
         ResourceInterface::TYPE_SERVICE_OPTION  => ServiceOptionProxy::class,

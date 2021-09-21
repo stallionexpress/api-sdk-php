@@ -21,8 +21,10 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentStatusInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\StatusInterface;
+use MyParcelCom\ApiSdk\Resources\Organization;
 use MyParcelCom\ApiSdk\Resources\PhysicalProperties;
 use MyParcelCom\ApiSdk\Resources\Shipment;
+use MyParcelCom\ApiSdk\Resources\Shop;
 use MyParcelCom\ApiSdk\Tests\Traits\MocksApiCommunication;
 use PHPUnit\Framework\TestCase;
 
@@ -581,7 +583,11 @@ class MyParcelComApiTest extends TestCase
             ->setPostalCode('W8 6UX')
             ->setCountryCode('GB');
 
+        $shop = (new Shop())
+            ->setOrganization((new Organization())->setId('org-id'));
+
         $shipment = (new Shipment())
+            ->setShop($shop)
             ->setWeight(500)
             ->setRecipientAddress($recipient);
 
