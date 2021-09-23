@@ -301,14 +301,16 @@ class MyParcelComApi implements MyParcelComApiInterface
         }
 
         $url->addQuery($this->arrayToFilters([
-            'address_from' => [
+            'address_from' => array_filter([
                 'country_code' => $shipment->getSenderAddress()->getCountryCode(),
+                'state_code'   => $shipment->getSenderAddress()->getStateCode(),
                 'postal_code'  => $shipment->getSenderAddress()->getPostalCode(),
-            ],
-            'address_to'   => [
+            ]),
+            'address_to'   => array_filter([
                 'country_code' => $shipment->getRecipientAddress()->getCountryCode(),
+                'state_code'   => $shipment->getRecipientAddress()->getStateCode(),
                 'postal_code'  => $shipment->getRecipientAddress()->getPostalCode(),
-            ],
+            ]),
         ]));
 
         $services = $this->getResourcesArray($url->getUrl(), $ttl);
