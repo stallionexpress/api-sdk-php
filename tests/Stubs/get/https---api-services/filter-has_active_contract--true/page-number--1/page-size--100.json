@@ -20,14 +20,13 @@
         "delivery_method": "delivery",
         "regions_from": [
           {
-            "country_code": "GB",
-            "region_code": "NIR"
+            "country_code": "GB"
           }
         ],
         "regions_to": [
           {
             "country_code": "GB",
-            "region_code": "NIR"
+            "postal_code": "^((GY|JE).*|TR2[1-5]) ?[0-9]{1}[A-Z]{2}$"
           }
         ],
         "uses_volumetric_weight": true
@@ -69,14 +68,13 @@
         "delivery_method": "delivery",
         "regions_from": [
           {
-            "country_code": "GB",
-            "region_code": "NIR"
+            "country_code": "GB"
           }
         ],
         "regions_to": [
           {
             "country_code": "GB",
-            "region_code": "NIR"
+            "postal_code": "^((GY|JE).*|TR2[1-5]) ?[0-9]{1}[A-Z]{2}$"
           }
         ],
         "uses_volumetric_weight": false
@@ -119,14 +117,13 @@
         "delivery_method": "delivery",
         "regions_from": [
           {
-            "country_code": "GB",
-            "region_code": "NIR"
+            "country_code": "GB"
           }
         ],
         "regions_to": [
           {
             "country_code": "GB",
-            "region_code": "NIR"
+            "postal_code": "^((GY|JE).*|TR2[1-5]) ?[0-9]{1}[A-Z]{2}$"
           }
         ],
         "uses_volumetric_weight": true
