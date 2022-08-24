@@ -25,6 +25,7 @@ class ServiceRate implements ServiceRateInterface
     const ATTRIBUTE_LENGTH_MAX = 'length_max';
     const ATTRIBUTE_HEIGHT_MAX = 'height_max';
     const ATTRIBUTE_VOLUME_MAX = 'volume_max';
+    const ATTRIBUTE_IS_DYNAMIC = 'is_dynamic';
 
     const RELATIONSHIP_SERVICE = 'service';
     const RELATIONSHIP_CONTRACT = 'contract';
@@ -56,6 +57,7 @@ class ServiceRate implements ServiceRateInterface
         self::ATTRIBUTE_LENGTH_MAX     => null,
         self::ATTRIBUTE_HEIGHT_MAX     => null,
         self::ATTRIBUTE_VOLUME_MAX     => null,
+        self::ATTRIBUTE_IS_DYNAMIC     => null,
     ];
 
     private $relationships = [
@@ -352,5 +354,17 @@ class ServiceRate implements ServiceRateInterface
     public function getServiceOptions()
     {
         return $this->relationships[self::RELATIONSHIP_SERVICE_OPTIONS]['data'];
+    }
+
+    public function setIsDynamic($isDynamic)
+    {
+        $this->attributes[self::ATTRIBUTE_IS_DYNAMIC] = $isDynamic;
+
+        return $this;
+    }
+
+    public function getIsDynamic()
+    {
+        return $this->attributes[self::ATTRIBUTE_IS_DYNAMIC];
     }
 }

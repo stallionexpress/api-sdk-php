@@ -22,6 +22,7 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\ApiSdk\Resources\ResourceFactory;
 use MyParcelCom\ApiSdk\Resources\Service;
+use MyParcelCom\ApiSdk\Resources\ServiceRate;
 use MyParcelCom\ApiSdk\Shipments\ServiceMatcher;
 use MyParcelCom\ApiSdk\Utils\UrlBuilder;
 use MyParcelCom\ApiSdk\Validators\ShipmentValidator;
@@ -378,14 +379,48 @@ class MyParcelComApi implements MyParcelComApiInterface
         // Include the services to avoid extra http requests when the result is looped with: $serviceRate->getService().
         $url->addQuery(['include' => 'contract,service']);
 
+        /** @var ServiceRate[] $serviceRates */
         $serviceRates = $this->getRequestCollection($url->getUrl(), $ttl);
+
+        $availableServiceRates = [];
+        foreach ($serviceRates as $serviceRate) {
+            if ($serviceRate->getIsDynamic()) {
+                try {
+                    $data = $shipment->jsonSerialize();
+                    $data['relationships']['service'] = [
+                        'data' => [
+                            'type' => ResourceInterface::TYPE_SERVICE,
+                            'id'   => $serviceRate->getService()->getId(),
+                        ],
+                    ];
+                    $data['relationships']['contract'] = [
+                        'data' => [
+                            'type' => ResourceInterface::TYPE_CONTRACT,
+                            'id'   => $serviceRate->getContract()->getId(),
+                        ],
+                    ];
+
+                    $response = $this->doRequest('/get-dynamic-service-rates', 'post', ['data' => $data]);
+                    $json = json_decode((string) $response->getBody(), true);
+
+                    if (isset($json['data']) && count($json['data'])) {
+                        $dynamicRate = $this->resourceFactory->create(ResourceInterface::TYPE_SERVICE_RATE, $json['data'][0]);
+                        $availableServiceRates[] = $dynamicRate;
+                    }
+                } catch (RequestException $exception) {
+                    // If communicating with the carrier does not result in a service rate, this service is unavailable.
+                }
+            } else {
+                $availableServiceRates[] = $serviceRate;
+            }
+        }
 
         $shipmentOptionIds = array_map(function (ServiceOptionInterface $serviceOption) {
             return $serviceOption->getId();
         }, $shipment->getServiceOptions());
 
         $matchingServiceRates = [];
-        foreach ($serviceRates as $serviceRate) {
+        foreach ($availableServiceRates as $serviceRate) {
             $serviceRateOptionIds = array_map(function (ServiceOptionInterface $serviceOption) {
                 return $serviceOption->getId();
             }, $serviceRate->getServiceOptions());
