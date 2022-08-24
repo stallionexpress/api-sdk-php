@@ -305,7 +305,9 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
 
         if (isset($properties['id'])) {
             $serviceRate->setResolveDynamicRateForShipmentCallback(function (ShipmentInterface $shipment, ServiceRateInterface $serviceRate) {
-                return $this->api->resolveDynamicServiceRates($shipment, $serviceRate);
+                $serviceRates = $this->api->resolveDynamicServiceRates($shipment, $serviceRate);
+
+                return is_array($serviceRates) ? $serviceRates[0] : $serviceRate;
             });
         }
 

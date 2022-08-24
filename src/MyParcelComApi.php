@@ -424,6 +424,18 @@ class MyParcelComApi implements MyParcelComApiInterface
     {
         $data = ($shipmentData instanceof ShipmentInterface) ? $shipmentData->jsonSerialize() : $shipmentData;
 
+        if (!isset($data['relationships'])) {
+            $data['relationships'] = [];
+        }
+        if (!isset($data['relationships']['shop'])) {
+            $data['relationships']['shop'] = [
+                'data' => [
+                    'type' => ResourceInterface::TYPE_SHOP,
+                    'id'   => $this->getDefaultShop()->getId(),
+                ],
+            ];
+        }
+
         if ($dynamicServiceRate) {
             $data['relationships']['service'] = [
                 'data' => [
@@ -437,6 +449,13 @@ class MyParcelComApi implements MyParcelComApiInterface
                     'id'   => $dynamicServiceRate->getContract()->getId(),
                 ],
             ];
+        }
+
+        if (!isset($data['relationships']['service'])) {
+            throw new InvalidResourceException('Cannot retrieve dynamic rates without a service');
+        }
+        if (!isset($data['relationships']['contract'])) {
+            throw new InvalidResourceException('Cannot retrieve dynamic rates without a contract');
         }
 
         $response = $this->doRequest('/get-dynamic-service-rates', 'post', ['data' => $data]);
