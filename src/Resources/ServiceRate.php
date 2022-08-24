@@ -7,6 +7,7 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceRateInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 use MyParcelCom\ApiSdk\Resources\Traits\ProcessIncludes;
 
@@ -71,6 +72,9 @@ class ServiceRate implements ServiceRateInterface
             'data' => [],
         ],
     ];
+
+    /** @var callable */
+    private $resolveDynamicRateForShipmentCallback;
 
     /**
      * {@inheritdoc}
@@ -366,5 +370,21 @@ class ServiceRate implements ServiceRateInterface
     public function getIsDynamic()
     {
         return $this->attributes[self::ATTRIBUTE_IS_DYNAMIC];
+    }
+
+    public function resolveDynamicRateForShipment(ShipmentInterface $shipment)
+    {
+        if (isset($this->resolveDynamicRateForShipmentCallback)) {
+            return call_user_func_array($this->resolveDynamicRateForShipmentCallback, [$shipment, $this]);
+        }
+
+        return $this;
+    }
+
+    public function setResolveDynamicRateForShipmentCallback(callable $callback)
+    {
+        $this->resolveDynamicRateForShipmentCallback = $callback;
+
+        return $this;
     }
 }

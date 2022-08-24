@@ -8,6 +8,7 @@ use MyParcelCom\ApiSdk\Exceptions\MyParcelComException;
 use MyParcelCom\ApiSdk\Http\Exceptions\RequestException;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceRateInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -152,8 +153,19 @@ interface MyParcelComApiInterface
     public function getServiceRatesForShipment(ShipmentInterface $shipment, $ttl = self::TTL_10MIN);
 
     /**
-     * Get shipments for a given shop. If no shop is given the default shop is
-     * used.
+     * Retrieve dynamic rates (price / options / availability) from the carrier, based on the provided shipment data.
+     * The shipment should have a service, contract, addresses, weight and sometimes dimensions are required as well.
+     * If you have a ServiceRate which is_dynamic, you can pass it and its service and contract will be used instead.
+     *
+     * @param ShipmentInterface|array   $shipmentData
+     * @param ServiceRateInterface|null $dynamicServiceRate
+     * @return ServiceRateInterface[]
+     * @throws RequestException
+     */
+    public function resolveDynamicServiceRates($shipmentData, $dynamicServiceRate = null);
+
+    /**
+     * Get shipments for a given shop. If no shop is given the default shop is used.
      *
      * @param ShopInterface|null $shop
      * @param int                $ttl Cache time to live (in seconds)

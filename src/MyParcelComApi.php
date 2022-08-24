@@ -386,26 +386,10 @@ class MyParcelComApi implements MyParcelComApiInterface
         foreach ($serviceRates as $serviceRate) {
             if ($serviceRate->getIsDynamic()) {
                 try {
-                    $data = $shipment->jsonSerialize();
-                    $data['relationships']['service'] = [
-                        'data' => [
-                            'type' => ResourceInterface::TYPE_SERVICE,
-                            'id'   => $serviceRate->getService()->getId(),
-                        ],
-                    ];
-                    $data['relationships']['contract'] = [
-                        'data' => [
-                            'type' => ResourceInterface::TYPE_CONTRACT,
-                            'id'   => $serviceRate->getContract()->getId(),
-                        ],
-                    ];
+                    $serviceRates = $this->resolveDynamicServiceRates($shipment, $serviceRate);
 
-                    $response = $this->doRequest('/get-dynamic-service-rates', 'post', ['data' => $data]);
-                    $json = json_decode((string) $response->getBody(), true);
-
-                    if (isset($json['data']) && count($json['data'])) {
-                        $dynamicRate = $this->resourceFactory->create(ResourceInterface::TYPE_SERVICE_RATE, $json['data'][0]);
-                        $availableServiceRates[] = $dynamicRate;
+                    if ($serviceRates) {
+                        $availableServiceRates[] = $serviceRates[0];
                     }
                 } catch (RequestException $exception) {
                     // If communicating with the carrier does not result in a service rate, this service is unavailable.
@@ -431,6 +415,34 @@ class MyParcelComApi implements MyParcelComApiInterface
         }
 
         return new ArrayCollection($matchingServiceRates);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function resolveDynamicServiceRates($shipmentData, $dynamicServiceRate = null)
+    {
+        $data = ($shipmentData instanceof ShipmentInterface) ? $shipmentData->jsonSerialize() : $shipmentData;
+
+        if ($dynamicServiceRate) {
+            $data['relationships']['service'] = [
+                'data' => [
+                    'type' => ResourceInterface::TYPE_SERVICE,
+                    'id'   => $dynamicServiceRate->getService()->getId(),
+                ],
+            ];
+            $data['relationships']['contract'] = [
+                'data' => [
+                    'type' => ResourceInterface::TYPE_CONTRACT,
+                    'id'   => $dynamicServiceRate->getContract()->getId(),
+                ],
+            ];
+        }
+
+        $response = $this->doRequest('/get-dynamic-service-rates', 'post', ['data' => $data]);
+        $json = json_decode((string) $response->getBody(), true);
+
+        return $this->jsonToResources($json['data']);
     }
 
     /**
