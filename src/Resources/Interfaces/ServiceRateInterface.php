@@ -152,4 +152,20 @@ interface ServiceRateInterface extends ResourceInterface
      * @return ServiceOptionInterface[]
      */
     public function getServiceOptions();
+
+    /**
+     * @param bool $isDynamic
+     * @return $this
+     */
+    public function setIsDynamic($isDynamic);
+
+    /**
+     * @return bool
+     */
+    public function isDynamic();
+
+    /**
+     * @return ServiceRateInterface
+     */
+    public function resolveDynamicRateForShipment(ShipmentInterface $shipment);
 }

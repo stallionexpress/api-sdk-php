@@ -7,6 +7,7 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceRateInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 use MyParcelCom\ApiSdk\Resources\Traits\ProcessIncludes;
 
@@ -25,6 +26,7 @@ class ServiceRate implements ServiceRateInterface
     const ATTRIBUTE_LENGTH_MAX = 'length_max';
     const ATTRIBUTE_HEIGHT_MAX = 'height_max';
     const ATTRIBUTE_VOLUME_MAX = 'volume_max';
+    const ATTRIBUTE_IS_DYNAMIC = 'is_dynamic';
 
     const RELATIONSHIP_SERVICE = 'service';
     const RELATIONSHIP_CONTRACT = 'contract';
@@ -56,6 +58,7 @@ class ServiceRate implements ServiceRateInterface
         self::ATTRIBUTE_LENGTH_MAX     => null,
         self::ATTRIBUTE_HEIGHT_MAX     => null,
         self::ATTRIBUTE_VOLUME_MAX     => null,
+        self::ATTRIBUTE_IS_DYNAMIC     => null,
     ];
 
     private $relationships = [
@@ -69,6 +72,9 @@ class ServiceRate implements ServiceRateInterface
             'data' => [],
         ],
     ];
+
+    /** @var callable */
+    private $resolveDynamicRateForShipmentCallback;
 
     /**
      * {@inheritdoc}
@@ -352,5 +358,33 @@ class ServiceRate implements ServiceRateInterface
     public function getServiceOptions()
     {
         return $this->relationships[self::RELATIONSHIP_SERVICE_OPTIONS]['data'];
+    }
+
+    public function setIsDynamic($isDynamic)
+    {
+        $this->attributes[self::ATTRIBUTE_IS_DYNAMIC] = $isDynamic;
+
+        return $this;
+    }
+
+    public function isDynamic()
+    {
+        return $this->attributes[self::ATTRIBUTE_IS_DYNAMIC];
+    }
+
+    public function resolveDynamicRateForShipment(ShipmentInterface $shipment)
+    {
+        if (isset($this->resolveDynamicRateForShipmentCallback)) {
+            return call_user_func_array($this->resolveDynamicRateForShipmentCallback, [$shipment, $this]);
+        }
+
+        return $this;
+    }
+
+    public function setResolveDynamicRateForShipmentCallback(callable $callback)
+    {
+        $this->resolveDynamicRateForShipmentCallback = $callback;
+
+        return $this;
     }
 }
