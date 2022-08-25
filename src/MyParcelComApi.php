@@ -454,13 +454,6 @@ class MyParcelComApi implements MyParcelComApiInterface
             ];
         }
 
-        if (!isset($data['relationships']['service'])) {
-            throw new InvalidResourceException('Cannot retrieve dynamic rates without a service');
-        }
-        if (!isset($data['relationships']['contract'])) {
-            throw new InvalidResourceException('Cannot retrieve dynamic rates without a contract');
-        }
-
         $response = $this->doRequest('/get-dynamic-service-rates', 'post', ['data' => $data]);
         $json = json_decode((string) $response->getBody(), true);
         $included = isset($json['included']) ? $json['included'] : null;
