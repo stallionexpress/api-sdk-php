@@ -22,6 +22,7 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\ApiSdk\Resources\ResourceFactory;
 use MyParcelCom\ApiSdk\Resources\Service;
+use MyParcelCom\ApiSdk\Resources\ServiceRate;
 use MyParcelCom\ApiSdk\Shipments\ServiceMatcher;
 use MyParcelCom\ApiSdk\Utils\UrlBuilder;
 use MyParcelCom\ApiSdk\Validators\ShipmentValidator;
@@ -378,14 +379,35 @@ class MyParcelComApi implements MyParcelComApiInterface
         // Include the services to avoid extra http requests when the result is looped with: $serviceRate->getService().
         $url->addQuery(['include' => 'contract,service']);
 
+        /** @var ServiceRate[] $serviceRates */
         $serviceRates = $this->getRequestCollection($url->getUrl(), $ttl);
+
+        $availableServiceRates = [];
+        foreach ($serviceRates as $serviceRate) {
+            if ($serviceRate->isDynamic()) {
+                try {
+                    $serviceRates = $this->resolveDynamicServiceRates($shipment, $serviceRate);
+
+                    if (!empty($serviceRates)) {
+                        // Hydrate the service and contract resources to prevent additional API calls to retrieve these.
+                        $serviceRates[0]->setService($serviceRate->getService());
+                        $serviceRates[0]->setContract($serviceRate->getContract());
+                        $availableServiceRates[] = $serviceRates[0];
+                    }
+                } catch (RequestException $exception) {
+                    // If communicating with the carrier does not result in a service rate, this service is unavailable.
+                }
+            } else {
+                $availableServiceRates[] = $serviceRate;
+            }
+        }
 
         $shipmentOptionIds = array_map(function (ServiceOptionInterface $serviceOption) {
             return $serviceOption->getId();
         }, $shipment->getServiceOptions());
 
         $matchingServiceRates = [];
-        foreach ($serviceRates as $serviceRate) {
+        foreach ($availableServiceRates as $serviceRate) {
             $serviceRateOptionIds = array_map(function (ServiceOptionInterface $serviceOption) {
                 return $serviceOption->getId();
             }, $serviceRate->getServiceOptions());
@@ -396,6 +418,47 @@ class MyParcelComApi implements MyParcelComApiInterface
         }
 
         return new ArrayCollection($matchingServiceRates);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function resolveDynamicServiceRates($shipmentData, $dynamicServiceRate = null)
+    {
+        $data = ($shipmentData instanceof ShipmentInterface) ? $shipmentData->jsonSerialize() : $shipmentData;
+
+        if (!isset($data['relationships'])) {
+            $data['relationships'] = [];
+        }
+        if (!isset($data['relationships']['shop'])) {
+            $data['relationships']['shop'] = [
+                'data' => [
+                    'type' => ResourceInterface::TYPE_SHOP,
+                    'id'   => $this->getDefaultShop()->getId(),
+                ],
+            ];
+        }
+
+        if ($dynamicServiceRate) {
+            $data['relationships']['service'] = [
+                'data' => [
+                    'type' => ResourceInterface::TYPE_SERVICE,
+                    'id'   => $dynamicServiceRate->getService()->getId(),
+                ],
+            ];
+            $data['relationships']['contract'] = [
+                'data' => [
+                    'type' => ResourceInterface::TYPE_CONTRACT,
+                    'id'   => $dynamicServiceRate->getContract()->getId(),
+                ],
+            ];
+        }
+
+        $response = $this->doRequest('/get-dynamic-service-rates', 'post', ['data' => $data]);
+        $json = json_decode((string) $response->getBody(), true);
+        $included = isset($json['included']) ? $json['included'] : null;
+
+        return $this->jsonToResources($json['data'], $included);
     }
 
     /**

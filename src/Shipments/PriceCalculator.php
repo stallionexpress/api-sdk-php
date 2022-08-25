@@ -23,6 +23,10 @@ class PriceCalculator
             $serviceRate = $this->determineServiceRateForShipment($shipment);
         }
 
+        if ($serviceRate->isDynamic()) {
+            $serviceRate = $serviceRate->resolveDynamicRateForShipment($shipment);
+        }
+
         if ($shipment->getPhysicalProperties() === null
             || $shipment->getPhysicalProperties()->getWeight() === null
             || $shipment->getPhysicalProperties()->getWeight() < $serviceRate->getWeightMin()

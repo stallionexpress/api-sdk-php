@@ -163,6 +163,7 @@ class MyParcelComApiTest extends TestCase
             ->setCountryCode('GB');
 
         $shipment->setRecipientAddress($patchRecipient);
+        $shipment->setDescription('new patched description');
 
         // Save an existing shipment should patch it
         $shipment = $this->api->saveShipment($shipment);
@@ -170,14 +171,14 @@ class MyParcelComApiTest extends TestCase
         $this->assertEquals(
             $patchRecipient,
             $shipment->getRecipientAddress(),
-            'patch did not replace the recipient address'
+            'patch replaced the recipient address'
         );
-
         $this->assertEquals(
             $initialAddress,
             $shipment->getReturnAddress(),
             'patch should not have replaced the return address'
         );
+        $this->assertEquals('new patched description', $shipment->getDescription());
     }
 
     /** @test */
@@ -584,6 +585,7 @@ class MyParcelComApiTest extends TestCase
             ->setCountryCode('GB');
 
         $shop = (new Shop())
+            ->setId('shop-id')
             ->setOrganization((new Organization())->setId('org-id'));
 
         $shipment = (new Shipment())
@@ -600,6 +602,39 @@ class MyParcelComApiTest extends TestCase
             $this->assertEquals('Letter Test', $serviceRate->getService()->getName(), 'Included service name');
             $this->assertEquals('letter-test', $serviceRate->getService()->getCode(), 'Included service code');
             $this->assertTrue(in_array($serviceRate->getContract()->getName(), ['Contract X', 'Contract Y']), 'Included contract name');
+        }
+    }
+
+    /** @test */
+    public function testItRetrievesDynamicServiceRatesForShipment()
+    {
+        $recipient = (new Address())
+            ->setFirstName('Steven')
+            ->setLastName('Frayne')
+            ->setCity('Vancouver')
+            ->setStreet1('1st Street')
+            ->setPostalCode('W8 6UX')
+            ->setCountryCode('CA');
+
+        $shop = (new Shop())
+            ->setId('shop-id')
+            ->setOrganization((new Organization())->setId('org-id'));
+
+        $shipment = (new Shipment())
+            ->setShop($shop)
+            ->setWeight(500)
+            ->setRecipientAddress($recipient);
+
+        $serviceRates = $this->api->getServiceRatesForShipment($shipment);
+        $this->assertInstanceOf(CollectionInterface::class, $serviceRates);
+        foreach ($serviceRates as $serviceRate) {
+            $this->assertInstanceOf(ServiceRateInterface::class, $serviceRate);
+            $this->assertEquals(0, $serviceRate->getWeightMin());
+            $this->assertEquals(10000, $serviceRate->getWeightMax());
+            $this->assertEquals('Dynamic Test', $serviceRate->getService()->getName(), 'Included service name');
+            $this->assertEquals('dynamic-test', $serviceRate->getService()->getCode(), 'Included service code');
+            $this->assertEquals('Contract Z', $serviceRate->getContract()->getName(), 'Included contract name');
+            $this->assertEquals(321, $serviceRate->getPrice());
         }
     }
 
