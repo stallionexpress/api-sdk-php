@@ -76,7 +76,7 @@ class ServiceRateTest extends TestCase
             'currency'       => ['setCurrency', 'GBP', 'getCurrency'],
             'price'          => ['setPrice', 500, 'getPrice'],
             'fuel_surcharge' => ['setFuelSurchargeAmount', 19, 'getFuelSurchargeAmount'],
-            'is_dynamic'     => ['setIsDynamic', true, 'getIsDynamic'],
+            'is_dynamic'     => ['setIsDynamic', true, 'isDynamic'],
         ];
     }
 

@@ -56,7 +56,7 @@ trait MocksContract
             ->method('getWeightMax')
             ->willReturn($weightMax);
         $mock
-            ->method('getIsDynamic')
+            ->method('isDynamic')
             ->willReturn($isDynamic);
         $mock
             ->method('resolveDynamicRateForShipment')

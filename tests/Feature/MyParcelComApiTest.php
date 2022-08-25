@@ -163,6 +163,7 @@ class MyParcelComApiTest extends TestCase
             ->setCountryCode('GB');
 
         $shipment->setRecipientAddress($patchRecipient);
+        $shipment->setDescription('new patched description');
 
         // Save an existing shipment should patch it
         $shipment = $this->api->saveShipment($shipment);
@@ -170,14 +171,14 @@ class MyParcelComApiTest extends TestCase
         $this->assertEquals(
             $patchRecipient,
             $shipment->getRecipientAddress(),
-            'patch did not replace the recipient address'
+            'patch replaced the recipient address'
         );
-
         $this->assertEquals(
             $initialAddress,
             $shipment->getReturnAddress(),
             'patch should not have replaced the return address'
         );
+        $this->assertEquals('new patched description', $shipment->getDescription());
     }
 
     /** @test */
