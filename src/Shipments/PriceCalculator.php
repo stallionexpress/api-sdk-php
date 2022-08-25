@@ -23,7 +23,7 @@ class PriceCalculator
             $serviceRate = $this->determineServiceRateForShipment($shipment);
         }
 
-        if ($serviceRate->getIsDynamic()) {
+        if ($serviceRate->isDynamic()) {
             $serviceRate = $serviceRate->resolveDynamicRateForShipment($shipment);
         }
 

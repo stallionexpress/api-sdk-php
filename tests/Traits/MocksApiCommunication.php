@@ -86,12 +86,15 @@ trait MocksApiCommunication
                     // Any post will have the data from the stub added to the
                     // original request. This simulates the api creating the
                     // resource and returning it with added attributes.
-                    $returnJson = json_encode(
-                        array_merge_recursive(
-                            json_decode($returnJson, true),
-                            $jsonBody
-                        )
-                    );
+                    $isSimilarResource = isset($jsonBody['data']['type']) && strpos($returnJson, $jsonBody['data']['type']) !== false;
+                    if ($isSimilarResource) {
+                        $returnJson = json_encode(
+                            array_merge_recursive(
+                                json_decode($returnJson, true),
+                                $jsonBody
+                            )
+                        );
+                    }
                 }
 
                 if ($method === 'patch') {
@@ -104,12 +107,15 @@ trait MocksApiCommunication
                     // Any patch will have the data from the stub merged with the
                     // original request data. This simulates the api updating the
                     // resource and returning it with merged attributes.
-                    $returnJson = json_encode(
-                        array_replace_recursive(
-                            json_decode($returnJson, true),
-                            $jsonBody
-                        )
-                    );
+                    $isSimilarResource = isset($jsonBody['data']['type']) && strpos($returnJson, $jsonBody['data']['type']) !== false;
+                    if ($isSimilarResource) {
+                        $returnJson = json_encode(
+                            array_replace_recursive(
+                                json_decode($returnJson, true),
+                                $jsonBody
+                            )
+                        );
+                    }
                 }
 
                 if (strpos($returnJson, '"errors": [') !== false && strpos($returnJson, '"data": ') === false) {

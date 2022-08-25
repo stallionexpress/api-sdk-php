@@ -367,7 +367,7 @@ class ServiceRate implements ServiceRateInterface
         return $this;
     }
 
-    public function getIsDynamic()
+    public function isDynamic()
     {
         return $this->attributes[self::ATTRIBUTE_IS_DYNAMIC];
     }

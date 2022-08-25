@@ -384,11 +384,14 @@ class MyParcelComApi implements MyParcelComApiInterface
 
         $availableServiceRates = [];
         foreach ($serviceRates as $serviceRate) {
-            if ($serviceRate->getIsDynamic()) {
+            if ($serviceRate->isDynamic()) {
                 try {
                     $serviceRates = $this->resolveDynamicServiceRates($shipment, $serviceRate);
 
-                    if ($serviceRates) {
+                    if (!empty($serviceRates)) {
+                        // Hydrate the service and contract resources to prevent additional API calls to retrieve these.
+                        $serviceRates[0]->setService($serviceRate->getService());
+                        $serviceRates[0]->setContract($serviceRate->getContract());
                         $availableServiceRates[] = $serviceRates[0];
                     }
                 } catch (RequestException $exception) {
@@ -460,8 +463,9 @@ class MyParcelComApi implements MyParcelComApiInterface
 
         $response = $this->doRequest('/get-dynamic-service-rates', 'post', ['data' => $data]);
         $json = json_decode((string) $response->getBody(), true);
+        $included = isset($json['included']) ? $json['included'] : null;
 
-        return $this->jsonToResources($json['data']);
+        return $this->jsonToResources($json['data'], $included);
     }
 
     /**

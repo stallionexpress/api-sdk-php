@@ -157,6 +157,7 @@ class ServiceRateTest extends TestCase
             ->setFuelSurchargeCurrency('GBP')
             ->setService($serviceMock)
             ->setContract($contractMock)
+            ->setIsDynamic(false)
             ->setServiceOptions([
                 $serviceOptionMockA,
                 $serviceOptionMockB,
@@ -181,6 +182,7 @@ class ServiceRateTest extends TestCase
                 'width_max'      => 987,
                 'height_max'     => 654,
                 'volume_max'     => 321,
+                'is_dynamic'     => false,
             ],
             'relationships' => [
                 'service'         => [
