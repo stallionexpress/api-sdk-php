@@ -30,7 +30,6 @@ use MyParcelCom\ApiSdk\Tests\Traits\MocksApiCommunication;
 use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockObject;
 use Psr\Http\Message\RequestInterface;
-use function var_dump;
 
 class MyParcelComApiTest extends TestCase
 {
