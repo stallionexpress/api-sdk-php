@@ -40,7 +40,6 @@ trait MocksApiCommunication
             ->willReturnCallback(function (RequestInterface $request) {
                 $method = strtolower($request->getMethod());
                 $uri = urldecode((string) $request->getUri());
-                $jsonBody = $request->getBody()->getContents();
 
                 $filePath = implode(DIRECTORY_SEPARATOR, [
                         dirname(dirname(__FILE__)),
