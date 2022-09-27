@@ -8,6 +8,7 @@ use MyParcelCom\ApiSdk\Collection\CollectionInterface;
 use MyParcelCom\ApiSdk\Exceptions\InvalidResourceException;
 use MyParcelCom\ApiSdk\Http\Exceptions\RequestException;
 use MyParcelCom\ApiSdk\MyParcelComApi;
+use MyParcelCom\ApiSdk\MyParcelComApiInterface;
 use MyParcelCom\ApiSdk\Resources\Address;
 use MyParcelCom\ApiSdk\Resources\Carrier;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
@@ -27,6 +28,8 @@ use MyParcelCom\ApiSdk\Resources\Shipment;
 use MyParcelCom\ApiSdk\Resources\Shop;
 use MyParcelCom\ApiSdk\Tests\Traits\MocksApiCommunication;
 use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject;
+use Psr\Http\Message\RequestInterface;
 
 class MyParcelComApiTest extends TestCase
 {
@@ -36,7 +39,7 @@ class MyParcelComApiTest extends TestCase
     private $authenticator;
     /** @var MyParcelComApi */
     private $api;
-    /** @var HttpClient */
+    /** @var HttpClient|PHPUnit_Framework_MockObject_MockObject */
     private $client;
 
     public function setUp()
@@ -110,6 +113,54 @@ class MyParcelComApiTest extends TestCase
             $shipment->getRecipientAddress(),
             'The shipment\'s recipient address should not have changed'
         );
+    }
+
+    /** @test */
+    public function testCreateIdempotentShipment()
+    {
+        $idempotencyKey = 'a-shipment-identifier';
+
+        $this->client
+            ->method('sendRequest')
+            ->willReturnCallback(function (RequestInterface $request) use ($idempotencyKey) {
+                $requestIdempotencyKey = $request->getHeader(MyParcelComApiInterface::HEADER_IDEMPOTENCY_KEY)[0];
+                $this->assertEquals($idempotencyKey, $requestIdempotencyKey);
+            });
+
+        $recipient = (new Address())
+            ->setFirstName('Bobby')
+            ->setLastName('Tables')
+            ->setCity('Birmingham')
+            ->setStreet1('Newbourne Hill')
+            ->setStreetNumber(12)
+            ->setPostalCode('B48 7QN')
+            ->setCountryCode('GB');
+
+        $shopMock = $this
+            ->getMockBuilder(Shop::class)
+            ->getMock();
+
+        $senderAddress = (new Address())
+            ->setFirstName('Bobby')
+            ->setLastName('Tables')
+            ->setCity('Birmingham')
+            ->setStreet1('Newbourne Hill')
+            ->setStreetNumber(12)
+            ->setPostalCode('B48 7QN')
+            ->setCountryCode('GB');
+
+        $shopMock
+            ->method('getSenderAddress')
+            ->willReturn($senderAddress);
+
+
+        // Minimum required data should be recipient address and weight. All other data should be filled with defaults.
+        $shipment = (new Shipment())
+            ->setWeight(500)
+            ->setShop($shopMock)
+            ->setRecipientAddress($recipient);
+
+        $this->api->createShipment($shipment, $idempotencyKey);
     }
 
     /** @test */

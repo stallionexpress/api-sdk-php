@@ -25,6 +25,8 @@ interface MyParcelComApiInterface
     const PATH_SHIPMENT_STATUSES = '/shipments/{shipment_id}/statuses';
     const PATH_SHOPS = '/shops';
 
+    const HEADER_IDEMPOTENCY_KEY = 'Idempotency-Key';
+
     const TTL_NO_CACHE = 0;
     const TTL_10MIN = 600;
     const TTL_WEEK = 604800;
@@ -212,10 +214,12 @@ interface MyParcelComApiInterface
      * used. When no default value is available, an exception should be thrown.
      *
      * @param ShipmentInterface $shipment
+     * @param string|null $idempotencyKey Use idempotency feature
+     *                                    (see https://docs.myparcel.com/api/create-a-shipment/idempotency.html)
      * @return ShipmentInterface
      * @throws MyParcelComException
      */
-    public function createShipment(ShipmentInterface $shipment);
+    public function createShipment(ShipmentInterface $shipment, $idempotencyKey = null);
 
     /**
      * Get the resource of given type with given id.
