@@ -34,6 +34,7 @@ use Symfony\Component\Cache\Psr16Cache;
 use Symfony\Component\Cache\Simple\FilesystemCache;
 use function GuzzleHttp\Psr7\parse_response;
 use function GuzzleHttp\Psr7\str;
+use function var_dump;
 
 class MyParcelComApi implements MyParcelComApiInterface
 {
@@ -500,7 +501,7 @@ class MyParcelComApi implements MyParcelComApiInterface
     /**
      * {@inheritdoc}
      */
-    public function createShipment(ShipmentInterface $shipment)
+    public function createShipment(ShipmentInterface $shipment, $idempotencyKey = null)
     {
         if ($shipment->getPhysicalProperties() === null || $shipment->getPhysicalProperties()->getWeight() === null) {
             throw new InvalidResourceException(
@@ -541,7 +542,13 @@ class MyParcelComApi implements MyParcelComApiInterface
             throw $exception;
         }
 
-        return $this->postResource($shipment, $shipment->getMeta());
+        $headers = [];
+
+        if ($idempotencyKey) {
+            $headers[self::HEADER_IDEMPOTENCY_KEY] = $idempotencyKey;
+        }
+
+        return $this->postResource($shipment, $shipment->getMeta(), $headers);
     }
 
     /**
@@ -845,12 +852,13 @@ class MyParcelComApi implements MyParcelComApiInterface
      *
      * @param ResourceInterface $resource
      * @param array             $meta
+     * @param array             $headers
      * @return ResourceInterface|null
      * @throws RequestException
      */
-    protected function patchResource(ResourceInterface $resource, $meta = [])
+    protected function patchResource(ResourceInterface $resource, $meta = [], array $headers = [])
     {
-        return $this->sendResource($resource, 'patch', $meta);
+        return $this->sendResource($resource, 'patch', $meta, $headers);
     }
 
     /**
@@ -858,12 +866,13 @@ class MyParcelComApi implements MyParcelComApiInterface
      *
      * @param ResourceInterface $resource
      * @param array             $meta
+     * @param array             $headers
      * @return ResourceInterface|null
      * @throws RequestException
      */
-    protected function postResource(ResourceInterface $resource, $meta = [])
+    protected function postResource(ResourceInterface $resource, $meta = [], array $headers = [])
     {
-        return $this->sendResource($resource, 'post', $meta);
+        return $this->sendResource($resource, 'post', $meta, $headers);
     }
 
     /**
@@ -872,10 +881,11 @@ class MyParcelComApi implements MyParcelComApiInterface
      * @param ResourceInterface $resource
      * @param string            $method
      * @param array             $meta
+     * @param array             $headers
      * @return ResourceInterface|null
      * @throws RequestException
      */
-    protected function sendResource(ResourceInterface $resource, $method = 'post', $meta = [])
+    protected function sendResource(ResourceInterface $resource, $method = 'post', $meta = [], array $headers = [])
     {
         $response = $this->doRequest(
             $this->getResourceUri($resource->getType(), $resource->getId()),
@@ -886,7 +896,7 @@ class MyParcelComApi implements MyParcelComApiInterface
             ]),
             $this->authenticator->getAuthorizationHeader() + [
                 AuthenticatorInterface::HEADER_ACCEPT => AuthenticatorInterface::MIME_TYPE_JSONAPI,
-            ]
+            ] + $headers
         );
 
         $json = json_decode($response->getBody(), true);
