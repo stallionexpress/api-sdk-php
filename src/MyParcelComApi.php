@@ -34,7 +34,6 @@ use Symfony\Component\Cache\Psr16Cache;
 use Symfony\Component\Cache\Simple\FilesystemCache;
 use function GuzzleHttp\Psr7\parse_response;
 use function GuzzleHttp\Psr7\str;
-use function var_dump;
 
 class MyParcelComApi implements MyParcelComApiInterface
 {
