@@ -497,17 +497,8 @@ class MyParcelComApi implements MyParcelComApiInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function createShipment(ShipmentInterface $shipment, $idempotencyKey = null)
+    protected function populateShipmentWithDefaultsFromShop(ShipmentInterface $shipment)
     {
-        if ($shipment->getPhysicalProperties() === null || $shipment->getPhysicalProperties()->getWeight() === null) {
-            throw new InvalidResourceException(
-                'Cannot create shipment without weight'
-            );
-        }
-
         // If no shop is set, use the default shop.
         if ($shipment->getShop() === null) {
             $shipment->setShop($this->getDefaultShop());
@@ -529,17 +520,29 @@ class MyParcelComApi implements MyParcelComApiInterface
                     ?: $shipment->getSenderAddress()
             );
         }
+    }
 
+    protected function validateShipment(ShipmentInterface $shipment)
+    {
         $validator = new ShipmentValidator($shipment);
 
         if (!$validator->isValid()) {
             $exception = new InvalidResourceException(
-                'Could not create shipment. ' . implode('. ', $validator->getErrors()) . '.'
+                'This shipment contains invalid data. ' . implode('. ', $validator->getErrors()) . '.'
             );
             $exception->setErrors($validator->getErrors());
 
             throw $exception;
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createShipment(ShipmentInterface $shipment, $idempotencyKey = null)
+    {
+        $this->populateShipmentWithDefaultsFromShop($shipment);
+        $this->validateShipment($shipment);
 
         $headers = [];
 
@@ -555,21 +558,13 @@ class MyParcelComApi implements MyParcelComApiInterface
      */
     public function updateShipment(ShipmentInterface $shipment)
     {
-        $validator = new ShipmentValidator($shipment);
-
         if (!$shipment->getId()) {
             throw new InvalidResourceException(
                 'Could not update shipment. This shipment does not have an id, use createShipment() to save it.'
             );
         }
-        if (!$validator->isValid()) {
-            $exception = new InvalidResourceException(
-                'Could not update shipment. ' . implode('. ', $validator->getErrors()) . '.'
-            );
-            $exception->setErrors($validator->getErrors());
 
-            throw $exception;
-        }
+        $this->validateShipment($shipment);
 
         return $this->patchResource($shipment, $shipment->getMeta());
     }
