@@ -13,6 +13,7 @@ use MyParcelCom\ApiSdk\Exceptions\InvalidResourceException;
 use MyParcelCom\ApiSdk\Http\Contracts\HttpClient\RequestExceptionInterface;
 use MyParcelCom\ApiSdk\Http\Exceptions\RequestException;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceFactoryInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
@@ -23,6 +24,7 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\ApiSdk\Resources\ResourceFactory;
 use MyParcelCom\ApiSdk\Resources\Service;
 use MyParcelCom\ApiSdk\Resources\ServiceRate;
+use MyParcelCom\ApiSdk\Resources\Shipment;
 use MyParcelCom\ApiSdk\Shipments\ServiceMatcher;
 use MyParcelCom\ApiSdk\Utils\UrlBuilder;
 use MyParcelCom\ApiSdk\Validators\ShipmentValidator;
@@ -522,7 +524,7 @@ class MyParcelComApi implements MyParcelComApiInterface
         }
     }
 
-    protected function validateShipment(ShipmentInterface $shipment)
+    public function validateShipment(ShipmentInterface $shipment)
     {
         $validator = new ShipmentValidator($shipment);
 
@@ -567,6 +569,64 @@ class MyParcelComApi implements MyParcelComApiInterface
         $this->validateShipment($shipment);
 
         return $this->patchResource($shipment, $shipment->getMeta());
+    }
+
+    /**
+     * This function is similar to createShipment() but will immediately communicate the shipment to the carrier.
+     * The carrier response is processed before your request is completed, so files and base64 data will be available.
+     *
+     * This removes the need to `poll` for files, but has some side effects (exceptions instead of registration-failed).
+     * @see https://docs.myparcel.com/api/create-a-shipment.html#registering-your-shipment-with-the-carrier
+     */
+    public function createAndRegisterShipment(ShipmentInterface $shipment, $idempotencyKey = null)
+    {
+        $this->populateShipmentWithDefaultsFromShop($shipment);
+        $this->validateShipment($shipment);
+
+        $headers = [];
+
+        if ($idempotencyKey) {
+            $headers[self::HEADER_IDEMPOTENCY_KEY] = $idempotencyKey;
+        }
+
+        $response = $this->doRequest(
+            $this->apiUri . '/registered-shipments?' . http_build_query(['include' => 'files']),
+            'post',
+            [
+                'data' => $shipment,
+                'meta' => $shipment->getMeta(),
+            ],
+            $this->authenticator->getAuthorizationHeader() + [
+                AuthenticatorInterface::HEADER_ACCEPT => AuthenticatorInterface::MIME_TYPE_JSONAPI,
+            ] + $headers
+        );
+
+        $json = json_decode($response->getBody(), true);
+
+        /** @var Shipment $registeredShipment */
+        $registeredShipment = $this->resourceFactory->create('shipments', $json['data']);
+        $included = isset($json['included']) ? $json['included'] : [];
+        $metaFiles = isset($json['meta']['files']) ? $json['meta']['files'] : [];
+
+        if (!empty($included)) {
+            $includedResources = $this->jsonToResources($included);
+            $registeredShipment->processIncludedResources($includedResources);
+
+            foreach ($registeredShipment->getFiles() as $file) {
+                $format = $file->getFormats()[0];
+
+                foreach ($metaFiles as $metaFile) {
+                    if ($metaFile['document_type'] === $file->getDocumentType()
+                        && $metaFile['mime_type'] === $format[FileInterface::FORMAT_MIME_TYPE]
+                        && $metaFile['extension'] === $format[FileInterface::FORMAT_EXTENSION]
+                    ) {
+                        $file->setBase64Data($metaFile['contents'], $metaFile['mime_type']);
+                    }
+                }
+            }
+        }
+
+        return $registeredShipment;
     }
 
     /**
