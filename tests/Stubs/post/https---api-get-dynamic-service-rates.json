@@ -13,7 +13,7 @@
         "is_dynamic": false
       },
       "links": {
-        "self": "https://localhost:9443/service-rates/dee71cb4-1a21-48eb-adde-ebca98bd24fe"
+        "self": "https://api/service-rates/dee71cb4-1a21-48eb-adde-ebca98bd24fe"
       },
       "relationships": {
         "service": {
@@ -42,8 +42,8 @@
     "total_records": 1
   },
   "links": {
-    "self": "https://localhost:9443/get-dynamic-service-rates?page[size]=100&page[number]=1",
-    "first": "https://localhost:9443/get-dynamic-service-rates?page[size]=100&page[number]=1",
-    "last": "https://localhost:9443/get-dynamic-service-rates?page[size]=100&page[number]=1"
+    "self": "https://api/get-dynamic-service-rates?page[size]=100&page[number]=1",
+    "first": "https://api/get-dynamic-service-rates?page[size]=100&page[number]=1",
+    "last": "https://api/get-dynamic-service-rates?page[size]=100&page[number]=1"
   }
 }

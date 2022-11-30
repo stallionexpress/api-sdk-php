@@ -156,11 +156,36 @@ class MyParcelComApiTest extends TestCase
 
         // Minimum required data should be recipient address and weight. All other data should be filled with defaults.
         $shipment = (new Shipment())
-            ->setWeight(500)
+            ->setPhysicalProperties((new PhysicalProperties())->setWeight(500))
             ->setShop($shopMock)
             ->setRecipientAddress($recipient);
 
         $this->api->createShipment($shipment, $idempotencyKey);
+    }
+
+    /** @test */
+    public function testCreateRegisteredShipment()
+    {
+        $recipient = (new Address())
+            ->setFirstName('Sherlock')
+            ->setLastName('Holmes')
+            ->setCity('London')
+            ->setStreet1('Baker Street')
+            ->setStreetNumber(221)
+            ->setPostalCode('NW1 6XE')
+            ->setCountryCode('GB');
+
+        $shipment = (new Shipment())
+            ->setPhysicalProperties((new PhysicalProperties())->setWeight(500))
+            ->setRecipientAddress($recipient)
+            ->setServiceCode('myparcelcom-unstamped');
+
+        $shipment = $this->api->createAndRegisterShipment($shipment);
+
+        $this->assertNotNull($shipment->getService());
+        $this->assertNotNull($shipment->getContract());
+        $this->assertCount(1, $shipment->getFiles());
+        $this->assertNotNull($shipment->getFiles()[0]->getBase64Data());
     }
 
     /** @test */
