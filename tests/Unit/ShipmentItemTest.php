@@ -124,6 +124,7 @@ class ShipmentItemTest extends TestCase
                     'currency' => 'GBP',
                 ],
                 'item_weight'         => 128,
+                'item_weight_unit'    => 'g',
                 'vat_percentage'      => 20,
                 'origin_country_code' => 'GB',
             ],
