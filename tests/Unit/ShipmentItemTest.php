@@ -67,6 +67,14 @@ class ShipmentItemTest extends TestCase
     }
 
     /** @test */
+    public function testPreferentialOrigin()
+    {
+        $item = new ShipmentItem();
+        $this->assertEquals(false, $item->getIsPreferentialOrigin());
+        $this->assertEquals(true, $item->setIsPreferentialOrigin(true)->getIsPreferentialOrigin());
+    }
+
+    /** @test */
     public function testItemWeight()
     {
         $item = new ShipmentItem();
@@ -167,22 +175,24 @@ class ShipmentItemTest extends TestCase
             ->setItemWeight(128)
             ->setCurrency('GBP')
             ->setVatPercentage(20)
-            ->setOriginCountryCode('GB');
+            ->setOriginCountryCode('GB')
+            ->setIsPreferentialOrigin(true);
         $this->assertEquals(
             [
-                'sku'                 => 'CM01-W',
-                'description'         => 'Tea cup',
-                'image_url'           => '//tea.cup',
-                'hs_code'             => '8321.21.28',
-                'quantity'            => 12,
-                'item_value'          => [
+                'sku'                    => 'CM01-W',
+                'description'            => 'Tea cup',
+                'image_url'              => '//tea.cup',
+                'hs_code'                => '8321.21.28',
+                'quantity'               => 12,
+                'item_value'             => [
                     'amount'   => 349,
                     'currency' => 'GBP',
                 ],
-                'item_weight'         => 128,
-                'item_weight_unit'    => 'g',
-                'vat_percentage'      => 20,
-                'origin_country_code' => 'GB',
+                'item_weight'            => 128,
+                'item_weight_unit'       => 'g',
+                'vat_percentage'         => 20,
+                'origin_country_code'    => 'GB',
+                'is_preferential_origin' => true,
             ],
             $item->jsonSerialize()
         );
