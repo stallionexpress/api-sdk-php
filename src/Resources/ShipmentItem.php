@@ -49,6 +49,9 @@ class ShipmentItem implements ShipmentItemInterface
     /** @var string */
     private $itemWeightUnit = WeightUnitEnum::GRAM;
 
+    /** @var bool */
+    private $isPreferentialOrigin = false;
+
     /**
      * @param string|null $sku
      * @return $this
@@ -343,5 +346,24 @@ class ShipmentItem implements ShipmentItemInterface
     public function getItemWeightUnit()
     {
         return $this->itemWeightUnit;
+    }
+
+    /**
+     * @param bool $isPreferentialOrigin
+     * @return $this
+     */
+    public function setIsPreferentialOrigin($isPreferentialOrigin)
+    {
+        $this->isPreferentialOrigin = $isPreferentialOrigin;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsPreferentialOrigin()
+    {
+        return $this->isPreferentialOrigin;
     }
 }

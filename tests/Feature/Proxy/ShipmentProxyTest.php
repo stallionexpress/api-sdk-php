@@ -216,6 +216,7 @@ class ShipmentProxyTest extends TestCase
         $this->assertEquals(2, $items[0]->getQuantity());
         $this->assertEquals('8517.12.00', $items[0]->getHsCode());
         $this->assertEquals('GB', $items[0]->getOriginCountryCode());
+        $this->assertEquals(false, $items[0]->getIsPreferentialOrigin());
 
         $this->assertEquals('213425', $items[1]->getSku());
         $this->assertEquals('OnePlus One', $items[1]->getDescription());
@@ -225,6 +226,7 @@ class ShipmentProxyTest extends TestCase
         $this->assertEquals(3, $items[1]->getQuantity());
         $this->assertEquals('8517.12.00', $items[1]->getHsCode());
         $this->assertEquals('GB', $items[1]->getOriginCountryCode());
+        $this->assertEquals(true, $items[1]->getIsPreferentialOrigin());
 
         $this->assertEquals('6876', $items[2]->getSku());
         $this->assertEquals('OnePlus Two', $items[2]->getDescription());
@@ -234,6 +236,7 @@ class ShipmentProxyTest extends TestCase
         $this->assertEquals(1, $items[2]->getQuantity());
         $this->assertEquals('8517.12.00', $items[2]->getHsCode());
         $this->assertEquals('GB', $items[2]->getOriginCountryCode());
+        $this->assertEquals(false, $items[2]->getIsPreferentialOrigin());
     }
 
     /** @test */
