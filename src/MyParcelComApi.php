@@ -387,6 +387,7 @@ class MyParcelComApi implements MyParcelComApiInterface
         $availableServiceRates = [];
         foreach ($serviceRates as $serviceRate) {
             if ($serviceRate->isDynamic()) {
+                // Resolve the price and currency for service-rates with a dynamic price.
                 try {
                     $serviceRates = $this->resolveDynamicServiceRates($shipment, $serviceRate);
 
@@ -399,6 +400,11 @@ class MyParcelComApi implements MyParcelComApiInterface
                 } catch (RequestException $exception) {
                     // If communicating with the carrier does not result in a service rate, this service is unavailable.
                 }
+            } elseif ($serviceRate->getBracketPrice()) {
+                // Resolve the price and currency for service-rates with a bracket price (calculated by the API).
+                $serviceRate->setPrice($serviceRate->getBracketPrice());
+                $serviceRate->setCurrency($serviceRate->getBracketCurrency());
+                $availableServiceRates[] = $serviceRate;
             } else {
                 $availableServiceRates[] = $serviceRate;
             }

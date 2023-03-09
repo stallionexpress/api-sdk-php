@@ -36,6 +36,18 @@ class PriceCalculator
             );
         }
 
+        if ($serviceRate->getPrice() === null && !empty($serviceRate->getWeightBracket())) {
+            $bracketPrice = $serviceRate->getBracketPrice()
+                ? $serviceRate->getBracketPrice()
+                : $serviceRate->calculateBracketPrice($shipment->getPhysicalProperties()->getWeight());
+            $bracketCurrency = $serviceRate->getBracketCurrency()
+                ? $serviceRate->getBracketCurrency()
+                : $serviceRate->getContract()->getCurrency();
+
+            $serviceRate->setPrice($bracketPrice);
+            $serviceRate->setCurrency($bracketCurrency);
+        }
+
         $serviceRatePrice = $serviceRate->getPrice();
         $fuelSurchargePrice = $serviceRate->getFuelSurchargeAmount() ?: 0;
         $serviceOptionPrice = $this->calculateOptionsPrice($shipment, $serviceRate);
