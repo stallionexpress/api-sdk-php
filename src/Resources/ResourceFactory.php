@@ -303,6 +303,13 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
             unset($properties['relationships']['service_options']);
         }
 
+        if (isset($properties['meta']['bracket_price']['amount'])) {
+            $serviceRate->setBracketPrice($properties['meta']['bracket_price']['amount']);
+            $serviceRate->setBracketCurrency($properties['meta']['bracket_price']['currency']);
+
+            unset($properties['meta']['bracket_price']);
+        }
+
         if (isset($properties['id'])) {
             $serviceRate->setResolveDynamicRateForShipmentCallback(function (ShipmentInterface $shipment, ServiceRateInterface $serviceRate) {
                 $serviceRates = $this->api->resolveDynamicServiceRates($shipment, $serviceRate);
