@@ -715,6 +715,49 @@ class MyParcelComApiTest extends TestCase
     }
 
     /** @test */
+    public function testItResolvesServiceRatesWithWeightBracketForShipment()
+    {
+        $recipient = (new Address())
+            ->setFirstName('Steven')
+            ->setLastName('Frayne')
+            ->setCity('Vancouver')
+            ->setStreet1('1st Street')
+            ->setPostalCode('W8 6UX')
+            ->setCountryCode('CA');
+
+        $shop = (new Shop())
+            ->setId('shop-id')
+            ->setOrganization((new Organization())->setId('org-id'));
+
+        $shipment = (new Shipment())
+            ->setShop($shop)
+            ->setPhysicalProperties((new PhysicalProperties())->setWeight(9000))
+            ->setRecipientAddress($recipient);
+
+        $serviceRates = $this->api->getServiceRatesForShipment($shipment);
+        $this->assertInstanceOf(CollectionInterface::class, $serviceRates);
+        foreach ($serviceRates as $serviceRate) {
+            $this->assertInstanceOf(ServiceRateInterface::class, $serviceRate);
+            $this->assertEquals(0, $serviceRate->getWeightMin());
+            $this->assertEquals(30000, $serviceRate->getWeightMax());
+            $this->assertEquals([
+                'start'        => 6000,
+                'start_amount' => 500,
+                'size'         => 1000,
+                'size_amount'  => 50,
+            ], $serviceRate->getWeightBracket());
+            $this->assertEquals(9500, $serviceRate->getPrice(), 'Should be the meta.bracket_price.amount');
+            $this->assertEquals('EUR', $serviceRate->getCurrency(), 'Should be the meta.bracket_price.currency');
+
+            $this->assertEquals(500, $serviceRate->calculateBracketPrice(0));
+            $this->assertEquals(500, $serviceRate->calculateBracketPrice(6000));
+            $this->assertEquals(550, $serviceRate->calculateBracketPrice(6001));
+            $this->assertEquals(650, $serviceRate->calculateBracketPrice(9000));
+            $this->assertEquals(700, $serviceRate->calculateBracketPrice(9001));
+        }
+    }
+
+    /** @test */
     public function testRetrievingServiceRatesConsidersVolumetricWeight()
     {
         $recipient = (new Address())

@@ -22,20 +22,29 @@ class ServiceRate implements ServiceRateInterface
     const ATTRIBUTE_AMOUNT = 'amount';
     const ATTRIBUTE_WEIGHT_MIN = 'weight_min';
     const ATTRIBUTE_WEIGHT_MAX = 'weight_max';
+    const ATTRIBUTE_WEIGHT_BRACKET = 'weight_bracket';
     const ATTRIBUTE_WIDTH_MAX = 'width_max';
     const ATTRIBUTE_LENGTH_MAX = 'length_max';
     const ATTRIBUTE_HEIGHT_MAX = 'height_max';
     const ATTRIBUTE_VOLUME_MAX = 'volume_max';
+    const ATTRIBUTE_VOLUMETRIC_WEIGHT_DIVISOR = 'volumetric_weight_divisor';
     const ATTRIBUTE_IS_DYNAMIC = 'is_dynamic';
 
     const RELATIONSHIP_SERVICE = 'service';
     const RELATIONSHIP_CONTRACT = 'contract';
     const RELATIONSHIP_SERVICE_OPTIONS = 'service_options';
 
+    const META_BRACKET_PRICE = 'bracket_price';
+
     const INCLUDES = [
         ResourceInterface::TYPE_CONTRACT => self::RELATIONSHIP_CONTRACT,
         ResourceInterface::TYPE_SERVICE  => self::RELATIONSHIP_SERVICE,
     ];
+
+    const WEIGHT_BRACKET_START = 'start';
+    const WEIGHT_BRACKET_START_AMOUNT = 'start_amount';
+    const WEIGHT_BRACKET_SIZE = 'size';
+    const WEIGHT_BRACKET_SIZE_AMOUNT = 'size_amount';
 
     /** @var string */
     private $id;
@@ -44,21 +53,28 @@ class ServiceRate implements ServiceRateInterface
     private $type = ResourceInterface::TYPE_SERVICE_RATE;
 
     private $attributes = [
-        self::ATTRIBUTE_PRICE          => [
+        self::ATTRIBUTE_PRICE                     => [
             self::ATTRIBUTE_CURRENCY => null,
             self::ATTRIBUTE_AMOUNT   => null,
         ],
-        self::ATTRIBUTE_FUEL_SURCHARGE => [
+        self::ATTRIBUTE_FUEL_SURCHARGE            => [
             self::ATTRIBUTE_CURRENCY => null,
             self::ATTRIBUTE_AMOUNT   => null,
         ],
-        self::ATTRIBUTE_WEIGHT_MIN     => null,
-        self::ATTRIBUTE_WEIGHT_MAX     => null,
-        self::ATTRIBUTE_WIDTH_MAX      => null,
-        self::ATTRIBUTE_LENGTH_MAX     => null,
-        self::ATTRIBUTE_HEIGHT_MAX     => null,
-        self::ATTRIBUTE_VOLUME_MAX     => null,
-        self::ATTRIBUTE_IS_DYNAMIC     => null,
+        self::ATTRIBUTE_WEIGHT_MIN                => null,
+        self::ATTRIBUTE_WEIGHT_MAX                => null,
+        self::ATTRIBUTE_WEIGHT_BRACKET            => [
+            self::WEIGHT_BRACKET_START        => null,
+            self::WEIGHT_BRACKET_START_AMOUNT => null,
+            self::WEIGHT_BRACKET_SIZE         => null,
+            self::WEIGHT_BRACKET_SIZE_AMOUNT  => null,
+        ],
+        self::ATTRIBUTE_WIDTH_MAX                 => null,
+        self::ATTRIBUTE_LENGTH_MAX                => null,
+        self::ATTRIBUTE_HEIGHT_MAX                => null,
+        self::ATTRIBUTE_VOLUME_MAX                => null,
+        self::ATTRIBUTE_VOLUMETRIC_WEIGHT_DIVISOR => null,
+        self::ATTRIBUTE_IS_DYNAMIC                => null,
     ];
 
     private $relationships = [
@@ -71,6 +87,11 @@ class ServiceRate implements ServiceRateInterface
         self::RELATIONSHIP_SERVICE_OPTIONS => [
             'data' => [],
         ],
+    ];
+
+    /** @var array */
+    private $meta = [
+        self::META_BRACKET_PRICE => null,
     ];
 
     /** @var callable */
@@ -148,6 +169,76 @@ class ServiceRate implements ServiceRateInterface
         return $this->attributes[self::ATTRIBUTE_WEIGHT_MAX];
     }
 
+    public function setWeightBracket($weightBracket)
+    {
+        $this->attributes[self::ATTRIBUTE_WEIGHT_BRACKET] = $weightBracket;
+
+        return $this;
+    }
+
+    public function getWeightBracket()
+    {
+        return $this->attributes[self::ATTRIBUTE_WEIGHT_BRACKET];
+    }
+
+    /**
+     * @param int $bracketPrice
+     * @return $this
+     */
+    public function setBracketPrice($bracketPrice)
+    {
+        $this->meta[self::META_BRACKET_PRICE][self::ATTRIBUTE_AMOUNT] = $bracketPrice;
+
+        return $this;
+    }
+
+    /**
+     * This will only return a value when this ServiceRate is retrieved for a shipment with a specific weight.
+     * @return int|null
+     */
+    public function getBracketPrice()
+    {
+        return $this->meta[self::META_BRACKET_PRICE][self::ATTRIBUTE_AMOUNT];
+    }
+
+    /**
+     * @param string $currency
+     * @return $this
+     */
+    public function setBracketCurrency($currency)
+    {
+        $this->attributes[self::META_BRACKET_PRICE][self::ATTRIBUTE_CURRENCY] = $currency;
+
+        return $this;
+    }
+
+    /**
+     * This will only return a value when this ServiceRate is retrieved for a shipment with a specific weight.
+     * @return string|null
+     */
+    public function getBracketCurrency()
+    {
+        return $this->attributes[self::META_BRACKET_PRICE][self::ATTRIBUTE_CURRENCY];
+    }
+
+    public function calculateBracketPrice($weight)
+    {
+        $weightBracket = $this->getWeightBracket();
+        $price = $weightBracket[self::WEIGHT_BRACKET_START_AMOUNT];
+
+        if ($price === null) {
+            return null;
+        }
+
+        $remainingWeight = $weight - $weightBracket[self::WEIGHT_BRACKET_START];
+        while ($remainingWeight > 0) {
+            $price += $weightBracket[self::WEIGHT_BRACKET_SIZE_AMOUNT];
+            $remainingWeight -= $weightBracket[self::WEIGHT_BRACKET_SIZE];
+        }
+
+        return $price;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -218,6 +309,25 @@ class ServiceRate implements ServiceRateInterface
     public function getVolumeMax()
     {
         return $this->attributes[self::ATTRIBUTE_VOLUME_MAX];
+    }
+
+    /**
+     * @param int $volumetricWeightDivisor
+     * @return $this
+     */
+    public function setVolumetricWeightDivisor($volumetricWeightDivisor)
+    {
+        $this->attributes[self::ATTRIBUTE_VOLUMETRIC_WEIGHT_DIVISOR] = $volumetricWeightDivisor;
+
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getVolumetricWeightDivisor()
+    {
+        return $this->attributes[self::ATTRIBUTE_VOLUMETRIC_WEIGHT_DIVISOR];
     }
 
     /**

@@ -56,6 +56,9 @@ trait MocksContract
             ->method('getWeightMax')
             ->willReturn($weightMax);
         $mock
+            ->method('getWeightBracket')
+            ->willReturn([]);
+        $mock
             ->method('isDynamic')
             ->willReturn($isDynamic);
         $mock
