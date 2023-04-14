@@ -6,23 +6,12 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Run tests on default PHP version (5.6)
+          name: Run tests on PHP 5.6
           command: |
-            ./mp.sh composer install
+            ./mp.sh composer update
             ./mp.sh test --no-coverage --stop-on-failure
       - run:
-          name: Run tests on PHP 7.0
+          name: Run tests on PHP 7.3
           command: |
-            ./mp.sh php70 composer install
-            ./mp.sh php70 test --no-coverage --stop-on-failure
-      - run:
-          name: Run tests on PHP 7.1
-          command: |
-            ./mp.sh php71 composer install
-            ./mp.sh php71 test --no-coverage --stop-on-failure
-      - run:
-          name: Run tests on PHP 7.2 with symfony/cache ^5.0
-          command: |
-            ./mp.sh php72 composer install
-            ./mp.sh php72 composer require symfony/cache:^5.0
-            ./mp.sh php72 test --no-coverage --stop-on-failure
+            ./mp.sh php73 composer update
+            ./mp.sh php73 test --no-coverage --stop-on-failure

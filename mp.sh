@@ -10,7 +10,7 @@ set -o allexport
   [ "${RUNNING}" == "" ] && DO="run --rm" || DO="exec"
   PHP="php"
   if [ $# -gt 0 ]; then
-    if [ "$1" == "php70" ] || [ "$1" == "php71" ] || [ "$1" == "php72" ]; then
+    if [ "$1" == "php73" ]; then
       PHP="$1"
       shift 1
     fi
