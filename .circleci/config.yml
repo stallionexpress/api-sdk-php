@@ -8,10 +8,10 @@ jobs:
       - run:
           name: Run tests on PHP 5.6
           command: |
-            ./mp.sh composer update
-            ./mp.sh test --no-coverage --stop-on-failure
+            ./mp.sh php5 composer update
+            ./mp.sh php5 test --no-coverage --stop-on-failure
       - run:
-          name: Run tests on PHP 7.3
+          name: Run tests on PHP 7.4
           command: |
-            ./mp.sh php73 composer update
-            ./mp.sh php73 test --no-coverage --stop-on-failure
+            ./mp.sh php7 composer update
+            ./mp.sh php7 test --no-coverage --stop-on-failure

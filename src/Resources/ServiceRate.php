@@ -54,12 +54,12 @@ class ServiceRate implements ServiceRateInterface
 
     private $attributes = [
         self::ATTRIBUTE_PRICE                     => [
-            self::ATTRIBUTE_CURRENCY => null,
             self::ATTRIBUTE_AMOUNT   => null,
+            self::ATTRIBUTE_CURRENCY => null,
         ],
         self::ATTRIBUTE_FUEL_SURCHARGE            => [
-            self::ATTRIBUTE_CURRENCY => null,
             self::ATTRIBUTE_AMOUNT   => null,
+            self::ATTRIBUTE_CURRENCY => null,
         ],
         self::ATTRIBUTE_WEIGHT_MIN                => null,
         self::ATTRIBUTE_WEIGHT_MAX                => null,
@@ -91,7 +91,10 @@ class ServiceRate implements ServiceRateInterface
 
     /** @var array */
     private $meta = [
-        self::META_BRACKET_PRICE => null,
+        self::META_BRACKET_PRICE => [
+            self::ATTRIBUTE_AMOUNT   => null,
+            self::ATTRIBUTE_CURRENCY => null,
+        ],
     ];
 
     /** @var callable */
