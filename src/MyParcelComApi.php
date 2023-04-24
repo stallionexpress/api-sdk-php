@@ -2,6 +2,7 @@
 
 namespace MyParcelCom\ApiSdk;
 
+use GuzzleHttp\Psr7\Message;
 use GuzzleHttp\Psr7\Request;
 use Http\Client\HttpClient;
 use Http\Discovery\HttpClientDiscovery;
@@ -34,8 +35,6 @@ use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Cache\Psr16Cache;
 use Symfony\Component\Cache\Simple\FilesystemCache;
-use function GuzzleHttp\Psr7\parse_response;
-use function GuzzleHttp\Psr7\str;
 
 class MyParcelComApi implements MyParcelComApiInterface
 {
@@ -781,7 +780,7 @@ class MyParcelComApi implements MyParcelComApiInterface
         // Attempt to fetch a response from cache
         $cacheKey = sha1(join($headers) . $uri);
         if (($response = $this->cache->get($cacheKey)) && strtolower($method) === 'get') {
-            return parse_response($response);
+            return Message::parseResponse($response);
         }
 
         try {
@@ -790,7 +789,7 @@ class MyParcelComApi implements MyParcelComApiInterface
 
             // Store the response in cache
             if (strtolower($method) === 'get') {
-                $this->cache->set($cacheKey, str($response), $ttl);
+                $this->cache->set($cacheKey, Message::toString($response), $ttl);
             }
 
             if ($response->getStatusCode() >= 300) {
