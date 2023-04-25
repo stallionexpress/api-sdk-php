@@ -1,4 +1,4 @@
-name: CI
+name: Tests
 on: push
 jobs:
   php56:
@@ -6,13 +6,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
       - name: Composer
         uses: php-actions/composer@v6
         with:
           version: 2.2.x
           php_version: 5.6
-
       - name: PHPUnit
         uses: php-actions/phpunit@v3
         with:
@@ -24,13 +22,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
       - name: Composer
         uses: php-actions/composer@v6
         with:
           version: 2.2.x
           php_version: 7.0
-
       - name: PHPUnit
         uses: php-actions/phpunit@v3
         with:
@@ -42,13 +38,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
       - name: Composer
         uses: php-actions/composer@v6
         with:
           version: 2.2.x
           php_version: 7.1
-
       - name: PHPUnit
         uses: php-actions/phpunit@v3
         with:
@@ -60,12 +54,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
       - name: Composer
         uses: php-actions/composer@v6
         with:
           php_version: 7.2
-
       - name: PHPUnit
         uses: php-actions/phpunit@v3
         with:
@@ -77,12 +69,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
       - name: Composer
         uses: php-actions/composer@v6
         with:
           php_version: 7.3
-
       - name: PHPUnit
         uses: php-actions/phpunit@v3
         with:
@@ -94,12 +84,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
       - name: Composer
         uses: php-actions/composer@v6
         with:
           php_version: 7.4
-
       - name: PHPUnit
         uses: php-actions/phpunit@v3
         with:
