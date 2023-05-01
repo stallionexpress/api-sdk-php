@@ -28,7 +28,7 @@ class RegionProxyTest extends TestCase
     /** @var RegionProxy */
     private $regionProxy;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

@@ -24,7 +24,7 @@ class CarrierProxyTest extends TestCase
     /** @var CarrierProxy */
     private $carrierProxy;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

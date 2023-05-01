@@ -844,7 +844,6 @@ class ResourceFactoryTest extends TestCase
             ],
         ];
 
-
         /** @var MyParcelComApi $api */
         $api = $this->getMockBuilder(MyParcelComApiInterface::class)
             ->disableOriginalConstructor()

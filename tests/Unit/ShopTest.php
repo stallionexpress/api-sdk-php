@@ -43,9 +43,7 @@ class ShopTest extends TestCase
     public function testSenderAddress()
     {
         $shop = new Shop();
-
-        $mock = $this->getMockClass(AddressInterface::class);
-        $address = new $mock();
+        $address = $this->getMockBuilder(AddressInterface::class)->getMock();
 
         $this->assertEquals($address, $shop->setSenderAddress($address)->getSenderAddress());
     }
@@ -54,9 +52,7 @@ class ShopTest extends TestCase
     public function testReturnAddress()
     {
         $shop = new Shop();
-
-        $mock = $this->getMockClass(AddressInterface::class);
-        $address = new $mock();
+        $address = $this->getMockBuilder(AddressInterface::class)->getMock();
 
         $this->assertEquals($address, $shop->setReturnAddress($address)->getReturnAddress());
     }

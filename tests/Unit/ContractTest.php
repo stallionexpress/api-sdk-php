@@ -40,9 +40,7 @@ class ContractTest extends TestCase
     public function testCarrier()
     {
         $contract = new Contract();
-
-        $mock = $this->getMockClass(CarrierInterface::class);
-        $carrier = new $mock();
+        $carrier = $this->getMockBuilder(CarrierInterface::class)->getMock();
 
         $this->assertEquals($carrier, $contract->setCarrier($carrier)->getCarrier());
     }

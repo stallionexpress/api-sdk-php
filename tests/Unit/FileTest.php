@@ -25,7 +25,7 @@ class FileTest extends TestCase
     /** @var string */
     private $pathTestData;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -211,7 +211,6 @@ class FileTest extends TestCase
             ->setTemporaryFilePath($this->path, 'application/pdf')
             ->getTemporaryFilePath('application/pdf');
         $this->assertEquals($this->pathTestData, file_get_contents($filePath_A));
-
 
         // Using $this->getTemporaryFilePath() without giving a mime_type loops over the
         // file's formats and returns the first path it encounters.

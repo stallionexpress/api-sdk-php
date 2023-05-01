@@ -23,7 +23,7 @@ class FileProxyTest extends TestCase
     /** @var MyParcelComApiInterface */
     private $api;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

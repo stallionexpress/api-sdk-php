@@ -28,7 +28,7 @@ class ShipmentStatusProxyTest extends TestCase
     /** @var ShipmentStatusProxy */
     private $shipmentStatusProxy;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

@@ -36,7 +36,6 @@ class RegionTest extends TestCase
         $this->assertEquals('ZH', $region->setRegionCode('ZH')->getRegionCode());
     }
 
-
     /** @test */
     public function testCurrency()
     {
@@ -66,7 +65,6 @@ class RegionTest extends TestCase
         $mock = $this->createMock(RegionInterface::class);
         $this->assertEquals($mock, $region->setParent($mock)->getParent());
     }
-
 
     /** @test */
     public function testJsonSerialize()

@@ -21,7 +21,7 @@ class ServiceMatcherTest extends TestCase
     /** @var ServiceMatcher */
     private $matcher;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->matcher = new ServiceMatcher();
 
