@@ -136,10 +136,8 @@ class Carrier implements CarrierInterface
 
     /**
      * This function puts all object properties in an array and returns it.
-     *
-     * @return array
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         // The 'credentials_format' can have camelCased properties, which get
         // changed to snake_case by the jsonSerialize() method. So ro prevent

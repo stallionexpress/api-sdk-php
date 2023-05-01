@@ -8,10 +8,8 @@ trait JsonSerializable
 {
     /**
      * This function puts all object properties in an array and returns it.
-     *
-     * @return array
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         $json = $this->arrayValuesToArray(get_object_vars($this));
 

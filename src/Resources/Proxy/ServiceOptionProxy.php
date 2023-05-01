@@ -171,10 +171,8 @@ class ServiceOptionProxy implements ServiceOptionInterface, ResourceProxyInterfa
 
     /**
      * This function puts all object properties in an array and returns it.
-     *
-     * @return array
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         $values = get_object_vars($this);
         unset($values['resource']);
