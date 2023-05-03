@@ -25,7 +25,7 @@ class ContractProxyTest extends TestCase
     /** @var ContractProxy */
     private $contractProxy;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

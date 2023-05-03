@@ -17,7 +17,7 @@ class LabelCombinerTest extends TestCase
     /** @var FileInterface */
     private $fileC;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

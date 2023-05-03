@@ -15,15 +15,14 @@ class ArrayCollectionTest extends TestCase
     /** @var CollectionInterface */
     protected $collection;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
         for ($i = 0; $i < 123; $i++) {
-            $resource = $this->createMock(ResourceInterface::class);
-            $resource->id = $i;
-
-            $this->resourcesArray[] = $resource;
+            $this->resourcesArray[] = $this->createConfiguredMock(ResourceInterface::class, [
+                'getId' => $i,
+            ]);
         }
 
         $this->collection = new ArrayCollection($this->resourcesArray);
@@ -34,15 +33,15 @@ class ArrayCollectionTest extends TestCase
     {
         $resources = $this->collection->offset(20)->limit(5)->get();
         $this->assertCount(5, $resources);
-        $this->assertEquals(24, $resources[24]->id);
+        $this->assertEquals(24, $resources[24]->getId());
     }
 
     /** @test */
     public function testForeach()
     {
         foreach ($this->collection as $resource) {
-            $this->assertGreaterThanOrEqual(0, $resource->id);
-            $this->assertLessThanOrEqual(99, $resource->id);
+            $this->assertGreaterThanOrEqual(0, $resource->getId());
+            $this->assertLessThanOrEqual(99, $resource->getId());
         }
     }
 
@@ -53,8 +52,8 @@ class ArrayCollectionTest extends TestCase
         $this->assertCount(20, $resources);
 
         array_walk($resources, function ($resource) {
-            $this->assertGreaterThanOrEqual(15, $resource->id);
-            $this->assertLessThanOrEqual(35, $resource->id);
+            $this->assertGreaterThanOrEqual(15, $resource->getId());
+            $this->assertLessThanOrEqual(35, $resource->getId());
         });
     }
 
@@ -77,7 +76,7 @@ class ArrayCollectionTest extends TestCase
         $this->assertEquals(48, $this->collection->offset(48)->key());
 
         $this->collection->next();
-        $this->assertEquals(49, $this->collection->current()->id);
+        $this->assertEquals(49, $this->collection->current()->getId());
 
         $this->assertNull($this->collection->offset(123541243)->current());
     }

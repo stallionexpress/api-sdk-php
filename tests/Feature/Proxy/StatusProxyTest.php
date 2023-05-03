@@ -24,7 +24,7 @@ class StatusProxyTest extends TestCase
     /** @var StatusProxy */
     private $statusProxy;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

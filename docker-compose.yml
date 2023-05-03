@@ -1,24 +1,15 @@
 version: '3'
 
 services:
-  php5:
+  php8:
     build:
-      context: ./docker/php5
+      context: ./docker/php8
       dockerfile: Dockerfile
-    image: myparcelcom/sdk-php5:v1-dev
+    image: myparcelcom/sdk-php8:v1-dev
     working_dir: /opt/sdk
     volumes:
       - .:/opt/sdk
-      - composercache:/root/.composer/cache
-
-  php7:
-    build:
-      context: ./docker/php7
-      dockerfile: Dockerfile
-    image: myparcelcom/sdk-php7:v1-dev
-    working_dir: /opt/sdk
-    volumes:
-      - .:/opt/sdk
+      - ./docker/php8/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
       - composercache:/root/.composer/cache
 
 volumes:

@@ -26,7 +26,7 @@ class ShipmentValidatorTest extends TestCase
     /** @var int */
     private $weight;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

@@ -37,8 +37,7 @@ class PickUpDropOffLocationTest extends TestCase
     /** @test */
     public function testAddress()
     {
-        $mock = $this->getMockClass(AddressInterface::class);
-        $address = new $mock();
+        $address = $this->getMockBuilder(AddressInterface::class)->getMock();
 
         $pudoLocation = new PickUpDropOffLocation();
         $this->assertEquals($address, $pudoLocation->setAddress($address)->getAddress());
@@ -51,14 +50,14 @@ class PickUpDropOffLocationTest extends TestCase
 
         $this->assertEmpty($pudoLocation->getOpeningHours());
 
-        $mock = $this->getMockClass(OpeningHourInterface::class);
-        $openingHours = [new $mock(), new $mock()];
+        $mockBuilder = $this->getMockBuilder(OpeningHourInterface::class);
+        $openingHours = [$mockBuilder->getMock(), $mockBuilder->getMock()];
 
         $pudoLocation->setOpeningHours($openingHours);
         $this->assertCount(2, $pudoLocation->getOpeningHours());
         $this->assertEquals($openingHours, $pudoLocation->getOpeningHours());
 
-        $openingHour = new $mock();
+        $openingHour = $mockBuilder->getMock();
         $openingHours[] = $openingHour;
         $pudoLocation->addOpeningHour($openingHour);
         $this->assertCount(3, $pudoLocation->getOpeningHours());
@@ -69,9 +68,7 @@ class PickUpDropOffLocationTest extends TestCase
     public function testPosition()
     {
         $pudoLocation = new PickUpDropOffLocation();
-
-        $mock = $this->getMockClass(PositionInterface::class);
-        $position = new $mock();
+        $position = $this->getMockBuilder(PositionInterface::class)->getMock();
 
         $this->assertEquals($position, $pudoLocation->setPosition($position)->getPosition());
     }
@@ -80,9 +77,7 @@ class PickUpDropOffLocationTest extends TestCase
     public function testCarrier()
     {
         $pudoLocation = new PickUpDropOffLocation();
-
-        $mock = $this->getMockClass(CarrierInterface::class);
-        $carrier = new $mock();
+        $carrier = $this->getMockBuilder(CarrierInterface::class)->getMock();
 
         $this->assertEquals($carrier, $pudoLocation->setCarrier($carrier)->getCarrier());
     }

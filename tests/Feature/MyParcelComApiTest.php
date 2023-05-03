@@ -42,7 +42,7 @@ class MyParcelComApiTest extends TestCase
     /** @var HttpClient|PHPUnit_Framework_MockObject_MockObject */
     private $client;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->authenticator = $this->getAuthenticatorMock();
 
@@ -152,7 +152,6 @@ class MyParcelComApiTest extends TestCase
         $shopMock
             ->method('getSenderAddress')
             ->willReturn($senderAddress);
-
 
         // Minimum required data should be recipient address and weight. All other data should be filled with defaults.
         $shipment = (new Shipment())
@@ -376,7 +375,7 @@ class MyParcelComApiTest extends TestCase
             false
         );
 
-        $this->assertInternalType('array', $allPudoLocations);
+        $this->assertIsArray($allPudoLocations);
         $this->assertNull($allPudoLocations[$failingCarrierId]);
         $this->assertInstanceOf(CollectionInterface::class, $allPudoLocations[$normalCarrierId]);
 
@@ -385,7 +384,7 @@ class MyParcelComApiTest extends TestCase
         }
 
         $this->assertCount(count($carriers), $allPudoLocations);
-        $this->assertArraySubset(
+        $this->assertEqualsCanonicalizing(
             array_map(function (CarrierInterface $carrier) {
                 return $carrier->getId();
             }, $carriers),

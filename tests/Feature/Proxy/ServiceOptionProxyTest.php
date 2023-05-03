@@ -24,7 +24,7 @@ class ServiceOptionProxyTest extends TestCase
     /** @var ServiceOptionProxy */
     private $serviceOptionProxy;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

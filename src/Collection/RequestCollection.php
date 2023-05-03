@@ -41,10 +41,8 @@ class RequestCollection implements CollectionInterface
 
     /**
      * Counts the amount of resources in the collection.
-     *
-     * @return int
      */
-    public function count()
+    public function count(): int
     {
         if (!isset($this->count)) {
             $this->get();
@@ -59,7 +57,7 @@ class RequestCollection implements CollectionInterface
      *
      * @return ResourceInterface[]
      */
-    public function get()
+    public function get(): array
     {
         if (isset($this->count) && $this->offset >= $this->count) {
             return [];
@@ -92,11 +90,8 @@ class RequestCollection implements CollectionInterface
     /**
      * Retrieve the resources for the given page number and store them
      * in this->resources according to their number.
-     *
-     * @param int $pageNumber
-     * @return void
      */
-    private function retrieveResources($pageNumber)
+    private function retrieveResources(int $pageNumber): void
     {
         $response = call_user_func_array($this->promiseCreator, [$pageNumber, $this->limit]);
 
@@ -116,11 +111,8 @@ class RequestCollection implements CollectionInterface
 
     /**
      * Sets an offset on which resource to start retrieving.
-     *
-     * @param $offset
-     * @return $this
      */
-    public function offset($offset)
+    public function offset(int $offset): self
     {
         $this->offset = $offset;
         $this->rewind();
@@ -131,25 +123,15 @@ class RequestCollection implements CollectionInterface
     /**
      * Sets the amount of resources to be retrieved by get().
      * Default (and max) limit is 100.
-     *
-     * @param int $limit
-     * @return $this
      */
-    public function limit($limit = 100)
+    public function limit(int $limit = 100): self
     {
         $this->limit = min(100, max(1, $limit));
 
         return $this;
     }
 
-    /**
-     * Return the current resource
-     *
-     * @link  http://php.net/manual/en/iterator.current.php
-     * @return ResourceInterface
-     * @since 5.0.0
-     */
-    public function current()
+    public function current(): ?ResourceInterface
     {
         if (!$this->valid()) {
             return null;
@@ -158,14 +140,7 @@ class RequestCollection implements CollectionInterface
         return $this->resources[$this->currentResourceNumber];
     }
 
-    /**
-     * Return the key of the current element
-     *
-     * @link  http://php.net/manual/en/iterator.key.php
-     * @return int|null int on success, or null on failure.
-     * @since 5.0.0
-     */
-    public function key()
+    public function key(): ?int
     {
         if (!$this->valid()) {
             return null;
@@ -174,15 +149,7 @@ class RequestCollection implements CollectionInterface
         return $this->currentResourceNumber;
     }
 
-    /**
-     * Checks if current position is valid
-     *
-     * @link  http://php.net/manual/en/iterator.valid.php
-     * @return boolean The return value will be casted to boolean and then evaluated.
-     * Returns true on success or false on failure.
-     * @since 5.0.0
-     */
-    public function valid()
+    public function valid(): bool
     {
         if (!isset($this->resources[$this->currentResourceNumber])) {
             $this->get();
@@ -192,26 +159,12 @@ class RequestCollection implements CollectionInterface
             && $this->currentResourceNumber < ($this->offset + $this->limit);
     }
 
-    /**
-     * Rewind the Iterator to the first element
-     *
-     * @link  http://php.net/manual/en/iterator.rewind.php
-     * @return void Any returned value is ignored.
-     * @since 5.0.0
-     */
-    public function rewind()
+    public function rewind(): void
     {
         $this->currentResourceNumber = $this->offset;
     }
 
-    /**
-     * Move forward to next resource
-     *
-     * @link  http://php.net/manual/en/iterator.next.php
-     * @return void Any returned value is ignored.
-     * @since 5.0.0
-     */
-    public function next()
+    public function next(): void
     {
         $this->currentResourceNumber++;
     }

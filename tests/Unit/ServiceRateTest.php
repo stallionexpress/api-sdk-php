@@ -49,12 +49,12 @@ class ServiceRateTest extends TestCase
     {
         $serviceRate = new ServiceRate();
 
-        $mock = $this->getMockClass(ServiceOptionInterface::class);
-        $serviceOptions = [new $mock(), new $mock(), new $mock()];
+        $mockBuilder = $this->getMockBuilder(ServiceOptionInterface::class);
+        $serviceOptions = [$mockBuilder->getMock(), $mockBuilder->getMock(), $mockBuilder->getMock()];
 
         $this->assertEquals($serviceOptions, $serviceRate->setServiceOptions($serviceOptions)->getServiceOptions());
 
-        $serviceOption = new $mock();
+        $serviceOption = $mockBuilder->getMock();
         $serviceOptions[] = $serviceOption;
         $this->assertEquals($serviceOptions, $serviceRate->addServiceOption($serviceOption)->getServiceOptions());
     }

@@ -8,9 +8,9 @@ set -o allexport
   COMPOSE="docker-compose"
   RUNNING=$(${COMPOSE} ps -q)
   [ "${RUNNING}" == "" ] && DO="run --rm" || DO="exec"
-  PHP="php7"
+  PHP="php8"
   if [ $# -gt 0 ]; then
-    if [ "$1" == "php5" ] || [ "$1" == "php7" ]; then
+    if [ "$1" == "php8" ]; then
       PHP="$1"
       shift 1
     fi
