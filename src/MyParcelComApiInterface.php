@@ -35,11 +35,9 @@ interface MyParcelComApiInterface
     /**
      * Authenticate to the API using the given authenticator.
      *
-     * @param AuthenticatorInterface $authenticator
-     * @return $this
      * @throws MyParcelComException
      */
-    public function authenticate(AuthenticatorInterface $authenticator);
+    public function authenticate(AuthenticatorInterface $authenticator): self;
 
     /**
      * Get an array with all the regions. An array of

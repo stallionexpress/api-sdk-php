@@ -190,14 +190,14 @@ content-type: application/vnd.api+json
      */
     public function testGetAuthorizationHeaderConcurrentRequests()
     {
-        list($processA, $outputA) = $this->runEchoAuthHeader();
+        [$processA, $outputA] = $this->runEchoAuthHeader();
         // After firing the first process, we need to wait for a bit to make
         // sure it is actually running.
         // Note that the fact that we have to wait here implies that 2 auth
         // attempts at exactly the same time will still cause 2 requests to the
         // server.
         usleep(10000);
-        list($processB, $outputB) = $this->runEchoAuthHeader();
+        [$processB, $outputB] = $this->runEchoAuthHeader();
 
         // Wait for the contents (which should be the headers exported).
         $headerA = stream_get_contents($outputA);

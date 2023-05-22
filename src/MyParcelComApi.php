@@ -29,6 +29,7 @@ use MyParcelCom\ApiSdk\Resources\Shipment;
 use MyParcelCom\ApiSdk\Shipments\ServiceMatcher;
 use MyParcelCom\ApiSdk\Utils\UrlBuilder;
 use MyParcelCom\ApiSdk\Validators\ShipmentValidator;
+use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\SimpleCache\CacheInterface;
@@ -38,72 +39,44 @@ use Symfony\Component\Cache\Simple\FilesystemCache;
 
 class MyParcelComApi implements MyParcelComApiInterface
 {
-    /** @var string */
-    protected $apiUri;
+    protected string $apiUri;
+    protected CacheInterface $cache;
+    protected ResourceFactoryInterface $resourceFactory;
+    protected AuthenticatorInterface $authenticator;
+    private ClientInterface $client;
+    private bool $authRetry = false;
 
-    /** @var CacheInterface */
-    protected $cache;
-
-    /** @var ResourceFactoryInterface */
-    protected $resourceFactory;
-
-    /** @var AuthenticatorInterface */
-    protected $authenticator;
-
-    /** @var HttpClient */
-    private $client;
-
-    /** @var bool */
-    private $authRetry = false;
-
-    /** @var MyParcelComApi */
-    private static $singleton;
+    private static MyParcelComApi $singleton;
 
     /**
-     * Create an singleton instance of this class, which will be available in
-     * subsequent calls to `getSingleton()`.
-     *
-     * @param AuthenticatorInterface        $authenticator
-     * @param string                        $apiUri
-     * @param HttpClient|null               $httpClient
-     * @param CacheInterface|null           $cache
-     * @param ResourceFactoryInterface|null $resourceFactory
-     * @return MyParcelComApi
+     * Create a singleton instance of this class, which will be available in subsequent calls to `getSingleton()`.
      */
     public static function createSingleton(
         AuthenticatorInterface $authenticator,
-        $apiUri = 'https://sandbox-api.myparcel.com',
-        HttpClient $httpClient = null,
+        string $apiUri = 'https://sandbox-api.myparcel.com',
+        ClientInterface $httpClient = null,
         CacheInterface $cache = null,
-        ResourceFactoryInterface $resourceFactory = null
-    ) {
+        ResourceFactoryInterface $resourceFactory = null,
+    ): self {
         return self::$singleton = (new self($apiUri, $httpClient, $cache, $resourceFactory))
             ->authenticate($authenticator);
     }
 
     /**
      * Get the singleton instance created.
-     *
-     * @return MyParcelComApi
      */
-    public static function getSingleton()
+    public static function getSingleton(): self
     {
         return self::$singleton;
     }
 
     /**
-     * Create an instance for the api with given uri. If no cache is given, the
-     * filesystem is used for caching. If no resource factory is given, the
-     * default factory is used.
-     *
-     * @param string                        $apiUri
-     * @param HttpClient|null               $httpClient
-     * @param CacheInterface|null           $cache
-     * @param ResourceFactoryInterface|null $resourceFactory
+     * Create an instance for the api with given uri. If no cache is given, the filesystem is used for caching.
+     * If no resource factory is given, the default factory is used.
      */
     public function __construct(
-        $apiUri = 'https://sandbox-api.myparcel.com',
-        HttpClient $httpClient = null,
+        string $apiUri = 'https://sandbox-api.myparcel.com',
+        ClientInterface $httpClient = null,
         CacheInterface $cache = null,
         ResourceFactoryInterface $resourceFactory = null
     ) {
@@ -131,10 +104,7 @@ class MyParcelComApi implements MyParcelComApiInterface
         $this->setResourceFactory($resourceFactory ?: new ResourceFactory());
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function authenticate(AuthenticatorInterface $authenticator)
+    public function authenticate(AuthenticatorInterface $authenticator): self
     {
         $this->authenticator = $authenticator;
 
@@ -681,10 +651,8 @@ class MyParcelComApi implements MyParcelComApiInterface
 
     /**
      * Clear the cached resources and the authorization cache.
-     *
-     * @return $this
      */
-    public function clearCache()
+    public function clearCache(): self
     {
         $this->cache->clear();
         $this->authenticator->clearCache();
@@ -693,13 +661,9 @@ class MyParcelComApi implements MyParcelComApiInterface
     }
 
     /**
-     * Set the HTTP client to use to connect to the api. Given
-     * client must implement the PSR-18 client interface.
-     *
-     * @param HttpClient $client
-     * @return $this
+     * Set the HTTP client to use to connect to the api. Given client must implement the PSR-18 client interface.
      */
-    public function setHttpClient(HttpClient $client)
+    public function setHttpClient(ClientInterface $client): self
     {
         $this->client = $client;
 
@@ -708,18 +672,15 @@ class MyParcelComApi implements MyParcelComApiInterface
 
     /**
      * Get the HTTP client.
-     *
-     * @return HttpClient
      */
-    protected function getHttpClient()
+    protected function getHttpClient(): ClientInterface
     {
         return $this->client;
     }
 
     /**
-     * Get a promise that will return an array with resources requested from
-     * given uri. A time-to-live can be specified for how long this request
-     * should be cached (defaults to 10 minutes).
+     * Get a promise that will return an array with resources requested from given uri.
+     * A time-to-live can be specified for how long this request should be cached (defaults to 10 minutes).
      *
      * @param string $uri
      * @param int    $ttl

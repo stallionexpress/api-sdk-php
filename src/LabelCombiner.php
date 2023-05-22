@@ -47,7 +47,7 @@ class LabelCombiner implements LabelCombinerInterface
         $startLocation = self::LOCATION_TOP_LEFT,
         $margin = 0
     ) {
-        list($labelsPerRow, $labelsPerColumn) = $this->getLabelsPerPage($pageSize);
+        [$labelsPerRow, $labelsPerColumn] = $this->getLabelsPerPage($pageSize);
         $labelsPerPage = $labelsPerRow * $labelsPerColumn;
 
         $pdf = new Fpdi(
@@ -71,7 +71,7 @@ class LabelCombiner implements LabelCombinerInterface
                 $pdf->AddPage();
             }
 
-            list($x, $y, $width) = $this->calculateDimensions($labelPosition, $labelsPerRow, $labelsPerColumn, $margin);
+            [$x, $y, $width] = $this->calculateDimensions($labelPosition, $labelsPerRow, $labelsPerColumn, $margin);
 
             $formats = $file->getFormats();
             $format = reset($formats);

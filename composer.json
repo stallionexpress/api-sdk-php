@@ -40,5 +40,9 @@
     "allow-plugins": {
       "php-http/discovery": true
     }
+  },
+  "suggest": {
+    "php-http/guzzle7-adapter": "Install this package if Guzzle 7 is available in the application.",
+    "php-http/curl-client": "Install this package if Guzzle is not available in the application, but curl is."
   }
 }

@@ -15,13 +15,10 @@ interface AuthenticatorInterface
     const SCOPES = '*';
 
     /**
-     * Authenticate with the OAuth2 server and return the header to be used in
-     * requests to the API. When `$forceRefresh` is set to `true`, any possibly
-     * cached header is ignored and a new request is done to the auth server.
+     * Authenticate with the OAuth2 server and return the header to be used in requests to the API.
+     * When `$forceRefresh` is set to `true`, cache is ignored and a new request is done to the auth server.
      *
-     * @param bool $forceRefresh
-     * @return array
      * @throws AuthenticationException
      */
-    public function getAuthorizationHeader($forceRefresh = false);
+    public function getAuthorizationHeader(bool $forceRefresh = false): array;
 }
