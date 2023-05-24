@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MyParcelCom\ApiSdk\Authentication;
 
 use GuzzleHttp\Psr7\Request;
@@ -56,8 +58,7 @@ class ClientCredentials implements AuthenticatorInterface
         while ($this->isAuthenticating()) {
             // Wait for 200ms
             usleep(200000);
-            // Don't force another authentication cycle if we're already
-            // authenticating.
+            // Don't force another authentication cycle if we're already authenticating.
             $forceRefresh = false;
         }
 

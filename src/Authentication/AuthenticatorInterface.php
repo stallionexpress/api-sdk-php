@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MyParcelCom\ApiSdk\Authentication;
 
 use MyParcelCom\ApiSdk\Exceptions\AuthenticationException;

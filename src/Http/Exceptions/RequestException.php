@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MyParcelCom\ApiSdk\Http\Exceptions;
 
 use Exception;
@@ -10,22 +12,11 @@ use Throwable;
 
 class RequestException extends Exception implements RequestExceptionInterface
 {
-    /** @var RequestInterface */
-    private $request;
-
-    /** @var ResponseInterface */
-    private $response;
-
-    /**
-     * @param RequestInterface  $request
-     * @param ResponseInterface $response
-     * @param Throwable|null    $previous
-     */
-    public function __construct(RequestInterface $request, ResponseInterface $response, Throwable $previous = null)
-    {
-        $this->request = $request;
-        $this->response = $response;
-
+    public function __construct(
+        private RequestInterface $request,
+        private ResponseInterface $response,
+        ?Throwable $previous = null,
+    ) {
         parent::__construct($response->getReasonPhrase(), $response->getStatusCode(), $previous);
     }
 
@@ -33,10 +24,8 @@ class RequestException extends Exception implements RequestExceptionInterface
      * Returns the request.
      *
      * The request object MAY be a different object from the one passed to ClientInterface::sendRequest()
-     *
-     * @return RequestInterface
      */
-    public function getRequest()
+    public function getRequest(): RequestInterface
     {
         return $this->request;
     }
@@ -45,10 +34,8 @@ class RequestException extends Exception implements RequestExceptionInterface
      * Returns the response of the failed request.
      *
      * May return null if there was no response.
-     *
-     * @return ResponseInterface|null
      */
-    public function getResponse()
+    public function getResponse(): ?ResponseInterface
     {
         return $this->response;
     }

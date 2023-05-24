@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MyParcelCom\ApiSdk\Tests\Unit\Authentication;
 
 use GuzzleHttp\Psr7\Message;

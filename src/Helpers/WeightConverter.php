@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MyParcelCom\ApiSdk\Helpers;
 
 use MyParcelCom\ApiSdk\Enums\WeightUnitEnum;
@@ -7,62 +9,34 @@ use MyParcelCom\ApiSdk\Exceptions\MyParcelComException;
 
 class WeightConverter
 {
-    /**
-     * @param float|int $weight
-     * @param string    $from
-     * @param string    $to
-     * @return int|float
-     */
-    public static function convert($weight, $from, $to)
+    public static function convert(float|int $weight, string $from, string $to): float|int
     {
         $weightInGrams = self::convertToGrams($weight, $from);
 
         return self::convertFromGrams($weightInGrams, $to);
     }
 
-    /**
-     * @param float|int $weight
-     * @param string    $from
-     * @return int|float
-     */
-    private static function convertToGrams($weight, $from)
+    private static function convertToGrams(float|int $weight, string $from): float|int
     {
-        switch ($from) {
-            case WeightUnitEnum::MILLIGRAM:
-                return $weight / 1000;
-            case WeightUnitEnum::GRAM:
-                return $weight;
-            case WeightUnitEnum::KILOGRAM:
-                return $weight * 1000;
-            case WeightUnitEnum::OUNCE:
-                return $weight * 28.3495;
-            case WeightUnitEnum::POUND:
-                return $weight * 453.592;
-            default:
-                throw new MyParcelComException('Invalid weight unit');
-        }
+        return match ($from) {
+            WeightUnitEnum::MILLIGRAM => $weight / 1000,
+            WeightUnitEnum::GRAM => $weight,
+            WeightUnitEnum::KILOGRAM => $weight * 1000,
+            WeightUnitEnum::OUNCE => $weight * 28.3495,
+            WeightUnitEnum::POUND => $weight * 453.592,
+            default => throw new MyParcelComException('Invalid weight unit'),
+        };
     }
 
-    /**
-     * @param float|int $weightInGrams
-     * @param string    $to
-     * @return float|int
-     */
-    private static function convertFromGrams($weightInGrams, $to)
+    private static function convertFromGrams(float|int $weightInGrams, string $to): float|int
     {
-        switch ($to) {
-            case WeightUnitEnum::MILLIGRAM:
-                return $weightInGrams * 1000;
-            case WeightUnitEnum::GRAM:
-                return $weightInGrams;
-            case WeightUnitEnum::KILOGRAM:
-                return $weightInGrams / 1000;
-            case WeightUnitEnum::OUNCE:
-                return $weightInGrams / 28.3495;
-            case WeightUnitEnum::POUND:
-                return $weightInGrams / 453.592;
-            default:
-                throw new MyParcelComException('Invalid weight unit');
-        }
+        return match ($to) {
+            WeightUnitEnum::MILLIGRAM => $weightInGrams * 1000,
+            WeightUnitEnum::GRAM => $weightInGrams,
+            WeightUnitEnum::KILOGRAM => $weightInGrams / 1000,
+            WeightUnitEnum::OUNCE => $weightInGrams / 28.3495,
+            WeightUnitEnum::POUND => $weightInGrams / 453.592,
+            default => throw new MyParcelComException('Invalid weight unit'),
+        };
     }
 }

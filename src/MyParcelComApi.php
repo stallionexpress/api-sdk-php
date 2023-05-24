@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MyParcelCom\ApiSdk;
 
 use GuzzleHttp\Psr7\Message;

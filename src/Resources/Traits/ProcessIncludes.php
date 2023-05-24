@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MyParcelCom\ApiSdk\Resources\Traits;
 
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
