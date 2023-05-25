@@ -44,17 +44,12 @@ interface LabelCombinerInterface
      * PAGE_SIZE_A6
      * - LOCATION_TOP
      *
-     * @param FileInterface[] $files
-     * @param string          $pageSize
-     * @param int             $startLocation
-     * @param int             $margin
-     * @return FileInterface
      * @throws MyParcelComException
      */
     public function combineLabels(
         array $files,
-        $pageSize = self::PAGE_SIZE_A4,
-        $startLocation = self::LOCATION_TOP_LEFT,
-        $margin = 0
-    );
+        string $pageSize = self::PAGE_SIZE_A4,
+        int $startLocation = self::LOCATION_TOP_LEFT,
+        int $margin = 0
+    ): FileInterface;
 }

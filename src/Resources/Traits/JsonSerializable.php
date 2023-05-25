@@ -41,11 +41,7 @@ trait JsonSerializable
         return $json;
     }
 
-    /**
-     * @param mixed $values
-     * @return bool
-     */
-    private function isEmpty($values)
+    private function isEmpty(mixed $values): bool
     {
         if ($values === [] || $values === null) {
             return true;
@@ -64,13 +60,9 @@ trait JsonSerializable
     }
 
     /**
-     * Helper function to recursively convert all values in an array to scalar
-     * values or arrays with scalar values.
-     *
-     * @param array $arrayValues
-     * @return array
+     * Helper function to recursively convert all values in an array to scalar values or arrays with scalar values.
      */
-    private function arrayValuesToArray(array $arrayValues)
+    private function arrayValuesToArray(array $arrayValues): array
     {
         $array = [];
         foreach ($arrayValues as $key => $value) {
@@ -91,11 +83,8 @@ trait JsonSerializable
 
     /**
      * Remove all the attributes from the relationships, so it only has `id` and `type` values.
-     *
-     * @param array $relationships
-     * @return array
      */
-    private function removeRelationshipAttributes(array $relationships)
+    private function removeRelationshipAttributes(array $relationships): array
     {
         foreach ($relationships as $name => &$relationship) {
             if (empty($relationship['data'])) {

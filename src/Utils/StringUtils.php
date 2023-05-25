@@ -8,33 +8,24 @@ class StringUtils
 {
     /**
      * Transforms a string in snake_case to camelCase.
-     *
-     * @param string $snakeCase
-     * @return string
      */
-    public static function snakeToCamelCase($snakeCase)
+    public static function snakeToCamelCase(string $snakeCase): string
     {
         return lcfirst(self::snakeToPascalCase($snakeCase));
     }
 
     /**
      * Transforms a string from snake_case to PascalCase.
-     *
-     * @param string $snakeCase
-     * @return string
      */
-    public static function snakeToPascalCase($snakeCase)
+    public static function snakeToPascalCase(string $snakeCase): string
     {
         return str_replace('_', '', ucwords($snakeCase, '_'));
     }
 
     /**
      * Transforms a string from camelCase to snake_case.
-     *
-     * @param string $camelCase
-     * @return string
      */
-    public static function camelToSnakeCase($camelCase)
+    public static function camelToSnakeCase(string $camelCase): string
     {
         return strtolower(preg_replace('/(?<=\d)(?=[A-Za-z])|(?<=[A-Za-z])(?=\d)|(?<=[a-z])(?=[A-Z])/', '_', $camelCase));
     }

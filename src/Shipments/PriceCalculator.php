@@ -14,12 +14,8 @@ class PriceCalculator
 {
     /**
      * Calculate the total price of given shipment based off its contract, service and weight.
-     *
-     * @param ShipmentInterface         $shipment
-     * @param ServiceRateInterface|null $serviceRate
-     * @return null|int
      */
-    public function calculate(ShipmentInterface $shipment, ServiceRateInterface $serviceRate = null)
+    public function calculate(ShipmentInterface $shipment, ?ServiceRateInterface $serviceRate = null): ?int
     {
         if ($serviceRate === null) {
             $serviceRate = $this->determineServiceRateForShipment($shipment);
@@ -63,12 +59,8 @@ class PriceCalculator
 
     /**
      * Calculate the price based on the selected options for given shipment.
-     *
-     * @param ShipmentInterface         $shipment
-     * @param ServiceRateInterface|null $serviceRate
-     * @return null|int
      */
-    public function calculateOptionsPrice(ShipmentInterface $shipment, ServiceRateInterface $serviceRate = null)
+    public function calculateOptionsPrice(ShipmentInterface $shipment, ?ServiceRateInterface $serviceRate = null): ?int
     {
         if ($serviceRate === null) {
             $serviceRate = $this->determineServiceRateForShipment($shipment);
@@ -101,10 +93,9 @@ class PriceCalculator
     }
 
     /**
-     * @param ShipmentInterface $shipment
      * @throws InvalidResourceException
      */
-    private function validateShipment(ShipmentInterface $shipment)
+    private function validateShipment(ShipmentInterface $shipment): void
     {
         if ($shipment->getPhysicalProperties() === null
             || $shipment->getPhysicalProperties()->getWeight() === null
@@ -126,11 +117,7 @@ class PriceCalculator
         }
     }
 
-    /**
-     * @param ShipmentInterface $shipment
-     * @return ServiceRateInterface
-     */
-    private function determineServiceRateForShipment(ShipmentInterface $shipment)
+    private function determineServiceRateForShipment(ShipmentInterface $shipment): ServiceRateInterface
     {
         $this->validateShipment($shipment);
 

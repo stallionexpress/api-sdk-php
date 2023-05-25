@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace MyParcelCom\ApiSdk\Tests\Feature\Proxy;
 
 use DateTime;
-use Http\Client\HttpClient;
 use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
 use MyParcelCom\ApiSdk\MyParcelComApi;
 use MyParcelCom\ApiSdk\MyParcelComApiInterface;
@@ -14,12 +13,13 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Proxy\ShopProxy;
 use MyParcelCom\ApiSdk\Tests\Traits\MocksApiCommunication;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Client\ClientInterface;
 
 class ShopProxyTest extends TestCase
 {
     use MocksApiCommunication;
 
-    /** @var HttpClient */
+    /** @var ClientInterface */
     private $client;
     /** @var AuthenticatorInterface */
     private $authenticator;

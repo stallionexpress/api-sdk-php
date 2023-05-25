@@ -10,33 +10,21 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 
 trait ProxiesResource
 {
-    /** @var ResourceInterface */
-    private $resource;
-
-    /** @var MyParcelComApiInterface */
-    private $api;
-
-    /** @var string */
-    private $uri;
+    private ?ResourceInterface $resource = null;
+    private ?MyParcelComApiInterface $api = null;
+    private ?string $uri = null;
 
     /**
      * Set the api to use when retrieving the resource.
-     *
-     * @param MyParcelComApiInterface $api
-     * @return $this
      */
-    public function setMyParcelComApi(MyParcelComApiInterface $api = null)
+    public function setMyParcelComApi(MyParcelComApiInterface $api = null): self
     {
         $this->api = $api;
 
         return $this;
     }
 
-    /**
-     * @param string $uri
-     * @return $this
-     */
-    public function setResourceUri($uri)
+    public function setResourceUri(string $uri): self
     {
         $this->uri = $uri;
 
@@ -45,17 +33,15 @@ trait ProxiesResource
 
     /**
      * Get the resource that this instance is a proxy for.
-     *
-     * @return ResourceInterface
      */
-    protected function getResource()
+    protected function getResource(): ResourceInterface
     {
         if (isset($this->resource)) {
             return $this->resource;
         }
 
         if (!isset($this->api)) {
-            throw  new MyParcelComException('No API object set on proxy, cannot retrieve resource');
+            throw new MyParcelComException('No API object set on proxy, cannot retrieve resource');
         }
 
         if (isset($this->uri)) {

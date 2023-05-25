@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace MyParcelCom\ApiSdk\Tests\Feature;
 
-use Http\Client\HttpClient;
 use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
 use MyParcelCom\ApiSdk\Collection\CollectionInterface;
 use MyParcelCom\ApiSdk\Exceptions\InvalidResourceException;
@@ -31,6 +30,7 @@ use MyParcelCom\ApiSdk\Resources\Shop;
 use MyParcelCom\ApiSdk\Tests\Traits\MocksApiCommunication;
 use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockObject;
+use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 
 class MyParcelComApiTest extends TestCase
@@ -41,7 +41,7 @@ class MyParcelComApiTest extends TestCase
     private $authenticator;
     /** @var MyParcelComApi */
     private $api;
-    /** @var HttpClient|PHPUnit_Framework_MockObject_MockObject */
+    /** @var ClientInterface|PHPUnit_Framework_MockObject_MockObject */
     private $client;
 
     protected function setUp(): void

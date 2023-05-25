@@ -7,19 +7,14 @@ namespace MyParcelCom\ApiSdk\Shipments;
 use MyParcelCom\ApiSdk\Exceptions\InvalidResourceException;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceRateInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 
 class ServiceMatcher
 {
     /**
      * Returns true if given service can be used for the given shipment.
-     *
-     * @param ShipmentInterface $shipment
-     * @param ServiceInterface  $service
-     * @return bool
      */
-    public function matches(ShipmentInterface $shipment, ServiceInterface $service)
+    public function matches(ShipmentInterface $shipment, ServiceInterface $service): bool
     {
         if (
             $shipment->getPhysicalProperties() === null
@@ -43,12 +38,8 @@ class ServiceMatcher
 
     /**
      * Returns true if the service has a delivery method that matches the shipment.
-     *
-     * @param ShipmentInterface $shipment
-     * @param ServiceInterface  $service
-     * @return bool
      */
-    public function matchesDeliveryMethod(ShipmentInterface $shipment, ServiceInterface $service)
+    public function matchesDeliveryMethod(ShipmentInterface $shipment, ServiceInterface $service): bool
     {
         $deliveryMethod = $shipment->getPickupLocationCode()
             ? ServiceInterface::DELIVERY_METHOD_PICKUP
@@ -59,12 +50,8 @@ class ServiceMatcher
 
     /**
      * Returns a subset of the given service rates that have all the options that the shipment requires.
-     *
-     * @param ShipmentInterface      $shipment
-     * @param ServiceRateInterface[] $serviceRates
-     * @return ServiceRateInterface[]
      */
-    public function getMatchedOptions(ShipmentInterface $shipment, array $serviceRates)
+    public function getMatchedOptions(ShipmentInterface $shipment, array $serviceRates): array
     {
         $optionIds = array_map(function (ServiceOptionInterface $option) {
             return $option->getId();

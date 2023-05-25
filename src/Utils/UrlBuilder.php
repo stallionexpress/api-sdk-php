@@ -6,37 +6,17 @@ namespace MyParcelCom\ApiSdk\Utils;
 
 class UrlBuilder
 {
-    /** @var string */
-    protected $url;
+    protected ?string $url = null;
+    protected ?string $scheme = null;
+    protected ?string $host = null;
+    protected ?int $port = null;
+    protected ?string $user = null;
+    protected ?string $password = null;
+    protected ?string $path = null;
+    protected ?string $fragment = null;
+    protected array $query = [];
 
-    /** @var string */
-    protected $scheme;
-
-    /** @var string */
-    protected $host;
-
-    /** @var int */
-    protected $port;
-
-    /** @var string */
-    protected $user;
-
-    /** @var string */
-    protected $password;
-
-    /** @var string */
-    protected $path;
-
-    /** @var array */
-    protected $query = [];
-
-    /** @var string */
-    protected $fragment;
-
-    /**
-     * @param string $url
-     */
-    public function __construct($url = null)
+    public function __construct(string $url = null)
     {
         if ($url !== null) {
             $this->setUrl($url);
@@ -45,22 +25,19 @@ class UrlBuilder
 
     /**
      * Set the base url.
-     *
-     * @param string $url
-     * @return $this
      */
-    public function setUrl($url)
+    public function setUrl(string $url): self
     {
         $this->url = $url;
         $parts = parse_url($url);
 
-        $this->scheme = isset($parts['scheme']) ? $parts['scheme'] : null;
-        $this->host = isset($parts['host']) ? $parts['host'] : null;
-        $this->port = isset($parts['port']) ? $parts['port'] : null;
-        $this->user = isset($parts['user']) ? $parts['user'] : null;
-        $this->password = isset($parts['pass']) ? $parts['pass'] : null;
-        $this->path = isset($parts['path']) ? $parts['path'] : null;
-        $this->fragment = isset($parts['fragment']) ? $parts['fragment'] : null;
+        $this->scheme = $parts['scheme'] ?? null;
+        $this->host = $parts['host'] ?? null;
+        $this->port = $parts['port'] ?? null;
+        $this->user = $parts['user'] ?? null;
+        $this->password = $parts['pass'] ?? null;
+        $this->path = $parts['path'] ?? null;
+        $this->fragment = $parts['fragment'] ?? null;
 
         if (isset($parts['query'])) {
             parse_str($parts['query'], $this->query);
@@ -71,10 +48,8 @@ class UrlBuilder
 
     /**
      * Get the compiled url.
-     *
-     * @return string
      */
-    public function getUrl()
+    public function getUrl(): string
     {
         $url = '';
         if ($this->scheme) {
@@ -108,21 +83,16 @@ class UrlBuilder
 
     /**
      * Get the GET query params.
-     *
-     * @return array
      */
-    public function getQuery()
+    public function getQuery(): array
     {
         return $this->query;
     }
 
     /**
      * Set the GET query params.
-     *
-     * @param array $query
-     * @return $this
      */
-    public function setQuery(array $query)
+    public function setQuery(array $query): self
     {
         $this->query = $query;
 
@@ -131,11 +101,8 @@ class UrlBuilder
 
     /**
      * Add GET query params.
-     *
-     * @param array $query
-     * @return $this
      */
-    public function addQuery(array $query)
+    public function addQuery(array $query): self
     {
         $this->query = array_merge($this->query, $query);
 
@@ -144,21 +111,16 @@ class UrlBuilder
 
     /**
      * Get the scheme of the url.
-     *
-     * @return string|null
      */
-    public function getScheme()
+    public function getScheme(): ?string
     {
         return $this->scheme;
     }
 
     /**
      * Set the scheme of the url.
-     *
-     * @param string $scheme
-     * @return $this
      */
-    public function setScheme($scheme)
+    public function setScheme(string $scheme): self
     {
         $this->scheme = $scheme;
 
@@ -167,21 +129,16 @@ class UrlBuilder
 
     /**
      * Get the host of the url.
-     *
-     * @return string|null
      */
-    public function getHost()
+    public function getHost(): ?string
     {
         return $this->host;
     }
 
     /**
      * Set the host of the url.
-     *
-     * @param string $host
-     * @return $this
      */
-    public function setHost($host)
+    public function setHost(string $host): self
     {
         $this->host = $host;
 
@@ -190,21 +147,16 @@ class UrlBuilder
 
     /**
      * Get the url port.
-     *
-     * @return int|null
      */
-    public function getPort()
+    public function getPort(): ?int
     {
         return $this->port;
     }
 
     /**
-     * Set the url port
-     *
-     * @param int $port
-     * @return $this
+     * Set the url port.
      */
-    public function setPort($port)
+    public function setPort(int $port): self
     {
         $this->port = $port;
 
@@ -213,21 +165,16 @@ class UrlBuilder
 
     /**
      * Get the HTTP auth user.
-     *
-     * @return string|null
      */
-    public function getUser()
+    public function getUser(): ?string
     {
         return $this->user;
     }
 
     /**
      * Set the HTTP auth user.
-     *
-     * @param string $user
-     * @return $this
      */
-    public function setUser($user)
+    public function setUser(string $user): self
     {
         $this->user = $user;
 
@@ -236,21 +183,16 @@ class UrlBuilder
 
     /**
      * Get the HTTP auth password.
-     *
-     * @return string|null
      */
-    public function getPassword()
+    public function getPassword(): ?string
     {
         return $this->password;
     }
 
     /**
      * Set the HTTP auth password.
-     *
-     * @param string $password
-     * @return $this
      */
-    public function setPassword($password)
+    public function setPassword(string $password): self
     {
         $this->password = $password;
 
@@ -259,21 +201,16 @@ class UrlBuilder
 
     /**
      * Get the path in the url.
-     *
-     * @return string|null
      */
-    public function getPath()
+    public function getPath(): ?string
     {
         return $this->path;
     }
 
     /**
      * Set the url path.
-     *
-     * @param string $path
-     * @return $this
      */
-    public function setPath($path)
+    public function setPath(string $path): self
     {
         $this->path = $path;
 
@@ -282,21 +219,16 @@ class UrlBuilder
 
     /**
      * Get the string after `#` in the url.
-     *
-     * @return string|null
      */
-    public function getFragment()
+    public function getFragment(): ?string
     {
         return $this->fragment;
     }
 
     /**
      * Set the string after `#` in the url.
-     *
-     * @param string $fragment
-     * @return $this
      */
-    public function setFragment($fragment)
+    public function setFragment(string $fragment): self
     {
         $this->fragment = $fragment;
 
@@ -305,10 +237,8 @@ class UrlBuilder
 
     /**
      * Get the compiled url string.
-     *
-     * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getUrl();
     }

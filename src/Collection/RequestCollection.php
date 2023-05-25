@@ -83,7 +83,7 @@ class RequestCollection implements CollectionInterface
     {
         $response = call_user_func_array($this->promiseCreator, [$pageNumber, $this->limit]);
 
-        $body = json_decode($response->getBody(), true);
+        $body = json_decode((string) $response->getBody(), true);
 
         $this->count = $body['meta']['total_records'];
         $included = $body['included'] ?? null;
