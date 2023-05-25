@@ -143,7 +143,7 @@ interface MyParcelComApiInterface
      *
      * @throws MyParcelComException
      */
-    public function getShipment(string $id, int $ttl = null): ShipmentInterface;
+    public function getShipment(string $id, int $ttl = self::TTL_NO_CACHE): ShipmentInterface;
 
     /**
      * Creates a given shipment or updates it depending on if the id is already set.

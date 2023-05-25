@@ -200,6 +200,6 @@ class LabelCombinerTest extends TestCase
         $combiner = new LabelCombiner();
 
         $this->expectException(LabelCombinerException::class);
-        $combiner->combineLabels([], null);
+        $combiner->combineLabels([], 'nope');
     }
 }

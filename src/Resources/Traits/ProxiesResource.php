@@ -24,7 +24,7 @@ trait ProxiesResource
         return $this;
     }
 
-    public function setResourceUri(string $uri): self
+    public function setResourceUri(?string $uri): self
     {
         $this->uri = $uri;
 
@@ -34,7 +34,7 @@ trait ProxiesResource
     /**
      * Get the resource that this instance is a proxy for.
      */
-    protected function getResource(): ResourceInterface
+    protected function getResource(): ?ResourceInterface
     {
         if (isset($this->resource)) {
             return $this->resource;

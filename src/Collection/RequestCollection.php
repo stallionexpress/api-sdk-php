@@ -56,8 +56,8 @@ class RequestCollection implements CollectionInterface
         // A maximum of 100 resources per page can be retrieved at once.
         // We need to specify which page should be retrieved from the api,
         // or which pages if the set offset and limit overlaps two pages.
-        $firstPage = ceil(($this->offset + 1) / $this->limit);
-        $secondPage = ceil(($this->offset + $this->limit) / $this->limit);
+        $firstPage = (int) ceil(($this->offset + 1) / $this->limit);
+        $secondPage = (int) ceil(($this->offset + $this->limit) / $this->limit);
 
         if (!isset($this->resources[$this->offset])) {
             $this->retrieveResources($firstPage);

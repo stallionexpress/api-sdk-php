@@ -18,12 +18,12 @@ class UrlBuilderTest extends TestCase
         $this->assertEquals(['que', 'pasa'], $url->setQuery(['que'])->addQuery(['pasa'])->getQuery());
         $this->assertEquals('torrent', $url->setScheme('torrent')->getScheme());
         $this->assertEquals('guest', $url->setHost('guest')->getHost());
-        $this->assertEquals('Tawny', $url->setPort('Tawny')->getPort());
+        $this->assertEquals(9057, $url->setPort(9057)->getPort());
         $this->assertEquals('GabeN', $url->setUser('GabeN')->getUser());
         $this->assertEquals('hl3c0nf1rm3d', $url->setPassword('hl3c0nf1rm3d')->getPassword());
         $this->assertEquals('/bin', $url->setPath('/bin')->getPath());
         $this->assertEquals('imagination', $url->setFragment('imagination')->getFragment());
 
-        $this->assertEquals('torrent://GabeN@guest:Tawny/bin?0=que&1=pasa#imagination', (string) $url->setPassword(''));
+        $this->assertEquals('torrent://GabeN@guest:9057/bin?0=que&1=pasa#imagination', (string) $url->setPassword(''));
     }
 }

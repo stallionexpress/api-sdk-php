@@ -47,7 +47,7 @@ class MyParcelComApi implements MyParcelComApiInterface
     private ClientInterface $client;
     private bool $authRetry = false;
 
-    private static MyParcelComApi $singleton;
+    private static ?MyParcelComApi $singleton = null;
 
     /**
      * Create a singleton instance of this class, which will be available in subsequent calls to `getSingleton()`.
@@ -66,7 +66,7 @@ class MyParcelComApi implements MyParcelComApiInterface
     /**
      * Get the singleton instance created.
      */
-    public static function getSingleton(): self
+    public static function getSingleton(): ?self
     {
         return self::$singleton;
     }
@@ -413,7 +413,7 @@ class MyParcelComApi implements MyParcelComApiInterface
         return $this->getRequestCollection($url->getUrl(), $ttl);
     }
 
-    public function getShipment(string $id, int $ttl = null): ShipmentInterface
+    public function getShipment(string $id, int $ttl = self::TTL_NO_CACHE): ShipmentInterface
     {
         return $this->getResourceById(ResourceInterface::TYPE_SHIPMENT, $id, $ttl);
     }
@@ -852,7 +852,7 @@ class MyParcelComApi implements MyParcelComApiInterface
     /**
      * Converts given array to a filter string for the query params.
      */
-    private function arrayToFilter(array &$filters, array $keys, array|string $value): void
+    private function arrayToFilter(array &$filters, array $keys, mixed $value): void
     {
         if (is_array($value)) {
             foreach ($value as $key => $nextValue) {

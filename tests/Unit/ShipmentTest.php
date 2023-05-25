@@ -431,9 +431,6 @@ class ShipmentTest extends TestCase
             $now,
             $shipment->setRegisterAt((new \DateTime())->setTimestamp($now))->getRegisterAt()->getTimestamp()
         );
-
-        $this->expectException(\InvalidArgumentException::class);
-        $shipment->setRegisterAt(new \stdClass());
     }
 
     /** @test */

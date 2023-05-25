@@ -431,9 +431,6 @@ class ShipmentProxyTest extends TestCase
             $now,
             $this->shipmentProxy->setRegisterAt((new \DateTime())->setTimestamp($now))->getRegisterAt()->getTimestamp()
         );
-
-        $this->expectException(\InvalidArgumentException::class);
-        $this->shipmentProxy->setRegisterAt(new \stdClass());
     }
 
     /** @test */

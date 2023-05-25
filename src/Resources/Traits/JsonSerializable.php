@@ -66,7 +66,7 @@ trait JsonSerializable
     {
         $array = [];
         foreach ($arrayValues as $key => $value) {
-            $key = StringUtils::camelToSnakeCase($key);
+            $key = is_string($key) ? StringUtils::camelToSnakeCase($key) : $key;
             $isObjectOrClass = is_object($value) || (is_string($value) && class_exists($value));
 
             if (is_scalar($value)) {
