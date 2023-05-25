@@ -12,11 +12,13 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceRateInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 use MyParcelCom\ApiSdk\Resources\Traits\ProcessIncludes;
+use MyParcelCom\ApiSdk\Resources\Traits\Resource;
 
 class ServiceRate implements ServiceRateInterface
 {
     use JsonSerializable;
     use ProcessIncludes;
+    use Resource;
 
     const ATTRIBUTE_PRICE = 'price';
     const ATTRIBUTE_FUEL_SURCHARGE = 'fuel_surcharge';
@@ -48,13 +50,11 @@ class ServiceRate implements ServiceRateInterface
     const WEIGHT_BRACKET_SIZE = 'size';
     const WEIGHT_BRACKET_SIZE_AMOUNT = 'size_amount';
 
-    /** @var string */
-    private $id;
+    private ?string $id = null;
 
-    /** @var string */
-    private $type = ResourceInterface::TYPE_SERVICE_RATE;
+    private string $type = ResourceInterface::TYPE_SERVICE_RATE;
 
-    private $attributes = [
+    private array $attributes = [
         self::ATTRIBUTE_PRICE                     => [
             self::ATTRIBUTE_AMOUNT   => null,
             self::ATTRIBUTE_CURRENCY => null,
@@ -79,7 +79,7 @@ class ServiceRate implements ServiceRateInterface
         self::ATTRIBUTE_IS_DYNAMIC                => null,
     ];
 
-    private $relationships = [
+    private array $relationships = [
         self::RELATIONSHIP_SERVICE         => [
             'data' => null,
         ],
@@ -91,8 +91,7 @@ class ServiceRate implements ServiceRateInterface
         ],
     ];
 
-    /** @var array */
-    private $meta = [
+    private array $meta = [
         self::META_BRACKET_PRICE => [
             self::ATTRIBUTE_AMOUNT   => null,
             self::ATTRIBUTE_CURRENCY => null,
@@ -101,42 +100,6 @@ class ServiceRate implements ServiceRateInterface
 
     /** @var callable */
     private $resolveDynamicRateForShipmentCallback;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
 
     /**
      * {@inheritdoc}

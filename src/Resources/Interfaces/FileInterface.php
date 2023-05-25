@@ -27,14 +27,6 @@ interface FileInterface extends ResourceInterface
     const FORMAT_EXTENSION = 'extension';
 
     /**
-     * Set the identifier for this file.
-     *
-     * @param string $id
-     * @return $this
-     */
-    public function setId($id);
-
-    /**
      * Set the type of file. See constants for possible options.
      *
      * @param string $documentType

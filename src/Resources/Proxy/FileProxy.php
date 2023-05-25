@@ -9,31 +9,18 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 use MyParcelCom\ApiSdk\Resources\Traits\ProxiesResource;
+use MyParcelCom\ApiSdk\Resources\Traits\Resource;
 use Psr\Http\Message\StreamInterface;
 
 class FileProxy implements FileInterface, ResourceProxyInterface
 {
     use JsonSerializable;
     use ProxiesResource;
+    use Resource;
 
-    /** @var string */
-    private $id;
+    private ?string $id = null;
 
-    /** @var string */
-    private $type = ResourceInterface::TYPE_FILE;
-
-    /**
-     * Set the identifier for this file.
-     *
-     * @param string $id
-     * @return $this
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
+    private string $type = ResourceInterface::TYPE_FILE;
 
     /**
      * Set the type of file. See constants for possible options.
@@ -176,22 +163,6 @@ class FileProxy implements FileInterface, ResourceProxyInterface
     public function getTemporaryFilePath($mimeType = null)
     {
         return $this->getResource()->getTemporaryFilePath($mimeType);
-    }
-
-    /**
-     * @return string
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->type;
     }
 
     /**

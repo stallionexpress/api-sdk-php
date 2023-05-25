@@ -5,101 +5,64 @@ declare(strict_types=1);
 namespace MyParcelCom\ApiSdk\Resources;
 
 use MyParcelCom\ApiSdk\Enums\TaxTypeEnum;
-use MyParcelCom\ApiSdk\Exceptions\MyParcelComException;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 
 class TaxIdentificationNumber
 {
     use JsonSerializable;
 
-    /** @var string */
-    private $countryCode;
+    private string $countryCode;
 
-    /** @var string */
-    private $number;
+    private string $number;
 
-    /** @var string|null */
-    private $description;
+    private ?string $description = null;
 
-    /** @var string */
-    private $type;
+    private string $type;
 
-    /**
-     * @param string $countryCode
-     * @return $this
-     */
-    public function setCountryCode($countryCode)
+    public function setCountryCode(string $countryCode): self
     {
         $this->countryCode = $countryCode;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getCountryCode()
+    public function getCountryCode(): string
     {
         return $this->countryCode;
     }
 
-    /**
-     * @param string $number
-     * @return $this
-     */
-    public function setNumber($number)
+    public function setNumber(string $number): self
     {
         $this->number = $number;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getNumber()
+    public function getNumber(): string
     {
         return $this->number;
     }
 
-    /**
-     * @param string|null $description
-     * @return $this
-     */
-    public function setDescription($description)
+    public function setDescription(?string $description): self
     {
         $this->description = $description;
 
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * @param TaxTypeEnum $type
-     * @return $this
-     */
-    public function setType($type)
+    public function setType(TaxTypeEnum $type): self
     {
-        if (!($type instanceof TaxTypeEnum)) {
-            throw new MyParcelComException('Expected parameter of type \MyParcelCom\ApiSdk\Enums\TaxTypeEnum');
-        }
-
         $this->type = $type->getValue();
 
         return $this;
     }
 
-    /**
-     * @return TaxTypeEnum|null
-     */
-    public function getType()
+    public function getType(): ?TaxTypeEnum
     {
         return $this->type ? new TaxTypeEnum($this->type) : null;
     }

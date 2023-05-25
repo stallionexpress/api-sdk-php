@@ -12,11 +12,13 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentStatusInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\StatusInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
+use MyParcelCom\ApiSdk\Resources\Traits\Resource;
 use MyParcelCom\ApiSdk\Utils\DateUtils;
 
 class ShipmentStatus implements ShipmentStatusInterface
 {
     use JsonSerializable;
+    use Resource;
 
     const ATTRIBUTE_CARRIER_STATUSES = 'carrier_statuses';
     const ATTRIBUTE_ERRORS = 'errors';
@@ -25,21 +27,17 @@ class ShipmentStatus implements ShipmentStatusInterface
     const RELATIONSHIP_STATUS = 'status';
     const RELATIONSHIP_SHIPMENT = 'shipment';
 
-    /** @var string */
-    private $id;
+    private ?string $id = null;
 
-    /** @var string */
-    private $type = ResourceInterface::TYPE_SHIPMENT_STATUS;
+    private string $type = ResourceInterface::TYPE_SHIPMENT_STATUS;
 
-    /** @var array */
-    private $attributes = [
+    private array $attributes = [
         self::ATTRIBUTE_CARRIER_STATUSES => [],
         self::ATTRIBUTE_ERRORS           => [],
         self::ATTRIBUTE_CREATED_AT       => null,
     ];
 
-    /** @var array */
-    private $relationships = [
+    private array $relationships = [
         self::RELATIONSHIP_STATUS   => [
             'data' => null,
         ],
@@ -47,33 +45,6 @@ class ShipmentStatus implements ShipmentStatusInterface
             'data' => null,
         ],
     ];
-
-    /**
-     * @return string
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param string $id
-     * @return $this
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
 
     /**
      * @param CarrierStatusInterface[] $carrierStatuses

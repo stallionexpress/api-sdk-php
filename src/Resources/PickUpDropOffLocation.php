@@ -11,11 +11,13 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\PickUpDropOffLocationInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\PositionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
+use MyParcelCom\ApiSdk\Resources\Traits\Resource;
 use MyParcelCom\ApiSdk\Utils\DistanceUtils;
 
 class PickUpDropOffLocation implements PickUpDropOffLocationInterface
 {
     use JsonSerializable;
+    use Resource;
 
     const ATTRIBUTE_CODE = 'code';
     const ATTRIBUTE_ADDRESS = 'address';
@@ -27,14 +29,11 @@ class PickUpDropOffLocation implements PickUpDropOffLocationInterface
 
     const META_DISTANCE = 'distance';
 
-    /** @var string */
-    private $id;
+    private ?string $id = null;
 
-    /** @var string */
-    private $type = ResourceInterface::TYPE_PUDO_LOCATION;
+    private string $type = ResourceInterface::TYPE_PUDO_LOCATION;
 
-    /** @var array */
-    private $attributes = [
+    private array $attributes = [
         self::ATTRIBUTE_CODE          => null,
         self::ATTRIBUTE_ADDRESS       => null,
         self::ATTRIBUTE_OPENING_HOURS => [],
@@ -42,43 +41,15 @@ class PickUpDropOffLocation implements PickUpDropOffLocationInterface
         self::ATTRIBUTE_CATEGORIES    => [],
     ];
 
-    /** @var array */
-    private $relationships = [
+    private array $relationships = [
         self::RELATIONSHIP_CARRIER => [
             'data' => null,
         ],
     ];
 
-    /** @var array */
-    private $meta = [
+    private array $meta = [
         self::META_DISTANCE => null,
     ];
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
 
     /**
      * {@inheritdoc}

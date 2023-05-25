@@ -10,12 +10,6 @@ use MyParcelCom\ApiSdk\Resources\TaxIdentificationNumber;
 interface ShipmentInterface extends ResourceInterface
 {
     /**
-     * @param string $id
-     * @return $this
-     */
-    public function setId($id);
-
-    /**
      * @param AddressInterface $recipientAddress
      * @return $this
      */

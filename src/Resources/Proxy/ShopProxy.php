@@ -12,46 +12,17 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 use MyParcelCom\ApiSdk\Resources\Traits\ProxiesResource;
+use MyParcelCom\ApiSdk\Resources\Traits\Resource;
 
 class ShopProxy implements ShopInterface, ResourceProxyInterface
 {
     use JsonSerializable;
     use ProxiesResource;
+    use Resource;
 
-    /** @var string */
-    private $id;
+    private ?string $id = null;
 
-    /** @var string */
-    private $type = ResourceInterface::TYPE_SHOP;
-
-    /**
-     * Set the identifier for this file.
-     *
-     * @param string $id
-     * @return $this
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
+    private string $type = ResourceInterface::TYPE_SHOP;
 
     /**
      * @param $name

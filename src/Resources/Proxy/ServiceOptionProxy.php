@@ -9,59 +9,30 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 use MyParcelCom\ApiSdk\Resources\Traits\ProxiesResource;
+use MyParcelCom\ApiSdk\Resources\Traits\Resource;
 
 class ServiceOptionProxy implements ServiceOptionInterface, ResourceProxyInterface
 {
     use JsonSerializable;
     use ProxiesResource;
+    use Resource;
 
     const META_PRICE = 'price';
     const META_PRICE_AMOUNT = 'amount';
     const META_PRICE_CURRENCY = 'currency';
     const META_INCLUDED = 'included';
 
-    /** @var string */
-    private $id;
+    private ?string $id = null;
 
-    /** @var string */
-    private $type = ResourceInterface::TYPE_SERVICE_OPTION;
+    private string $type = ResourceInterface::TYPE_SERVICE_OPTION;
 
-    /** @var array */
-    private $meta = [
+    private array $meta = [
         self::META_PRICE    => [
             self::META_PRICE_AMOUNT   => null,
             self::META_PRICE_CURRENCY => null,
         ],
         self::META_INCLUDED => null,
     ];
-
-    /**
-     * Set the identifier for this file.
-     *
-     * {@inheritdoc}
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
 
     /**
      * {@inheritdoc}

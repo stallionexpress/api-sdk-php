@@ -9,12 +9,6 @@ use MyParcelCom\ApiSdk\Utils\DistanceUtils;
 interface PickUpDropOffLocationInterface extends ResourceInterface
 {
     /**
-     * @param string $id
-     * @return $this
-     */
-    public function setId($id);
-
-    /**
      * @param string $code
      * @return $this
      */

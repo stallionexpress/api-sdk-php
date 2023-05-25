@@ -9,10 +9,12 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceRateInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
+use MyParcelCom\ApiSdk\Resources\Traits\Resource;
 
 class Service implements ServiceInterface
 {
     use JsonSerializable;
+    use Resource;
 
     const ATTRIBUTE_NAME = 'name';
     const ATTRIBUTE_CODE = 'code';
@@ -29,20 +31,11 @@ class Service implements ServiceInterface
 
     const RELATIONSHIP_CARRIER = 'carrier';
 
-    /** @var string */
-    private $id;
+    private ?string $id = null;
 
-    /** @var string */
-    private $type = ResourceInterface::TYPE_SERVICE;
+    private string $type = ResourceInterface::TYPE_SERVICE;
 
-    /** @var ServiceRateInterface[] */
-    private $serviceRates = [];
-
-    /** @var callable */
-    private $serviceRatesCallback;
-
-    /** @var array */
-    private $attributes = [
+    private array $attributes = [
         self::ATTRIBUTE_NAME            => null,
         self::ATTRIBUTE_CODE            => null,
         self::ATTRIBUTE_PACKAGE_TYPE    => null,
@@ -57,38 +50,17 @@ class Service implements ServiceInterface
         self::ATTRIBUTE_DELIVERY_METHOD => null,
     ];
 
-    /** @var array */
-    private $relationships = [
+    private array $relationships = [
         self::RELATIONSHIP_CARRIER => [
             'data' => null,
         ],
     ];
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
+    /** @var ServiceRateInterface[] */
+    private $serviceRates = [];
 
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
+    /** @var callable */
+    private $serviceRatesCallback;
 
     /**
      * {@inheritdoc}

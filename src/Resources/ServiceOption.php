@@ -7,10 +7,12 @@ namespace MyParcelCom\ApiSdk\Resources;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
+use MyParcelCom\ApiSdk\Resources\Traits\Resource;
 
 class ServiceOption implements ServiceOptionInterface
 {
     use JsonSerializable;
+    use Resource;
 
     const ATTRIBUTE_NAME = 'name';
     const ATTRIBUTE_CODE = 'code';
@@ -21,53 +23,23 @@ class ServiceOption implements ServiceOptionInterface
     const META_PRICE_CURRENCY = 'currency';
     const META_INCLUDED = 'included';
 
-    /** @var string */
-    private $id;
+    private ?string $id = null;
 
-    /** @var string */
-    private $type = ResourceInterface::TYPE_SERVICE_OPTION;
+    private string $type = ResourceInterface::TYPE_SERVICE_OPTION;
 
-    /** @var array */
-    private $attributes = [
+    private array $attributes = [
         self::ATTRIBUTE_NAME     => null,
         self::ATTRIBUTE_CODE     => null,
         self::ATTRIBUTE_CATEGORY => null,
     ];
 
-    /** @var array */
-    private $meta = [
+    private array $meta = [
         self::META_PRICE    => [
             self::META_PRICE_AMOUNT   => null,
             self::META_PRICE_CURRENCY => null,
         ],
         self::META_INCLUDED => null,
     ];
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
 
     /**
      * {@inheritdoc}

@@ -7,49 +7,22 @@ namespace MyParcelCom\ApiSdk\Resources;
 use MyParcelCom\ApiSdk\Resources\Interfaces\OrganizationInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
+use MyParcelCom\ApiSdk\Resources\Traits\Resource;
 
 class Organization implements OrganizationInterface
 {
     use JsonSerializable;
+    use Resource;
 
     const ATTRIBUTE_NAME = 'name';
 
-    /** @var string */
-    private $id;
+    private ?string $id = null;
 
-    /** @var string */
-    private $type = ResourceInterface::TYPE_ORGANIZATIONS;
+    private string $type = ResourceInterface::TYPE_ORGANIZATIONS;
 
-    /** @var array */
-    private $attributes = [
+    private array $attributes = [
         self::ATTRIBUTE_NAME => null,
     ];
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
 
     /**
      * {@inheritdoc}

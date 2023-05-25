@@ -14,12 +14,6 @@ interface ServiceInterface extends ResourceInterface
     const DELIVERY_METHOD_PICKUP = 'pick-up';
 
     /**
-     * @param string $id
-     * @return $this
-     */
-    public function setId($id);
-
-    /**
      * @param string $name
      * @return $this
      */

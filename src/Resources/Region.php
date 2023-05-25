@@ -7,10 +7,12 @@ namespace MyParcelCom\ApiSdk\Resources;
 use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
+use MyParcelCom\ApiSdk\Resources\Traits\Resource;
 
 class Region implements RegionInterface
 {
     use JsonSerializable;
+    use Resource;
 
     const ATTRIBUTE_COUNTRY_CODE = 'country_code';
     const ATTRIBUTE_REGION_CODE = 'region_code';
@@ -20,52 +22,22 @@ class Region implements RegionInterface
 
     const RELATIONSHIP_PARENT = 'parent';
 
-    /** @var string */
-    private $id;
+    private ?string $id = null;
 
-    /** @var string */
-    private $type = ResourceInterface::TYPE_REGION;
+    private string $type = ResourceInterface::TYPE_REGION;
 
-    /** @var array */
-    private $attributes = [
+    private array $attributes = [
         self::ATTRIBUTE_COUNTRY_CODE => null,
         self::ATTRIBUTE_REGION_CODE  => null,
         self::ATTRIBUTE_CURRENCY     => null,
         self::ATTRIBUTE_NAME         => null,
     ];
 
-    /** @var array */
-    private $relationships = [
+    private array $relationships = [
         self::RELATIONSHIP_PARENT => [
             'data' => null,
         ],
     ];
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
 
     /**
      * {@inheritdoc}

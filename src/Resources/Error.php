@@ -35,10 +35,7 @@ class Error implements ErrorInterface
     /** @var array */
     protected $meta;
 
-    /**
-     * @return string
-     */
-    public function getId()
+    public function getId(): ?string
     {
         return $this->id;
     }

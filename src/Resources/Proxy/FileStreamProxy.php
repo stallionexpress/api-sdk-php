@@ -9,34 +9,16 @@ use Psr\Http\Message\StreamInterface;
 
 class FileStreamProxy implements StreamInterface
 {
-    /** @var StreamInterface */
-    private $stream;
+    private StreamInterface $stream;
 
-    /** @var MyParcelComApiInterface */
-    private $api;
-
-    /** @var string */
-    private $mimeType;
-
-    /** @var string */
-    private $id;
-
-    /**
-     * @param string                  $id
-     * @param string                  $mimeType
-     * @param MyParcelComApiInterface $api
-     */
-    public function __construct($id, $mimeType, MyParcelComApiInterface $api)
-    {
-        $this->id = $id;
-        $this->api = $api;
-        $this->mimeType = $mimeType;
+    public function __construct(
+        private string $id,
+        private string $mimeType,
+        private MyParcelComApiInterface $api,
+    ) {
     }
 
-    /**
-     * @return StreamInterface
-     */
-    protected function getStream()
+    protected function getStream(): StreamInterface
     {
         if (isset($this->stream)) {
             return $this->stream;
@@ -66,19 +48,16 @@ class FileStreamProxy implements StreamInterface
      * string casting operations.
      *
      * @see http://php.net/manual/en/language.oop5.magic.php#object.tostring
-     * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getStream()->__toString();
     }
 
     /**
      * Closes the stream and any underlying resources.
-     *
-     * @return void
      */
-    public function close()
+    public function close(): void
     {
         $this->getStream()->close();
     }
@@ -118,20 +97,16 @@ class FileStreamProxy implements StreamInterface
 
     /**
      * Returns true if the stream is at the end of the stream.
-     *
-     * @return bool
      */
-    public function eof()
+    public function eof(): bool
     {
         return $this->getStream()->eof();
     }
 
     /**
      * Returns whether or not the stream is seekable.
-     *
-     * @return bool
      */
-    public function isSeekable()
+    public function isSeekable(): bool
     {
         return $this->getStream()->isSeekable();
     }
@@ -170,10 +145,8 @@ class FileStreamProxy implements StreamInterface
 
     /**
      * Returns whether or not the stream is writable.
-     *
-     * @return bool
      */
-    public function isWritable()
+    public function isWritable(): bool
     {
         return $this->getStream()->isWritable();
     }
@@ -192,10 +165,8 @@ class FileStreamProxy implements StreamInterface
 
     /**
      * Returns whether or not the stream is readable.
-     *
-     * @return bool
      */
-    public function isReadable()
+    public function isReadable(): bool
     {
         return $this->getStream()->isReadable();
     }

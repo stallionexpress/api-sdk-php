@@ -7,12 +7,6 @@ namespace MyParcelCom\ApiSdk\Resources\Interfaces;
 interface RegionInterface extends ResourceInterface
 {
     /**
-     * @param string $id
-     * @return $this
-     */
-    public function setId($id);
-
-    /**
      * @param string $countryCode
      * @return $this
      */

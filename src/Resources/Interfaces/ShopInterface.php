@@ -9,12 +9,6 @@ use DateTime;
 interface ShopInterface extends ResourceInterface
 {
     /**
-     * @param string $id
-     * @return $this
-     */
-    public function setId($id);
-
-    /**
      * @param $name
      * @return $this
      */

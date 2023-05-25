@@ -9,12 +9,6 @@ use DateTime;
 interface ShipmentStatusInterface extends ResourceInterface
 {
     /**
-     * @param string $id
-     * @return $this
-     */
-    public function setId($id);
-
-    /**
      * @param CarrierStatusInterface[] $carrierStatuses
      * @return $this
      */

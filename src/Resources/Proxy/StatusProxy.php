@@ -9,138 +9,74 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\StatusInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 use MyParcelCom\ApiSdk\Resources\Traits\ProxiesResource;
+use MyParcelCom\ApiSdk\Resources\Traits\Resource;
 
 class StatusProxy implements StatusInterface, ResourceProxyInterface
 {
     use JsonSerializable;
     use ProxiesResource;
+    use Resource;
 
-    /** @var string */
-    private $id;
+    private ?string $id = null;
 
-    /** @var string */
-    private $type = ResourceInterface::TYPE_STATUS;
+    private string $type = ResourceInterface::TYPE_STATUS;
 
-    /**
-     * Set the identifier for this file.
-     *
-     * @param string $id
-     * @return $this
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param string $code
-     * @return $this
-     */
-    public function setCode($code)
+    public function setCode(string $code): self
     {
         $this->getResource()->setCode($code);
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getCode()
+    public function getCode(): string
     {
         return $this->getResource()->getCode();
     }
 
-    /**
-     * @param string $resourceType
-     * @return $this
-     */
-    public function setResourceType($resourceType)
+    public function setResourceType(string $resourceType): self
     {
         $this->getResource()->setResourceType($resourceType);
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getResourceType()
+    public function getResourceType(): string
     {
         return $this->getResource()->getResourceType();
     }
 
-    /**
-     * @param string $level
-     * @return $this
-     */
-    public function setLevel($level)
+    public function setLevel(string $level): self
     {
         $this->getResource()->setLevel($level);
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getLevel()
+    public function getLevel(): string
     {
         return $this->getResource()->getLevel();
     }
 
-    /**
-     * @param string $name
-     * @return $this
-     */
-    public function setName($name)
+    public function setName(string $name): self
     {
         $this->getResource()->setName($name);
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->getResource()->getName();
     }
 
-    /**
-     * @param string $description
-     * @return $this
-     */
-    public function setDescription($description)
+    public function setDescription(string $description): self
     {
         $this->getResource()->setDescription($description);
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->getResource()->getDescription();
     }

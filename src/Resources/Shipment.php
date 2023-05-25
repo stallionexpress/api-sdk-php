@@ -19,12 +19,14 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentStatusInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 use MyParcelCom\ApiSdk\Resources\Traits\ProcessIncludes;
+use MyParcelCom\ApiSdk\Resources\Traits\Resource;
 use MyParcelCom\ApiSdk\Utils\DateUtils;
 
 class Shipment implements ShipmentInterface
 {
     use JsonSerializable;
     use ProcessIncludes;
+    use Resource;
 
     const ATTRIBUTE_BARCODE = 'barcode';
     const ATTRIBUTE_TRACKING_CODE = 'tracking_code';
@@ -71,20 +73,11 @@ class Shipment implements ShipmentInterface
         ResourceInterface::TYPE_SHOP            => self::RELATIONSHIP_SHOP,
     ];
 
-    /** @var string */
-    private $id;
+    private ?string $id = null;
 
-    /** @var string */
-    private $type = ResourceInterface::TYPE_SHIPMENT;
+    private string $type = ResourceInterface::TYPE_SHIPMENT;
 
-    /** @var ShipmentStatusInterface[] */
-    private $statusHistory;
-
-    /** @var callable */
-    private $statusHistoryCallback;
-
-    /** @var array */
-    private $attributes = [
+    private array $attributes = [
         self::ATTRIBUTE_BARCODE                              => null,
         self::ATTRIBUTE_TRACKING_CODE                        => null,
         self::ATTRIBUTE_TRACKING_URL                         => null,
@@ -111,8 +104,7 @@ class Shipment implements ShipmentInterface
         self::ATTRIBUTE_TAGS                                 => null,
     ];
 
-    /** @var array */
-    private $relationships = [
+    private array $relationships = [
         self::RELATIONSHIP_SHOP            => [
             'data' => null,
         ],
@@ -133,42 +125,18 @@ class Shipment implements ShipmentInterface
         ],
     ];
 
-    /** @var array */
-    private $meta = [
+    private array $meta = [
         self::META_LABEL_MIME_TYPE => FileInterface::MIME_TYPE_PDF,
         self::META_SERVICE_CODE    => null,
     ];
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
+    /** @var ShipmentStatusInterface[] */
+    private $statusHistory;
 
-        return $this;
-    }
+    /** @var callable */
+    private $statusHistoryCallback;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * @return array
-     */
-    public function getMeta()
+    public function getMeta(): array
     {
         return $this->meta;
     }

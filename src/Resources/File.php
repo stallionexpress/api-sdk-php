@@ -8,23 +8,22 @@ use GuzzleHttp\Psr7\Utils;
 use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
+use MyParcelCom\ApiSdk\Resources\Traits\Resource;
 use Psr\Http\Message\StreamInterface;
 
 class File implements FileInterface
 {
     use JsonSerializable;
+    use Resource;
 
     const ATTRIBUTE_DOCUMENT_TYPE = 'document_type';
     const ATTRIBUTE_FORMATS = 'formats';
 
-    /** @var string */
-    private $id;
+    private ?string $id = null;
 
-    /** @var string */
-    private $type = ResourceInterface::TYPE_FILE;
+    private string $type = ResourceInterface::TYPE_FILE;
 
-    /** @var array */
-    private $attributes = [
+    private array $attributes = [
         self::ATTRIBUTE_FORMATS       => [],
         self::ATTRIBUTE_DOCUMENT_TYPE => null,
     ];
@@ -37,32 +36,6 @@ class File implements FileInterface
 
     /** @var string[] */
     private $paths = [];
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
 
     /**
      * {@inheritdoc}

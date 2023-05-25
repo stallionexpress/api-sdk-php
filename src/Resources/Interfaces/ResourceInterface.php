@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace MyParcelCom\ApiSdk\Resources\Interfaces;
 
+use JsonSerializable;
+
 /**
  * Interface that should be implemented by each class that represents a resource af the API.
  */
-interface ResourceInterface extends \JsonSerializable
+interface ResourceInterface extends JsonSerializable
 {
     const TYPE_CARRIER = 'carriers';
     const TYPE_CONTRACT = 'contracts';
@@ -23,13 +25,9 @@ interface ResourceInterface extends \JsonSerializable
     const TYPE_SHOP = 'shops';
     const TYPE_STATUS = 'statuses';
 
-    /**
-     * @return string
-     */
-    public function getId();
+    public function getId(): ?string;
 
-    /**
-     * @return string
-     */
-    public function getType();
+    public function setId(string $id): self;
+
+    public function getType(): string;
 }

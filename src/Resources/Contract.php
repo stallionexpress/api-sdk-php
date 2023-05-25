@@ -8,10 +8,12 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
+use MyParcelCom\ApiSdk\Resources\Traits\Resource;
 
 class Contract implements ContractInterface
 {
     use JsonSerializable;
+    use Resource;
 
     const ATTRIBUTE_CURRENCY = 'currency';
     const ATTRIBUTE_NAME = 'name';
@@ -19,51 +21,21 @@ class Contract implements ContractInterface
 
     const RELATIONSHIP_CARRIER = 'carrier';
 
-    /** @var string */
-    private $id;
+    private ?string $id = null;
 
-    /** @var string */
-    private $type = ResourceInterface::TYPE_CONTRACT;
+    private string $type = ResourceInterface::TYPE_CONTRACT;
 
-    /** @var array */
-    private $attributes = [
+    private array $attributes = [
         self::ATTRIBUTE_CURRENCY => null,
         self::ATTRIBUTE_NAME     => null,
         self::ATTRIBUTE_STATUS   => null,
     ];
 
-    /** @var array */
-    private $relationships = [
+    private array $relationships = [
         self::RELATIONSHIP_CARRIER => [
             'data' => null,
         ],
     ];
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
 
     /**
      * {@inheritdoc}
