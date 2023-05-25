@@ -6,32 +6,27 @@ namespace MyParcelCom\ApiSdk\Tests\Traits;
 
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use Http\Client\HttpClient;
 use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
 use MyParcelCom\ApiSdk\Http\Exceptions\RequestException;
+use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Symfony\Component\Cache\Adapter\NullAdapter;
 use Symfony\Component\Cache\Psr16Cache;
-use Symfony\Component\Cache\Simple\NullCache;
 
 trait MocksApiCommunication
 {
-    protected $clientCalls = [];
+    protected array $clientCalls = [];
 
-    protected function getNullCache()
+    protected function getNullCache(): Psr16Cache
     {
-        // Symfony 5.0.0 removed their PSR-16 cache classes. Their PSR-6 cache classes can be wrapped in Psr16Cache.
-        if (class_exists('\Symfony\Component\Cache\Psr16Cache')) {
-            $psr6Cache = new NullAdapter();
-            return new Psr16Cache($psr6Cache);
-        } else {
-            return new NullCache();
-        }
+        $psr6Cache = new NullAdapter();
+
+        return new Psr16Cache($psr6Cache);
     }
 
     protected function getClientMock()
     {
-        $client = $this->getMockBuilder(HttpClient::class)
+        $client = $this->getMockBuilder(ClientInterface::class)
             ->disableOriginalConstructor()
             ->disableOriginalClone()
             ->disableArgumentCloning()
@@ -44,7 +39,7 @@ trait MocksApiCommunication
                 $uri = urldecode((string) $request->getUri());
 
                 $filePath = implode(DIRECTORY_SEPARATOR, [
-                        dirname(dirname(__FILE__)),
+                        dirname(__FILE__, 2),
                         'Stubs',
                         $method,
                         str_replace(
@@ -60,7 +55,7 @@ trait MocksApiCommunication
 
                 $filePath = urldecode($filePath);
 
-                if (strpos($filePath, 'stream') !== false) {
+                if (str_contains($filePath, 'stream')) {
                     $filePath = preg_replace('/.json/', '.txt', $filePath);
                 }
 
@@ -73,7 +68,7 @@ trait MocksApiCommunication
 
                 $returnJson = file_get_contents($filePath);
 
-                if (strpos($returnJson, '"errors": [') !== false && strpos($returnJson, '"data": ') === false) {
+                if (str_contains($returnJson, '"errors": [') && !str_contains($returnJson, '"data": ')) {
                     throw new RequestException(
                         new Request($method, $uri),
                         new Response(500, [], $returnJson)
