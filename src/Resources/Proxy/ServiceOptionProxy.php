@@ -34,9 +34,6 @@ class ServiceOptionProxy implements ServiceOptionInterface, ResourceProxyInterfa
         self::META_INCLUDED => null,
     ];
 
-    /**
-     * {@inheritdoc}
-     */
     public function setName($name)
     {
         $this->getResource()->setName($name);
@@ -44,17 +41,11 @@ class ServiceOptionProxy implements ServiceOptionInterface, ResourceProxyInterfa
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getName()
     {
         return $this->getResource()->getName();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setCode($code)
     {
         $this->getResource()->setCode($code);
@@ -62,17 +53,11 @@ class ServiceOptionProxy implements ServiceOptionInterface, ResourceProxyInterfa
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getCode()
     {
         return $this->getResource()->getCode();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setCategory($category)
     {
         $this->getResource()->setCategory($category);
@@ -80,17 +65,11 @@ class ServiceOptionProxy implements ServiceOptionInterface, ResourceProxyInterfa
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getCategory()
     {
         return $this->getResource()->getCategory();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setPrice($price)
     {
         $this->meta[self::META_PRICE][self::META_PRICE_AMOUNT] = $price !== null ? (int) $price : null;
@@ -98,17 +77,11 @@ class ServiceOptionProxy implements ServiceOptionInterface, ResourceProxyInterfa
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getPrice()
     {
         return $this->meta[self::META_PRICE][self::META_PRICE_AMOUNT];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setCurrency($currency)
     {
         $this->meta[self::META_PRICE][self::META_PRICE_CURRENCY] = $currency;
@@ -116,17 +89,11 @@ class ServiceOptionProxy implements ServiceOptionInterface, ResourceProxyInterfa
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getCurrency()
     {
         return $this->meta[self::META_PRICE][self::META_PRICE_CURRENCY];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setIncluded($included)
     {
         $this->meta[self::META_INCLUDED] = $included;
@@ -134,9 +101,6 @@ class ServiceOptionProxy implements ServiceOptionInterface, ResourceProxyInterfa
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isIncluded()
     {
         return $this->meta[self::META_INCLUDED];

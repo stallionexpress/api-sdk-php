@@ -46,11 +46,7 @@ class ShipmentStatus implements ShipmentStatusInterface
         ],
     ];
 
-    /**
-     * @param CarrierStatusInterface[] $carrierStatuses
-     * @return $this
-     */
-    public function setCarrierStatuses(array $carrierStatuses)
+    public function setCarrierStatuses(array $carrierStatuses): self
     {
         $this->attributes[self::ATTRIBUTE_CARRIER_STATUSES] = [];
         foreach ($carrierStatuses as $carrierStatus) {
@@ -60,30 +56,19 @@ class ShipmentStatus implements ShipmentStatusInterface
         return $this;
     }
 
-    /**
-     * @param CarrierStatusInterface $carrierStatus
-     * @return $this
-     */
-    public function addCarrierStatus(CarrierStatusInterface $carrierStatus)
+    public function addCarrierStatus(CarrierStatusInterface $carrierStatus): self
     {
         $this->attributes[self::ATTRIBUTE_CARRIER_STATUSES][] = $carrierStatus;
 
         return $this;
     }
 
-    /**
-     * @return CarrierStatusInterface[]
-     */
-    public function getCarrierStatuses()
+    public function getCarrierStatuses(): array
     {
         return $this->attributes[self::ATTRIBUTE_CARRIER_STATUSES];
     }
 
-    /**
-     * @param ErrorInterface[] $errors
-     * @return $this
-     */
-    public function setErrors(array $errors)
+    public function setErrors(array $errors): self
     {
         $this->attributes[self::ATTRIBUTE_ERRORS] = [];
         foreach ($errors as $error) {
@@ -93,80 +78,50 @@ class ShipmentStatus implements ShipmentStatusInterface
         return $this;
     }
 
-    /**
-     * @param ErrorInterface $error
-     * @return $this
-     */
-    public function addError(ErrorInterface $error)
+    public function addError(ErrorInterface $error): self
     {
         $this->attributes[self::ATTRIBUTE_ERRORS][] = $error;
 
         return $this;
     }
 
-    /**
-     * @return ErrorInterface[]
-     */
-    public function getErrors()
+    public function getErrors(): array
     {
         return $this->attributes[self::ATTRIBUTE_ERRORS];
     }
 
-    /**
-     * @param DateTime|string|int $createdAt
-     * @return $this
-     */
-    public function setCreatedAt($createdAt)
+    public function setCreatedAt(DateTime|int $createdAt): self
     {
         $this->attributes[self::ATTRIBUTE_CREATED_AT] = DateUtils::toTimestamp($createdAt);
 
         return $this;
     }
 
-    /**
-     * @return null|DateTime
-     */
-    public function getCreatedAt()
+    public function getCreatedAt(): DateTime
     {
-        return isset($this->attributes[self::ATTRIBUTE_CREATED_AT])
-            ? (new DateTime())->setTimestamp($this->attributes[self::ATTRIBUTE_CREATED_AT])
-            : null;
+        return (new DateTime())->setTimestamp($this->attributes[self::ATTRIBUTE_CREATED_AT]);
     }
 
-    /**
-     * @param ShipmentInterface $shipment
-     * @return $this
-     */
-    public function setShipment(ShipmentInterface $shipment)
+    public function setShipment(ShipmentInterface $shipment): self
     {
         $this->relationships[self::RELATIONSHIP_SHIPMENT]['data'] = $shipment;
 
         return $this;
     }
 
-    /**
-     * @return ShipmentInterface
-     */
-    public function getShipment()
+    public function getShipment(): ShipmentInterface
     {
         return $this->relationships[self::RELATIONSHIP_SHIPMENT]['data'];
     }
 
-    /**
-     * @param StatusInterface $status
-     * @return $this
-     */
-    public function setStatus(StatusInterface $status)
+    public function setStatus(StatusInterface $status): self
     {
         $this->relationships[self::RELATIONSHIP_STATUS]['data'] = $status;
 
         return $this;
     }
 
-    /**
-     * @return StatusInterface
-     */
-    public function getStatus()
+    public function getStatus(): StatusInterface
     {
         return $this->relationships[self::RELATIONSHIP_STATUS]['data'];
     }

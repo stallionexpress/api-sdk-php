@@ -101,9 +101,6 @@ class ServiceRate implements ServiceRateInterface
     /** @var callable */
     private $resolveDynamicRateForShipmentCallback;
 
-    /**
-     * {@inheritdoc}
-     */
     public function setWeightMin($weightMin)
     {
         $this->attributes[self::ATTRIBUTE_WEIGHT_MIN] = $weightMin;
@@ -111,17 +108,11 @@ class ServiceRate implements ServiceRateInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getWeightMin()
     {
         return $this->attributes[self::ATTRIBUTE_WEIGHT_MIN];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setWeightMax($weightMax)
     {
         $this->attributes[self::ATTRIBUTE_WEIGHT_MAX] = $weightMax;
@@ -129,9 +120,6 @@ class ServiceRate implements ServiceRateInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getWeightMax()
     {
         return $this->attributes[self::ATTRIBUTE_WEIGHT_MAX];
@@ -207,9 +195,6 @@ class ServiceRate implements ServiceRateInterface
         return $price;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setLengthMax($lengthMax)
     {
         $this->attributes[self::ATTRIBUTE_LENGTH_MAX] = $lengthMax;
@@ -217,17 +202,11 @@ class ServiceRate implements ServiceRateInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getLengthMax()
     {
         return $this->attributes[self::ATTRIBUTE_LENGTH_MAX];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setHeightMax($heightMax)
     {
         $this->attributes[self::ATTRIBUTE_HEIGHT_MAX] = $heightMax;
@@ -235,17 +214,11 @@ class ServiceRate implements ServiceRateInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getHeightMax()
     {
         return $this->attributes[self::ATTRIBUTE_HEIGHT_MAX];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setWidthMax($widthMax)
     {
         $this->attributes[self::ATTRIBUTE_WIDTH_MAX] = $widthMax;
@@ -253,17 +226,11 @@ class ServiceRate implements ServiceRateInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getWidthMax()
     {
         return $this->attributes[self::ATTRIBUTE_WIDTH_MAX];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setVolumeMax($volumeMax)
     {
         $this->attributes[self::ATTRIBUTE_VOLUME_MAX] = $volumeMax;
@@ -271,9 +238,6 @@ class ServiceRate implements ServiceRateInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getVolumeMax()
     {
         return $this->attributes[self::ATTRIBUTE_VOLUME_MAX];
@@ -298,9 +262,6 @@ class ServiceRate implements ServiceRateInterface
         return $this->attributes[self::ATTRIBUTE_VOLUMETRIC_WEIGHT_DIVISOR];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setCurrency($currency)
     {
         $this->attributes[self::ATTRIBUTE_PRICE][self::ATTRIBUTE_CURRENCY] = $currency;
@@ -308,17 +269,11 @@ class ServiceRate implements ServiceRateInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getCurrency()
     {
         return $this->attributes[self::ATTRIBUTE_PRICE][self::ATTRIBUTE_CURRENCY];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setPrice($price)
     {
         $this->attributes[self::ATTRIBUTE_PRICE][self::ATTRIBUTE_AMOUNT] = $price;
@@ -326,17 +281,11 @@ class ServiceRate implements ServiceRateInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getPrice()
     {
         return $this->attributes[self::ATTRIBUTE_PRICE][self::ATTRIBUTE_AMOUNT];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setFuelSurchargeAmount($amount)
     {
         $this->attributes[self::ATTRIBUTE_FUEL_SURCHARGE][self::ATTRIBUTE_AMOUNT] = $amount;
@@ -344,17 +293,11 @@ class ServiceRate implements ServiceRateInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getFuelSurchargeAmount()
     {
         return $this->attributes[self::ATTRIBUTE_FUEL_SURCHARGE][self::ATTRIBUTE_AMOUNT];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setFuelSurchargeCurrency($currency)
     {
         $this->attributes[self::ATTRIBUTE_FUEL_SURCHARGE][self::ATTRIBUTE_CURRENCY] = $currency;
@@ -362,17 +305,11 @@ class ServiceRate implements ServiceRateInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getFuelSurchargeCurrency()
     {
         return $this->attributes[self::ATTRIBUTE_FUEL_SURCHARGE][self::ATTRIBUTE_CURRENCY];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setService(ServiceInterface $service)
     {
         $this->relationships[self::RELATIONSHIP_SERVICE]['data'] = $service;
@@ -380,17 +317,11 @@ class ServiceRate implements ServiceRateInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getService()
     {
         return $this->relationships[self::RELATIONSHIP_SERVICE]['data'];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setContract(ContractInterface $contract)
     {
         $this->relationships[self::RELATIONSHIP_CONTRACT]['data'] = $contract;
@@ -398,17 +329,11 @@ class ServiceRate implements ServiceRateInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getContract()
     {
         return $this->relationships[self::RELATIONSHIP_CONTRACT]['data'];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setServiceOptions($serviceOptions)
     {
         $this->relationships[self::RELATIONSHIP_SERVICE_OPTIONS]['data'] = [];
@@ -420,9 +345,6 @@ class ServiceRate implements ServiceRateInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function addServiceOption(ServiceOptionInterface $serviceOption)
     {
         $this->relationships[self::RELATIONSHIP_SERVICE_OPTIONS]['data'][] = $serviceOption;
@@ -430,9 +352,6 @@ class ServiceRate implements ServiceRateInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getServiceOptions()
     {
         return $this->relationships[self::RELATIONSHIP_SERVICE_OPTIONS]['data'];

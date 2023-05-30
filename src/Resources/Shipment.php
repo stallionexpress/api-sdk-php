@@ -141,9 +141,6 @@ class Shipment implements ShipmentInterface
         return $this->meta;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setRecipientAddress(AddressInterface $recipientAddress)
     {
         $this->attributes[self::ATTRIBUTE_RECIPIENT_ADDRESS] = $recipientAddress;
@@ -151,16 +148,12 @@ class Shipment implements ShipmentInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getRecipientAddress()
     {
         return $this->attributes[self::ATTRIBUTE_RECIPIENT_ADDRESS];
     }
 
     /**
-     * {@inheritdoc}
      * @deprecated
      */
     public function setRecipientTaxNumber($recipientTaxNumber)
@@ -171,7 +164,6 @@ class Shipment implements ShipmentInterface
     }
 
     /**
-     * {@inheritdoc}
      * @deprecated
      */
     public function getRecipientTaxNumber()
@@ -179,9 +171,6 @@ class Shipment implements ShipmentInterface
         return $this->attributes[self::ATTRIBUTE_RECIPIENT_TAX_NUMBER];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setRecipientTaxIdentificationNumbers(array $taxIdentificationNumbers)
     {
         $this->attributes[self::ATTRIBUTE_RECIPIENT_TAX_IDENTIFICATION_NUMBERS] = [];
@@ -193,9 +182,6 @@ class Shipment implements ShipmentInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function addRecipientTaxIdentificationNumber(TaxIdentificationNumber $taxIdentificationNumber)
     {
         $this->attributes[self::ATTRIBUTE_RECIPIENT_TAX_IDENTIFICATION_NUMBERS][] = $taxIdentificationNumber;
@@ -203,17 +189,11 @@ class Shipment implements ShipmentInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getRecipientTaxIdentificationNumbers()
     {
         return $this->attributes[self::ATTRIBUTE_RECIPIENT_TAX_IDENTIFICATION_NUMBERS];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setSenderAddress(AddressInterface $senderAddress)
     {
         $this->attributes[self::ATTRIBUTE_SENDER_ADDRESS] = $senderAddress;
@@ -221,16 +201,12 @@ class Shipment implements ShipmentInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSenderAddress()
     {
         return $this->attributes[self::ATTRIBUTE_SENDER_ADDRESS];
     }
 
     /**
-     * {@inheritdoc}
      * @deprecated
      */
     public function setSenderTaxNumber($senderTaxNumber)
@@ -241,7 +217,6 @@ class Shipment implements ShipmentInterface
     }
 
     /**
-     * {@inheritdoc}
      * @deprecated
      */
     public function getSenderTaxNumber()
@@ -249,9 +224,6 @@ class Shipment implements ShipmentInterface
         return $this->attributes[self::ATTRIBUTE_SENDER_TAX_NUMBER];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setSenderTaxIdentificationNumbers(array $taxIdentificationNumbers)
     {
         $this->attributes[self::ATTRIBUTE_SENDER_TAX_IDENTIFICATION_NUMBERS] = [];
@@ -263,9 +235,6 @@ class Shipment implements ShipmentInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function addSenderTaxIdentificationNumber(TaxIdentificationNumber $taxIdentificationNumber)
     {
         $this->attributes[self::ATTRIBUTE_SENDER_TAX_IDENTIFICATION_NUMBERS][] = $taxIdentificationNumber;
@@ -273,17 +242,11 @@ class Shipment implements ShipmentInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSenderTaxIdentificationNumbers()
     {
         return $this->attributes[self::ATTRIBUTE_SENDER_TAX_IDENTIFICATION_NUMBERS];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setReturnAddress(AddressInterface $returnAddress)
     {
         $this->attributes[self::ATTRIBUTE_RETURN_ADDRESS] = $returnAddress;
@@ -291,17 +254,11 @@ class Shipment implements ShipmentInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getReturnAddress()
     {
         return $this->attributes[self::ATTRIBUTE_RETURN_ADDRESS];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setPickupLocationCode($pickupLocationCode)
     {
         $this->attributes[self::ATTRIBUTE_PICKUP][self::ATTRIBUTE_PICKUP_CODE] = $pickupLocationCode;
@@ -309,9 +266,6 @@ class Shipment implements ShipmentInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getPickupLocationCode()
     {
         return isset($this->attributes[self::ATTRIBUTE_PICKUP][self::ATTRIBUTE_PICKUP_CODE])
@@ -319,9 +273,6 @@ class Shipment implements ShipmentInterface
             : null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setPickupLocationAddress(AddressInterface $pickupLocationAddress)
     {
         $this->attributes[self::ATTRIBUTE_PICKUP][self::ATTRIBUTE_PICKUP_ADDRESS] = $pickupLocationAddress;
@@ -329,9 +280,6 @@ class Shipment implements ShipmentInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getPickupLocationAddress()
     {
         return isset($this->attributes[self::ATTRIBUTE_PICKUP][self::ATTRIBUTE_PICKUP_ADDRESS])
@@ -339,9 +287,6 @@ class Shipment implements ShipmentInterface
             : null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setChannel($channel)
     {
         $this->attributes[self::ATTRIBUTE_CHANNEL] = $channel;
@@ -349,17 +294,11 @@ class Shipment implements ShipmentInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getChannel()
     {
         return $this->attributes[self::ATTRIBUTE_CHANNEL];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setDescription($description)
     {
         $this->attributes[self::ATTRIBUTE_DESCRIPTION] = $description;
@@ -367,17 +306,11 @@ class Shipment implements ShipmentInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getDescription()
     {
         return $this->attributes[self::ATTRIBUTE_DESCRIPTION];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setCustomerReference($customerReference)
     {
         $this->attributes[self::ATTRIBUTE_CUSTOMER_REFERENCE] = $customerReference;
@@ -385,17 +318,11 @@ class Shipment implements ShipmentInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getCustomerReference()
     {
         return $this->attributes[self::ATTRIBUTE_CUSTOMER_REFERENCE];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setPrice($price)
     {
         $this->attributes[self::ATTRIBUTE_PRICE][self::ATTRIBUTE_AMOUNT] = (int) $price;
@@ -403,9 +330,6 @@ class Shipment implements ShipmentInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getPrice()
     {
         return isset($this->attributes[self::ATTRIBUTE_PRICE][self::ATTRIBUTE_AMOUNT])
@@ -413,9 +337,6 @@ class Shipment implements ShipmentInterface
             : null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setCurrency($currency)
     {
         $this->attributes[self::ATTRIBUTE_PRICE][self::ATTRIBUTE_CURRENCY] = $currency;
@@ -423,19 +344,11 @@ class Shipment implements ShipmentInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getCurrency()
     {
-        return isset($this->attributes[self::ATTRIBUTE_PRICE][self::ATTRIBUTE_CURRENCY])
-            ? $this->attributes[self::ATTRIBUTE_PRICE][self::ATTRIBUTE_CURRENCY]
-            : null;
+        return $this->attributes[self::ATTRIBUTE_PRICE][self::ATTRIBUTE_CURRENCY] ?? null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setBarcode($barcode)
     {
         $this->attributes[self::ATTRIBUTE_BARCODE] = $barcode;
@@ -443,17 +356,11 @@ class Shipment implements ShipmentInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getBarcode()
     {
         return $this->attributes[self::ATTRIBUTE_BARCODE];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setTrackingCode($trackingCode)
     {
         $this->attributes[self::ATTRIBUTE_TRACKING_CODE] = $trackingCode;
@@ -461,17 +368,11 @@ class Shipment implements ShipmentInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getTrackingCode()
     {
         return $this->attributes[self::ATTRIBUTE_TRACKING_CODE];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setTrackingUrl($trackingUrl)
     {
         $this->attributes[self::ATTRIBUTE_TRACKING_URL] = $trackingUrl;
@@ -479,16 +380,12 @@ class Shipment implements ShipmentInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getTrackingUrl()
     {
         return $this->attributes[self::ATTRIBUTE_TRACKING_URL];
     }
 
     /**
-     * {@inheritdoc}
      * @deprecated Use Shipment::getPhysicalProperties()->setWeight() instead.
      */
     public function setWeight($weight, $unit = PhysicalPropertiesInterface::WEIGHT_GRAM)
@@ -502,7 +399,6 @@ class Shipment implements ShipmentInterface
     }
 
     /**
-     * {@inheritdoc}
      * @deprecated Use Shipment::getPhysicalProperties()->getWeight() instead.
      */
     public function getWeight($unit = PhysicalPropertiesInterface::WEIGHT_GRAM)
@@ -514,9 +410,6 @@ class Shipment implements ShipmentInterface
         return $this->getPhysicalProperties()->getWeight($unit);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setPhysicalProperties(PhysicalPropertiesInterface $physicalProperties)
     {
         $this->attributes[self::ATTRIBUTE_PHYSICAL_PROPERTIES] = $physicalProperties;
@@ -524,17 +417,11 @@ class Shipment implements ShipmentInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getPhysicalProperties()
     {
         return $this->attributes[self::ATTRIBUTE_PHYSICAL_PROPERTIES];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setVolumetricWeight($volumetricWeight)
     {
         if ($this->getPhysicalProperties() === null) {
@@ -545,9 +432,6 @@ class Shipment implements ShipmentInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getVolumetricWeight()
     {
         if ($this->getPhysicalProperties() === null) {
@@ -557,9 +441,6 @@ class Shipment implements ShipmentInterface
         return $this->getPhysicalProperties()->getVolumetricWeight();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setShop(ShopInterface $shop)
     {
         $this->relationships[self::RELATIONSHIP_SHOP]['data'] = $shop;
@@ -567,17 +448,11 @@ class Shipment implements ShipmentInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getShop()
     {
         return $this->relationships[self::RELATIONSHIP_SHOP]['data'];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setServiceOptions(array $options)
     {
         $this->relationships[self::RELATIONSHIP_SERVICE_OPTIONS]['data'] = [];
@@ -589,9 +464,6 @@ class Shipment implements ShipmentInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function addServiceOption(ServiceOptionInterface $option)
     {
         $this->relationships[self::RELATIONSHIP_SERVICE_OPTIONS]['data'][] = $option;
@@ -599,17 +471,11 @@ class Shipment implements ShipmentInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getServiceOptions()
     {
         return $this->relationships[self::RELATIONSHIP_SERVICE_OPTIONS]['data'];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setFiles(array $files)
     {
         $this->relationships[self::RELATIONSHIP_FILES]['data'] = [];
@@ -621,9 +487,6 @@ class Shipment implements ShipmentInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function addFile(FileInterface $file)
     {
         $this->relationships[self::RELATIONSHIP_FILES]['data'][] = $file;
@@ -631,9 +494,6 @@ class Shipment implements ShipmentInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getFiles($type = null)
     {
         if ($type === null) {
@@ -645,9 +505,6 @@ class Shipment implements ShipmentInterface
         });
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setShipmentStatus(ShipmentStatusInterface $status)
     {
         $this->relationships[self::RELATIONSHIP_STATUS]['data'] = $status;
@@ -655,17 +512,11 @@ class Shipment implements ShipmentInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getShipmentStatus()
     {
         return $this->relationships[self::RELATIONSHIP_STATUS]['data'];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setStatusHistory(array $statuses)
     {
         $this->statusHistory = $statuses;
@@ -673,9 +524,6 @@ class Shipment implements ShipmentInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getStatusHistory()
     {
         if (!isset($this->statusHistory) && isset($this->statusHistoryCallback)) {
@@ -698,9 +546,6 @@ class Shipment implements ShipmentInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setCustoms(CustomsInterface $customs)
     {
         $this->attributes[self::ATTRIBUTE_CUSTOMS] = $customs;
@@ -708,25 +553,16 @@ class Shipment implements ShipmentInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getCustoms()
     {
         return $this->attributes[self::ATTRIBUTE_CUSTOMS];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getItems()
     {
         return $this->attributes[self::ATTRIBUTE_ITEMS];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function addItem(ShipmentItemInterface $item)
     {
         $this->attributes[self::ATTRIBUTE_ITEMS][] = $item;
@@ -734,9 +570,6 @@ class Shipment implements ShipmentInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setItems(array $items)
     {
         $this->attributes[self::ATTRIBUTE_ITEMS] = [];
@@ -748,9 +581,6 @@ class Shipment implements ShipmentInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setRegisterAt($registerAt)
     {
         $this->attributes[self::ATTRIBUTE_REGISTER_AT] = DateUtils::toTimestamp($registerAt);
@@ -758,9 +588,6 @@ class Shipment implements ShipmentInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getRegisterAt()
     {
         return isset($this->attributes[self::ATTRIBUTE_REGISTER_AT])
@@ -768,9 +595,6 @@ class Shipment implements ShipmentInterface
             : null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setService(ServiceInterface $service)
     {
         $this->relationships[self::RELATIONSHIP_SERVICE]['data'] = $service;
@@ -778,17 +602,11 @@ class Shipment implements ShipmentInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getService()
     {
         return $this->relationships[self::RELATIONSHIP_SERVICE]['data'];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setContract(ContractInterface $contract)
     {
         $this->relationships[self::RELATIONSHIP_CONTRACT]['data'] = $contract;
@@ -796,17 +614,11 @@ class Shipment implements ShipmentInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getContract()
     {
         return $this->relationships[self::RELATIONSHIP_CONTRACT]['data'];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function setTotalValueAmount($totalValueAmount)
     {
         $this->attributes[self::ATTRIBUTE_TOTAL_VALUE]['amount'] = $totalValueAmount;
@@ -814,17 +626,11 @@ class Shipment implements ShipmentInterface
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getTotalValueAmount()
     {
         return $this->attributes[self::ATTRIBUTE_TOTAL_VALUE]['amount'];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function setTotalValueCurrency($totalValueCurrency)
     {
         $this->attributes[self::ATTRIBUTE_TOTAL_VALUE]['currency'] = $totalValueCurrency;
@@ -832,17 +638,11 @@ class Shipment implements ShipmentInterface
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getTotalValueCurrency()
     {
         return $this->attributes[self::ATTRIBUTE_TOTAL_VALUE]['currency'];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setServiceCode($serviceCode)
     {
         $this->meta[self::META_SERVICE_CODE] = $serviceCode;
@@ -850,17 +650,11 @@ class Shipment implements ShipmentInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getServiceCode()
     {
         return $this->meta[self::META_SERVICE_CODE];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function setTags(array $tags)
     {
         $this->attributes[self::ATTRIBUTE_TAGS] = $tags;
@@ -868,9 +662,6 @@ class Shipment implements ShipmentInterface
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function addTag($tag)
     {
         $this->attributes[self::ATTRIBUTE_TAGS][] = $tag;
@@ -878,17 +669,11 @@ class Shipment implements ShipmentInterface
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getTags()
     {
         return $this->attributes[self::ATTRIBUTE_TAGS];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function clearTags()
     {
         $this->attributes[self::ATTRIBUTE_TAGS] = null;

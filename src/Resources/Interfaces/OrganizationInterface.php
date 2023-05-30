@@ -6,14 +6,7 @@ namespace MyParcelCom\ApiSdk\Resources\Interfaces;
 
 interface OrganizationInterface extends ResourceInterface
 {
-    /**
-     * @param string $name
-     * @return $this
-     */
-    public function setName($name);
+    public function setName(string $name): self;
 
-    /**
-     * @return string
-     */
-    public function getName();
+    public function getName(): string;
 }

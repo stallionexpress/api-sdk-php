@@ -13,89 +13,56 @@ class CarrierStatus implements CarrierStatusInterface
 {
     use JsonSerializable;
 
-    /** @var string */
-    protected $code;
+    protected string $code;
 
-    /** @var string */
-    protected $description;
+    protected string $description;
 
-    /** @var int */
-    protected $assignedAt;
+    protected int $assignedAt;
 
-    /** @var string|null */
-    private $trackingCode;
+    private ?string $trackingCode = null;
 
-    /**
-     * @return string
-     */
-    public function getCode()
+    public function getCode(): string
     {
         return $this->code;
     }
 
-    /**
-     * @param string $code
-     * @return $this
-     */
-    public function setCode($code)
+    public function setCode(string $code): self
     {
         $this->code = $code;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
 
-    /**
-     * @param string $description
-     * @return $this
-     */
-    public function setDescription($description)
+    public function setDescription(string $description): self
     {
         $this->description = $description;
 
         return $this;
     }
 
-    /**
-     * @return DateTime
-     */
-    public function getAssignedAt()
+    public function getAssignedAt(): DateTime
     {
-        return isset($this->assignedAt)
-            ? (new DateTime())->setTimestamp($this->assignedAt)
-            : null;
+        return (new DateTime())->setTimestamp($this->assignedAt);
     }
 
-    /**
-     * @param DateTime|string|int $assignedAt
-     * @return $this
-     */
-    public function setAssignedAt($assignedAt)
+    public function setAssignedAt(DateTime|int|string $assignedAt): self
     {
         $this->assignedAt = DateUtils::toTimestamp($assignedAt);
 
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getTrackingCode()
+    public function getTrackingCode(): ?string
     {
         return $this->trackingCode;
     }
 
-    /**
-     * @param string|null $trackingCode
-     */
-    public function setTrackingCode($trackingCode)
+    public function setTrackingCode(?string $trackingCode): self
     {
         $this->trackingCode = $trackingCode;
 

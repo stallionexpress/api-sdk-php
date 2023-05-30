@@ -18,225 +18,152 @@ class ShipmentItem implements ShipmentItemInterface
     const AMOUNT = 'amount';
     const CURRENCY = 'currency';
 
-    /** @var string|null */
-    private $sku;
+    private ?string $sku = null;
 
-    /** @var string */
-    private $description;
+    private string $description;
 
-    /** @var string|null */
-    private $imageUrl;
+    private ?string $imageUrl = null;
 
-    /** @var string|null */
-    private $hsCode;
+    private ?string $hsCode = null;
 
-    /** @var int */
-    private $quantity;
+    private int $quantity;
 
-    /** @var array */
-    private $itemValue = [
+    private array $itemValue = [
         self::AMOUNT   => null,
         self::CURRENCY => null,
     ];
 
-    /** @var int|null */
-    private $vatPercentage;
+    private ?int $vatPercentage = null;
 
-    /** @var string|null */
-    private $originCountryCode;
+    private ?string $originCountryCode = null;
 
-    /** @var int|null */
-    private $itemWeight;
+    private ?int $itemWeight = null;
 
-    /** @var string */
-    private $itemWeightUnit = WeightUnitEnum::GRAM;
+    private string $itemWeightUnit = WeightUnitEnum::GRAM;
 
-    /** @var bool */
-    private $isPreferentialOrigin = false;
+    private bool $isPreferentialOrigin = false;
 
-    /**
-     * @param string|null $sku
-     * @return $this
-     */
-    public function setSku($sku)
+    public function setSku(?string $sku): self
     {
         $this->sku = $sku;
 
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getSku()
+    public function getSku(): ?string
     {
         return $this->sku;
     }
 
-    /**
-     * @param string $description
-     * @return $this
-     */
-    public function setDescription($description)
+    public function setDescription(string $description): self
     {
         $this->description = $description;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
 
-    /**
-     * @param string|null $imageUrl
-     * @return $this
-     */
-    public function setImageUrl($imageUrl)
+    public function setImageUrl(?string $imageUrl): self
     {
         $this->imageUrl = $imageUrl;
 
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getImageUrl()
+    public function getImageUrl(): ?string
     {
         return $this->imageUrl;
     }
 
-    /**
-     * @param string|null $hsCode
-     * @return $this
-     */
-    public function setHsCode($hsCode)
+    public function setHsCode(?string $hsCode): self
     {
         $this->hsCode = $hsCode;
 
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getHsCode()
+    public function getHsCode(): ?string
     {
         return $this->hsCode;
     }
 
-    /**
-     * @param int $quantity
-     * @return $this
-     */
-    public function setQuantity($quantity)
+    public function setQuantity(int $quantity): self
     {
         $this->quantity = (int) $quantity;
 
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getQuantity()
+    public function getQuantity(): int
     {
         return $this->quantity;
     }
 
-    /**
-     * @param int $value
-     * @return $this
-     */
-    public function setItemValue($value)
+    public function setItemValue(?int $value): self
     {
         $this->itemValue[self::AMOUNT] = (int) $value;
 
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getItemValue()
+    public function getItemValue(): ?int
     {
         return $this->itemValue[self::AMOUNT];
     }
 
-    /**
-     * @param string $currency
-     * @return $this
-     */
-    public function setCurrency($currency)
+    public function setCurrency(?string $currency): self
     {
         $this->itemValue[self::CURRENCY] = $currency;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getCurrency()
+    public function getCurrency(): ?string
     {
         return $this->itemValue[self::CURRENCY];
     }
 
     /**
      * @param int|null $percentage Value between 0 and 100
-     * @return $this
      */
-    public function setVatPercentage($percentage)
+    public function setVatPercentage(?int $percentage): self
     {
-        if ($percentage < 0 || $percentage > 100) {
-            throw new MyParcelComException('Invalid percentage: ' . $percentage . ' should be between 0 and 100.');
+        if (is_int($percentage)) {
+            if ($percentage < 0 || $percentage > 100) {
+                throw new MyParcelComException('Invalid percentage: ' . $percentage . ' should be between 0 and 100.');
+            }
         }
 
-        $this->vatPercentage = (int) $percentage;
+        $this->vatPercentage = $percentage;
 
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getVatPercentage()
+    public function getVatPercentage(): ?int
     {
         return $this->vatPercentage;
     }
 
-    /**
-     * @param string|null $countryCode
-     * @return $this
-     */
-    public function setOriginCountryCode($countryCode)
+    public function setOriginCountryCode(?string $countryCode): self
     {
         $this->originCountryCode = $countryCode;
 
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getOriginCountryCode()
+    public function getOriginCountryCode(): ?string
     {
         return $this->originCountryCode;
     }
 
     /**
      * This method can also set the weight unit, so you do not have to call setItemWeightUnit() separately.
-     *
-     * @param int|null    $weight
-     * @param string|null $unit
-     * @return $this
      */
-    public function setItemWeight($weight, $unit = null)
+    public function setItemWeight(?int $weight, ?string $unit = null): self
     {
         // Because we supported unit conversion in the SDK before we did this in the API, `grams` and `g` are supported.
         switch ($unit) {
@@ -276,11 +203,7 @@ class ShipmentItem implements ShipmentItemInterface
         return $this;
     }
 
-    /**
-     * @param string $unit
-     * @return int|null
-     */
-    public function getItemWeight($unit = null)
+    public function getItemWeight(?string $unit = null): ?int
     {
         if ($this->itemWeight === null) {
             return $this->itemWeight;
@@ -327,11 +250,7 @@ class ShipmentItem implements ShipmentItemInterface
         return (int) ceil($convertedWeight);
     }
 
-    /**
-     * @param string $weightUnit
-     * @return $this
-     */
-    public function setItemWeightUnit($weightUnit)
+    public function setItemWeightUnit(string $weightUnit): self
     {
         if (!WeightUnitEnum::isValid($weightUnit)) {
             throw new MyParcelComException('$weightUnit should be one of: ' . implode(', ', WeightUnitEnum::toArray()));
@@ -342,29 +261,19 @@ class ShipmentItem implements ShipmentItemInterface
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getItemWeightUnit()
+    public function getItemWeightUnit(): string
     {
         return $this->itemWeightUnit;
     }
 
-    /**
-     * @param bool $isPreferentialOrigin
-     * @return $this
-     */
-    public function setIsPreferentialOrigin($isPreferentialOrigin)
+    public function setIsPreferentialOrigin(bool $isPreferentialOrigin): self
     {
         $this->isPreferentialOrigin = $isPreferentialOrigin;
 
         return $this;
     }
 
-    /**
-     * @return bool
-     */
-    public function getIsPreferentialOrigin()
+    public function getIsPreferentialOrigin(): bool
     {
         return $this->isPreferentialOrigin;
     }

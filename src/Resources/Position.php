@@ -17,9 +17,6 @@ class Position implements PositionInterface
     /** @var float */
     private $longitude;
 
-    /**
-     * {@inheritdoc}
-     */
     public function setLatitude($latitude)
     {
         $this->latitude = (float) $latitude;
@@ -27,17 +24,11 @@ class Position implements PositionInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getLatitude()
     {
         return $this->latitude;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setLongitude($longitude)
     {
         $this->longitude = (float) $longitude;
@@ -45,9 +36,6 @@ class Position implements PositionInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getLongitude()
     {
         return $this->longitude;

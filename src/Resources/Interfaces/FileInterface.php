@@ -15,7 +15,8 @@ interface FileInterface extends ResourceInterface
 {
     const DOCUMENT_TYPE_LABEL = 'label';
     const DOCUMENT_TYPE_PRINTCODE = 'printcode';
-    const DOCUMENT_TYPE_INVOICE = 'invoice';
+    const DOCUMENT_TYPE_CUSTOMS_DECLARATION_FORM = 'customs-declaration-form';
+    const DOCUMENT_TYPE_COMMERCIAL_INVOICE = 'commercial-invoice';
 
     const MIME_TYPE_JSON = 'application/vnd.api+json';
     const MIME_TYPE_PNG = 'image/png';
@@ -28,99 +29,64 @@ interface FileInterface extends ResourceInterface
 
     /**
      * Set the type of file. See constants for possible options.
-     *
-     * @param string $documentType
-     * @return $this
      */
-    public function setDocumentType($documentType);
+    public function setDocumentType(string $documentType): self;
 
     /**
      * Get the type of file. See constants for possible options.
-     *
-     * @return string
      */
-    public function getDocumentType();
+    public function getDocumentType(): string;
 
     /**
      * Set the formats that this file has available.
-     *
-     * @param array $formats
-     * @return $this
      */
-    public function setFormats(array $formats);
+    public function setFormats(array $formats): self;
 
     /**
      * Add a format this file is available as.
-     *
-     * @param string $mimeType
-     * @param string $extension
-     * @return $this
      */
-    public function addFormat($mimeType, $extension);
+    public function addFormat(string $mimeType, string $extension): self;
 
     /**
      * Get an array of the available formats for this file. Each format is an
      * associative array with keys 'mime_type' and 'extension'.
-     *
-     * @return array
      */
-    public function getFormats();
+    public function getFormats(): array;
 
     /**
      * Set the stream of this file for given mime type.
-     *
-     * @param StreamInterface $stream
-     * @param string          $mimeType
-     * @return $this
      */
-    public function setStream(StreamInterface $stream, $mimeType);
+    public function setStream(StreamInterface $stream, string $mimeType): self;
 
     /**
-     * Get the a stream for this file. If no mime type supplied one is chosen in
+     * Get a stream for this file. If no mime type supplied one is chosen in
      * the following order from the available formats:
      * application/pdf > image/png > image/jpeg > other
-     *
-     * @param string|null $mimeType
-     * @return StreamInterface
      */
-    public function getStream($mimeType = null);
+    public function getStream(?string $mimeType = null): ?StreamInterface;
 
     /**
      * Set the base64 encoded data of this file for given mime type.
-     *
-     * @param string $data
-     * @param string $mimeType
-     * @return $this
      */
-    public function setBase64Data($data, $mimeType);
+    public function setBase64Data(string $data, string $mimeType): self;
 
     /**
      * Get the file data as a base64 encoded string. If no mime type supplied
      * one is chosen in the following order from the available formats:
      * application/pdf > image/png > image/jpeg > other
-     *
-     * @param string|null $mimeType
-     * @return string
      */
-    public function getBase64Data($mimeType = null);
+    public function getBase64Data(?string $mimeType = null): ?string;
 
     /**
      * Set the path where this file can be found for given mime type.
-     *
-     * @param string $path
-     * @param string $mimeType
-     * @return $this
      */
-    public function setTemporaryFilePath($path, $mimeType);
+    public function setTemporaryFilePath(string $path, string $mimeType): self;
 
     /**
      * Get a path for this file saved in a temporary location on the filesystem.
      * If no mime type is supplied one is chosen in the following order from the
      * available formats:
      * application/pdf > image/png > image/jpeg > other
-     *
-     * @param string|null $mimeType
-     * @return string
      */
-    public function getTemporaryFilePath($mimeType = null);
+    public function getTemporaryFilePath(?string $mimeType = null): ?string;
 }

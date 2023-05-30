@@ -81,7 +81,6 @@ class FileTest extends TestCase
     {
         $file = new File();
 
-        $this->assertNull($file->getDocumentType());
         $this->assertEquals('some-resource-type', $file->setDocumentType('some-resource-type')->getDocumentType());
     }
 

@@ -24,114 +24,72 @@ class ShopProxy implements ShopInterface, ResourceProxyInterface
 
     private string $type = ResourceInterface::TYPE_SHOP;
 
-    /**
-     * @param $name
-     * @return $this
-     */
-    public function setName($name)
+    public function setName(string $name): self
     {
         $this->getResource()->setName($name);
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->getResource()->getName();
     }
 
-    /**
-     * @param string $website
-     * @return $this
-     */
-    public function setWebsite($website)
+    public function setWebsite(?string $website): self
     {
         $this->getResource()->setWebsite($website);
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getWebsite()
+    public function getWebsite(): ?string
     {
         return $this->getResource()->getWebsite();
     }
 
-    /**
-     * @param AddressInterface $senderAddress
-     * @return $this
-     */
-    public function setSenderAddress(AddressInterface $senderAddress)
+    public function setSenderAddress(AddressInterface $senderAddress): self
     {
         $this->getResource()->setSenderAddress($senderAddress);
 
         return $this;
     }
 
-    /**
-     * @return AddressInterface
-     */
-    public function getSenderAddress()
+    public function getSenderAddress(): AddressInterface
     {
         return $this->getResource()->getSenderAddress();
     }
 
-    /**
-     * @param AddressInterface $returnAddress
-     * @return $this
-     */
-    public function setReturnAddress(AddressInterface $returnAddress)
+    public function setReturnAddress(AddressInterface $returnAddress): self
     {
         $this->getResource()->setReturnAddress($returnAddress);
 
         return $this;
     }
 
-    /**
-     * @return AddressInterface
-     */
-    public function getReturnAddress()
+    public function getReturnAddress(): AddressInterface
     {
         return $this->getResource()->getReturnAddress();
     }
 
-    /**
-     * @param int|DateTime $time
-     * @return $this
-     */
-    public function setCreatedAt($time)
+    public function setCreatedAt(DateTime|int $createdAt): self
     {
-        $this->getResource()->setCreatedAt($time);
+        $this->getResource()->setCreatedAt($createdAt);
 
         return $this;
     }
 
-    /**
-     * @return DateTime
-     */
-    public function getCreatedAt()
+    public function getCreatedAt(): DateTime
     {
         return $this->getResource()->getCreatedAt();
     }
 
-    /**
-     * @param OrganizationInterface $organization
-     * @return $this
-     */
-    public function setOrganization(OrganizationInterface $organization)
+    public function setOrganization(OrganizationInterface $organization): self
     {
         return $this->getResource()->setOrganization($organization);
     }
 
-    /**
-     * @return OrganizationInterface
-     */
-    public function getOrganization()
+    public function getOrganization(): OrganizationInterface
     {
         return $this->getResource()->getOrganization();
     }

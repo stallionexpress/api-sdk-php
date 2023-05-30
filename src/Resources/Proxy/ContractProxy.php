@@ -22,78 +22,50 @@ class ContractProxy implements ContractInterface, ResourceProxyInterface
 
     private string $type = ResourceInterface::TYPE_CONTRACT;
 
-    /**
-     * @param string $name
-     * @return $this
-     */
-    public function setName($name)
+    public function setName(string $name): self
     {
         $this->getResource()->setName($name);
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->getResource()->getName();
     }
 
-    /**
-     * @param string $currency
-     * @return $this
-     */
-    public function setCurrency($currency)
+    public function setCurrency(string $currency): self
     {
         $this->getResource()->setCurrency($currency);
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getCurrency()
+    public function getCurrency(): string
     {
         return $this->getResource()->getCurrency();
     }
 
-    /**
-     * @param CarrierInterface $carrier
-     * @return $this
-     */
-    public function setCarrier(CarrierInterface $carrier)
+    public function setCarrier(CarrierInterface $carrier): self
     {
         $this->getResource()->setCarrier($carrier);
 
         return $this;
     }
 
-    /**
-     * @return CarrierInterface
-     */
-    public function getCarrier()
+    public function getCarrier(): CarrierInterface
     {
         return $this->getResource()->getCarrier();
     }
 
-    /**
-     * @param string $status
-     * @return $this
-     */
-    public function setStatus($status)
+    public function setStatus(string $status): self
     {
         $this->getResource()->setStatus($status);
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getStatus()
+    public function getStatus(): string
     {
         return $this->getResource()->getStatus();
     }

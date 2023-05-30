@@ -41,9 +41,6 @@ class ServiceOption implements ServiceOptionInterface
         self::META_INCLUDED => null,
     ];
 
-    /**
-     * {@inheritdoc}
-     */
     public function setName($name)
     {
         $this->attributes[self::ATTRIBUTE_NAME] = $name;
@@ -51,17 +48,11 @@ class ServiceOption implements ServiceOptionInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getName()
     {
         return $this->attributes[self::ATTRIBUTE_NAME];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setCode($code)
     {
         $this->attributes[self::ATTRIBUTE_CODE] = $code;
@@ -69,17 +60,11 @@ class ServiceOption implements ServiceOptionInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getCode()
     {
         return $this->attributes[self::ATTRIBUTE_CODE];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setCategory($category)
     {
         $this->attributes[self::ATTRIBUTE_CATEGORY] = $category;
@@ -87,17 +72,11 @@ class ServiceOption implements ServiceOptionInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getCategory()
     {
         return $this->attributes[self::ATTRIBUTE_CATEGORY];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setPrice($price)
     {
         $this->meta[self::META_PRICE][self::META_PRICE_AMOUNT] = $price !== null ? (int) $price : null;
@@ -105,17 +84,11 @@ class ServiceOption implements ServiceOptionInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getPrice()
     {
         return $this->meta[self::META_PRICE][self::META_PRICE_AMOUNT];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setCurrency($currency)
     {
         $this->meta[self::META_PRICE][self::META_PRICE_CURRENCY] = $currency;
@@ -123,17 +96,11 @@ class ServiceOption implements ServiceOptionInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getCurrency()
     {
         return $this->meta[self::META_PRICE][self::META_PRICE_CURRENCY];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setIncluded($included)
     {
         $this->meta[self::META_INCLUDED] = $included;
@@ -141,9 +108,6 @@ class ServiceOption implements ServiceOptionInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isIncluded()
     {
         return $this->meta[self::META_INCLUDED];

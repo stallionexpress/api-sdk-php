@@ -38,146 +38,96 @@ class Customs implements CustomsInterface
         self::CURRENCY => null,
     ];
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getContentType()
+    public function getContentType(): ?string
     {
         return $this->contentType;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setContentType($contentType)
+    public function setContentType(?string $contentType): self
     {
         $this->contentType = $contentType;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getInvoiceNumber()
+    public function getInvoiceNumber(): ?string
     {
         return $this->invoiceNumber;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setInvoiceNumber($invoiceNumber)
+    public function setInvoiceNumber(?string $invoiceNumber): self
     {
         $this->invoiceNumber = $invoiceNumber;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getNonDelivery()
+    public function getNonDelivery(): ?string
     {
         return $this->nonDelivery;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setNonDelivery($nonDelivery)
+    public function setNonDelivery(?string $nonDelivery): self
     {
         $this->nonDelivery = $nonDelivery;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getIncoterm()
+    public function getIncoterm(): ?string
     {
         return $this->incoterm;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setIncoterm($incoterm)
+    public function setIncoterm(?string $incoterm): self
     {
         $this->incoterm = $incoterm;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getLicenseNumber()
+    public function getLicenseNumber(): ?string
     {
         return $this->licenseNumber;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setLicenseNumber($licenseNumber)
+    public function setLicenseNumber(?string $licenseNumber): self
     {
         $this->licenseNumber = $licenseNumber;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getCertificateNumber()
+    public function getCertificateNumber(): ?string
     {
         return $this->certificateNumber;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setCertificateNumber($certificateNumber)
+    public function setCertificateNumber(?string $certificateNumber): self
     {
         $this->certificateNumber = $certificateNumber;
 
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getShippingValueCurrency()
+    public function getShippingValueCurrency(): ?string
     {
         return $this->shippingValue[self::CURRENCY];
     }
 
-    /**
-     * @param string|null $shippingValueCurrency
-     * @return $this
-     */
-    public function setShippingValueCurrency($shippingValueCurrency)
+    public function setShippingValueCurrency(?string $shippingValueCurrency): self
     {
         $this->shippingValue[self::CURRENCY] = $shippingValueCurrency;
 
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getShippingValueAmount()
+    public function getShippingValueAmount(): ?int
     {
         return $this->shippingValue[self::AMOUNT];
     }
 
-    /**
-     * @param int|null $shippingValueAmount
-     * @return $this
-     */
-    public function setShippingValueAmount($shippingValueAmount)
+    public function setShippingValueAmount(?int $shippingValueAmount): self
     {
         $this->shippingValue[self::AMOUNT] = (int) $shippingValueAmount;
 

@@ -39,9 +39,6 @@ class Region implements RegionInterface
         ],
     ];
 
-    /**
-     * {@inheritdoc}
-     */
     public function setCountryCode($countryCode)
     {
         $this->attributes[self::ATTRIBUTE_COUNTRY_CODE] = $countryCode;
@@ -49,17 +46,11 @@ class Region implements RegionInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getCountryCode()
     {
         return $this->attributes[self::ATTRIBUTE_COUNTRY_CODE];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setRegionCode($regionCode)
     {
         $this->attributes[self::ATTRIBUTE_REGION_CODE] = $regionCode;
@@ -67,17 +58,11 @@ class Region implements RegionInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getRegionCode()
     {
         return $this->attributes[self::ATTRIBUTE_REGION_CODE];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setCurrency($currency)
     {
         $this->attributes[self::ATTRIBUTE_CURRENCY] = $currency;
@@ -85,17 +70,11 @@ class Region implements RegionInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getCurrency()
     {
         return $this->attributes[self::ATTRIBUTE_CURRENCY];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setName($name)
     {
         $this->attributes[self::ATTRIBUTE_NAME] = $name;
@@ -103,17 +82,11 @@ class Region implements RegionInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getName()
     {
         return $this->attributes[self::ATTRIBUTE_NAME];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setCategory($category)
     {
         $this->attributes[self::ATTRIBUTE_CATEGORY] = $category;
@@ -121,17 +94,11 @@ class Region implements RegionInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getCategory()
     {
         return $this->attributes[self::ATTRIBUTE_CATEGORY];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setParent(RegionInterface $parentRegion)
     {
         $this->relationships[self::RELATIONSHIP_PARENT]['data'] = $parentRegion;
@@ -139,9 +106,6 @@ class Region implements RegionInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getParent()
     {
         return $this->relationships[self::RELATIONSHIP_PARENT]['data'];

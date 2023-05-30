@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MyParcelCom\ApiSdk\Resources;
 
+use JsonSerializable;
 use MyParcelCom\ApiSdk\Enums\TaxTypeEnum;
 use MyParcelCom\ApiSdk\Exceptions\ResourceFactoryException;
 use MyParcelCom\ApiSdk\MyParcelComApiInterface;
@@ -46,20 +47,18 @@ use MyParcelCom\ApiSdk\Resources\Proxy\StatusProxy;
 use MyParcelCom\ApiSdk\Utils\StringUtils;
 use ReflectionClass;
 use ReflectionMethod;
+use ReflectionNamedType;
 use ReflectionParameter;
 
 class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterface
 {
-    /** @var MyParcelComApiInterface */
-    protected $api;
+    protected ?MyParcelComApiInterface $api = null;
 
     /**
      * Mapping of resource types and interface to concrete implementation.
      * Note that resources with a defined resource factory are not included here.
-     *
-     * @var array
      */
-    private $typeFactory = [
+    private array $typeFactory = [
         ResourceInterface::TYPE_CARRIER         => Carrier::class,
         ResourceInterface::TYPE_CONTRACT        => Contract::class,
         ResourceInterface::TYPE_ORGANIZATIONS   => Organization::class,
@@ -91,10 +90,8 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
     /**
      * Mapping of resource types to proxies. These are mainly used to proxy
      * resources that are part of relationships.
-     *
-     * @var array
      */
-    private $proxies = [
+    private array $proxies = [
         ResourceInterface::TYPE_CARRIER         => CarrierProxy::class,
         ResourceInterface::TYPE_CONTRACT        => ContractProxy::class,
         ResourceInterface::TYPE_FILE            => FileProxy::class,
@@ -106,7 +103,6 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         ResourceInterface::TYPE_SHIPMENT_STATUS => ShipmentStatusProxy::class,
         ResourceInterface::TYPE_SHOP            => ShopProxy::class,
         ResourceInterface::TYPE_STATUS          => StatusProxy::class,
-
     ];
 
     public function __construct()
@@ -137,11 +133,8 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
 
     /**
      * Shipment factory method that creates proxies for all relationships.
-     *
-     * @param array $properties
-     * @return Shipment
      */
-    protected function shipmentFactory(array &$properties)
+    protected function shipmentFactory(array &$properties): Shipment
     {
         $shipment = new Shipment();
 
@@ -198,7 +191,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
                         ->setType(new TaxTypeEnum($taxIdentificationNumber['type']))
                         ->setNumber($taxIdentificationNumber['number'])
                         ->setCountryCode($taxIdentificationNumber['country_code'])
-                        ->setDescription(isset($taxIdentificationNumber['description']) ? $taxIdentificationNumber['description'] : null)
+                        ->setDescription($taxIdentificationNumber['description'] ?? null)
                 );
             }
             unset($properties['attributes']['sender_tax_identification_numbers']);
@@ -211,7 +204,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
                         ->setType(new TaxTypeEnum($taxIdentificationNumber['type']))
                         ->setNumber($taxIdentificationNumber['number'])
                         ->setCountryCode($taxIdentificationNumber['country_code'])
-                        ->setDescription(isset($taxIdentificationNumber['description']) ? $taxIdentificationNumber['description'] : null)
+                        ->setDescription($taxIdentificationNumber['description'] ?? null)
                 );
             }
             unset($properties['attributes']['recipient_tax_identification_numbers']);
@@ -220,13 +213,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         return $shipment;
     }
 
-    /**
-     * Service factory method that creates proxies for all relationships.
-     *
-     * @param array $properties
-     * @return Service
-     */
-    protected function serviceFactory(array &$properties)
+    protected function serviceFactory(array &$properties): Service
     {
         $service = new Service();
 
@@ -258,13 +245,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         return $service;
     }
 
-    /**
-     * ServiceRate factory method.
-     *
-     * @param array $properties
-     * @return ServiceRate
-     */
-    protected function serviceRateFactory(array &$properties)
+    protected function serviceRateFactory(array &$properties): ServiceRate
     {
         $serviceRate = new ServiceRate();
 
@@ -317,7 +298,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
             $serviceRate->setResolveDynamicRateForShipmentCallback(function (ShipmentInterface $shipment, ServiceRateInterface $serviceRate) {
                 $serviceRates = $this->api->resolveDynamicServiceRates($shipment, $serviceRate);
 
-                return is_array($serviceRates) ? $serviceRates[0] : $serviceRate;
+                return $serviceRates[0] ?? $serviceRate;
             });
         }
 
@@ -327,11 +308,8 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
     /**
      * Factory method for creating file resources, adds proxy streams to the
      * file for requesting the file data.
-     *
-     * @param $properties
-     * @return File
      */
-    protected function fileFactory(&$properties)
+    protected function fileFactory(array &$properties): File
     {
         $file = new File();
 
@@ -349,13 +327,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         return $file;
     }
 
-    /**
-     * Factory for creating a shipment item.
-     *
-     * @param $attributes
-     * @return ShipmentItem
-     */
-    protected function shipmentItemFactory(&$attributes)
+    protected function shipmentItemFactory(array &$attributes): ShipmentItem
     {
         $item = new ShipmentItem();
 
@@ -369,13 +341,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         return $item;
     }
 
-    /**
-     * Factory for creating a shipment item.
-     *
-     * @param $attributes
-     * @return Customs
-     */
-    protected function customsFactory(&$attributes)
+    protected function customsFactory(array &$attributes): Customs
     {
         $customs = new Customs();
 
@@ -389,10 +355,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         return $customs;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function create($type, array $properties = [])
+    public function create(string $type, array $properties = []): ResourceInterface|JsonSerializable
     {
         $resource = $this->createResource($type, $properties);
 
@@ -429,11 +392,8 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
 
     /**
      * Set a factory method or class string for given resource type.
-     *
-     * @param string          $type
-     * @param callable|string $factory
      */
-    public function setFactoryForType($type, $factory)
+    public function setFactoryForType(string $type, callable|string $factory): void
     {
         if (!is_callable($factory) && !class_exists($factory)) {
             throw new ResourceFactoryException(sprintf(
@@ -447,11 +407,8 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
 
     /**
      * Checks if the given type has a factory associated with it.
-     *
-     * @param string $type
-     * @return bool
      */
-    protected function typeHasFactory($type)
+    protected function typeHasFactory(string $type): bool
     {
         return array_key_exists($type, $this->typeFactory);
     }
@@ -459,12 +416,9 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
     /**
      * Create a resource for type using its factory or the class associated with it.
      *
-     * @param string $type
-     * @param array  $attributes
-     * @return object
      * @throws ResourceFactoryException
      */
-    protected function createResource($type, array &$attributes = [])
+    protected function createResource(string $type, array &$attributes = []): ResourceInterface|JsonSerializable
     {
         if (!$this->typeHasFactory($type)) {
             throw new ResourceFactoryException(sprintf(
@@ -491,15 +445,12 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
      * Hydrates resource with given attributes. Uses reflection do determine if
      * other resources need to be created and tries to instantiate them where
      * possible.
-     *
-     * @param object $resource
-     * @param array  $attributes
-     * @return object
      * @todo Refactor this huge moth.
-     *
      */
-    protected function hydrate($resource, array $attributes)
-    {
+    protected function hydrate(
+        ResourceInterface|JsonSerializable $resource,
+        array $attributes
+    ): ResourceInterface|JsonSerializable {
         array_walk($attributes, function ($value, $key) use ($resource) {
             $setter = 'set' . StringUtils::snakeToPascalCase($key);
 
@@ -514,7 +465,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
                 return;
             }
 
-            if ($param->getType() && $param->getType()->getName() === 'array') {
+            if ($param->getType() instanceof ReflectionNamedType && $param->getType()->getName() === 'array') {
                 // Can't use setter if the types don't match.
                 if (!is_array($value)) {
                     return;
@@ -548,7 +499,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
                 }
             }
 
-            $paramClass = $param->getType() && !$param->getType()->isBuiltin()
+            $paramClass = $param->getType() instanceof ReflectionNamedType && !$param->getType()->isBuiltin()
                 ? new ReflectionClass($param->getType()->getName())
                 : null;
             if ($paramClass !== null) {
@@ -574,12 +525,8 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
     /**
      * Hydrates the given resource with its relationships, uses proxies to
      * accomplish this.
-     *
-     * @param object $resource
-     * @param array  $relationships
-     * @return object
      */
-    protected function hydrateRelationships($resource, array $relationships)
+    protected function hydrateRelationships(ResourceInterface $resource, array $relationships): ResourceInterface
     {
         foreach ($relationships as $name => $relationship) {
             // If the relationship is empty, we skip it.
@@ -593,7 +540,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
                 continue;
             }
 
-            $uri = isset($relationship['links']['related']) ? $relationship['links']['related'] : null;
+            $uri = $relationship['links']['related'] ?? null;
             $value = isset($relationship['data']['type'])
                 ? $this->createProxy($relationship['data'], $uri)
                 : array_map(function (array $identifier) {
@@ -606,12 +553,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         return $resource;
     }
 
-    /**
-     * @param array       $identifier
-     * @param string|null $uri
-     * @return object
-     */
-    private function createProxy(array $identifier, $uri = null)
+    private function createProxy(array $identifier, ?string $uri = null): ResourceInterface
     {
         if (empty($identifier['type'])) {
             throw new ResourceFactoryException('Cannot create proxy, no `type` available in identifier.');
@@ -637,13 +579,10 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         return $resource;
     }
 
-    /**
-     * @param mixed  $resource
-     * @param string $method
-     * @return ReflectionParameter|null
-     */
-    private function getFillableParam($resource, $method)
-    {
+    private function getFillableParam(
+        ResourceInterface|JsonSerializable $resource,
+        string $method
+    ): ?ReflectionParameter {
         // Check if the method exists, if it doesn't return null.
         if (!method_exists($resource, $method)) {
             return null;
@@ -668,11 +607,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         return reset($params);
     }
 
-    /**
-     * @param MyParcelComApiInterface $api
-     * @return $this
-     */
-    public function setMyParcelComApi(MyParcelComApiInterface $api)
+    public function setMyParcelComApi(?MyParcelComApiInterface $api): self
     {
         $this->api = $api;
 

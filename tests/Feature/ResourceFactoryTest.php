@@ -131,7 +131,7 @@ class ResourceFactoryTest extends TestCase
                 'address'       => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment A',
-                    'street_number'        => '40',
+                    'street_number'        => 40,
                     'street_number_suffix' => 'A',
                     'postal_code'          => '1AR BR2',
                     'city'                 => 'London',
@@ -464,7 +464,7 @@ class ResourceFactoryTest extends TestCase
                 'recipient_address'    => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 4',
-                    'street_number'        => '1',
+                    'street_number'        => 1,
                     'street_number_suffix' => 'A',
                     'postal_code'          => '1AR BR2',
                     'city'                 => 'London',
@@ -480,7 +480,7 @@ class ResourceFactoryTest extends TestCase
                 'sender_address'       => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 9',
-                    'street_number'        => '4',
+                    'street_number'        => 4,
                     'street_number_suffix' => 'A',
                     'postal_code'          => '1AR BR2',
                     'city'                 => 'London',
@@ -498,7 +498,7 @@ class ResourceFactoryTest extends TestCase
                     'address' => [
                         'street_1'             => 'Diagonally',
                         'street_2'             => 'Apartment 41',
-                        'street_number'        => '2',
+                        'street_number'        => 2,
                         'street_number_suffix' => 'A',
                         'postal_code'          => '1AR BR2',
                         'city'                 => 'London',
@@ -561,7 +561,7 @@ class ResourceFactoryTest extends TestCase
                 'recipient_address'    => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 4',
-                    'street_number'        => '1',
+                    'street_number'        => 1,
                     'street_number_suffix' => 'A',
                     'postal_code'          => '1AR BR2',
                     'city'                 => 'London',
@@ -576,7 +576,7 @@ class ResourceFactoryTest extends TestCase
                 'sender_address'       => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 9',
-                    'street_number'        => '4',
+                    'street_number'        => 4,
                     'street_number_suffix' => 'A',
                     'postal_code'          => '1AR BR2',
                     'city'                 => 'London',
@@ -593,7 +593,7 @@ class ResourceFactoryTest extends TestCase
                     'address' => [
                         'street_1'             => 'Diagonally',
                         'street_2'             => 'Apartment 41',
-                        'street_number'        => '2',
+                        'street_number'        => 2,
                         'street_number_suffix' => 'A',
                         'postal_code'          => '1AR BR2',
                         'city'                 => 'London',
@@ -705,7 +705,7 @@ class ResourceFactoryTest extends TestCase
                 'sender_address' => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 3',
-                    'street_number'        => '4',
+                    'street_number'        => 4,
                     'street_number_suffix' => 'A',
                     'postal_code'          => '1AR BR2',
                     'city'                 => 'London',
@@ -720,7 +720,7 @@ class ResourceFactoryTest extends TestCase
                 'return_address' => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 1',
-                    'street_number'        => '4',
+                    'street_number'        => 4,
                     'street_number_suffix' => 'A',
                     'postal_code'          => '1AR BR2',
                     'city'                 => 'London',

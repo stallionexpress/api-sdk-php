@@ -81,9 +81,6 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
         return $this->getResource()->getRecipientTaxNumber();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setRecipientTaxIdentificationNumbers(array $taxIdentificationNumbers)
     {
         $this->getResource()->setRecipientTaxIdentificationNumbers($taxIdentificationNumbers);
@@ -91,9 +88,6 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function addRecipientTaxIdentificationNumber(TaxIdentificationNumber $taxIdentificationNumber)
     {
         $this->getResource()->addRecipientTaxIdentificationNumber($taxIdentificationNumber);
@@ -101,9 +95,6 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getRecipientTaxIdentificationNumbers()
     {
         return $this->getResource()->getRecipientTaxIdentificationNumbers();
@@ -149,9 +140,6 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
         return $this->getResource()->getSenderTaxNumber();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setSenderTaxIdentificationNumbers(array $taxIdentificationNumbers)
     {
         $this->getResource()->setSenderTaxIdentificationNumbers($taxIdentificationNumbers);
@@ -159,9 +147,6 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function addSenderTaxIdentificationNumber(TaxIdentificationNumber $taxIdentificationNumber)
     {
         $this->getResource()->addSenderTaxIdentificationNumber($taxIdentificationNumber);
@@ -169,9 +154,6 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSenderTaxIdentificationNumbers()
     {
         return $this->getResource()->getSenderTaxIdentificationNumbers();
@@ -631,9 +613,6 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
         return $this->getResource()->getRegisterAt();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setService(ServiceInterface $service)
     {
         $this->getResource()->setService($service);
@@ -641,17 +620,11 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getService()
     {
         return $this->getResource()->getService();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setContract(ContractInterface $contract)
     {
         $this->getResource()->setContract($contract);
@@ -659,9 +632,6 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getContract()
     {
         return $this->getResource()->getContract();

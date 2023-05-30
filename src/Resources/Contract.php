@@ -37,74 +37,50 @@ class Contract implements ContractInterface
         ],
     ];
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setName($name)
+    public function setName(string $name): self
     {
         $this->attributes[self::ATTRIBUTE_NAME] = $name;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->attributes[self::ATTRIBUTE_NAME];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setCurrency($currency)
+    public function setCurrency(string $currency): self
     {
         $this->attributes[self::ATTRIBUTE_CURRENCY] = $currency;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getCurrency()
+    public function getCurrency(): string
     {
         return $this->attributes[self::ATTRIBUTE_CURRENCY];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setCarrier(CarrierInterface $carrier)
+    public function setCarrier(CarrierInterface $carrier): self
     {
         $this->relationships[self::RELATIONSHIP_CARRIER]['data'] = $carrier;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getCarrier()
+    public function getCarrier(): CarrierInterface
     {
         return $this->relationships[self::RELATIONSHIP_CARRIER]['data'];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setStatus($status)
+    public function setStatus(string $status): self
     {
         $this->attributes[self::ATTRIBUTE_STATUS] = $status;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getStatus()
+    public function getStatus(): string
     {
         return $this->attributes[self::ATTRIBUTE_STATUS];
     }

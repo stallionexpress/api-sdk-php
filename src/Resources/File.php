@@ -29,36 +29,27 @@ class File implements FileInterface
     ];
 
     /** @var StreamInterface[] */
-    private $streams = [];
+    private array $streams = [];
 
     /** @var string[] */
-    private $base64Data = [];
+    private array $base64Data = [];
 
     /** @var string[] */
-    private $paths = [];
+    private array $paths = [];
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setDocumentType($documentType)
+    public function setDocumentType(string $documentType): self
     {
         $this->attributes[self::ATTRIBUTE_DOCUMENT_TYPE] = $documentType;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getDocumentType()
+    public function getDocumentType(): string
     {
         return $this->attributes[self::ATTRIBUTE_DOCUMENT_TYPE];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setFormats(array $formats)
+    public function setFormats(array $formats): self
     {
         $this->attributes[self::ATTRIBUTE_FORMATS] = [];
         array_walk($formats, function ($format) {
@@ -68,10 +59,7 @@ class File implements FileInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function addFormat($mimeType, $extension)
+    public function addFormat(string $mimeType, string $extension): self
     {
         $this->attributes[self::ATTRIBUTE_FORMATS][] = [
             self::FORMAT_MIME_TYPE => $mimeType,
@@ -87,28 +75,19 @@ class File implements FileInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getFormats()
+    public function getFormats(): array
     {
         return $this->attributes[self::ATTRIBUTE_FORMATS];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setStream(StreamInterface $stream, $mimeType)
+    public function setStream(StreamInterface $stream, string $mimeType): self
     {
         $this->streams[$mimeType] = $stream;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getStream($mimeType = null)
+    public function getStream(?string $mimeType = null): ?StreamInterface
     {
         if ($mimeType === null) {
             foreach ($this->getFormats() as $format) {
@@ -117,7 +96,7 @@ class File implements FileInterface
                 if ($stream !== null) {
                     return $stream;
                 }
-            };
+            }
 
             return null;
         }
@@ -131,22 +110,18 @@ class File implements FileInterface
         if (isset($this->paths[$mimeType])) {
             return Utils::streamFor(fopen($this->paths[$mimeType], 'r'));
         }
+
+        return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setBase64Data($data, $mimeType)
+    public function setBase64Data(string $data, string $mimeType): self
     {
         $this->base64Data[$mimeType] = $data;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getBase64Data($mimeType = null)
+    public function getBase64Data(?string $mimeType = null): ?string
     {
         if ($mimeType === null) {
             foreach ($this->getFormats() as $format) {
@@ -155,7 +130,7 @@ class File implements FileInterface
                 if ($data !== null) {
                     return $data;
                 }
-            };
+            }
 
             return null;
         }
@@ -176,20 +151,14 @@ class File implements FileInterface
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setTemporaryFilePath($path, $mimeType)
+    public function setTemporaryFilePath(string $path, string $mimeType): self
     {
         $this->paths[$mimeType] = $path;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getTemporaryFilePath($mimeType = null)
+    public function getTemporaryFilePath(?string $mimeType = null): ?string
     {
         $extension = null;
         foreach ($this->getFormats() as $format) {
@@ -198,7 +167,7 @@ class File implements FileInterface
                 $extension = $format[self::FORMAT_EXTENSION];
                 break;
             }
-        };
+        }
 
         if (isset($this->paths[$mimeType])) {
             return $this->paths[$mimeType];
@@ -219,9 +188,6 @@ class File implements FileInterface
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function jsonSerialize(): array
     {
         $values = get_object_vars($this);

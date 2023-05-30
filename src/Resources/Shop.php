@@ -43,114 +43,78 @@ class Shop implements ShopInterface
         ],
     ];
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setName($name)
+    public function setName(string $name): self
     {
         $this->attributes[self::ATTRIBUTE_NAME] = $name;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->attributes[self::ATTRIBUTE_NAME];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setWebsite($website)
+    public function setWebsite(?string $website): self
     {
         $this->attributes[self::ATTRIBUTE_WEBSITE] = $website;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getWebsite()
+    public function getWebsite(): ?string
     {
         return $this->attributes[self::ATTRIBUTE_WEBSITE];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setSenderAddress(AddressInterface $senderAddress)
+    public function setSenderAddress(AddressInterface $senderAddress): self
     {
         $this->attributes[self::ATTRIBUTE_SENDER_ADDRESS] = $senderAddress;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getSenderAddress()
+    public function getSenderAddress(): AddressInterface
     {
         return $this->attributes[self::ATTRIBUTE_SENDER_ADDRESS];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setReturnAddress(AddressInterface $returnAddress)
+    public function setReturnAddress(AddressInterface $returnAddress): self
     {
         $this->attributes[self::ATTRIBUTE_RETURN_ADDRESS] = $returnAddress;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getReturnAddress()
+    public function getReturnAddress(): AddressInterface
     {
         return $this->attributes[self::ATTRIBUTE_RETURN_ADDRESS];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setCreatedAt($time)
+    public function setCreatedAt(DateTime|int $createdAt): self
     {
-        if (is_int($time)) {
-            $this->attributes[self::ATTRIBUTE_CREATED_AT] = $time;
-        } elseif ($time instanceof DateTime) {
-            $this->attributes[self::ATTRIBUTE_CREATED_AT] = $time->getTimestamp();
+        if (is_int($createdAt)) {
+            $this->attributes[self::ATTRIBUTE_CREATED_AT] = $createdAt;
+        } elseif ($createdAt instanceof DateTime) {
+            $this->attributes[self::ATTRIBUTE_CREATED_AT] = $createdAt->getTimestamp();
         }
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getCreatedAt()
+    public function getCreatedAt(): DateTime
     {
         return (new DateTime())->setTimestamp($this->attributes[self::ATTRIBUTE_CREATED_AT]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setOrganization(OrganizationInterface $organization)
+    public function setOrganization(OrganizationInterface $organization): self
     {
         $this->relationships[self::RELATIONSHIP_ORGANIZATION]['data'] = $organization;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getOrganization()
+    public function getOrganization(): OrganizationInterface
     {
         return $this->relationships[self::RELATIONSHIP_ORGANIZATION]['data'];
     }

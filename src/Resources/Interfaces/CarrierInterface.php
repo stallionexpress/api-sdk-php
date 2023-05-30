@@ -6,36 +6,19 @@ namespace MyParcelCom\ApiSdk\Resources\Interfaces;
 
 interface CarrierInterface extends ResourceInterface
 {
-    /**
-     * @param string $name
-     * @return $this
-     */
-    public function setName($name);
+    public function setName(string $name): self;
 
-    /**
-     * @return string
-     */
-    public function getName();
+    public function getName(): string;
 
-    /**
-     * @param string $code
-     * @return $this
-     */
-    public function setCode($code);
+    public function setCode(string $code): self;
 
-    /**
-     * @return string
-     */
-    public function getCode();
+    public function getCode(): string;
 
-    /**
-     * @param array $format
-     * @return $this
-     */
-    public function setCredentialsFormat(array $format);
+    public function setCredentialsFormat(array $format): self;
 
-    /**
-     * @return array
-     */
-    public function getCredentialsFormat();
+    public function getCredentialsFormat(): array;
+
+    public function setLabelMimeTypes(array $labelMimeTypes): self;
+
+    public function getLabelMimeTypes(): array;
 }

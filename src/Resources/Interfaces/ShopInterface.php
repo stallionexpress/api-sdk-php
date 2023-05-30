@@ -8,69 +8,27 @@ use DateTime;
 
 interface ShopInterface extends ResourceInterface
 {
-    /**
-     * @param $name
-     * @return $this
-     */
-    public function setName($name);
+    public function setName(string $name): self;
 
-    /**
-     * @return string
-     */
-    public function getName();
+    public function getName(): string;
 
-    /**
-     * @param string $website
-     * @return $this
-     */
-    public function setWebsite($website);
+    public function setWebsite(?string $website): self;
 
-    /**
-     * @return string
-     */
-    public function getWebsite();
+    public function getWebsite(): ?string;
 
-    /**
-     * @param AddressInterface $senderAddress
-     * @return $this
-     */
-    public function setSenderAddress(AddressInterface $senderAddress);
+    public function setSenderAddress(AddressInterface $senderAddress): self;
 
-    /**
-     * @return AddressInterface
-     */
-    public function getSenderAddress();
+    public function getSenderAddress(): AddressInterface;
 
-    /**
-     * @param AddressInterface $returnAddress
-     * @return $this
-     */
-    public function setReturnAddress(AddressInterface $returnAddress);
+    public function setReturnAddress(AddressInterface $returnAddress): self;
 
-    /**
-     * @return AddressInterface
-     */
-    public function getReturnAddress();
+    public function getReturnAddress(): AddressInterface;
 
-    /**
-     * @param int|DateTime $time
-     * @return $this
-     */
-    public function setCreatedAt($time);
+    public function setCreatedAt(DateTime|int $createdAt): self;
 
-    /**
-     * @return DateTime
-     */
-    public function getCreatedAt();
+    public function getCreatedAt(): DateTime;
 
-    /**
-     * @param OrganizationInterface $organization
-     * @return $this
-     */
-    public function setOrganization(OrganizationInterface $organization);
+    public function setOrganization(OrganizationInterface $organization): self;
 
-    /**
-     * @return OrganizationInterface
-     */
-    public function getOrganization();
+    public function getOrganization(): OrganizationInterface;
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MyParcelCom\ApiSdk\Tests\Feature;
 
+use DateTime;
 use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
 use MyParcelCom\ApiSdk\Collection\CollectionInterface;
 use MyParcelCom\ApiSdk\Exceptions\InvalidResourceException;
@@ -887,8 +888,8 @@ class MyParcelComApiTest extends TestCase
         $this->assertInstanceOf(ShipmentStatusInterface::class, $shipmentStatus);
         $this->assertEquals(1504101722, $shipmentStatus->getCreatedAt()->getTimestamp());
         $this->assertCount(1, $carrierStatuses);
-        $this->assertNull($carrierStatuses[0]->getCode());
-        $this->assertNull($carrierStatuses[0]->getDescription());
+        $this->assertEquals('10000', $carrierStatuses[0]->getCode());
+        $this->assertEquals('Pre-alert confirmed', $carrierStatuses[0]->getDescription());
         $this->assertEquals(1504101719, $carrierStatuses[0]->getAssignedAt()->getTimestamp());
 
         $status = $shipmentStatus->getStatus();
@@ -903,8 +904,8 @@ class MyParcelComApiTest extends TestCase
         $this->assertInstanceOf(ShipmentStatusInterface::class, $shipmentStatus);
         $this->assertEquals(1504101718, $shipmentStatus->getCreatedAt()->getTimestamp());
         $this->assertCount(1, $carrierStatuses);
-        $this->assertNull($carrierStatuses[0]->getCode());
-        $this->assertNull($carrierStatuses[0]->getDescription());
+        $this->assertEquals('00000', $carrierStatuses[0]->getCode());
+        $this->assertEquals('Pre-alerted', $carrierStatuses[0]->getDescription());
         $this->assertEquals(1504101718, $carrierStatuses[0]->getAssignedAt()->getTimestamp());
 
         $status = $shipmentStatus->getStatus();
@@ -950,7 +951,7 @@ class MyParcelComApiTest extends TestCase
         $this->assertEquals('shops', $shop->getType());
         $this->assertEquals('shop-id-1', $shop->getId());
         $this->assertEquals('Testshop', $shop->getName());
-        $this->assertEquals((new \DateTime())->setTimestamp(1509378904), $shop->getCreatedAt());
+        $this->assertEquals((new DateTime())->setTimestamp(1509378904), $shop->getCreatedAt());
         $this->assertEquals(
             (new Address())
                 ->setStreet1('Hoofdweg')

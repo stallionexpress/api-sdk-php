@@ -32,83 +32,50 @@ class Carrier implements CarrierInterface
         self::ATTRIBUTE_LABEL_MIME_TYPES   => [],
     ];
 
-    /**
-     * @param string $name
-     * @return $this
-     */
-    public function setName($name)
+    public function setName(string $name): self
     {
         $this->attributes[self::ATTRIBUTE_NAME] = $name;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->attributes[self::ATTRIBUTE_NAME];
     }
 
-    public function getType(): string
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param string $code
-     * @return $this
-     */
-    public function setCode($code)
+    public function setCode(string $code): self
     {
         $this->attributes[self::ATTRIBUTE_CODE] = $code;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getCode()
+    public function getCode(): string
     {
         return $this->attributes[self::ATTRIBUTE_CODE];
     }
 
-    /**
-     * @param array $format
-     * @return $this
-     */
-    public function setCredentialsFormat(array $format)
+    public function setCredentialsFormat(array $format): self
     {
         $this->attributes[self::ATTRIBUTE_CREDENTIALS_FORMAT] = $format;
 
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getCredentialsFormat()
+    public function getCredentialsFormat(): array
     {
         return $this->attributes[self::ATTRIBUTE_CREDENTIALS_FORMAT];
     }
 
-    /**
-     * @param array $labelMimeTypes
-     * @return $this
-     */
-    public function setLabelMimeTypes(array $labelMimeTypes)
+    public function setLabelMimeTypes(array $labelMimeTypes): self
     {
         $this->attributes[self::ATTRIBUTE_LABEL_MIME_TYPES] = $labelMimeTypes;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getLabelMimeTypes()
+    public function getLabelMimeTypes(): array
     {
         return $this->attributes[self::ATTRIBUTE_LABEL_MIME_TYPES];
     }

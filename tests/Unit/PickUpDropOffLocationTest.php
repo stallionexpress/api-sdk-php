@@ -139,7 +139,7 @@ class PickUpDropOffLocationTest extends TestCase
             ->willReturn([
                 'street_1'             => 'Diagonally',
                 'street_2'             => 'Apartment 4',
-                'street_number'        => '4',
+                'street_number'        => 4,
                 'street_number_suffix' => 'A',
                 'postal_code'          => '1AR BR2',
                 'city'                 => 'London',
@@ -192,7 +192,7 @@ class PickUpDropOffLocationTest extends TestCase
                 'address'       => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 4',
-                    'street_number'        => '4',
+                    'street_number'        => 4,
                     'street_number_suffix' => 'A',
                     'postal_code'          => '1AR BR2',
                     'city'                 => 'London',

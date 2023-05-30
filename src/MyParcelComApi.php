@@ -194,7 +194,7 @@ class MyParcelComApi implements MyParcelComApiInterface
             // for a carrier, the locations of the other carriers should
             // still be returned. The failing carrier returns null.
             $pudoLocations[$carrier->getId()] = !empty($resources) ? new ArrayCollection($resources) : null;
-        };
+        }
 
         return $pudoLocations;
     }

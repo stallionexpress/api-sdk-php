@@ -21,78 +21,50 @@ class CarrierProxy implements CarrierInterface, ResourceProxyInterface
 
     private string $type = ResourceInterface::TYPE_CARRIER;
 
-    /**
-     * @param string $name
-     * @return $this
-     */
-    public function setName($name)
+    public function setName(string $name): self
     {
         $this->getResource()->setName($name);
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->getResource()->getName();
     }
 
-    /**
-     * @param string $code
-     * @return $this
-     */
-    public function setCode($code)
+    public function setCode(string $code): self
     {
         $this->getResource()->setCode($code);
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getCode()
+    public function getCode(): string
     {
         return $this->getResource()->getCode();
     }
 
-    /**
-     * @param array $format
-     * @return $this
-     */
-    public function setCredentialsFormat(array $format)
+    public function setCredentialsFormat(array $format): self
     {
         $this->getResource()->setCredentialsFormat($format);
 
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getCredentialsFormat()
+    public function getCredentialsFormat(): array
     {
         return $this->getResource()->getCredentialsFormat();
     }
 
-    /**
-     * @param array $labelMimeTypes
-     * @return $this
-     */
-    public function setLabelMimeTypes(array $labelMimeTypes)
+    public function setLabelMimeTypes(array $labelMimeTypes): self
     {
         $this->getResource()->setLabelMimeTypes($labelMimeTypes);
 
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getLabelMimeTypes()
+    public function getLabelMimeTypes(): array
     {
         return $this->getResource()->getLabelMimeTypes();
     }

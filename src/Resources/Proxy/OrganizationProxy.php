@@ -21,21 +21,14 @@ class OrganizationProxy implements OrganizationInterface, ResourceProxyInterface
 
     private string $type = ResourceInterface::TYPE_ORGANIZATIONS;
 
-    /**
-     * @param string $name
-     * @return $this
-     */
-    public function setName($name)
+    public function setName(string $name): self
     {
         $this->getResource()->setName($name);
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->getResource()->getName();
     }

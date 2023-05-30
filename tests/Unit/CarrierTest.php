@@ -24,8 +24,6 @@ class CarrierTest extends TestCase
     {
         $carrier = new Carrier();
 
-        $this->assertNull($carrier->getName());
-
         $this->assertEquals('MyParcel.com Carrier', $carrier->setName('MyParcel.com Carrier')->getName());
     }
 
@@ -41,8 +39,6 @@ class CarrierTest extends TestCase
     public function testCode()
     {
         $carrier = new Carrier();
-
-        $this->assertNull($carrier->getCode());
 
         $this->assertEquals('some-code', $carrier->setCode('some-code')->getCode());
     }
