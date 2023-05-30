@@ -14,6 +14,9 @@ use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 use MyParcelCom\ApiSdk\Resources\Traits\ProxiesResource;
 use MyParcelCom\ApiSdk\Resources\Traits\Resource;
 
+/**
+ * @method ShopInterface getResource()
+ */
 class ShopProxy implements ShopInterface, ResourceProxyInterface
 {
     use JsonSerializable;

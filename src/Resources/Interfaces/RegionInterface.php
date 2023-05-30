@@ -6,70 +6,27 @@ namespace MyParcelCom\ApiSdk\Resources\Interfaces;
 
 interface RegionInterface extends ResourceInterface
 {
-    /**
-     * @param string $countryCode
-     * @return $this
-     */
-    public function setCountryCode($countryCode);
+    public function setCountryCode(?string $countryCode): self;
 
-    /**
-     * @return string
-     */
-    public function getCountryCode();
+    public function getCountryCode(): ?string;
 
-    /**
-     * @param string $regionCode
-     * @return $this
-     */
-    public function setRegionCode($regionCode);
+    public function setRegionCode(?string $regionCode): self;
 
-    /**
-     * @return string
-     */
-    public function getRegionCode();
+    public function getRegionCode(): ?string;
 
-    /**
-     * @param string $currency
-     * @return $this
-     */
-    public function setCurrency($currency);
+    public function setCurrency(?string $currency): self;
 
-    /**
-     * @return string
-     */
-    public function getCurrency();
+    public function getCurrency(): ?string;
 
-    /**
-     *
-     * @param string $name
-     * @return $this
-     */
-    public function setName($name);
+    public function setName(string $name): self;
 
-    /**
-     * @return string
-     */
-    public function getName();
+    public function getName(): string;
 
-    /**
-     * @param string $category
-     * @return $this
-     */
-    public function setCategory($category);
+    public function setCategory(?string $category);
 
-    /**
-     * @return string
-     */
-    public function getCategory();
+    public function getCategory(): ?string;
 
-    /**
-     * @param RegionInterface $region
-     * @return $this
-     */
-    public function setParent(RegionInterface $region);
+    public function setParent(?RegionInterface $region): self;
 
-    /**
-     * @return RegionInterface|null
-     */
-    public function getParent();
+    public function getParent(): ?RegionInterface;
 }

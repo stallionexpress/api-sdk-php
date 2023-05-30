@@ -12,6 +12,9 @@ use MyParcelCom\ApiSdk\Resources\Traits\ProxiesResource;
 use MyParcelCom\ApiSdk\Resources\Traits\Resource;
 use Psr\Http\Message\StreamInterface;
 
+/**
+ * @method FileInterface getResource()
+ */
 class FileProxy implements FileInterface, ResourceProxyInterface
 {
     use JsonSerializable;

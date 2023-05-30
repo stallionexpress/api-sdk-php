@@ -11,173 +11,112 @@ class Error implements ErrorInterface
 {
     use JsonSerializable;
 
-    /** @var string */
-    protected $id;
+    protected ?string $id = null;
 
-    /** @var string */
-    protected $status;
+    protected ?string $status = null;
 
-    /** @var string */
-    protected $code;
+    protected ?string $code = null;
 
-    /** @var string */
-    protected $title;
+    protected ?string $title = null;
 
-    /** @var string */
-    protected $detail;
+    protected ?string $detail = null;
 
-    /** @var array */
-    protected $links;
+    protected array $links = [];
 
-    /** @var array */
-    protected $source;
+    protected array $source = [];
 
-    /** @var array */
-    protected $meta;
+    protected array $meta = [];
 
     public function getId(): ?string
     {
         return $this->id;
     }
 
-    /**
-     * @param string $id
-     * @return $this
-     */
-    public function setId($id)
+    public function setId(string $id): self
     {
         $this->id = $id;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getStatus()
+    public function getStatus(): ?string
     {
         return $this->status;
     }
 
-    /**
-     * @param string $status
-     * @return $this
-     */
-    public function setStatus($status)
+    public function setStatus(string $status): self
     {
         $this->status = $status;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getCode()
+    public function getCode(): ?string
     {
         return $this->code;
     }
 
-    /**
-     * @param string $code
-     * @return $this
-     */
-    public function setCode($code)
+    public function setCode(string $code): self
     {
         $this->code = $code;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    /**
-     * @param string $title
-     * @return $this
-     */
-    public function setTitle($title)
+    public function setTitle(string $title): self
     {
         $this->title = $title;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getDetail()
+    public function getDetail(): ?string
     {
         return $this->detail;
     }
 
-    /**
-     * @param string $detail
-     * @return $this
-     */
-    public function setDetail($detail)
+    public function setDetail(string $detail): self
     {
         $this->detail = $detail;
 
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getLinks()
+    public function getLinks(): array
     {
         return $this->links;
     }
 
-    /**
-     * @param array $links
-     * @return $this
-     */
-    public function setLinks(array $links)
+    public function setLinks(array $links): self
     {
         $this->links = $links;
 
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getSource()
+    public function getSource(): array
     {
         return $this->source;
     }
 
-    /**
-     * @param array $source
-     * @return $this
-     */
-    public function setSource(array $source)
+    public function setSource(array $source): self
     {
         $this->source = $source;
 
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getMeta()
+    public function getMeta(): array
     {
         return $this->meta;
     }
 
-    /**
-     * @param array $meta
-     * @return $this
-     */
-    public function setMeta(array $meta)
+    public function setMeta(array $meta): self
     {
         $this->meta = $meta;
 

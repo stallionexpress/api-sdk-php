@@ -16,6 +16,9 @@ use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 use MyParcelCom\ApiSdk\Resources\Traits\ProxiesResource;
 use MyParcelCom\ApiSdk\Resources\Traits\Resource;
 
+/**
+ * @method ShipmentStatusInterface getResource()
+ */
 class ShipmentStatusProxy implements ShipmentStatusInterface, ResourceProxyInterface
 {
     use JsonSerializable;

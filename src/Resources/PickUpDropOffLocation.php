@@ -51,31 +51,31 @@ class PickUpDropOffLocation implements PickUpDropOffLocationInterface
         self::META_DISTANCE => null,
     ];
 
-    public function setCode($code)
+    public function setCode(string $code): self
     {
         $this->attributes[self::ATTRIBUTE_CODE] = $code;
 
         return $this;
     }
 
-    public function getCode()
+    public function getCode(): string
     {
         return $this->attributes[self::ATTRIBUTE_CODE];
     }
 
-    public function setAddress(AddressInterface $address)
+    public function setAddress(AddressInterface $address): self
     {
         $this->attributes[self::ATTRIBUTE_ADDRESS] = $address;
 
         return $this;
     }
 
-    public function getAddress()
+    public function getAddress(): AddressInterface
     {
         return $this->attributes[self::ATTRIBUTE_ADDRESS];
     }
 
-    public function setOpeningHours(array $openingHours)
+    public function setOpeningHours(array $openingHours): self
     {
         $this->attributes[self::ATTRIBUTE_OPENING_HOURS] = [];
 
@@ -86,62 +86,66 @@ class PickUpDropOffLocation implements PickUpDropOffLocationInterface
         return $this;
     }
 
-    public function addOpeningHour(OpeningHourInterface $openingHour)
+    public function addOpeningHour(OpeningHourInterface $openingHour): self
     {
         $this->attributes[self::ATTRIBUTE_OPENING_HOURS][] = $openingHour;
 
         return $this;
     }
 
-    public function getOpeningHours()
+    public function getOpeningHours(): array
     {
         return $this->attributes[self::ATTRIBUTE_OPENING_HOURS];
     }
 
-    public function setPosition(PositionInterface $position)
+    public function setPosition(PositionInterface $position): self
     {
         $this->attributes[self::ATTRIBUTE_POSITION] = $position;
 
         return $this;
     }
 
-    public function getPosition()
+    public function getPosition(): PositionInterface
     {
         return $this->attributes[self::ATTRIBUTE_POSITION];
     }
 
-    public function setCarrier(CarrierInterface $carrier)
+    public function setCarrier(CarrierInterface $carrier): self
     {
         $this->relationships[self::RELATIONSHIP_CARRIER]['data'] = $carrier;
 
         return $this;
     }
 
-    public function getCarrier()
+    public function getCarrier(): CarrierInterface
     {
         return $this->relationships[self::RELATIONSHIP_CARRIER]['data'];
     }
 
-    public function setDistance($distance, $unit = DistanceUtils::UNIT_METER)
+    public function setDistance(float|int $distance, string $unit = DistanceUtils::UNIT_METER): self
     {
         $this->meta[self::META_DISTANCE] = round(DistanceUtils::convertDistance($distance, $unit, DistanceUtils::UNIT_METER));
 
         return $this;
     }
 
-    public function getDistance($unit = DistanceUtils::UNIT_METER)
+    public function getDistance($unit = DistanceUtils::UNIT_METER): float|int|null
     {
+        if ($this->meta[self::META_DISTANCE] === null) {
+            return null;
+        }
+
         return round(DistanceUtils::convertDistance($this->meta[self::META_DISTANCE], DistanceUtils::UNIT_METER, $unit));
     }
 
-    public function setCategories(array $categories)
+    public function setCategories(array $categories): self
     {
         $this->attributes[self::ATTRIBUTE_CATEGORIES] = $categories;
 
         return $this;
     }
 
-    public function getCategories()
+    public function getCategories(): array
     {
         return $this->attributes[self::ATTRIBUTE_CATEGORIES];
     }

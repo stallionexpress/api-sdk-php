@@ -101,47 +101,43 @@ class ServiceRate implements ServiceRateInterface
     /** @var callable */
     private $resolveDynamicRateForShipmentCallback;
 
-    public function setWeightMin($weightMin)
+    public function setWeightMin(int $weightMin): self
     {
         $this->attributes[self::ATTRIBUTE_WEIGHT_MIN] = $weightMin;
 
         return $this;
     }
 
-    public function getWeightMin()
+    public function getWeightMin(): int
     {
         return $this->attributes[self::ATTRIBUTE_WEIGHT_MIN];
     }
 
-    public function setWeightMax($weightMax)
+    public function setWeightMax(int $weightMax): self
     {
         $this->attributes[self::ATTRIBUTE_WEIGHT_MAX] = $weightMax;
 
         return $this;
     }
 
-    public function getWeightMax()
+    public function getWeightMax(): int
     {
         return $this->attributes[self::ATTRIBUTE_WEIGHT_MAX];
     }
 
-    public function setWeightBracket($weightBracket)
+    public function setWeightBracket(array $weightBracket): self
     {
         $this->attributes[self::ATTRIBUTE_WEIGHT_BRACKET] = $weightBracket;
 
         return $this;
     }
 
-    public function getWeightBracket()
+    public function getWeightBracket(): array
     {
         return $this->attributes[self::ATTRIBUTE_WEIGHT_BRACKET];
     }
 
-    /**
-     * @param int $bracketPrice
-     * @return $this
-     */
-    public function setBracketPrice($bracketPrice)
+    public function setBracketPrice(?int $bracketPrice): self
     {
         $this->meta[self::META_BRACKET_PRICE][self::ATTRIBUTE_AMOUNT] = $bracketPrice;
 
@@ -150,18 +146,13 @@ class ServiceRate implements ServiceRateInterface
 
     /**
      * This will only return a value when this ServiceRate is retrieved for a shipment with a specific weight.
-     * @return int|null
      */
-    public function getBracketPrice()
+    public function getBracketPrice(): ?int
     {
         return $this->meta[self::META_BRACKET_PRICE][self::ATTRIBUTE_AMOUNT];
     }
 
-    /**
-     * @param string $currency
-     * @return $this
-     */
-    public function setBracketCurrency($currency)
+    public function setBracketCurrency(?string $currency): self
     {
         $this->attributes[self::META_BRACKET_PRICE][self::ATTRIBUTE_CURRENCY] = $currency;
 
@@ -170,14 +161,13 @@ class ServiceRate implements ServiceRateInterface
 
     /**
      * This will only return a value when this ServiceRate is retrieved for a shipment with a specific weight.
-     * @return string|null
      */
-    public function getBracketCurrency()
+    public function getBracketCurrency(): ?string
     {
         return $this->attributes[self::META_BRACKET_PRICE][self::ATTRIBUTE_CURRENCY];
     }
 
-    public function calculateBracketPrice($weight)
+    public function calculateBracketPrice(int $weight): ?int
     {
         $weightBracket = $this->getWeightBracket();
         $price = $weightBracket[self::WEIGHT_BRACKET_START_AMOUNT];
@@ -195,146 +185,139 @@ class ServiceRate implements ServiceRateInterface
         return $price;
     }
 
-    public function setLengthMax($lengthMax)
+    public function setLengthMax(?int $lengthMax): self
     {
         $this->attributes[self::ATTRIBUTE_LENGTH_MAX] = $lengthMax;
 
         return $this;
     }
 
-    public function getLengthMax()
+    public function getLengthMax(): ?int
     {
         return $this->attributes[self::ATTRIBUTE_LENGTH_MAX];
     }
 
-    public function setHeightMax($heightMax)
+    public function setHeightMax(?int $heightMax): self
     {
         $this->attributes[self::ATTRIBUTE_HEIGHT_MAX] = $heightMax;
 
         return $this;
     }
 
-    public function getHeightMax()
+    public function getHeightMax(): ?int
     {
         return $this->attributes[self::ATTRIBUTE_HEIGHT_MAX];
     }
 
-    public function setWidthMax($widthMax)
+    public function setWidthMax(?int $widthMax): self
     {
         $this->attributes[self::ATTRIBUTE_WIDTH_MAX] = $widthMax;
 
         return $this;
     }
 
-    public function getWidthMax()
+    public function getWidthMax(): ?int
     {
         return $this->attributes[self::ATTRIBUTE_WIDTH_MAX];
     }
 
-    public function setVolumeMax($volumeMax)
+    public function setVolumeMax(float|int|null $volumeMax): self
     {
         $this->attributes[self::ATTRIBUTE_VOLUME_MAX] = $volumeMax;
 
         return $this;
     }
 
-    public function getVolumeMax()
+    public function getVolumeMax(): float|int|null
     {
         return $this->attributes[self::ATTRIBUTE_VOLUME_MAX];
     }
 
-    /**
-     * @param int $volumetricWeightDivisor
-     * @return $this
-     */
-    public function setVolumetricWeightDivisor($volumetricWeightDivisor)
+    public function setVolumetricWeightDivisor(?int $volumetricWeightDivisor): self
     {
         $this->attributes[self::ATTRIBUTE_VOLUMETRIC_WEIGHT_DIVISOR] = $volumetricWeightDivisor;
 
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getVolumetricWeightDivisor()
+    public function getVolumetricWeightDivisor(): ?int
     {
         return $this->attributes[self::ATTRIBUTE_VOLUMETRIC_WEIGHT_DIVISOR];
     }
 
-    public function setCurrency($currency)
+    public function setCurrency(?string $currency): self
     {
         $this->attributes[self::ATTRIBUTE_PRICE][self::ATTRIBUTE_CURRENCY] = $currency;
 
         return $this;
     }
 
-    public function getCurrency()
+    public function getCurrency(): ?string
     {
         return $this->attributes[self::ATTRIBUTE_PRICE][self::ATTRIBUTE_CURRENCY];
     }
 
-    public function setPrice($price)
+    public function setPrice(?int $price): self
     {
         $this->attributes[self::ATTRIBUTE_PRICE][self::ATTRIBUTE_AMOUNT] = $price;
 
         return $this;
     }
 
-    public function getPrice()
+    public function getPrice(): ?int
     {
         return $this->attributes[self::ATTRIBUTE_PRICE][self::ATTRIBUTE_AMOUNT];
     }
 
-    public function setFuelSurchargeAmount($amount)
+    public function setFuelSurchargeAmount(?int $amount): self
     {
         $this->attributes[self::ATTRIBUTE_FUEL_SURCHARGE][self::ATTRIBUTE_AMOUNT] = $amount;
 
         return $this;
     }
 
-    public function getFuelSurchargeAmount()
+    public function getFuelSurchargeAmount(): ?int
     {
         return $this->attributes[self::ATTRIBUTE_FUEL_SURCHARGE][self::ATTRIBUTE_AMOUNT];
     }
 
-    public function setFuelSurchargeCurrency($currency)
+    public function setFuelSurchargeCurrency(?string $currency): self
     {
         $this->attributes[self::ATTRIBUTE_FUEL_SURCHARGE][self::ATTRIBUTE_CURRENCY] = $currency;
 
         return $this;
     }
 
-    public function getFuelSurchargeCurrency()
+    public function getFuelSurchargeCurrency(): ?string
     {
         return $this->attributes[self::ATTRIBUTE_FUEL_SURCHARGE][self::ATTRIBUTE_CURRENCY];
     }
 
-    public function setService(ServiceInterface $service)
+    public function setService(ServiceInterface $service): self
     {
         $this->relationships[self::RELATIONSHIP_SERVICE]['data'] = $service;
 
         return $this;
     }
 
-    public function getService()
+    public function getService(): ServiceInterface
     {
         return $this->relationships[self::RELATIONSHIP_SERVICE]['data'];
     }
 
-    public function setContract(ContractInterface $contract)
+    public function setContract(ContractInterface $contract): self
     {
         $this->relationships[self::RELATIONSHIP_CONTRACT]['data'] = $contract;
 
         return $this;
     }
 
-    public function getContract()
+    public function getContract(): ContractInterface
     {
         return $this->relationships[self::RELATIONSHIP_CONTRACT]['data'];
     }
 
-    public function setServiceOptions($serviceOptions)
+    public function setServiceOptions(array $serviceOptions): self
     {
         $this->relationships[self::RELATIONSHIP_SERVICE_OPTIONS]['data'] = [];
 
@@ -345,31 +328,31 @@ class ServiceRate implements ServiceRateInterface
         return $this;
     }
 
-    public function addServiceOption(ServiceOptionInterface $serviceOption)
+    public function addServiceOption(ServiceOptionInterface $serviceOption): self
     {
         $this->relationships[self::RELATIONSHIP_SERVICE_OPTIONS]['data'][] = $serviceOption;
 
         return $this;
     }
 
-    public function getServiceOptions()
+    public function getServiceOptions(): array
     {
         return $this->relationships[self::RELATIONSHIP_SERVICE_OPTIONS]['data'];
     }
 
-    public function setIsDynamic($isDynamic)
+    public function setIsDynamic(bool $isDynamic): self
     {
         $this->attributes[self::ATTRIBUTE_IS_DYNAMIC] = $isDynamic;
 
         return $this;
     }
 
-    public function isDynamic()
+    public function isDynamic(): bool
     {
-        return $this->attributes[self::ATTRIBUTE_IS_DYNAMIC];
+        return (bool) $this->attributes[self::ATTRIBUTE_IS_DYNAMIC];
     }
 
-    public function resolveDynamicRateForShipment(ShipmentInterface $shipment)
+    public function resolveDynamicRateForShipment(ShipmentInterface $shipment): self
     {
         if (isset($this->resolveDynamicRateForShipmentCallback)) {
             return call_user_func_array($this->resolveDynamicRateForShipmentCallback, [$shipment, $this]);
@@ -378,7 +361,7 @@ class ServiceRate implements ServiceRateInterface
         return $this;
     }
 
-    public function setResolveDynamicRateForShipmentCallback(callable $callback)
+    public function setResolveDynamicRateForShipmentCallback(callable $callback): self
     {
         $this->resolveDynamicRateForShipmentCallback = $callback;
 

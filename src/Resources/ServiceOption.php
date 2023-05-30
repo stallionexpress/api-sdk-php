@@ -41,75 +41,75 @@ class ServiceOption implements ServiceOptionInterface
         self::META_INCLUDED => null,
     ];
 
-    public function setName($name)
+    public function setName(string $name): self
     {
         $this->attributes[self::ATTRIBUTE_NAME] = $name;
 
         return $this;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->attributes[self::ATTRIBUTE_NAME];
     }
 
-    public function setCode($code)
+    public function setCode(string $code): self
     {
         $this->attributes[self::ATTRIBUTE_CODE] = $code;
 
         return $this;
     }
 
-    public function getCode()
+    public function getCode(): string
     {
         return $this->attributes[self::ATTRIBUTE_CODE];
     }
 
-    public function setCategory($category)
+    public function setCategory(?string $category): self
     {
         $this->attributes[self::ATTRIBUTE_CATEGORY] = $category;
 
         return $this;
     }
 
-    public function getCategory()
+    public function getCategory(): ?string
     {
         return $this->attributes[self::ATTRIBUTE_CATEGORY];
     }
 
-    public function setPrice($price)
+    public function setPrice(?int $price): self
     {
-        $this->meta[self::META_PRICE][self::META_PRICE_AMOUNT] = $price !== null ? (int) $price : null;
+        $this->meta[self::META_PRICE][self::META_PRICE_AMOUNT] = $price;
 
         return $this;
     }
 
-    public function getPrice()
+    public function getPrice(): ?int
     {
         return $this->meta[self::META_PRICE][self::META_PRICE_AMOUNT];
     }
 
-    public function setCurrency($currency)
+    public function setCurrency(?string $currency): self
     {
         $this->meta[self::META_PRICE][self::META_PRICE_CURRENCY] = $currency;
 
         return $this;
     }
 
-    public function getCurrency()
+    public function getCurrency(): ?string
     {
         return $this->meta[self::META_PRICE][self::META_PRICE_CURRENCY];
     }
 
-    public function setIncluded($included)
+    public function setIncluded(bool $included): self
     {
         $this->meta[self::META_INCLUDED] = $included;
 
         return $this;
     }
 
-    public function isIncluded()
+    public function isIncluded(): bool
     {
-        return $this->meta[self::META_INCLUDED];
+        return (bool) $this->meta[self::META_INCLUDED];
     }
 }

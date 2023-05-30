@@ -8,91 +8,35 @@ use JsonSerializable;
 
 interface ErrorInterface extends JsonSerializable
 {
-    /**
-     * @param string $id
-     * @return $this
-     */
-    public function setId($id);
+    public function setId(string $id): self;
 
-    /**
-     * @return string
-     */
-    public function getId();
+    public function getId(): ?string;
 
-    /**
-     * @param array $links
-     * @return $this
-     */
-    public function setLinks(array $links);
+    public function setLinks(array $links): self;
 
-    /**
-     * @return array
-     */
-    public function getLinks();
+    public function getLinks(): array;
 
-    /**
-     * @param string $status
-     * @return $this
-     */
-    public function setStatus($status);
+    public function setStatus(string $status): self;
 
-    /**
-     * @return string
-     */
-    public function getStatus();
+    public function getStatus(): ?string;
 
-    /**
-     * @param string $code
-     * @return $this
-     */
-    public function setCode($code);
+    public function setCode(string $code): self;
 
-    /**
-     * @return string
-     */
-    public function getCode();
+    public function getCode(): ?string;
 
-    /**
-     * @param string $title
-     * @return $this
-     */
-    public function setTitle($title);
+    public function setTitle(string $title): self;
 
-    /**
-     * @return string
-     */
-    public function getTitle();
+    public function getTitle(): ?string;
 
-    /**
-     * @param string $detail
-     * @return $this
-     */
-    public function setDetail($detail);
+    public function setDetail(string $detail): self;
 
-    /**
-     * @return string
-     */
-    public function getDetail();
+    public function getDetail(): ?string;
 
-    /**
-     * @param array $source
-     * @return $this
-     */
-    public function setSource(array $source);
+    public function setSource(array $source): self;
 
-    /**
-     * @return array
-     */
-    public function getSource();
+    public function getSource(): array;
 
-    /**
-     * @param array $meta
-     * @return $this
-     */
-    public function setMeta(array $meta);
+    public function setMeta(array $meta): self;
 
-    /**
-     * @return array
-     */
-    public function getMeta();
+    public function getMeta(): array;
 }

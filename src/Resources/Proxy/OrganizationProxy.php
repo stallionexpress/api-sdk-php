@@ -11,6 +11,9 @@ use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 use MyParcelCom\ApiSdk\Resources\Traits\ProxiesResource;
 use MyParcelCom\ApiSdk\Resources\Traits\Resource;
 
+/**
+ * @method OrganizationInterface getResource()
+ */
 class OrganizationProxy implements OrganizationInterface, ResourceProxyInterface
 {
     use JsonSerializable;

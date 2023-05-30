@@ -11,6 +11,9 @@ use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 use MyParcelCom\ApiSdk\Resources\Traits\ProxiesResource;
 use MyParcelCom\ApiSdk\Resources\Traits\Resource;
 
+/**
+ * @method ServiceOptionInterface getResource()
+ */
 class ServiceOptionProxy implements ServiceOptionInterface, ResourceProxyInterface
 {
     use JsonSerializable;
@@ -34,76 +37,76 @@ class ServiceOptionProxy implements ServiceOptionInterface, ResourceProxyInterfa
         self::META_INCLUDED => null,
     ];
 
-    public function setName($name)
+    public function setName(string $name): self
     {
         $this->getResource()->setName($name);
 
         return $this;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->getResource()->getName();
     }
 
-    public function setCode($code)
+    public function setCode(string $code): self
     {
         $this->getResource()->setCode($code);
 
         return $this;
     }
 
-    public function getCode()
+    public function getCode(): string
     {
         return $this->getResource()->getCode();
     }
 
-    public function setCategory($category)
+    public function setCategory(?string $category): self
     {
         $this->getResource()->setCategory($category);
 
         return $this;
     }
 
-    public function getCategory()
+    public function getCategory(): ?string
     {
         return $this->getResource()->getCategory();
     }
 
-    public function setPrice($price)
+    public function setPrice(?int $price): self
     {
-        $this->meta[self::META_PRICE][self::META_PRICE_AMOUNT] = $price !== null ? (int) $price : null;
+        $this->meta[self::META_PRICE][self::META_PRICE_AMOUNT] = $price;
 
         return $this;
     }
 
-    public function getPrice()
+    public function getPrice(): ?int
     {
         return $this->meta[self::META_PRICE][self::META_PRICE_AMOUNT];
     }
 
-    public function setCurrency($currency)
+    public function setCurrency(?string $currency): self
     {
         $this->meta[self::META_PRICE][self::META_PRICE_CURRENCY] = $currency;
 
         return $this;
     }
 
-    public function getCurrency()
+    public function getCurrency(): ?string
     {
         return $this->meta[self::META_PRICE][self::META_PRICE_CURRENCY];
     }
 
-    public function setIncluded($included)
+    public function setIncluded(bool $included): self
     {
         $this->meta[self::META_INCLUDED] = $included;
 
         return $this;
     }
 
-    public function isIncluded()
+    public function isIncluded(): bool
     {
-        return $this->meta[self::META_INCLUDED];
+        return (bool) $this->meta[self::META_INCLUDED];
     }
 
     /**

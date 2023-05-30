@@ -12,7 +12,7 @@ class PhysicalProperties implements PhysicalPropertiesInterface
 {
     use JsonSerializable;
 
-    private int $weight;
+    private ?int $weight = null;
 
     private ?int $length = null;
 
@@ -79,8 +79,12 @@ class PhysicalProperties implements PhysicalPropertiesInterface
         return $this;
     }
 
-    public function getWeight(string $unit = self::WEIGHT_GRAM): int
+    public function getWeight(string $unit = self::WEIGHT_GRAM): ?int
     {
+        if ($this->weight === null) {
+            return $this->weight;
+        }
+
         if (!isset(self::$unitConversion[$unit])) {
             throw new MyParcelComException('invalid unit: ' . $unit);
         }

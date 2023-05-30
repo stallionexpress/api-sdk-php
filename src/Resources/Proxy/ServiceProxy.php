@@ -13,6 +13,9 @@ use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 use MyParcelCom\ApiSdk\Resources\Traits\ProxiesResource;
 use MyParcelCom\ApiSdk\Resources\Traits\Resource;
 
+/**
+ * @method ServiceInterface getResource()
+ */
 class ServiceProxy implements ServiceInterface, ResourceProxyInterface
 {
     use JsonSerializable;
@@ -23,261 +26,168 @@ class ServiceProxy implements ServiceInterface, ResourceProxyInterface
 
     private string $type = ResourceInterface::TYPE_SERVICE;
 
-    /**
-     * @param string $name
-     * @return $this
-     */
-    public function setName($name)
+    public function setName(string $name): self
     {
         $this->getResource()->setName($name);
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->getResource()->getName();
     }
 
-    /**
-     * @param string $code
-     * @return $this
-     */
-    public function setCode($code)
+    public function setCode(string $code): self
     {
         $this->getResource()->setCode($code);
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getCode()
+    public function getCode(): string
     {
         return $this->getResource()->getCode();
     }
 
-    /**
-     * @param string $packageType
-     * @return $this
-     */
-    public function setPackageType($packageType)
+    public function setPackageType(string $packageType): self
     {
         $this->getResource()->setPackageType($packageType);
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getPackageType()
+    public function getPackageType(): string
     {
         return $this->getResource()->getPackageType();
     }
 
-    /**
-     * @return int|null
-     */
-    public function getTransitTimeMin()
+    public function getTransitTimeMin(): ?int
     {
         return $this->getResource()->getTransitTimeMin();
     }
 
-    /**
-     * @param int|null $transitTimeMin
-     * @return $this
-     */
-    public function setTransitTimeMin($transitTimeMin)
+    public function setTransitTimeMin(?int $transitTimeMin): self
     {
         $this->getResource()->setTransitTimeMin($transitTimeMin);
 
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getTransitTimeMax()
+    public function getTransitTimeMax(): ?int
     {
         return $this->getResource()->getTransitTimeMax();
     }
 
-    /**
-     * @param int|null $transitTimeMax
-     * @return $this
-     */
-    public function setTransitTimeMax($transitTimeMax)
+    public function setTransitTimeMax(?int $transitTimeMax): self
     {
         $this->getResource()->setTransitTimeMax($transitTimeMax);
 
         return $this;
     }
 
-    /**
-     * @param CarrierInterface $carrier
-     * @return $this
-     */
-    public function setCarrier(CarrierInterface $carrier)
+    public function setCarrier(CarrierInterface $carrier): self
     {
         $this->getResource()->setCarrier($carrier);
 
         return $this;
     }
 
-    /**
-     * @return CarrierInterface
-     */
-    public function getCarrier()
+    public function getCarrier(): CarrierInterface
     {
         return $this->getResource()->getCarrier();
     }
 
-    /**
-     * @param string $handoverMethod
-     * @return $this
-     */
-    public function setHandoverMethod($handoverMethod)
+    public function setHandoverMethod(string $handoverMethod): self
     {
         $this->getResource()->setHandoverMethod($handoverMethod);
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getHandoverMethod()
+    public function getHandoverMethod(): string
     {
         return $this->getResource()->getHandoverMethod();
     }
 
-    /**
-     * @param string[] $deliveryDays
-     * @return $this
-     */
-    public function setDeliveryDays(array $deliveryDays)
+    public function setDeliveryDays(array $deliveryDays): self
     {
         $this->getResource()->setDeliveryDays($deliveryDays);
 
         return $this;
     }
 
-    /**
-     * @param string $deliveryDay
-     * @return $this
-     */
-    public function addDeliveryDay($deliveryDay)
+    public function addDeliveryDay(string $deliveryDay): self
     {
         $this->getResource()->addDeliveryDay($deliveryDay);
 
         return $this;
     }
 
-    /**
-     * @return string[]
-     */
-    public function getDeliveryDays()
+    public function getDeliveryDays(): array
     {
         return $this->getResource()->getDeliveryDays();
     }
 
-    /**
-     * @return string
-     */
-    public function getDeliveryMethod()
+    public function getDeliveryMethod(): string
     {
         return $this->getResource()->getDeliveryMethod();
     }
 
-    /**
-     * @param string $deliveryMethod
-     * @return $this
-     */
-    public function setDeliveryMethod($deliveryMethod)
+    public function setDeliveryMethod(string $deliveryMethod): self
     {
         $this->getResource()->setDeliveryMethod($deliveryMethod);
 
         return $this;
     }
 
-    /**
-     * @param array $regions
-     * @return $this
-     */
-    public function setRegionsFrom(array $regions)
+    public function setRegionsFrom(array $regions): self
     {
         $this->getResource()->setRegionsFrom($regions);
 
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getRegionsFrom()
+    public function getRegionsFrom(): array
     {
         return $this->getResource()->getRegionsFrom();
     }
 
-    /**
-     * @param array $regions
-     * @return $this
-     */
-    public function setRegionsTo(array $regions)
+    public function setRegionsTo(array $regions): self
     {
         $this->getResource()->setRegionsTo($regions);
 
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getRegionsTo()
+    public function getRegionsTo(): array
     {
         return $this->getResource()->getRegionsTo();
     }
 
-    /**
-     * @param bool $usesVolumetricWeight
-     * @return $this
-     */
-    public function setUsesVolumetricWeight($usesVolumetricWeight)
+    public function setUsesVolumetricWeight(bool $usesVolumetricWeight): self
     {
         $this->getResource()->setUsesVolumetricWeight($usesVolumetricWeight);
 
         return $this;
     }
 
-    /**
-     * @return bool
-     */
-    public function usesVolumetricWeight()
+    public function usesVolumetricWeight(): bool
     {
         return $this->getResource()->usesVolumetricWeight();
     }
 
     /**
      * @param ServiceRateInterface[] $serviceRates
-     * @return $this
      */
-    public function setServiceRates(array $serviceRates)
+    public function setServiceRates(array $serviceRates): self
     {
         $this->getResource()->setServiceRates($serviceRates);
 
         return $this;
     }
 
-    /**
-     * @param ServiceRateInterface $serviceRate
-     * @return $this
-     */
-    public function addServiceRate(ServiceRateInterface $serviceRate)
+    public function addServiceRate(ServiceRateInterface $serviceRate): self
     {
         $this->getResource()->addServiceRate($serviceRate);
 
@@ -285,10 +195,9 @@ class ServiceProxy implements ServiceInterface, ResourceProxyInterface
     }
 
     /**
-     * @param array $filters
      * @return ServiceRateInterface[]
      */
-    public function getServiceRates(array $filters = ['has_active_contract' => 'true'])
+    public function getServiceRates(array $filters = ['has_active_contract' => 'true']): array
     {
         return $this->getResource()->getServiceRates($filters);
     }

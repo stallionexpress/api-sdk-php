@@ -57,96 +57,96 @@ class Service implements ServiceInterface
     ];
 
     /** @var ServiceRateInterface[] */
-    private $serviceRates = [];
+    private array $serviceRates = [];
 
     /** @var callable */
-    private $serviceRatesCallback;
+    private $serviceRatesCallback = null;
 
-    public function setName($name)
+    public function setName(string $name): self
     {
         $this->attributes[self::ATTRIBUTE_NAME] = $name;
 
         return $this;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->attributes[self::ATTRIBUTE_NAME];
     }
 
-    public function setCode($code)
+    public function setCode(string $code): self
     {
         $this->attributes[self::ATTRIBUTE_CODE] = $code;
 
         return $this;
     }
 
-    public function getCode()
+    public function getCode(): string
     {
         return $this->attributes[self::ATTRIBUTE_CODE];
     }
 
-    public function setPackageType($packageType)
+    public function setPackageType(string $packageType): self
     {
         $this->attributes[self::ATTRIBUTE_PACKAGE_TYPE] = $packageType;
 
         return $this;
     }
 
-    public function getPackageType()
+    public function getPackageType(): string
     {
         return $this->attributes[self::ATTRIBUTE_PACKAGE_TYPE];
     }
 
-    public function getTransitTimeMin()
+    public function getTransitTimeMin(): ?int
     {
         return $this->attributes[self::ATTRIBUTE_TRANSIT_TIME][self::ATTRIBUTE_TRANSIT_TIME_MIN];
     }
 
-    public function setTransitTimeMin($transitTimeMin)
+    public function setTransitTimeMin(?int $transitTimeMin): self
     {
         $this->attributes[self::ATTRIBUTE_TRANSIT_TIME][self::ATTRIBUTE_TRANSIT_TIME_MIN] = $transitTimeMin;
 
         return $this;
     }
 
-    public function getTransitTimeMax()
+    public function getTransitTimeMax(): ?int
     {
         return $this->attributes[self::ATTRIBUTE_TRANSIT_TIME][self::ATTRIBUTE_TRANSIT_TIME_MAX];
     }
 
-    public function setTransitTimeMax($transitTimeMax)
+    public function setTransitTimeMax(?int $transitTimeMax): self
     {
         $this->attributes[self::ATTRIBUTE_TRANSIT_TIME][self::ATTRIBUTE_TRANSIT_TIME_MAX] = $transitTimeMax;
 
         return $this;
     }
 
-    public function setCarrier(CarrierInterface $carrier)
+    public function setCarrier(CarrierInterface $carrier): self
     {
         $this->relationships[self::RELATIONSHIP_CARRIER]['data'] = $carrier;
 
         return $this;
     }
 
-    public function getCarrier()
+    public function getCarrier(): CarrierInterface
     {
         return $this->relationships[self::RELATIONSHIP_CARRIER]['data'];
     }
 
-    public function setHandoverMethod($handoverMethod)
+    public function setHandoverMethod(string $handoverMethod): self
     {
         $this->attributes[self::ATTRIBUTE_HANDOVER_METHOD] = $handoverMethod;
 
         return $this;
     }
 
-    public function getHandoverMethod()
+    public function getHandoverMethod(): string
     {
         return $this->attributes[self::ATTRIBUTE_HANDOVER_METHOD];
     }
 
-    public function setDeliveryDays(array $deliveryDays)
+    public function setDeliveryDays(array $deliveryDays): self
     {
         $this->attributes[self::ATTRIBUTE_DELIVERY_DAYS] = [];
 
@@ -157,81 +157,67 @@ class Service implements ServiceInterface
         return $this;
     }
 
-    public function addDeliveryDay($deliveryDay)
+    public function addDeliveryDay(string $deliveryDay): self
     {
         $this->attributes[self::ATTRIBUTE_DELIVERY_DAYS][] = $deliveryDay;
 
         return $this;
     }
 
-    public function getDeliveryDays()
+    public function getDeliveryDays(): array
     {
         return $this->attributes[self::ATTRIBUTE_DELIVERY_DAYS];
     }
 
-    public function getDeliveryMethod()
+    public function getDeliveryMethod(): string
     {
         return $this->attributes[self::ATTRIBUTE_DELIVERY_METHOD];
     }
 
-    public function setDeliveryMethod($deliveryMethod)
+    public function setDeliveryMethod(string $deliveryMethod): self
     {
         $this->attributes[self::ATTRIBUTE_DELIVERY_METHOD] = $deliveryMethod;
 
         return $this;
     }
 
-    /**
-     * @param array $regions
-     * @return $this
-     */
-    public function setRegionsFrom(array $regions)
+    public function setRegionsFrom(array $regions): self
     {
         $this->attributes[self::ATTRIBUTE_REGIONS_FROM] = $regions;
 
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getRegionsFrom()
+    public function getRegionsFrom(): array
     {
         return $this->attributes[self::ATTRIBUTE_REGIONS_FROM];
     }
 
-    /**
-     * @param array $regions
-     * @return $this
-     */
-    public function setRegionsTo(array $regions)
+    public function setRegionsTo(array $regions): self
     {
         $this->attributes[self::ATTRIBUTE_REGIONS_TO] = $regions;
 
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getRegionsTo()
+    public function getRegionsTo(): array
     {
         return $this->attributes[self::ATTRIBUTE_REGIONS_TO];
     }
 
-    public function setUsesVolumetricWeight($usesVolumetricWeight)
+    public function setUsesVolumetricWeight(bool $usesVolumetricWeight): self
     {
         $this->attributes[self::ATTRIBUTE_USES_VOLUMETRIC_WEIGHT] = $usesVolumetricWeight;
 
         return $this;
     }
 
-    public function usesVolumetricWeight()
+    public function usesVolumetricWeight(): bool
     {
         return $this->attributes[self::ATTRIBUTE_USES_VOLUMETRIC_WEIGHT];
     }
 
-    public function setServiceRates(array $serviceRates)
+    public function setServiceRates(array $serviceRates): self
     {
         $this->serviceRates = [];
 
@@ -242,14 +228,14 @@ class Service implements ServiceInterface
         return $this;
     }
 
-    public function addServiceRate(ServiceRateInterface $serviceRate)
+    public function addServiceRate(ServiceRateInterface $serviceRate): self
     {
         $this->serviceRates[] = $serviceRate;
 
         return $this;
     }
 
-    public function getServiceRates(array $filters = ['has_active_contract' => 'true'])
+    public function getServiceRates(array $filters = ['has_active_contract' => 'true']): array
     {
         if (empty($this->serviceRates) && isset($this->serviceRatesCallback)) {
             $this->setServiceRates(call_user_func_array($this->serviceRatesCallback, [$filters]));
@@ -258,11 +244,7 @@ class Service implements ServiceInterface
         return $this->serviceRates;
     }
 
-    /**
-     * @param callable $callback
-     * @return $this
-     */
-    public function setServiceRatesCallback(callable $callback)
+    public function setServiceRatesCallback(callable $callback): self
     {
         $this->serviceRatesCallback = $callback;
 

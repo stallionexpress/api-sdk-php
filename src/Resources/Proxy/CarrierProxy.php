@@ -11,6 +11,9 @@ use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 use MyParcelCom\ApiSdk\Resources\Traits\ProxiesResource;
 use MyParcelCom\ApiSdk\Resources\Traits\Resource;
 
+/**
+ * @method CarrierInterface getResource()
+ */
 class CarrierProxy implements CarrierInterface, ResourceProxyInterface
 {
     use JsonSerializable;

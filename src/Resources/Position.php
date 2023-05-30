@@ -11,32 +11,30 @@ class Position implements PositionInterface
 {
     use JsonSerializable;
 
-    /** @var float */
-    private $latitude;
+    private float $latitude;
 
-    /** @var float */
-    private $longitude;
+    private float $longitude;
 
-    public function setLatitude($latitude)
+    public function setLatitude(float $latitude): self
     {
-        $this->latitude = (float) $latitude;
+        $this->latitude = $latitude;
 
         return $this;
     }
 
-    public function getLatitude()
+    public function getLatitude(): float
     {
         return $this->latitude;
     }
 
-    public function setLongitude($longitude)
+    public function setLongitude(float $longitude): self
     {
-        $this->longitude = (float) $longitude;
+        $this->longitude = $longitude;
 
         return $this;
     }
 
-    public function getLongitude()
+    public function getLongitude(): float
     {
         return $this->longitude;
     }

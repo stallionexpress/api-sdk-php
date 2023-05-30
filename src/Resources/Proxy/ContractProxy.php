@@ -12,6 +12,9 @@ use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 use MyParcelCom\ApiSdk\Resources\Traits\ProxiesResource;
 use MyParcelCom\ApiSdk\Resources\Traits\Resource;
 
+/**
+ * @method ContractInterface getResource()
+ */
 class ContractProxy implements ContractInterface, ResourceProxyInterface
 {
     use JsonSerializable;

@@ -39,74 +39,74 @@ class Region implements RegionInterface
         ],
     ];
 
-    public function setCountryCode($countryCode)
+    public function setCountryCode(?string $countryCode): self
     {
         $this->attributes[self::ATTRIBUTE_COUNTRY_CODE] = $countryCode;
 
         return $this;
     }
 
-    public function getCountryCode()
+    public function getCountryCode(): ?string
     {
         return $this->attributes[self::ATTRIBUTE_COUNTRY_CODE];
     }
 
-    public function setRegionCode($regionCode)
+    public function setRegionCode(?string $regionCode): self
     {
         $this->attributes[self::ATTRIBUTE_REGION_CODE] = $regionCode;
 
         return $this;
     }
 
-    public function getRegionCode()
+    public function getRegionCode(): ?string
     {
         return $this->attributes[self::ATTRIBUTE_REGION_CODE];
     }
 
-    public function setCurrency($currency)
+    public function setCurrency(?string $currency): self
     {
         $this->attributes[self::ATTRIBUTE_CURRENCY] = $currency;
 
         return $this;
     }
 
-    public function getCurrency()
+    public function getCurrency(): ?string
     {
         return $this->attributes[self::ATTRIBUTE_CURRENCY];
     }
 
-    public function setName($name)
+    public function setName(string $name): self
     {
         $this->attributes[self::ATTRIBUTE_NAME] = $name;
 
         return $this;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->attributes[self::ATTRIBUTE_NAME];
     }
 
-    public function setCategory($category)
+    public function setCategory(?string $category): self
     {
         $this->attributes[self::ATTRIBUTE_CATEGORY] = $category;
 
         return $this;
     }
 
-    public function getCategory()
+    public function getCategory(): ?string
     {
         return $this->attributes[self::ATTRIBUTE_CATEGORY];
     }
 
-    public function setParent(RegionInterface $parentRegion)
+    public function setParent(?RegionInterface $region): self
     {
-        $this->relationships[self::RELATIONSHIP_PARENT]['data'] = $parentRegion;
+        $this->relationships[self::RELATIONSHIP_PARENT]['data'] = $region;
 
         return $this;
     }
 
-    public function getParent()
+    public function getParent(): ?RegionInterface
     {
         return $this->relationships[self::RELATIONSHIP_PARENT]['data'];
     }

@@ -8,25 +8,11 @@ use JsonSerializable;
 
 interface PositionInterface extends JsonSerializable
 {
-    /**
-     * @param float $latitude
-     * @return $this
-     */
-    public function setLatitude($latitude);
+    public function setLatitude(float $latitude): self;
 
-    /**
-     * @return float
-     */
-    public function getLatitude();
+    public function getLatitude(): float;
 
-    /**
-     * @param float $longitude
-     * @return $this
-     */
-    public function setLongitude($longitude);
+    public function setLongitude(float $longitude): self;
 
-    /**
-     * @return float
-     */
-    public function getLongitude();
+    public function getLongitude(): float;
 }

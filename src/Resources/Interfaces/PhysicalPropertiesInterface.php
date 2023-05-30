@@ -28,7 +28,7 @@ interface PhysicalPropertiesInterface extends JsonSerializable
 
     public function setWeight(int $weight, string $unit = self::WEIGHT_GRAM): self;
 
-    public function getWeight(string $unit = self::WEIGHT_GRAM): int;
+    public function getWeight(string $unit = self::WEIGHT_GRAM): ?int;
 
     public function setVolume(float|int|null $volume): self;
 

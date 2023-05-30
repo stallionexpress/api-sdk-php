@@ -373,7 +373,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         }
 
         /**
-         * Some resources have extra meta data (eg. pickup-dropoff-locations.meta.distance).
+         * Some resources have extra metadata (eg. pickup-dropoff-locations.meta.distance).
          * These should hydrate the model as well.
          */
         if (!empty($properties['meta'])) {
