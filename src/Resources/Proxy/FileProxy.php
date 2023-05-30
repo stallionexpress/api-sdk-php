@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MyParcelCom\ApiSdk\Resources\Proxy;
 
+use MyParcelCom\ApiSdk\Resources\File;
 use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
@@ -13,7 +14,7 @@ use MyParcelCom\ApiSdk\Resources\Traits\Resource;
 use Psr\Http\Message\StreamInterface;
 
 /**
- * @method FileInterface getResource()
+ * @method File getResource()
  */
 class FileProxy implements FileInterface, ResourceProxyInterface
 {

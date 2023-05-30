@@ -281,8 +281,6 @@ class ShipmentTest extends TestCase
     {
         $shipment = new Shipment();
 
-        $this->assertEmpty($shipment->getShipmentStatus());
-
         $status = $this->getMockBuilder(ShipmentStatusInterface::class)->getMock();
 
         $this->assertEquals($status, $shipment->setShipmentStatus($status)->getShipmentStatus());

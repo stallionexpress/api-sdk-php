@@ -7,12 +7,13 @@ namespace MyParcelCom\ApiSdk\Resources\Proxy;
 use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
+use MyParcelCom\ApiSdk\Resources\Region;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 use MyParcelCom\ApiSdk\Resources\Traits\ProxiesResource;
 use MyParcelCom\ApiSdk\Resources\Traits\Resource;
 
 /**
- * @method RegionInterface getResource()
+ * @method Region getResource()
  */
 class RegionProxy implements RegionInterface, ResourceProxyInterface
 {

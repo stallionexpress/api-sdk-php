@@ -7,12 +7,13 @@ namespace MyParcelCom\ApiSdk\Resources\Proxy;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
+use MyParcelCom\ApiSdk\Resources\ServiceOption;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 use MyParcelCom\ApiSdk\Resources\Traits\ProxiesResource;
 use MyParcelCom\ApiSdk\Resources\Traits\Resource;
 
 /**
- * @method ServiceOptionInterface getResource()
+ * @method ServiceOption getResource()
  */
 class ServiceOptionProxy implements ServiceOptionInterface, ResourceProxyInterface
 {

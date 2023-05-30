@@ -9,433 +9,212 @@ use MyParcelCom\ApiSdk\Resources\TaxIdentificationNumber;
 
 interface ShipmentInterface extends ResourceInterface
 {
-    /**
-     * @param AddressInterface $recipientAddress
-     * @return $this
-     */
-    public function setRecipientAddress(AddressInterface $recipientAddress);
+    public function setRecipientAddress(AddressInterface $recipientAddress): self;
+
+    public function getRecipientAddress(): ?AddressInterface;
 
     /**
-     * @return AddressInterface
+     * @deprecated Use setRecipientTaxIdentificationNumbers() or addRecipientTaxIdentificationNumber() instead.
      */
-    public function getRecipientAddress();
+    public function setRecipientTaxNumber(?string $recipientTaxNumber): self;
 
     /**
-     * @param string|null $recipientTaxNumber
-     * @return $this
-     * @deprecated
+     * @deprecated Use getRecipientTaxIdentificationNumbers() instead.
      */
-    public function setRecipientTaxNumber($recipientTaxNumber);
-
-    /**
-     * @return string|null
-     * @deprecated
-     */
-    public function getRecipientTaxNumber();
+    public function getRecipientTaxNumber(): ?string;
 
     /**
      * @param TaxIdentificationNumber[] $taxIdentificationNumbers
-     * @return $this
      */
-    public function setRecipientTaxIdentificationNumbers(array $taxIdentificationNumbers);
+    public function setRecipientTaxIdentificationNumbers(array $taxIdentificationNumbers): self;
 
-    /**
-     * @param TaxIdentificationNumber $taxIdentificationNumber
-     * @return $this
-     */
-    public function addRecipientTaxIdentificationNumber(TaxIdentificationNumber $taxIdentificationNumber);
+    public function addRecipientTaxIdentificationNumber(TaxIdentificationNumber $taxIdentificationNumber): self;
 
     /**
      * @return TaxIdentificationNumber[]
      */
-    public function getRecipientTaxIdentificationNumbers();
+    public function getRecipientTaxIdentificationNumbers(): array;
+
+    public function setSenderAddress(AddressInterface $senderAddress): self;
+
+    public function getSenderAddress(): ?AddressInterface;
 
     /**
-     * @param AddressInterface $senderAddress
-     * @return $this
+     * @deprecated Use setSenderTaxIdentificationNumbers() or addSenderTaxIdentificationNumber() instead.
      */
-    public function setSenderAddress(AddressInterface $senderAddress);
+    public function setSenderTaxNumber(?string $senderTaxNumber): self;
 
     /**
-     * @return AddressInterface
+     * @deprecated Use getSenderTaxIdentificationNumbers() instead.
      */
-    public function getSenderAddress();
-
-    /**
-     * @param string|null $senderTaxNumber
-     * @return $this
-     * @deprecated
-     */
-    public function setSenderTaxNumber($senderTaxNumber);
-
-    /**
-     * @return string|null
-     * @deprecated
-     */
-    public function getSenderTaxNumber();
+    public function getSenderTaxNumber(): ?string;
 
     /**
      * @param TaxIdentificationNumber[] $taxIdentificationNumbers
-     * @return $this
      */
-    public function setSenderTaxIdentificationNumbers(array $taxIdentificationNumbers);
+    public function setSenderTaxIdentificationNumbers(array $taxIdentificationNumbers): self;
 
-    /**
-     * @param TaxIdentificationNumber $taxIdentificationNumber
-     * @return $this
-     */
-    public function addSenderTaxIdentificationNumber(TaxIdentificationNumber $taxIdentificationNumber);
+    public function addSenderTaxIdentificationNumber(TaxIdentificationNumber $taxIdentificationNumber): self;
 
     /**
      * @return TaxIdentificationNumber[]
      */
-    public function getSenderTaxIdentificationNumbers();
+    public function getSenderTaxIdentificationNumbers(): array;
+
+    public function setReturnAddress(AddressInterface $returnAddress): self;
+
+    public function getReturnAddress(): ?AddressInterface;
+
+    public function setPickupLocationCode(?string $pickupLocationCode): self;
+
+    public function getPickupLocationCode(): ?string;
+
+    public function setPickupLocationAddress(?AddressInterface $pickupLocationAddress): self;
+
+    public function getPickupLocationAddress(): ?AddressInterface;
+
+    public function setChannel(?string $channel): self;
+
+    public function getChannel(): ?string;
+
+    public function setDescription(?string $description): self;
+
+    public function getDescription(): ?string;
+
+    public function setCustomerReference(?string $customerReference): self;
+
+    public function getCustomerReference(): ?string;
+
+    public function setPrice(?int $price): self;
+
+    public function getPrice(): ?int;
+
+    public function setCurrency(?string $currency): self;
+
+    public function getCurrency(): ?string;
+
+    public function setBarcode(?string $barcode): self;
+
+    public function getBarcode(): ?string;
+
+    public function setTrackingCode(?string $trackingCode): self;
+
+    public function getTrackingCode(): ?string;
+
+    public function setTrackingUrl(?string $trackingUrl): self;
+
+    public function getTrackingUrl(): ?string;
 
     /**
-     * @param AddressInterface $returnAddress
-     * @return $this
-     */
-    public function setReturnAddress(AddressInterface $returnAddress);
-
-    /**
-     * @return AddressInterface
-     */
-    public function getReturnAddress();
-
-    /**
-     * @param string $pickupLocationCode
-     * @return $this
-     */
-    public function setPickupLocationCode($pickupLocationCode);
-
-    /**
-     * @return string|null
-     */
-    public function getPickupLocationCode();
-
-    /**
-     * @param AddressInterface $pickupLocationAddress
-     * @return $this
-     */
-    public function setPickupLocationAddress(AddressInterface $pickupLocationAddress);
-
-    /**
-     * @return AddressInterface|null
-     */
-    public function getPickupLocationAddress();
-
-    /**
-     * @param string $channel
-     * @return $this
-     */
-    public function setChannel($channel);
-
-    /**
-     * @return string|null
-     */
-    public function getChannel();
-
-    /**
-     * @param string $description
-     * @return $this
-     */
-    public function setDescription($description);
-
-    /**
-     * @return string|null
-     */
-    public function getDescription();
-
-    /**
-     * @param string $customerReference
-     * @return $this
-     */
-    public function setCustomerReference($customerReference);
-
-    /**
-     * @return string|null
-     */
-    public function getCustomerReference();
-
-    /**
-     * @param int $price
-     * @return $this
-     */
-    public function setPrice($price);
-
-    /**
-     * @return int
-     */
-    public function getPrice();
-
-    /**
-     * @param string $currency
-     * @return $this
-     */
-    public function setCurrency($currency);
-
-    /**
-     * @return string
-     */
-    public function getCurrency();
-
-    /**
-     * @param string $barcode
-     * @return $this
-     */
-    public function setBarcode($barcode);
-
-    /**
-     * @return string
-     */
-    public function getBarcode();
-
-    /**
-     * @param string $trackingCode
-     * @return $this
-     */
-    public function setTrackingCode($trackingCode);
-
-    /**
-     * @return string
-     */
-    public function getTrackingCode();
-
-    /**
-     * @param string $trackingUrl
-     * @return $this
-     */
-    public function setTrackingUrl($trackingUrl);
-
-    /**
-     * @return string
-     */
-    public function getTrackingUrl();
-
-    /**
-     * @param int    $weight
-     * @param string $unit
-     * @return $this
      * @deprecated Use Shipment::getPhysicalProperties()->setWeight() instead.
      */
-    public function setWeight($weight, $unit = PhysicalPropertiesInterface::WEIGHT_GRAM);
+    public function setWeight(int $weight, string $unit = PhysicalPropertiesInterface::WEIGHT_GRAM): self;
 
     /**
-     * @param string $unit
-     * @return int
      * @deprecated Use Shipment::getPhysicalProperties()->getWeight() instead.
      */
-    public function getWeight($unit = PhysicalPropertiesInterface::WEIGHT_GRAM);
+    public function getWeight(string $unit = PhysicalPropertiesInterface::WEIGHT_GRAM): ?int;
 
-    /**
-     * @param ShopInterface $shop
-     * @return $this
-     */
-    public function setShop(ShopInterface $shop);
+    public function setShop(ShopInterface $shop): self;
 
-    /**
-     * @return ShopInterface
-     */
-    public function getShop();
+    public function getShop(): ?ShopInterface;
 
     /**
      * @param ServiceOptionInterface[] $options
-     * @return $this
      */
-    public function setServiceOptions(array $options);
+    public function setServiceOptions(array $options): self;
 
-    /**
-     * @param ServiceOptionInterface $option
-     * @return $this
-     */
-    public function addServiceOption(ServiceOptionInterface $option);
+    public function addServiceOption(ServiceOptionInterface $option): self;
 
     /**
      * @return ServiceOptionInterface[]
      */
-    public function getServiceOptions();
+    public function getServiceOptions(): array;
+
+    public function setPhysicalProperties(PhysicalPropertiesInterface $physicalProperties): self;
+
+    public function getPhysicalProperties(): ?PhysicalPropertiesInterface;
 
     /**
-     * @param PhysicalPropertiesInterface $physicalProperties
-     * @return $this
+     * @deprecated Use Shipment::getPhysicalProperties()->getVolumetricWeight() instead.
      */
-    public function setPhysicalProperties(PhysicalPropertiesInterface $physicalProperties);
+    public function getVolumetricWeight(): ?int;
 
     /**
-     * @return PhysicalPropertiesInterface|null
+     * @deprecated Use Shipment::getPhysicalProperties()->setVolumetricWeight() instead.
      */
-    public function getPhysicalProperties();
-
-    /**
-     * @return null|int
-     */
-    public function getVolumetricWeight();
-
-    /**
-     * @param int $volumetricWeight
-     * @return $this
-     */
-    public function setVolumetricWeight($volumetricWeight);
+    public function setVolumetricWeight(?int $volumetricWeight): self;
 
     /**
      * @param FileInterface[] $files
-     * @return $this
      */
-    public function setFiles(array $files);
+    public function setFiles(array $files): self;
+
+    public function addFile(FileInterface $file): self;
 
     /**
-     * @param FileInterface $file
-     * @return $this
-     */
-    public function addFile(FileInterface $file);
-
-    /**
-     * @param string|null $type
      * @return FileInterface[]
      */
-    public function getFiles($type = null);
+    public function getFiles(string $type = null): array;
 
-    /**
-     * @param ShipmentStatusInterface $status
-     * @return $this
-     */
-    public function setShipmentStatus(ShipmentStatusInterface $status);
+    public function setShipmentStatus(ShipmentStatusInterface $status): self;
 
-    /**
-     * @return ShipmentStatusInterface
-     */
-    public function getShipmentStatus();
+    public function getShipmentStatus(): ShipmentStatusInterface;
 
-    /**
-     * @param ShipmentStatusInterface[] $statuses
-     * @return $this
-     */
-    public function setStatusHistory(array $statuses);
+    public function setStatusHistory(array $statuses): self;
 
     /**
      * @return ShipmentStatusInterface[]
      */
-    public function getStatusHistory();
+    public function getStatusHistory(): array;
 
-    /**
-     * @param CustomsInterface $customs
-     * @return $this
-     */
-    public function setCustoms(CustomsInterface $customs);
+    public function setCustoms(?CustomsInterface $customs): self;
 
-    /**
-     * @return CustomsInterface
-     */
-    public function getCustoms();
+    public function getCustoms(): ?CustomsInterface;
 
     /**
      * @param ShipmentItemInterface[] $items
-     * @return $this
      */
-    public function setItems(array $items);
+    public function setItems(?array $items): self;
 
-    /**
-     * @param ShipmentItemInterface $item
-     * @return $this
-     */
-    public function addItem(ShipmentItemInterface $item);
+    public function addItem(ShipmentItemInterface $item): self;
 
-    /**
-     * @return ShipmentItemInterface[]
-     */
-    public function getItems();
+    public function getItems(): ?array;
 
     /**
      * Set the date and time that this shipment should be registered at.
-     * This can either be a datetime string as specified by PHP, a unix timestamp
-     * integer or a DateTime object.
-     *
+     * This can either be a datetime string as specified by PHP, a unix timestamp integer or a DateTime object.
      * @see http://php.net/manual/en/datetime.formats.php
-     *
-     * @param DateTime|string|int $registerAt
-     * @return $this
      */
-    public function setRegisterAt($registerAt);
+    public function setRegisterAt(DateTime|int|string|null $registerAt): self;
 
-    /**
-     * @return DateTime
-     */
-    public function getRegisterAt();
+    public function getRegisterAt(): ?DateTime;
 
-    /**
-     * @param ServiceInterface $service
-     * @return $this
-     */
-    public function setService(ServiceInterface $service);
+    public function setService(?ServiceInterface $service): self;
 
-    /**
-     * @return ServiceInterface|null
-     */
-    public function getService();
+    public function getService(): ?ServiceInterface;
 
-    /**
-     * @param ContractInterface $contract
-     * @return $this
-     */
-    public function setContract(ContractInterface $contract);
+    public function setContract(?ContractInterface $contract): self;
 
-    /**
-     * @return ContractInterface|null
-     */
-    public function getContract();
+    public function getContract(): ?ContractInterface;
 
-    /**
-     * @param int|null $totalValueAmount
-     * @return $this
-     */
-    public function setTotalValueAmount($totalValueAmount);
+    public function setTotalValueAmount(?int $totalValueAmount): self;
 
-    /**
-     * @return int|null
-     */
-    public function getTotalValueAmount();
+    public function getTotalValueAmount(): ?int;
 
-    /**
-     * @param string|null $totalValueCurrency
-     * @return $this
-     */
-    public function setTotalValueCurrency($totalValueCurrency);
+    public function setTotalValueCurrency(?string $totalValueCurrency): self;
 
-    /**
-     * @return string|null
-     */
-    public function getTotalValueCurrency();
+    public function getTotalValueCurrency(): ?string;
 
-    /**
-     * @param string|null $serviceCode
-     * @return $this
-     */
-    public function setServiceCode($serviceCode);
+    public function setServiceCode(?string $serviceCode): self;
 
-    /**
-     * @return string|null
-     */
-    public function getServiceCode();
+    public function getServiceCode(): ?string;
 
-    /**
-     * @param array $tags
-     * @return $this
-     */
-    public function setTags(array $tags);
+    public function setTags(?array $tags): self;
 
-    /**
-     * @param mixed $tag
-     * @return $this
-     */
-    public function addTag($tag);
+    public function addTag(mixed $tag): self;
 
-    /**
-     * @return array|null
-     */
-    public function getTags();
+    public function getTags(): ?array;
 
-    /**
-     * @return $this
-     */
-    public function clearTags();
+    public function clearTags(): self;
 }
