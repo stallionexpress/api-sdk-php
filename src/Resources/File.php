@@ -247,7 +247,7 @@ class File implements FileInterface
     /**
      * {@inheritdoc}
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         $values = get_object_vars($this);
         unset($values['streams']);

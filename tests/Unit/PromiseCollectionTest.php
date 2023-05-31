@@ -4,6 +4,7 @@ namespace MyParcelCom\ApiSdk\Tests\Unit;
 
 use MyParcelCom\ApiSdk\Collection\CollectionInterface;
 use MyParcelCom\ApiSdk\Collection\RequestCollection;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 
@@ -18,7 +19,7 @@ class PromiseCollectionTest extends TestCase
     /** @var int */
     private $pageSize;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -38,7 +39,9 @@ class PromiseCollectionTest extends TestCase
             $start = ($this->pageNumber - 1) * $this->pageSize;
             $resources = [];
             for ($n = $start; $n < 123 && $n < $start + $this->pageSize; $n++) {
-                $resources[] = (object) ['id' => $n];
+                $resources[] = $this->createConfiguredMock(ResourceInterface::class, [
+                    'getId' => $n,
+                ]);
             }
 
             return $resources;
@@ -52,15 +55,15 @@ class PromiseCollectionTest extends TestCase
     {
         $resources = $this->collection->offset(83)->limit(9)->get();
         $this->assertCount(9, $resources);
-        $this->assertEquals(85, $resources[85]->id);
+        $this->assertEquals(85, $resources[85]->getId());
     }
 
     /** @test */
     public function testForeach()
     {
         foreach ($this->collection as $resource) {
-            $this->assertGreaterThanOrEqual(0, $resource->id);
-            $this->assertLessThanOrEqual(99, $resource->id);
+            $this->assertGreaterThanOrEqual(0, $resource->getId());
+            $this->assertLessThanOrEqual(99, $resource->getId());
         }
     }
 
@@ -71,8 +74,8 @@ class PromiseCollectionTest extends TestCase
         $this->assertCount(6, $resources);
 
         array_walk($resources, function ($resource) {
-            $this->assertGreaterThanOrEqual(73, $resource->id);
-            $this->assertLessThanOrEqual(78, $resource->id);
+            $this->assertGreaterThanOrEqual(73, $resource->getId());
+            $this->assertLessThanOrEqual(78, $resource->getId());
         });
     }
 
@@ -83,8 +86,8 @@ class PromiseCollectionTest extends TestCase
         $this->assertCount(100, $resources);
 
         array_walk($resources, function ($resource) {
-            $this->assertGreaterThanOrEqual(3, $resource->id);
-            $this->assertLessThanOrEqual(103, $resource->id);
+            $this->assertGreaterThanOrEqual(3, $resource->getId());
+            $this->assertLessThanOrEqual(103, $resource->getId());
         });
     }
 
@@ -107,7 +110,7 @@ class PromiseCollectionTest extends TestCase
         $this->assertEquals(99, $this->collection->offset(99)->key());
 
         $this->collection->next();
-        $this->assertEquals(100, $this->collection->current()->id);
+        $this->assertEquals(100, $this->collection->current()->getId());
 
         $this->assertNull($this->collection->offset(123541243)->current());
     }

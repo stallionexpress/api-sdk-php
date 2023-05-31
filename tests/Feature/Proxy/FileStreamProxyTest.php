@@ -24,7 +24,7 @@ class FileStreamProxyTest extends TestCase
     /** @var FileStreamProxy */
     private $fileStreamProxy;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

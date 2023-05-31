@@ -9,10 +9,8 @@ interface CollectionInterface extends Iterator
 {
     /**
      * Counts the amount of resources in the collection.
-     *
-     * @return int
      */
-    public function count();
+    public function count(): int;
 
     /**
      * Retrieves the resources based on limit and offset.
@@ -20,22 +18,16 @@ interface CollectionInterface extends Iterator
      *
      * @return ResourceInterface[]
      */
-    public function get();
+    public function get(): array;
 
     /**
      * Sets an offset on which resource to start retrieving.
-     *
-     * @param $offset
-     * @return $this
      */
-    public function offset($offset);
+    public function offset(int $offset): self;
 
     /**
      * Sets the amount of resources to be retrieved by get().
      * Default (and max) limit is 100.
-     *
-     * @param int $limit
-     * @return $this
      */
-    public function limit($limit = 100);
+    public function limit(int $limit = 100): self;
 }

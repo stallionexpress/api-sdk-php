@@ -42,6 +42,7 @@ use MyParcelCom\ApiSdk\Resources\Proxy\ShipmentStatusProxy;
 use MyParcelCom\ApiSdk\Resources\Proxy\ShopProxy;
 use MyParcelCom\ApiSdk\Resources\Proxy\StatusProxy;
 use MyParcelCom\ApiSdk\Utils\StringUtils;
+use ReflectionClass;
 use ReflectionMethod;
 use ReflectionParameter;
 
@@ -511,7 +512,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
                 return;
             }
 
-            if ($param->isArray()) {
+            if ($param->getType() && $param->getType()->getName() === 'array') {
                 // Can't use setter if the types don't match.
                 if (!is_array($value)) {
                     return;
@@ -520,7 +521,9 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
                 $adder = 'add' . rtrim(rtrim(StringUtils::snakeToPascalCase($key), 's'), 'e');
 
                 if (($adderParam = $this->getFillableParam($resource, $adder)) !== null) {
-                    $adderParamClass = $adderParam->getClass();
+                    $adderParamClass = $adderParam->getType() && !$adderParam->getType()->isBuiltin()
+                        ? new ReflectionClass($adderParam->getType()->getName())
+                        : null;
 
                     if ($adderParamClass !== null) {
                         $className = $adderParamClass->getName();
@@ -543,7 +546,9 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
                 }
             }
 
-            $paramClass = $param->getClass();
+            $paramClass = $param->getType() && !$param->getType()->isBuiltin()
+                ? new ReflectionClass($param->getType()->getName())
+                : null;
             if ($paramClass !== null) {
                 $className = $paramClass->getName();
 

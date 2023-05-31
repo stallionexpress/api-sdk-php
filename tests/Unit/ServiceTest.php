@@ -56,9 +56,7 @@ class ServiceTest extends TestCase
     public function testCarrier()
     {
         $service = new Service();
-
-        $mock = $this->getMockClass(CarrierInterface::class);
-        $carrier = new $mock();
+        $carrier = $this->getMockBuilder(CarrierInterface::class)->getMock();
 
         $this->assertEquals($carrier, $service->setCarrier($carrier)->getCarrier());
     }
@@ -68,12 +66,12 @@ class ServiceTest extends TestCase
     {
         $service = new Service();
 
-        $mock = $this->getMockClass(ServiceRateInterface::class);
-        $serviceRates = [new $mock(), new $mock(), new $mock()];
+        $mockBuilder = $this->getMockBuilder(ServiceRateInterface::class);
+        $serviceRates = [$mockBuilder->getMock(), $mockBuilder->getMock(), $mockBuilder->getMock()];
 
         $this->assertEquals($serviceRates, $service->setServiceRates($serviceRates)->getServiceRates());
 
-        $serviceRate = new $mock();
+        $serviceRate = $mockBuilder->getMock();
         $serviceRates[] = $serviceRate;
         $this->assertEquals($serviceRates, $service->addServiceRate($serviceRate)->getServiceRates());
     }
@@ -110,13 +108,10 @@ class ServiceTest extends TestCase
 
         $this->assertEquals(['Thursday'], $service->addDeliveryDay('Thursday')->getDeliveryDays());
         $this->assertEquals(['Tuesday', 'Friday'], $service->setDeliveryDays(['Tuesday', 'Friday'])->getDeliveryDays());
-        $this->assertEquals(
+        $this->assertEqualsCanonicalizing(
             ['Monday', 'Tuesday', 'Friday'],
             $service->addDeliveryDay('Monday')->getDeliveryDays(),
             'Monday should have been added to already existing Tuesday and Friday',
-            0.0,
-            10,
-            true // Order doesn't matter
         );
     }
 

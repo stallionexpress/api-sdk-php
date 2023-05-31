@@ -27,7 +27,7 @@ class ServiceProxyTest extends TestCase
     /** @var ServiceProxy */
     private $serviceProxy;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -80,7 +80,7 @@ class ServiceProxyTest extends TestCase
         $this->assertEquals('collection', $this->serviceProxy->getHandoverMethod());
         $this->assertFalse($this->serviceProxy->usesVolumetricWeight());
 
-        $this->assertInternalType('array', $this->serviceProxy->getDeliveryDays());
+        $this->assertIsArray($this->serviceProxy->getDeliveryDays());
         $this->assertCount(4, $this->serviceProxy->getDeliveryDays());
         $this->assertEquals([
             'Monday',
@@ -123,7 +123,7 @@ class ServiceProxyTest extends TestCase
         $serviceRateIds = array_map(function (ServiceRateInterface $serviceRate) {
             return $serviceRate->getId();
         }, $serviceRates);
-        $this->assertArraySubset(['service-rate-id-1', 'service-rate-id-2'], $serviceRateIds);
+        $this->assertEqualsCanonicalizing(['service-rate-id-1', 'service-rate-id-2'], $serviceRateIds);
         $this->assertCount(2, $serviceRates);
 
         $serviceRate_C = $this->createMock(ServiceRateInterface::class);

@@ -38,9 +38,7 @@ class ShipmentTest extends TestCase
     public function testRecipientAddress()
     {
         $shipment = new Shipment();
-
-        $mock = $this->getMockClass(AddressInterface::class);
-        $address = new $mock();
+        $address = $this->getMockBuilder(AddressInterface::class)->getMock();
 
         $this->assertEquals($address, $shipment->setRecipientAddress($address)->getRecipientAddress());
     }
@@ -75,9 +73,7 @@ class ShipmentTest extends TestCase
     public function testSenderAddress()
     {
         $shipment = new Shipment();
-
-        $mock = $this->getMockClass(AddressInterface::class);
-        $address = new $mock();
+        $address = $this->getMockBuilder(AddressInterface::class)->getMock();
 
         $this->assertEquals($address, $shipment->setSenderAddress($address)->getSenderAddress());
     }
@@ -112,9 +108,7 @@ class ShipmentTest extends TestCase
     public function testReturnAddress()
     {
         $shipment = new Shipment();
-
-        $mock = $this->getMockClass(AddressInterface::class);
-        $address = new $mock();
+        $address = $this->getMockBuilder(AddressInterface::class)->getMock();
 
         $this->assertEquals($address, $shipment->setReturnAddress($address)->getReturnAddress());
     }
@@ -130,9 +124,7 @@ class ShipmentTest extends TestCase
     public function testPickupLocationAddress()
     {
         $shipment = new Shipment();
-
-        $mock = $this->getMockClass(AddressInterface::class);
-        $address = new $mock();
+        $address = $this->getMockBuilder(AddressInterface::class)->getMock();
 
         $this->assertEquals($address, $shipment->setPickupLocationAddress($address)->getPickupLocationAddress());
     }
@@ -233,9 +225,7 @@ class ShipmentTest extends TestCase
     public function testPhysicalProperties()
     {
         $shipment = new Shipment();
-
-        $mock = $this->getMockClass(PhysicalPropertiesInterface::class);
-        $physicalProperties = new $mock();
+        $physicalProperties = $this->getMockBuilder(PhysicalPropertiesInterface::class)->getMock();
 
         $this->assertEquals($physicalProperties, $shipment->setPhysicalProperties($physicalProperties)->getPhysicalProperties());
     }
@@ -247,17 +237,17 @@ class ShipmentTest extends TestCase
 
         $this->assertEmpty($shipment->getServiceOptions());
 
-        $mock = $this->getMockClass(ServiceOptionInterface::class);
+        $mockBuilder = $this->getMockBuilder(ServiceOptionInterface::class);
 
         $options = [
-            new $mock(),
-            new $mock(),
+            $mockBuilder->getMock(),
+            $mockBuilder->getMock(),
         ];
         $shipment->setServiceOptions($options);
         $this->assertCount(2, $shipment->getServiceOptions());
         $this->assertEquals($options, $shipment->getServiceOptions());
 
-        $option = new $mock();
+        $option = $mockBuilder->getMock();
         $shipment->addServiceOption($option);
         $options[] = $option;
         $this->assertCount(3, $shipment->getServiceOptions());
@@ -291,8 +281,7 @@ class ShipmentTest extends TestCase
 
         $this->assertEmpty($shipment->getShipmentStatus());
 
-        $mock = $this->getMockClass(ShipmentStatusInterface::class);
-        $status = new $mock();
+        $status = $this->getMockBuilder(ShipmentStatusInterface::class)->getMock();
 
         $this->assertEquals($status, $shipment->setShipmentStatus($status)->getShipmentStatus());
     }
@@ -304,8 +293,7 @@ class ShipmentTest extends TestCase
 
         $this->assertEmpty($shipment->getShop());
 
-        $mock = $this->getMockClass(ShopInterface::class);
-        $shop = new $mock();
+        $shop = $this->getMockBuilder(ShopInterface::class)->getMock();
 
         $this->assertEquals($shop, $shipment->setShop($shop)->getShop());
     }
@@ -314,9 +302,7 @@ class ShipmentTest extends TestCase
     public function testCustoms()
     {
         $shipment = new Shipment();
-
-        $mock = $this->getMockClass(CustomsInterface::class);
-        $customs = new $mock();
+        $customs = $this->getMockBuilder(CustomsInterface::class)->getMock();
 
         $this->assertEquals($customs, $shipment->setCustoms($customs)->getCustoms());
     }
@@ -328,14 +314,14 @@ class ShipmentTest extends TestCase
 
         $this->assertEmpty($shipment->getItems());
 
-        $mock = $this->getMockClass(ShipmentItemInterface::class);
-        $items = [new $mock(), new $mock()];
+        $mockBuilder = $this->getMockBuilder(ShipmentItemInterface::class);
+        $items = [$mockBuilder->getMock(), $mockBuilder->getMock()];
 
         $shipment->setItems($items);
         $this->assertCount(2, $shipment->getItems());
         $this->assertEquals($items, $shipment->getItems());
 
-        $item = new $mock();
+        $item = $mockBuilder->getMock();
         $items[] = $item;
         $shipment->addItem($item);
         $this->assertCount(3, $shipment->getItems());
@@ -349,17 +335,17 @@ class ShipmentTest extends TestCase
 
         $this->assertEmpty($shipment->getFiles());
 
-        $mock = $this->getMockClass(FileInterface::class);
+        $mockBuilder = $this->getMockBuilder(FileInterface::class);
 
         $files = [
-            new $mock(),
-            new $mock(),
+            $mockBuilder->getMock(),
+            $mockBuilder->getMock(),
         ];
         $shipment->setFiles($files);
         $this->assertCount(2, $shipment->getFiles());
         $this->assertEquals($files, $shipment->getFiles());
 
-        $file = new $mock();
+        $file = $mockBuilder->getMock();
         $shipment->addFile($file);
         $files[] = $file;
         $this->assertCount(3, $shipment->getFiles());
@@ -403,11 +389,11 @@ class ShipmentTest extends TestCase
     /** @test */
     public function testStatusHistory()
     {
-        $mock = $this->getMockClass(ShipmentStatusInterface::class);
+        $mockBuilder = $this->getMockBuilder(ShipmentStatusInterface::class);
         $statuses = [
-            new $mock(),
-            new $mock(),
-            new $mock(),
+            $mockBuilder->getMock(),
+            $mockBuilder->getMock(),
+            $mockBuilder->getMock(),
         ];
 
         $shipment = new Shipment();
@@ -418,8 +404,8 @@ class ShipmentTest extends TestCase
         $this->assertEquals($statuses, $shipment->getStatusHistory());
 
         $statuses = [
-            new $mock(),
-            new $mock(),
+            $mockBuilder->getMock(),
+            $mockBuilder->getMock(),
         ];
 
         $this->assertEquals($statuses, $shipment->setStatusHistory($statuses)->getStatusHistory());

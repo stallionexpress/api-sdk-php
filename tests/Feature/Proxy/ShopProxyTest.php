@@ -26,7 +26,7 @@ class ShopProxyTest extends TestCase
     /** @var ShopProxy */
     private $shopProxy;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

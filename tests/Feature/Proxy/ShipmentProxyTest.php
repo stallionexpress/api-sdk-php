@@ -36,7 +36,7 @@ class ShipmentProxyTest extends TestCase
     /** @var ShipmentProxy */
     private $shipmentProxy;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -203,7 +203,7 @@ class ShipmentProxyTest extends TestCase
         $this->assertEquals(CustomsInterface::CONTENT_TYPE_DOCUMENTS, $customs->getContentType());
 
         $items = $this->shipmentProxy->getItems();
-        $this->assertInternalType('array', $items);
+        $this->assertIsArray($items);
         array_walk($items, function ($item) {
             $this->assertInstanceOf(ShipmentItemInterface::class, $item);
         });
@@ -298,7 +298,7 @@ class ShipmentProxyTest extends TestCase
         $serviceOptionIds = array_map(function (ServiceOptionInterface $serviceOption) {
             return $serviceOption->getId();
         }, $serviceOptions);
-        $this->assertArraySubset(['service-option-id-2', 'service-option-id-3'], $serviceOptionIds);
+        $this->assertEqualsCanonicalizing(['service-option-id-2', 'service-option-id-3'], $serviceOptionIds);
         $this->assertCount(2, $serviceOptions);
 
         // Adding a service option should keep the old service options
@@ -343,7 +343,7 @@ class ShipmentProxyTest extends TestCase
         $fileIds = array_map(function (FileInterface $file) {
             return $file->getId();
         }, $files);
-        $this->assertArraySubset(['file-id-2', 'file-id-3'], $fileIds);
+        $this->assertEqualsCanonicalizing(['file-id-2', 'file-id-3'], $fileIds);
         $this->assertCount(2, $files);
 
         // Adding a file should keep the old files
@@ -367,7 +367,7 @@ class ShipmentProxyTest extends TestCase
     public function testStatusHistory()
     {
         $statusHistory = $this->shipmentProxy->getStatusHistory();
-        $this->assertInternalType('array', $statusHistory);
+        $this->assertIsArray($statusHistory);
         array_walk($statusHistory, function (ShipmentStatusInterface $shipmentStatus) {
             $this->assertInstanceOf(ShipmentStatusInterface::class, $shipmentStatus);
             $this->assertEquals(ResourceInterface::TYPE_SHIPMENT_STATUS, $shipmentStatus->getType());
@@ -378,7 +378,7 @@ class ShipmentProxyTest extends TestCase
             return $shipmentStatus->getId();
         }, $statusHistory);
 
-        $this->assertArraySubset([
+        $this->assertEqualsCanonicalizing([
             'shipment-status-id-1',
             'shipment-status-id-2',
             'shipment-status-id-3',

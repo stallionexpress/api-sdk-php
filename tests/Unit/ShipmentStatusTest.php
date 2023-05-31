@@ -28,8 +28,7 @@ class ShipmentStatusTest extends TestCase
     /** @test */
     public function testCarrierStatus()
     {
-        $mock = $this->getMockClass(CarrierStatusInterface::class);
-        $carrierStatus = new $mock();
+        $carrierStatus = $this->getMockBuilder(CarrierStatusInterface::class)->getMock();
 
         $shipmentStatus = new ShipmentStatus();
         $this->assertEquals([$carrierStatus], $shipmentStatus->setCarrierStatuses([$carrierStatus])->getCarrierStatuses());
@@ -45,8 +44,7 @@ class ShipmentStatusTest extends TestCase
     /** @test */
     public function testErrors()
     {
-        $mock = $this->getMockClass(ErrorInterface::class);
-        $error = new $mock();
+        $error = $this->getMockBuilder(ErrorInterface::class)->getMock();
 
         $shipmentStatus = new ShipmentStatus();
         $this->assertEquals([$error, $error], $shipmentStatus->setErrors([$error, $error])->getErrors());
@@ -71,8 +69,7 @@ class ShipmentStatusTest extends TestCase
     /** @test */
     public function testShipment()
     {
-        $mock = $this->getMockClass(ShipmentInterface::class);
-        $shipment = new $mock();
+        $shipment = $this->getMockBuilder(ShipmentInterface::class)->getMock();
 
         $shipmentStatus = new ShipmentStatus();
         $this->assertEquals($shipment, $shipmentStatus->setShipment($shipment)->getShipment());
@@ -81,8 +78,7 @@ class ShipmentStatusTest extends TestCase
     /** @test */
     public function testStatus()
     {
-        $mock = $this->getMockClass(StatusInterface::class);
-        $status = new $mock();
+        $status = $this->getMockBuilder(StatusInterface::class)->getMock();
 
         $shipmentStatus = new ShipmentStatus();
         $this->assertEquals($status, $shipmentStatus->setStatus($status)->getStatus());

@@ -30,10 +30,8 @@ class ArrayCollection implements CollectionInterface
 
     /**
      * Counts the amount of resources in the collection.
-     *
-     * @return int
      */
-    public function count()
+    public function count(): int
     {
         return count($this->resources);
     }
@@ -44,7 +42,7 @@ class ArrayCollection implements CollectionInterface
      *
      * @return ResourceInterface[]
      */
-    public function get()
+    public function get(): array
     {
         return array_filter($this->resources, function ($resourceNumber) {
             return $resourceNumber >= $this->offset && $resourceNumber < ($this->offset + $this->limit);
@@ -53,11 +51,8 @@ class ArrayCollection implements CollectionInterface
 
     /**
      * Sets an offset on which resource to start retrieving.
-     *
-     * @param $offset
-     * @return $this
      */
-    public function offset($offset)
+    public function offset(int $offset): self
     {
         $this->offset = $offset;
         $this->rewind();
@@ -68,25 +63,15 @@ class ArrayCollection implements CollectionInterface
     /**
      * Sets the amount of resources to be retrieved by get().
      * Default (and max) limit is 100.
-     *
-     * @param int $limit
-     * @return $this
      */
-    public function limit($limit = 100)
+    public function limit(int $limit = 100): self
     {
         $this->limit = min(100, max(1, $limit));
 
         return $this;
     }
 
-    /**
-     * Return the current element
-     *
-     * @link  http://php.net/manual/en/iterator.current.php
-     * @return mixed Can return any type.
-     * @since 5.0.0
-     */
-    public function current()
+    public function current(): ?ResourceInterface
     {
         if (!$this->valid()) {
             return null;
@@ -95,26 +80,12 @@ class ArrayCollection implements CollectionInterface
         return $this->resources[$this->currentResourceNumber];
     }
 
-    /**
-     * Move forward to next element
-     *
-     * @link  http://php.net/manual/en/iterator.next.php
-     * @return void Any returned value is ignored.
-     * @since 5.0.0
-     */
-    public function next()
+    public function next(): void
     {
         $this->currentResourceNumber++;
     }
 
-    /**
-     * Return the key of the current element
-     *
-     * @link  http://php.net/manual/en/iterator.key.php
-     * @return mixed scalar on success, or null on failure.
-     * @since 5.0.0
-     */
-    public function key()
+    public function key(): ?int
     {
         if (!$this->valid()) {
             return null;
@@ -123,28 +94,13 @@ class ArrayCollection implements CollectionInterface
         return $this->currentResourceNumber;
     }
 
-    /**
-     * Checks if current position is valid
-     *
-     * @link  http://php.net/manual/en/iterator.valid.php
-     * @return boolean The return value will be casted to boolean and then evaluated.
-     * Returns true on success or false on failure.
-     * @since 5.0.0
-     */
-    public function valid()
+    public function valid(): bool
     {
         return isset($this->resources[$this->currentResourceNumber])
             && $this->currentResourceNumber < ($this->offset + $this->limit);
     }
 
-    /**
-     * Rewind the Iterator to the first element
-     *
-     * @link  http://php.net/manual/en/iterator.rewind.php
-     * @return void Any returned value is ignored.
-     * @since 5.0.0
-     */
-    public function rewind()
+    public function rewind(): void
     {
         $this->currentResourceNumber = $this->offset;
     }
