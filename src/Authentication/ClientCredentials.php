@@ -20,9 +20,6 @@ class ClientCredentials implements AuthenticatorInterface
     const PATH_ACCESS_TOKEN = '/access-token';
     const TTL_MARGIN = 60;
 
-    private ?CacheInterface $cache = null;
-    private ?ClientInterface $httpClient = null;
-
     /**
      * Create an authenticator for the client_credentials grant. Requires a client id and a client secret. When not
      * connecting to the MyParcel.com sandbox, the `$authUri` should be set to the correct uri. Optionally a cache can
@@ -32,18 +29,13 @@ class ClientCredentials implements AuthenticatorInterface
         protected string $clientId,
         protected string $clientSecret,
         protected string $authUri = 'https://sandbox-auth.myparcel.com',
-        ?CacheInterface $cache = null,
-        ?ClientInterface $httpClient = null
+        protected ?CacheInterface $cache = null,
+        protected ?ClientInterface $httpClient = null
     ) {
-        // Either use the given cache or instantiate a new one that uses the filesystem temp directory as a cache.
+        // If no cache is provided, instantiate a new one that uses the filesystem temp directory as a cache.
         if (!$cache) {
             $psr6Cache = new FilesystemAdapter('myparcelcom');
-            $cache = new Psr16Cache($psr6Cache);
-        }
-        $this->cache = $cache;
-
-        if ($httpClient !== null) {
-            $this->setHttpClient($httpClient);
+            $this->cache = new Psr16Cache($psr6Cache);
         }
     }
 
