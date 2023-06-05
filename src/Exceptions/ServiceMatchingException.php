@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MyParcelCom\ApiSdk\Exceptions;
 
 /**
@@ -8,5 +10,4 @@ namespace MyParcelCom\ApiSdk\Exceptions;
  */
 class ServiceMatchingException extends MyParcelComException
 {
-
 }

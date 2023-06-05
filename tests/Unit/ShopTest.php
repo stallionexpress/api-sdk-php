@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MyParcelCom\ApiSdk\Tests\Unit;
 
 use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
@@ -128,9 +130,9 @@ class ShopTest extends TestCase
             'id'         => 'shop-id',
             'type'       => 'shops',
             'attributes' => [
-                'name'            => 'MyParcel.com Test Shop',
-                'website'         => 'https://test.shop',
-                'sender_address'  => [
+                'name'           => 'MyParcel.com Test Shop',
+                'website'        => 'https://test.shop',
+                'sender_address' => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 4',
                     'street_number'        => '2',
@@ -145,7 +147,7 @@ class ShopTest extends TestCase
                     'email'                => 'rob@tables.com',
                     'phone_number'         => '+31 (0)234 567 890',
                 ],
-                'return_address'  => [
+                'return_address' => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 4',
                     'street_number'        => '4',
@@ -160,7 +162,7 @@ class ShopTest extends TestCase
                     'email'                => 'rob@tables.com',
                     'phone_number'         => '+31 (0)234 567 890',
                 ],
-                'created_at'      => 1509001337,
+                'created_at'     => 1509001337,
             ],
         ], $shop->jsonSerialize());
     }

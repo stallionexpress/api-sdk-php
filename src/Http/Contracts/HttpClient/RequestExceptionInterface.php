@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MyParcelCom\ApiSdk\Http\Contracts\HttpClient;
 
 use Psr\Http\Message\RequestInterface;
@@ -18,17 +20,13 @@ interface RequestExceptionInterface
      * Returns the request.
      *
      * The request object MAY be a different object from the one passed to ClientInterface::sendRequest()
-     *
-     * @return RequestInterface
      */
-    public function getRequest();
+    public function getRequest(): RequestInterface;
 
     /**
      * Returns the response of the failed request.
      *
      * May return null if there was no response.
-     *
-     * @return ResponseInterface|null
      */
-    public function getResponse();
+    public function getResponse(): ?ResponseInterface;
 }

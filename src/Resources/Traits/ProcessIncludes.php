@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MyParcelCom\ApiSdk\Resources\Traits;
 
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
@@ -12,7 +14,7 @@ trait ProcessIncludes
      *
      * @param ResourceInterface[] $includedResources
      */
-    public function processIncludedResources(array $includedResources)
+    public function processIncludedResources(array $includedResources): void
     {
         foreach ($includedResources as $resource) {
             if (!array_key_exists($resource->getType(), self::INCLUDES)) {

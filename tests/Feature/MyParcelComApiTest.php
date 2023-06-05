@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MyParcelCom\ApiSdk\Tests\Feature;
 
-use Http\Client\HttpClient;
 use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
 use MyParcelCom\ApiSdk\Collection\CollectionInterface;
 use MyParcelCom\ApiSdk\Exceptions\InvalidResourceException;
@@ -29,6 +30,7 @@ use MyParcelCom\ApiSdk\Resources\Shop;
 use MyParcelCom\ApiSdk\Tests\Traits\MocksApiCommunication;
 use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockObject;
+use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 
 class MyParcelComApiTest extends TestCase
@@ -39,7 +41,7 @@ class MyParcelComApiTest extends TestCase
     private $authenticator;
     /** @var MyParcelComApi */
     private $api;
-    /** @var HttpClient|PHPUnit_Framework_MockObject_MockObject */
+    /** @var ClientInterface|PHPUnit_Framework_MockObject_MockObject */
     private $client;
 
     protected function setUp(): void
@@ -508,48 +510,12 @@ class MyParcelComApiTest extends TestCase
     }
 
     /** @test */
-    public function testGetGbRegionsWithBackwardCompatibility()
-    {
-        $regions = $this->api->getRegions('GB');
-
-        $this->assertInstanceOf(CollectionInterface::class, $regions);
-        $this->assertEquals(9, $regions->count());
-        foreach ($regions as $region) {
-            $this->assertInstanceOf(RegionInterface::class, $region);
-            $this->assertEquals('GB', $region->getCountryCode());
-        }
-
-        $ireland = $this->api->getRegions('GB', 'NIR');
-
-        $this->assertInstanceOf(CollectionInterface::class, $ireland);
-        $this->assertEquals(1, $ireland->count());
-        foreach ($ireland as $region) {
-            $this->assertInstanceOf(RegionInterface::class, $region);
-            $this->assertEquals('GB', $region->getCountryCode());
-            $this->assertEquals('NIR', $region->getRegionCode());
-        }
-    }
-
-    /** @test */
     public function testGetRegionsWithNonExistingRegionCode()
     {
         $regions = $this->api->getRegions([
             'country_code' => 'NL',
             'region_code'  => 'NH',
         ]);
-
-        $this->assertInstanceOf(CollectionInterface::class, $regions);
-        $this->assertEquals(1, $regions->count());
-        foreach ($regions as $region) {
-            $this->assertInstanceOf(RegionInterface::class, $region);
-            $this->assertEquals('NL', $region->getCountryCode());
-        }
-    }
-
-    /** @test */
-    public function testGetRegionsWithNonExistingRegionCodeWithBackwardCompatibility()
-    {
-        $regions = $this->api->getRegions('NL', 'NH');
 
         $this->assertInstanceOf(CollectionInterface::class, $regions);
         $this->assertEquals(1, $regions->count());
@@ -676,7 +642,10 @@ class MyParcelComApiTest extends TestCase
             $this->assertLessThanOrEqual(500, $serviceRate->getWeightMin());
             $this->assertEquals('Letter Test', $serviceRate->getService()->getName(), 'Included service name');
             $this->assertEquals('letter-test', $serviceRate->getService()->getCode(), 'Included service code');
-            $this->assertTrue(in_array($serviceRate->getContract()->getName(), ['Contract X', 'Contract Y']), 'Included contract name');
+            $this->assertTrue(in_array($serviceRate->getContract()->getName(), [
+                'Contract X',
+                'Contract Y',
+            ]), 'Included contract name');
         }
     }
 

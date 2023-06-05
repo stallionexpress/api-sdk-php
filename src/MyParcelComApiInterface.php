@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MyParcelCom\ApiSdk;
 
 use MyParcelCom\ApiSdk\Authentication\AuthenticatorInterface;
@@ -35,157 +37,113 @@ interface MyParcelComApiInterface
     /**
      * Authenticate to the API using the given authenticator.
      *
-     * @param AuthenticatorInterface $authenticator
-     * @return $this
      * @throws MyParcelComException
      */
-    public function authenticate(AuthenticatorInterface $authenticator);
+    public function authenticate(AuthenticatorInterface $authenticator): self;
 
     /**
-     * Get an array with all the regions. An array of
-     * filters can be provided to limit the results to
-     * a subset. Available filters:
-     * - country_code
-     * - region_code
-     * - postal_code
-     *
-     * @see https://docs.myparcel.com/api/resources/regions/#parameters
-     *
-     * @param array $filters
-     * @param int   $ttl Cache time to live (in seconds)
-     * @return CollectionInterface
+     * @deprecated
      */
-    public function getRegions($filters = [], $ttl = self::TTL_10MIN);
+    public function getRegions(array $filters = [], int $ttl = self::TTL_10MIN): CollectionInterface;
 
     /**
      * Get all the carriers from the API.
      *
-     * @param int $ttl Cache time to live (in seconds)
-     * @return CollectionInterface
      * @throws MyParcelComException
      */
-    public function getCarriers($ttl = self::TTL_10MIN);
+    public function getCarriers(int $ttl = self::TTL_10MIN): CollectionInterface;
 
     /**
-     * Get the pick up/drop off locations around a given location. If no carrier
-     * is given, pick up locations for all available carriers will be used.
-     *
-     * @param string                $countryCode
-     * @param string                $postalCode
-     * @param string|null           $streetName
-     * @param string|null           $streetNumber
-     * @param CarrierInterface|null $specificCarrier
-     * @param bool                  $onlyActiveContracts
-     * @param int                   $ttl Cache time to live (in seconds)
-     * @return CollectionInterface
+     * Get the pick-up/drop-off locations around a given location.
+     * If no specific carrier is given, an array of pick-up location collections for all available carriers is returned.
      */
     public function getPickUpDropOffLocations(
-        $countryCode,
-        $postalCode,
-        $streetName = null,
-        $streetNumber = null,
+        string $countryCode,
+        string $postalCode,
+        ?string $streetName = null,
+        ?string $streetNumber = null,
         CarrierInterface $specificCarrier = null,
-        $onlyActiveContracts = true,
-        $ttl = self::TTL_10MIN
-    );
+        bool $onlyActiveContracts = true,
+        int $ttl = self::TTL_10MIN,
+    ): CollectionInterface|array;
 
     /**
      * Get the shops from the API.
      *
-     * @param int $ttl Cache time to live (in seconds)
-     * @return CollectionInterface
      * @throws MyParcelComException
      */
-    public function getShops($ttl = self::TTL_10MIN);
+    public function getShops(int $ttl = self::TTL_10MIN): CollectionInterface;
 
     /**
-     * Get the default shop that will be used when interacting with the API and
-     * no specific shop has been set.
+     * Get the default shop that will be used when interacting with the API and no specific shop has been set.
      *
-     * @param int $ttl Cache time to live (in seconds)
-     * @return ShopInterface
      * @throws MyParcelComException
      */
-    public function getDefaultShop($ttl = self::TTL_10MIN);
+    public function getDefaultShop(int $ttl = self::TTL_10MIN): ShopInterface;
 
     /**
      * Get all services that can be used for given shipment. If no shipment is
      * provided, all available services are returned.
      *
-     * @param ShipmentInterface|null $shipment
-     * @param array                  $filters
-     * @param int                    $ttl Cache time to live (in seconds)
-     * @return CollectionInterface
      * @throws MyParcelComException
      */
     public function getServices(
         ShipmentInterface $shipment = null,
         array $filters = ['has_active_contract' => 'true'],
-        $ttl = self::TTL_10MIN
-    );
+        int $ttl = self::TTL_10MIN,
+    ): CollectionInterface;
 
     /**
      * Get all the services that are available for the given carrier.
      *
-     * @param CarrierInterface $carrier
-     * @param int              $ttl Cache time to live (in seconds)
-     * @return CollectionInterface
      * @throws MyParcelComException
      */
-    public function getServicesForCarrier(CarrierInterface $carrier, $ttl = self::TTL_10MIN);
+    public function getServicesForCarrier(CarrierInterface $carrier, int $ttl = self::TTL_10MIN): CollectionInterface;
 
     /**
      * Retrieves service rates based on the set filters. Available filters are: service, contract and weight. Note that
      * this function could return service rates which are dynamic. Their price and availability depends on the shipment
      * data and requires communication with the carrier. This info can be retrieved using resolveDynamicServiceRates().
-     *
-     * @param array $filters
-     * @param int   $ttl Cache time to live (in seconds)
-     * @return CollectionInterface
      */
-    public function getServiceRates(array $filters = ['has_active_contract' => 'true'], $ttl = self::TTL_10MIN);
+    public function getServiceRates(
+        array $filters = ['has_active_contract' => 'true'],
+        int $ttl = self::TTL_10MIN,
+    ): CollectionInterface;
 
     /**
      * Retrieves service rates based on the shipment.
      * The shipment needs to have a recipient/sender_address and a weight set.
-     *
-     * @param ShipmentInterface $shipment
-     * @param int               $ttl Cache time to live (in seconds)
-     * @return CollectionInterface
      */
-    public function getServiceRatesForShipment(ShipmentInterface $shipment, $ttl = self::TTL_10MIN);
+    public function getServiceRatesForShipment(
+        ShipmentInterface $shipment,
+        int $ttl = self::TTL_10MIN,
+    ): CollectionInterface;
 
     /**
      * Retrieve dynamic rates (price / options / availability) from the carrier, based on the provided shipment data.
      * The shipment should have a service, contract, addresses, weight and sometimes dimensions are required as well.
      * If you have a ServiceRate which is_dynamic, you can pass it and its service and contract will be used instead.
      *
-     * @param ShipmentInterface|array   $shipmentData
-     * @param ServiceRateInterface|null $dynamicServiceRate
-     * @return ServiceRateInterface[]
      * @throws RequestException
      */
-    public function resolveDynamicServiceRates($shipmentData, $dynamicServiceRate = null);
+    public function resolveDynamicServiceRates(
+        ShipmentInterface|array $shipmentData,
+        ?ServiceRateInterface $dynamicServiceRate = null
+    ): array;
 
     /**
      * Get shipments for a given shop. If no shop is given the default shop is used.
      *
-     * @param ShopInterface|null $shop
-     * @param int                $ttl Cache time to live (in seconds)
-     * @return CollectionInterface
      * @throws MyParcelComException
      */
-    public function getShipments(ShopInterface $shop = null, $ttl = self::TTL_NO_CACHE);
+    public function getShipments(ShopInterface $shop = null, int $ttl = self::TTL_NO_CACHE): CollectionInterface;
 
     /**
      * Get a specific shipment from the API.
      *
-     * @param string $id
-     * @param int    $ttl
-     * @return ShipmentInterface
      * @throws MyParcelComException
      */
-    public function getShipment($id, $ttl = null);
+    public function getShipment(string $id, int $ttl = self::TTL_NO_CACHE): ShipmentInterface;
 
     /**
      * Creates a given shipment or updates it depending on if the id is already set.
@@ -193,63 +151,52 @@ interface MyParcelComApiInterface
      * When certain properties for a new shipment are not set, defaults should be
      * used. When no default value is available, an exception should be thrown.
      *
-     * @param ShipmentInterface $shipment
-     * @return ShipmentInterface
      * @throws MyParcelComException
      */
-    public function saveShipment(ShipmentInterface $shipment);
+    public function saveShipment(ShipmentInterface $shipment): ShipmentInterface;
 
     /**
      * Update the given shipment and returns the updated version of the shipment.
      *
-     * @param ShipmentInterface $shipment
-     * @return ShipmentInterface
      * @throws MyParcelComException
      */
-    public function updateShipment(ShipmentInterface $shipment);
+    public function updateShipment(ShipmentInterface $shipment): ShipmentInterface;
 
     /**
      * Creates a given shipment and returns the created version of the shipment.
      * When certain properties on the shipment are not set, defaults should be
      * used. When no default value is available, an exception should be thrown.
      *
-     * @param ShipmentInterface $shipment
-     * @param string|null $idempotencyKey Use idempotency feature
-     *                                    (see https://docs.myparcel.com/api/create-a-shipment/idempotency.html)
-     * @return ShipmentInterface
+     * @see https://docs.myparcel.com/api/create-a-shipment.html
+     * @see https://docs.myparcel.com/api/create-a-shipment/idempotency.html
      * @throws MyParcelComException
      */
-    public function createShipment(ShipmentInterface $shipment, $idempotencyKey = null);
+    public function createShipment(ShipmentInterface $shipment, ?string $idempotencyKey = null): ShipmentInterface;
 
     /**
      * Get the resource of given type with given id.
      *
-     * @param string $resourceType
-     * @param string $id
-     * @param int    $ttl
-     * @return ResourceInterface
      * @throws MyParcelComException
      */
-    public function getResourceById($resourceType, $id, $ttl = self::TTL_NO_CACHE);
+    public function getResourceById(string $resourceType, string $id, int $ttl = self::TTL_NO_CACHE): ResourceInterface;
 
     /**
      * Get an array of all the resources from given uri.
      *
-     * @param string $uri
      * @return ResourceInterface[]
      */
-    public function getResourcesFromUri($uri);
+    public function getResourcesFromUri(string $uri): array;
 
     /**
      * Do an async request to given uri on the API.
      *
-     * @param string $uri
-     * @param string $method
-     * @param array  $body
-     * @param array  $headers
-     * @param int    $ttl
-     * @return ResponseInterface
      * @throws RequestException
      */
-    public function doRequest($uri, $method = 'get', array $body = [], array $headers = [], $ttl = self::TTL_NO_CACHE);
+    public function doRequest(
+        string $uri,
+        string $method = 'get',
+        array $body = [],
+        array $headers = [],
+        $ttl = self::TTL_NO_CACHE,
+    ): ResponseInterface;
 }

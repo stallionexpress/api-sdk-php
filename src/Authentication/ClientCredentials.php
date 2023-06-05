@@ -1,16 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MyParcelCom\ApiSdk\Authentication;
 
 use GuzzleHttp\Psr7\Request;
-use Http\Client\HttpClient;
 use Http\Discovery\HttpClientDiscovery;
 use MyParcelCom\ApiSdk\Exceptions\AuthenticationException;
 use MyParcelCom\ApiSdk\Http\Exceptions\RequestException;
+use Psr\Http\Client\ClientInterface;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Cache\Psr16Cache;
-use Symfony\Component\Cache\Simple\FilesystemCache;
 
 class ClientCredentials implements AuthenticatorInterface
 {
@@ -19,71 +20,31 @@ class ClientCredentials implements AuthenticatorInterface
     const PATH_ACCESS_TOKEN = '/access-token';
     const TTL_MARGIN = 60;
 
-    /** @var string */
-    protected $clientSecret;
-
-    /** @var string */
-    protected $clientId;
-
-    /** @var string */
-    protected $authUri;
-
-    /** @var CacheInterface */
-    private $cache;
-
-    /** @var HttpClient */
-    private $httpClient;
-
     /**
-     * Create an authenticator for the client_credentials grant. Requires a
-     * client id and a client secret. When not connecting to the MyParcel.com
-     * sandbox, the `$authUri` should be set to the correct uri. Optionally a
-     * cache can be supplied to store the api-key in.
-     *
-     * @param string              $clientId
-     * @param string              $clientSecret
-     * @param string              $authUri
-     * @param CacheInterface|null $cache
-     * @param HttpClient|null     $httpClient
+     * Create an authenticator for the client_credentials grant. Requires a client id and a client secret. When not
+     * connecting to the MyParcel.com sandbox, the `$authUri` should be set to the correct uri. Optionally a cache can
+     * be supplied to store the api-key in.
      */
     public function __construct(
-        $clientId,
-        $clientSecret,
-        $authUri = 'https://sandbox-auth.myparcel.com',
-        CacheInterface $cache = null,
-        HttpClient $httpClient = null
+        protected string $clientId,
+        protected string $clientSecret,
+        protected string $authUri = 'https://sandbox-auth.myparcel.com',
+        protected ?CacheInterface $cache = null,
+        protected ?ClientInterface $httpClient = null
     ) {
-        $this->clientSecret = $clientSecret;
-        $this->clientId = $clientId;
-        $this->authUri = $authUri;
-
-        // Either use the given cache or instantiate a new one that uses the filesystem temp directory as a cache.
+        // If no cache is provided, instantiate a new one that uses the filesystem temp directory as a cache.
         if (!$cache) {
-            // Symfony 5.0.0 removed their PSR-16 cache classes. Their PSR-6 cache classes can be wrapped in Psr16Cache.
-            if (class_exists('\Symfony\Component\Cache\Psr16Cache')) {
-                $psr6Cache = new FilesystemAdapter('myparcelcom');
-                $cache = new Psr16Cache($psr6Cache);
-            } else {
-                $cache = new FilesystemCache('myparcelcom');
-            }
-        }
-        $this->cache = $cache;
-
-        if ($httpClient !== null) {
-            $this->setHttpClient($httpClient);
+            $psr6Cache = new FilesystemAdapter('myparcelcom');
+            $this->cache = new Psr16Cache($psr6Cache);
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getAuthorizationHeader($forceRefresh = false)
+    public function getAuthorizationHeader(bool $forceRefresh = false): array
     {
         while ($this->isAuthenticating()) {
             // Wait for 200ms
             usleep(200000);
-            // Don't force another authentication cycle if we're already
-            // authenticating.
+            // Don't force another authentication cycle if we're already authenticating.
             $forceRefresh = false;
         }
 
@@ -96,19 +57,13 @@ class ClientCredentials implements AuthenticatorInterface
 
     /**
      * Returns true if another request is already authenticating.
-     *
-     * @return bool
      */
-    protected function isAuthenticating()
+    protected function isAuthenticating(): bool
     {
         return (bool) $this->cache->get($this->cacheKey(self::CACHE_AUTHENTICATING));
     }
 
-    /**
-     * @param bool $authenticating
-     * @return $this
-     */
-    protected function setAuthenticating($authenticating = true)
+    protected function setAuthenticating(bool $authenticating = true): self
     {
         // Don't let the authenticating lock stay active for more than 30s.
         $this->cache->set($this->cacheKey(self::CACHE_AUTHENTICATING), $authenticating, 30);
@@ -118,10 +73,8 @@ class ClientCredentials implements AuthenticatorInterface
 
     /**
      * Authenticate with the server and return the header.
-     *
-     * @return array
      */
-    protected function authenticate()
+    protected function authenticate(): array
     {
         $this->setAuthenticating();
 
@@ -165,43 +118,31 @@ class ClientCredentials implements AuthenticatorInterface
 
     /**
      * Get the cached header or `null` if no header is cached (or expired).
-     *
-     * @return array|null
      */
-    protected function getCachedHeader()
+    protected function getCachedHeader(): ?array
     {
         return $this->cache->get($this->cacheKey(self::CACHE_TOKEN));
     }
 
     /**
      * Set the cached header with a time to live.
-     *
-     * @param array $header
-     * @param int   $ttl
-     * @return $this
      */
-    protected function setCachedHeader(array $header, $ttl)
+    protected function setCachedHeader(array $header, int $ttl): self
     {
         $this->cache->set($this->cacheKey(self::CACHE_TOKEN), $header, $ttl - self::TTL_MARGIN);
 
         return $this;
     }
 
-    /**
-     * @param string $cacheType
-     * @return string
-     */
-    protected function cacheKey($cacheType)
+    protected function cacheKey(string $cacheType): string
     {
         return implode('_', [$cacheType, $this->clientId]);
     }
 
     /**
      * Clear the cached resources.
-     *
-     * @return $this
      */
-    public function clearCache()
+    public function clearCache(): self
     {
         $this->cache->clear();
 
@@ -209,13 +150,9 @@ class ClientCredentials implements AuthenticatorInterface
     }
 
     /**
-     * Set the http client to use. This can be used when extra options need to
-     * be set on the client.
-     *
-     * @param HttpClient $client
-     * @return $this
+     * Set the http client to use. This can be used when extra options need to be set on the client.
      */
-    public function setHttpClient(HttpClient $client)
+    public function setHttpClient(ClientInterface $client): self
     {
         $this->httpClient = $client;
 
@@ -224,10 +161,8 @@ class ClientCredentials implements AuthenticatorInterface
 
     /**
      * Get the http client to connect to the auth server.
-     *
-     * @return HttpClient
      */
-    protected function getHttpClient()
+    protected function getHttpClient(): ClientInterface
     {
         if (!isset($this->httpClient)) {
             $this->httpClient = HttpClientDiscovery::find();
@@ -238,11 +173,8 @@ class ClientCredentials implements AuthenticatorInterface
 
     /**
      * Handle the request exception.
-     *
-     * @param RequestException $exception
-     * @return void
      */
-    protected function handleRequestException(RequestException $exception)
+    protected function handleRequestException(RequestException $exception): void
     {
         if (empty($exception->getResponse())) {
             throw new AuthenticationException(

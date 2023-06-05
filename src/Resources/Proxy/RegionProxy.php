@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MyParcelCom\ApiSdk\Resources\Proxy;
 
 use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;

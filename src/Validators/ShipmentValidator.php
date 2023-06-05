@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MyParcelCom\ApiSdk\Validators;
 
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
@@ -10,35 +12,24 @@ class ShipmentValidator implements ValidatorInterface
 {
     use HasErrors;
 
-    /** @var ShipmentInterface */
-    protected $shipment;
-
-    public function __construct(ShipmentInterface $shipment)
-    {
-        $this->shipment = $shipment;
+    public function __construct(
+        protected ShipmentInterface $shipment,
+    ) {
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function isValid()
+    public function isValid(): bool
     {
         $this->clearErrors();
-
         $this->checkRequired();
-
         $this->checkWeight();
 
         return !$this->hasErrors();
     }
 
     /**
-     * Check if the required properties are set. Add any errors to the errors
-     * array.
-     *
-     * @return void
+     * Check if the required properties are set. Add any errors to the errors array.
      */
-    protected function checkRequired()
+    protected function checkRequired(): void
     {
         $required = ['weight', 'recipient_address', 'sender_address', 'shop'];
 
@@ -53,10 +44,8 @@ class ShipmentValidator implements ValidatorInterface
 
     /**
      * Check whether the weight property is not an invalid value.
-     *
-     * @return void
      */
-    protected function checkWeight()
+    protected function checkWeight(): void
     {
         if ($this->shipment->getWeight() < 0) {
             $this->addError('Negative weight is not allowed');

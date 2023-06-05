@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MyParcelCom\ApiSdk\Tests\Unit;
 
 use MyParcelCom\ApiSdk\Exceptions\LabelCombinerException;
@@ -198,6 +200,6 @@ class LabelCombinerTest extends TestCase
         $combiner = new LabelCombiner();
 
         $this->expectException(LabelCombinerException::class);
-        $combiner->combineLabels([], null);
+        $combiner->combineLabels([], 'nope');
     }
 }

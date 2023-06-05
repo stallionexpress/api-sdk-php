@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MyParcelCom\ApiSdk\Collection;
 
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
@@ -7,20 +9,13 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 class ArrayCollection implements CollectionInterface
 {
     /** @var ResourceInterface[] */
-    protected $resources;
+    protected array $resources = [];
 
-    /** @var int */
-    protected $offset = 0;
-
-    /** @var int */
-    protected $limit = 100;
-
-    /** @var int */
-    protected $currentResourceNumber = 0;
+    protected int $offset = 0;
+    protected int $limit = 100;
+    protected int $currentResourceNumber = 0;
 
     /**
-     * ArrayCollection constructor.
-     *
      * @param ResourceInterface[] $resources
      */
     public function __construct(array $resources)
