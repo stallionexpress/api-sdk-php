@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MyParcelCom\ApiSdk\Tests\Unit;
 
 use MyParcelCom\ApiSdk\Enums\TaxTypeEnum;
@@ -429,9 +431,6 @@ class ShipmentTest extends TestCase
             $now,
             $shipment->setRegisterAt((new \DateTime())->setTimestamp($now))->getRegisterAt()->getTimestamp()
         );
-
-        $this->expectException(\InvalidArgumentException::class);
-        $shipment->setRegisterAt(new \stdClass());
     }
 
     /** @test */

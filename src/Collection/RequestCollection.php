@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MyParcelCom\ApiSdk\Collection;
 
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
@@ -13,26 +15,13 @@ class RequestCollection implements CollectionInterface
     protected $resourceCreator;
 
     /** @var ResourceInterface[] */
-    protected $resources = [];
+    protected array $resources = [];
 
-    /** @var int */
-    protected $offset = 0;
+    protected int $offset = 0;
+    protected int $limit = 100;
+    protected int $count;
+    protected int $currentResourceNumber = 0;
 
-    /** @var int */
-    protected $limit = 100;
-
-    /** @var int */
-    protected $count;
-
-    /** @var int */
-    protected $currentResourceNumber = 0;
-
-    /**
-     * PromiseCollection constructor.
-     *
-     * @param callable $promiseCreator
-     * @param callable $resourceCreator
-     */
     public function __construct(callable $promiseCreator, callable $resourceCreator)
     {
         $this->promiseCreator = $promiseCreator;
@@ -67,8 +56,8 @@ class RequestCollection implements CollectionInterface
         // A maximum of 100 resources per page can be retrieved at once.
         // We need to specify which page should be retrieved from the api,
         // or which pages if the set offset and limit overlaps two pages.
-        $firstPage = ceil(($this->offset + 1) / $this->limit);
-        $secondPage = ceil(($this->offset + $this->limit) / $this->limit);
+        $firstPage = (int) ceil(($this->offset + 1) / $this->limit);
+        $secondPage = (int) ceil(($this->offset + $this->limit) / $this->limit);
 
         if (!isset($this->resources[$this->offset])) {
             $this->retrieveResources($firstPage);
@@ -88,17 +77,16 @@ class RequestCollection implements CollectionInterface
     }
 
     /**
-     * Retrieve the resources for the given page number and store them
-     * in this->resources according to their number.
+     * Retrieve the resources for the given page number and store them in this->resources according to their number.
      */
     private function retrieveResources(int $pageNumber): void
     {
         $response = call_user_func_array($this->promiseCreator, [$pageNumber, $this->limit]);
 
-        $body = json_decode($response->getBody(), true);
+        $body = json_decode((string) $response->getBody(), true);
 
         $this->count = $body['meta']['total_records'];
-        $included = isset($body['included']) ? $body['included'] : null;
+        $included = $body['included'] ?? null;
         $resources = call_user_func($this->resourceCreator, $body['data'], $included);
 
         $resourceNumber = ($pageNumber - 1) * $this->limit;

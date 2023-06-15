@@ -1,20 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MyParcelCom\ApiSdk\Tests\Unit\Authentication;
 
 use GuzzleHttp\Psr7\Message;
 use GuzzleHttp\Psr7\Request;
-use Http\Client\HttpClient;
 use MyParcelCom\ApiSdk\Authentication\ClientCredentials;
 use MyParcelCom\ApiSdk\Exceptions\AuthenticationException;
 use MyParcelCom\ApiSdk\Http\Exceptions\RequestException;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 class ClientCredentialsTest extends TestCase
 {
-    /** @var HttpClient */
+    /** @var ClientInterface */
     private $httpClient;
 
     /** @var int */
@@ -49,7 +51,7 @@ class ClientCredentialsTest extends TestCase
             ->willReturn(200);
 
         // Mock an http client.
-        $this->httpClient = $this->getMockBuilder(HttpClient::class)
+        $this->httpClient = $this->getMockBuilder(ClientInterface::class)
             ->disableOriginalConstructor()
             ->disableOriginalClone()
             ->disableArgumentCloning()
@@ -60,7 +62,7 @@ class ClientCredentialsTest extends TestCase
             ->willReturnCallback(function (RequestInterface $request) {
                 $method = strtolower($request->getMethod());
                 $path = urldecode((string) $request->getUri());
-                $jsonBody = json_decode($request->getBody()->getContents(), true);
+                $jsonBody = json_decode((string) $request->getBody(), true);
 
                 if ($this->response->getStatusCode() >= 400) {
                     throw new RequestException(new Request($method, $path), $this->response);
@@ -190,14 +192,14 @@ content-type: application/vnd.api+json
      */
     public function testGetAuthorizationHeaderConcurrentRequests()
     {
-        list($processA, $outputA) = $this->runEchoAuthHeader();
+        [$processA, $outputA] = $this->runEchoAuthHeader();
         // After firing the first process, we need to wait for a bit to make
         // sure it is actually running.
         // Note that the fact that we have to wait here implies that 2 auth
         // attempts at exactly the same time will still cause 2 requests to the
         // server.
         usleep(10000);
-        list($processB, $outputB) = $this->runEchoAuthHeader();
+        [$processB, $outputB] = $this->runEchoAuthHeader();
 
         // Wait for the contents (which should be the headers exported).
         $headerA = stream_get_contents($outputA);

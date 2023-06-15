@@ -1,17 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MyParcelCom\ApiSdk\Utils;
 
 use DateTime;
-use InvalidArgumentException;
 
 class DateUtils
 {
-    /**
-     * @param DateTime|string|int $dateTime
-     * @return int
-     */
-    public static function toTimestamp($dateTime)
+    public static function toTimestamp(DateTime|int|string $dateTime): int
     {
         if (is_int($dateTime)) {
             return $dateTime;
@@ -21,17 +18,6 @@ class DateUtils
             return (new DateTime($dateTime))->getTimestamp();
         }
 
-        if ($dateTime instanceof DateTime) {
-            return $dateTime->getTimestamp();
-        }
-
-        throw new InvalidArgumentException(
-            sprintf(
-                '$dateTime must be an instance of DateTime, string or integer, %s given',
-                gettype($dateTime) === 'object'
-                    ? get_class($dateTime)
-                    : gettype($dateTime)
-            )
-        );
+        return $dateTime->getTimestamp();
     }
 }

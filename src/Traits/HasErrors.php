@@ -1,39 +1,33 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MyParcelCom\ApiSdk\Traits;
 
 trait HasErrors
 {
-    /** @var array */
-    protected $errors = [];
+    protected array $errors = [];
 
     /**
      * Get all the errors.
-     *
-     * @return string[]
      */
-    public function getErrors()
+    public function getErrors(): array
     {
         return $this->errors;
     }
 
     /**
      * Returns true if errors are set.
-     *
-     * @return bool
      */
-    public function hasErrors()
+    public function hasErrors(): bool
     {
         return !empty($this->errors);
     }
 
     /**
      * Set all the found errors.
-     *
-     * @param string[] $errors
-     * @return $this
      */
-    public function setErrors(array $errors)
+    public function setErrors(array $errors): self
     {
         $this->errors = $errors;
 
@@ -42,11 +36,8 @@ trait HasErrors
 
     /**
      * Add an error.
-     *
-     * @param string $error
-     * @return $this
      */
-    public function addError($error)
+    public function addError(string $error): self
     {
         $this->errors[] = $error;
 
@@ -55,10 +46,8 @@ trait HasErrors
 
     /**
      * Clears the errors array.
-     *
-     * @return $this
      */
-    public function clearErrors()
+    public function clearErrors(): self
     {
         $this->errors = [];
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MyParcelCom\ApiSdk\Tests\Traits;
 
 use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
