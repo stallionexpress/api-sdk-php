@@ -61,14 +61,10 @@ class ServiceRateTest extends TestCase
         $this->assertEquals($serviceOptions, $serviceRate->addServiceOption($serviceOption)->getServiceOptions());
     }
 
-    /**
-     * @return array
-     */
-    public function attributeDataProvider()
+    public function attributeDataProvider(): array
     {
         return [
             'id'             => ['setId', 'service-rate-id', 'getId'],
-            'type'           => ['setType', 'service-rates', 'getType'],
             'weight_min'     => ['setWeightMin', 123, 'getWeightMin'],
             'weight_max'     => ['setWeightMax', 456, 'getWeightMax'],
             'length_max'     => ['setLengthMax', 789, 'getLengthMax'],

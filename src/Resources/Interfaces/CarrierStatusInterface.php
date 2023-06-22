@@ -9,47 +9,19 @@ use JsonSerializable;
 
 interface CarrierStatusInterface extends JsonSerializable
 {
-    /**
-     * @return string
-     */
-    public function getCode();
+    public function getCode(): string;
 
-    /**
-     * @param string $code
-     * @return $this
-     */
-    public function setCode($code);
+    public function setCode(string $code): self;
 
-    /**
-     * @return string
-     */
-    public function getDescription();
+    public function getDescription(): string;
 
-    /**
-     * @param string $description
-     * @return $this
-     */
-    public function setDescription($description);
+    public function setDescription(string $description): self;
 
-    /**
-     * @return DateTime
-     */
-    public function getAssignedAt();
+    public function getAssignedAt(): DateTime;
 
-    /**
-     * @param DateTime|string|int $assignedAt
-     * @return $this
-     */
-    public function setAssignedAt($assignedAt);
+    public function setAssignedAt(DateTime|int|string $assignedAt): self;
 
-    /**
-     * @return string|null
-     */
-    public function getTrackingCode();
+    public function getTrackingCode(): ?string;
 
-    /**
-     * @param string $trackingCode
-     * @return $this
-     */
-    public function setTrackingCode($trackingCode);
+    public function setTrackingCode(?string $trackingCode): self;
 }

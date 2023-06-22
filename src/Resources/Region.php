@@ -7,10 +7,12 @@ namespace MyParcelCom\ApiSdk\Resources;
 use MyParcelCom\ApiSdk\Resources\Interfaces\RegionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
+use MyParcelCom\ApiSdk\Resources\Traits\Resource;
 
 class Region implements RegionInterface
 {
     use JsonSerializable;
+    use Resource;
 
     const ATTRIBUTE_COUNTRY_CODE = 'country_code';
     const ATTRIBUTE_REGION_CODE = 'region_code';
@@ -20,157 +22,91 @@ class Region implements RegionInterface
 
     const RELATIONSHIP_PARENT = 'parent';
 
-    /** @var string */
-    private $id;
+    private ?string $id = null;
 
-    /** @var string */
-    private $type = ResourceInterface::TYPE_REGION;
+    private string $type = ResourceInterface::TYPE_REGION;
 
-    /** @var array */
-    private $attributes = [
+    private array $attributes = [
         self::ATTRIBUTE_COUNTRY_CODE => null,
         self::ATTRIBUTE_REGION_CODE  => null,
         self::ATTRIBUTE_CURRENCY     => null,
         self::ATTRIBUTE_NAME         => null,
     ];
 
-    /** @var array */
-    private $relationships = [
+    private array $relationships = [
         self::RELATIONSHIP_PARENT => [
             'data' => null,
         ],
     ];
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setCountryCode($countryCode)
+    public function setCountryCode(?string $countryCode): self
     {
         $this->attributes[self::ATTRIBUTE_COUNTRY_CODE] = $countryCode;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getCountryCode()
+    public function getCountryCode(): ?string
     {
         return $this->attributes[self::ATTRIBUTE_COUNTRY_CODE];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setRegionCode($regionCode)
+    public function setRegionCode(?string $regionCode): self
     {
         $this->attributes[self::ATTRIBUTE_REGION_CODE] = $regionCode;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getRegionCode()
+    public function getRegionCode(): ?string
     {
         return $this->attributes[self::ATTRIBUTE_REGION_CODE];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setCurrency($currency)
+    public function setCurrency(?string $currency): self
     {
         $this->attributes[self::ATTRIBUTE_CURRENCY] = $currency;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getCurrency()
+    public function getCurrency(): ?string
     {
         return $this->attributes[self::ATTRIBUTE_CURRENCY];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setName($name)
+    public function setName(string $name): self
     {
         $this->attributes[self::ATTRIBUTE_NAME] = $name;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->attributes[self::ATTRIBUTE_NAME];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setCategory($category)
+    public function setCategory(?string $category): self
     {
         $this->attributes[self::ATTRIBUTE_CATEGORY] = $category;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getCategory()
+    public function getCategory(): ?string
     {
         return $this->attributes[self::ATTRIBUTE_CATEGORY];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setParent(RegionInterface $parentRegion)
+    public function setParent(?RegionInterface $region): self
     {
-        $this->relationships[self::RELATIONSHIP_PARENT]['data'] = $parentRegion;
+        $this->relationships[self::RELATIONSHIP_PARENT]['data'] = $region;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getParent()
+    public function getParent(): ?RegionInterface
     {
         return $this->relationships[self::RELATIONSHIP_PARENT]['data'];
     }

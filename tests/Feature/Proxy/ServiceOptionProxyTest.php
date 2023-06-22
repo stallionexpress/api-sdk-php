@@ -69,7 +69,7 @@ class ServiceOptionProxyTest extends TestCase
         $this->assertNull($this->serviceOptionProxy->getCurrency());
         $this->assertEquals('GBP', $this->serviceOptionProxy->setCurrency('GBP')->getCurrency());
 
-        $this->assertNull($this->serviceOptionProxy->isIncluded());
+        $this->assertFalse($this->serviceOptionProxy->isIncluded());
         $this->assertTrue($this->serviceOptionProxy->setIncluded(true)->isIncluded());
     }
 

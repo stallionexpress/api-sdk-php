@@ -13,23 +13,14 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 
 trait MocksContract
 {
-    /**
-     * @param ServiceOptionInterface[] $serviceOptions
-     * @param int|null                 $price
-     * @param int|null                 $weightMin
-     * @param int|null                 $weightMax
-     * @param int|null                 $fuelSurcharge
-     * @param bool                     $isDynamic
-     * @return ServiceRateInterface
-     */
     protected function getMockedServiceRate(
         array $serviceOptions = [],
-        $price = null,
-        $weightMin = null,
-        $weightMax = null,
-        $fuelSurcharge = null,
-        $isDynamic = false
-    ) {
+        ?int $price = null,
+        int $weightMin = 0,
+        int $weightMax = 5000,
+        ?int $fuelSurcharge = null,
+        bool $isDynamic = false
+    ): ServiceRateInterface {
         $dynamicServiceRateMock = $this->getMockBuilder(ServiceRateInterface::class)->getMock();
         $dynamicServiceRateMock->method('getPrice')->willReturn(intval($price) + 321);
         $dynamicServiceRateMock->method('getServiceOptions')->willReturn($serviceOptions);
@@ -70,15 +61,12 @@ trait MocksContract
         return $mock;
     }
 
-    /**
-     * @param int                      $weight
-     * @param ServiceInterface|null    $service
-     * @param ServiceOptionInterface[] $serviceOptions
-     * @param null|int                 $volumetricWeight
-     * @return ShipmentInterface
-     */
-    protected function getMockedShipment($weight = 5000, ServiceInterface $service = null, array $serviceOptions = [], $volumetricWeight = null)
-    {
+    protected function getMockedShipment(
+        ?int $weight = 5000,
+        ?ServiceInterface $service = null,
+        array $serviceOptions = [],
+        ?int $volumetricWeight = null,
+    ): ShipmentInterface {
         $physicalPropertiesMock = $this->getMockBuilder(PhysicalPropertiesInterface::class)
             ->disableOriginalConstructor()
             ->disableOriginalClone()
@@ -112,12 +100,7 @@ trait MocksContract
         return $shipment;
     }
 
-    /**
-     * @param string   $id
-     * @param int|null $price
-     * @return ServiceOptionInterface
-     */
-    protected function getMockedServiceOption($id, $price = 0)
+    protected function getMockedServiceOption(string $id, ?int $price = 0): ServiceOptionInterface
     {
         $mock = $this->getMockBuilder(ServiceOptionInterface::class)
             ->disableOriginalConstructor()
@@ -136,14 +119,11 @@ trait MocksContract
         return $mock;
     }
 
-    /**
-     * @param ServiceRateInterface[] $serviceRates
-     * @param string|null            $deliveryMethod
-     * @param bool                   $usesVolumetricWeight
-     * @return ServiceInterface
-     */
-    protected function getMockedService(array $serviceRates = [], $deliveryMethod = null, $usesVolumetricWeight = false)
-    {
+    protected function getMockedService(
+        array $serviceRates = [],
+        string $deliveryMethod = 'delivery',
+        bool $usesVolumetricWeight = false,
+    ): ServiceInterface {
         $mock = $this->getMockBuilder(ServiceInterface::class)
             ->disableOriginalConstructor()
             ->disableOriginalClone()

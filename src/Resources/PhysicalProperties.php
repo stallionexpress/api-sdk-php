@@ -12,26 +12,19 @@ class PhysicalProperties implements PhysicalPropertiesInterface
 {
     use JsonSerializable;
 
-    /** @var int */
-    private $weight;
+    private ?int $weight = null;
 
-    /** @var int */
-    private $length;
+    private ?int $length = null;
 
-    /** @var int */
-    private $volume;
+    private float|int|null $volume = null;
 
-    /** @var int */
-    private $height;
+    private ?int $height = null;
 
-    /** @var int */
-    private $width;
+    private ?int $width = null;
 
-    /** @var int */
-    private $volumetricWeight;
+    private ?int $volumetricWeight = null;
 
-    /** @var array */
-    public static $unitConversion = [
+    public static array $unitConversion = [
         self::WEIGHT_GRAM     => 1,
         self::WEIGHT_KILOGRAM => 1000,
         self::WEIGHT_OUNCE    => 28.349523125,
@@ -39,64 +32,43 @@ class PhysicalProperties implements PhysicalPropertiesInterface
         self::WEIGHT_STONE    => 6350.29318,
     ];
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setWidth($width)
+    public function setWidth(?int $width): self
     {
-        $this->width = (int) $width;
+        $this->width = $width;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getWidth()
+    public function getWidth(): ?int
     {
         return $this->width;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setHeight($height)
+    public function setHeight(?int $height): self
     {
-        $this->height = (int) $height;
+        $this->height = $height;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getHeight()
+    public function getHeight(): ?int
     {
         return $this->height;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setLength($length)
+    public function setLength(?int $length): self
     {
-        $this->length = (int) $length;
+        $this->length = $length;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getLength()
+    public function getLength(): ?int
     {
         return $this->length;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setWeight($weight, $unit = self::WEIGHT_GRAM)
+    public function setWeight($weight, $unit = self::WEIGHT_GRAM): self
     {
         if (!isset(self::$unitConversion[$unit])) {
             throw new MyParcelComException('invalid unit: ' . $unit);
@@ -107,11 +79,12 @@ class PhysicalProperties implements PhysicalPropertiesInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getWeight($unit = self::WEIGHT_GRAM)
+    public function getWeight(string $unit = self::WEIGHT_GRAM): ?int
     {
+        if ($this->weight === null) {
+            return $this->weight;
+        }
+
         if (!isset(self::$unitConversion[$unit])) {
             throw new MyParcelComException('invalid unit: ' . $unit);
         }
@@ -119,28 +92,19 @@ class PhysicalProperties implements PhysicalPropertiesInterface
         return (int) round($this->weight / self::$unitConversion[$unit]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setVolume($volume)
+    public function setVolume(float|int|null $volume): self
     {
         $this->volume = $volume;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getVolume()
+    public function getVolume(): float|int|null
     {
         return $this->volume;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getVolumetricWeight()
+    public function getVolumetricWeight(): ?int
     {
         if ($this->volumetricWeight) {
             return $this->volumetricWeight;
@@ -153,10 +117,7 @@ class PhysicalProperties implements PhysicalPropertiesInterface
         return (int) ceil($this->length * $this->width * $this->height / 5000);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function setVolumetricWeight($volumetricWeight)
+    public function setVolumetricWeight(?int $volumetricWeight): self
     {
         $this->volumetricWeight = $volumetricWeight;
 

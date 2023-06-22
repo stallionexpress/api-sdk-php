@@ -4,150 +4,59 @@ declare(strict_types=1);
 
 namespace MyParcelCom\ApiSdk\Resources\Interfaces;
 
-interface AddressInterface extends \JsonSerializable
+use JsonSerializable;
+
+interface AddressInterface extends JsonSerializable
 {
-    /**
-     * @return string|null
-     */
-    public function getStreet1();
+    public function getStreet1(): string;
 
-    /**
-     * @param string $street1
-     * @return $this
-     */
-    public function setStreet1($street1);
+    public function setStreet1(string $street1): self;
 
-    /**
-     * @return string|null
-     */
-    public function getStreet2();
+    public function getStreet2(): ?string;
 
-    /**
-     * @param string $street2
-     * @return $this
-     */
-    public function setStreet2($street2);
+    public function setStreet2(?string $street2): self;
 
-    /**
-     * @return int|null
-     */
-    public function getStreetNumber();
+    public function getStreetNumber(): ?int;
 
-    /**
-     * @param int $streetNumber
-     * @return $this
-     */
-    public function setStreetNumber($streetNumber);
+    public function setStreetNumber(?int $streetNumber): self;
 
-    /**
-     * @return string|null
-     */
-    public function getStreetNumberSuffix();
+    public function getStreetNumberSuffix(): ?string;
 
-    /**
-     * @param string $streetNumberSuffix
-     * @return $this
-     */
-    public function setStreetNumberSuffix($streetNumberSuffix);
+    public function setStreetNumberSuffix(?string $streetNumberSuffix): self;
 
-    /**
-     * @return string|null
-     */
-    public function getPostalCode();
+    public function getPostalCode(): ?string;
 
-    /**
-     * @param string $postalCode
-     * @return $this
-     */
-    public function setPostalCode($postalCode);
+    public function setPostalCode(?string $postalCode): self;
 
-    /**
-     * @return string|null
-     */
-    public function getCity();
+    public function getCity(): string;
 
-    /**
-     * @param string $city
-     * @return $this
-     */
-    public function setCity($city);
+    public function setCity(string $city): self;
 
-    /**
-     * @return string|null
-     */
-    public function getRegionCode();
+    public function getStateCode(): ?string;
 
-    // TODO: add getStateCode() and setStateCode() to the interface when removing all Region functions
+    public function setStateCode(?string $stateCode): self;
 
-    /**
-     * @param string $regionCode
-     * @return $this
-     */
-    public function setRegionCode($regionCode);
+    public function getCountryCode(): string;
 
-    /**
-     * @return string|null
-     */
-    public function getCountryCode();
+    public function setCountryCode(string $countryCode): self;
 
-    /**
-     * @param string $countryCode
-     * @return $this
-     */
-    public function setCountryCode($countryCode);
+    public function getFirstName(): ?string;
 
-    /**
-     * @return string|null
-     */
-    public function getFirstName();
+    public function setFirstName(?string $firstName): self;
 
-    /**
-     * @param string $firstName
-     * @return $this
-     */
-    public function setFirstName($firstName);
+    public function getLastName(): ?string;
 
-    /**
-     * @return string|null
-     */
-    public function getLastName();
+    public function setLastName(?string $lastName): self;
 
-    /**
-     * @param string $lastName
-     * @return $this
-     */
-    public function setLastName($lastName);
+    public function getCompany(): ?string;
 
-    /**
-     * @return string|null
-     */
-    public function getCompany();
+    public function setCompany(?string $company): self;
 
-    /**
-     * @param string $company
-     * @return $this
-     */
-    public function setCompany($company);
+    public function getEmail(): ?string;
 
-    /**
-     * @return string|null
-     */
-    public function getEmail();
+    public function setEmail(?string $email): self;
 
-    /**
-     * @param string $email
-     * @return $this
-     */
-    public function setEmail($email);
+    public function getPhoneNumber(): ?string;
 
-    /**
-     * @return string|null
-     */
-    public function getPhoneNumber();
-
-    /**
-     * @param string $phoneNumber
-     * @return $this
-     */
-    public function setPhoneNumber($phoneNumber);
+    public function setPhoneNumber(?string $phoneNumber): self;
 }

@@ -10,10 +10,13 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\OrganizationInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
+use MyParcelCom\ApiSdk\Resources\Traits\Resource;
+use MyParcelCom\ApiSdk\Utils\DateUtils;
 
 class Shop implements ShopInterface
 {
     use JsonSerializable;
+    use Resource;
 
     const ATTRIBUTE_NAME = 'name';
     const ATTRIBUTE_WEBSITE = 'website';
@@ -23,14 +26,11 @@ class Shop implements ShopInterface
 
     const RELATIONSHIP_ORGANIZATION = 'organization';
 
-    /** @var string */
-    private $id;
+    private ?string $id = null;
 
-    /** @var string */
-    private $type = ResourceInterface::TYPE_SHOP;
+    private string $type = ResourceInterface::TYPE_SHOP;
 
-    /** @var array */
-    private $attributes = [
+    private array $attributes = [
         self::ATTRIBUTE_NAME           => null,
         self::ATTRIBUTE_WEBSITE        => null,
         self::ATTRIBUTE_SENDER_ADDRESS => null,
@@ -38,147 +38,80 @@ class Shop implements ShopInterface
         self::ATTRIBUTE_CREATED_AT     => null,
     ];
 
-    /** @var array */
-    private $relationships = [
+    private array $relationships = [
         self::RELATIONSHIP_ORGANIZATION => [
             'data' => null,
         ],
     ];
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setName($name)
+    public function setName(string $name): self
     {
         $this->attributes[self::ATTRIBUTE_NAME] = $name;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->attributes[self::ATTRIBUTE_NAME];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setWebsite($website)
+    public function setWebsite(?string $website): self
     {
         $this->attributes[self::ATTRIBUTE_WEBSITE] = $website;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getWebsite()
+    public function getWebsite(): ?string
     {
         return $this->attributes[self::ATTRIBUTE_WEBSITE];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setSenderAddress(AddressInterface $senderAddress)
+    public function setSenderAddress(AddressInterface $senderAddress): self
     {
         $this->attributes[self::ATTRIBUTE_SENDER_ADDRESS] = $senderAddress;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getSenderAddress()
+    public function getSenderAddress(): AddressInterface
     {
         return $this->attributes[self::ATTRIBUTE_SENDER_ADDRESS];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setReturnAddress(AddressInterface $returnAddress)
+    public function setReturnAddress(AddressInterface $returnAddress): self
     {
         $this->attributes[self::ATTRIBUTE_RETURN_ADDRESS] = $returnAddress;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getReturnAddress()
+    public function getReturnAddress(): AddressInterface
     {
         return $this->attributes[self::ATTRIBUTE_RETURN_ADDRESS];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setCreatedAt($time)
+    public function setCreatedAt(DateTime|int $createdAt): self
     {
-        if (is_int($time)) {
-            $this->attributes[self::ATTRIBUTE_CREATED_AT] = $time;
-        } elseif ($time instanceof DateTime) {
-            $this->attributes[self::ATTRIBUTE_CREATED_AT] = $time->getTimestamp();
-        }
+        $this->attributes[self::ATTRIBUTE_CREATED_AT] = DateUtils::toTimestamp($createdAt);
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getCreatedAt()
+    public function getCreatedAt(): DateTime
     {
         return (new DateTime())->setTimestamp($this->attributes[self::ATTRIBUTE_CREATED_AT]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setOrganization(OrganizationInterface $organization)
+    public function setOrganization(OrganizationInterface $organization): self
     {
         $this->relationships[self::RELATIONSHIP_ORGANIZATION]['data'] = $organization;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getOrganization()
+    public function getOrganization(): OrganizationInterface
     {
         return $this->relationships[self::RELATIONSHIP_ORGANIZATION]['data'];
     }

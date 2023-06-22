@@ -35,9 +35,6 @@ class StatusTest extends TestCase
     public function testResourceType()
     {
         $status = new Status();
-
-        $this->assertNull($status->getResourceType());
-
         $this->assertEquals('shipments', $status->setResourceType('shipments')->getResourceType());
     }
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MyParcelCom\ApiSdk\Tests\Unit;
 
+use DateTime;
 use MyParcelCom\ApiSdk\Resources\Interfaces\AddressInterface;
 use MyParcelCom\ApiSdk\Resources\Shop;
 use PHPUnit\Framework\TestCase;
@@ -65,7 +66,7 @@ class ShopTest extends TestCase
         $shop = new Shop();
 
         $this->assertEquals(1509001337, $shop->setCreatedAt(1509001337)->getCreatedAt()->getTimestamp());
-        $dateTime = (new \DateTime())->setTimestamp(1509009001);
+        $dateTime = (new DateTime())->setTimestamp(1509009001);
         $this->assertEquals($dateTime, $shop->setCreatedAt($dateTime)->getCreatedAt());
     }
 
@@ -82,7 +83,7 @@ class ShopTest extends TestCase
             ->willReturn([
                 'street_1'             => 'Diagonally',
                 'street_2'             => 'Apartment 4',
-                'street_number'        => '4',
+                'street_number'        => 4,
                 'street_number_suffix' => 'A',
                 'postal_code'          => '1AR BR2',
                 'city'                 => 'London',
@@ -105,7 +106,7 @@ class ShopTest extends TestCase
             ->willReturn([
                 'street_1'             => 'Diagonally',
                 'street_2'             => 'Apartment 4',
-                'street_number'        => '2',
+                'street_number'        => 2,
                 'street_number_suffix' => 'A',
                 'postal_code'          => '1AR BR2',
                 'city'                 => 'London',
@@ -135,7 +136,7 @@ class ShopTest extends TestCase
                 'sender_address' => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 4',
-                    'street_number'        => '2',
+                    'street_number'        => 2,
                     'street_number_suffix' => 'A',
                     'postal_code'          => '1AR BR2',
                     'city'                 => 'London',
@@ -150,7 +151,7 @@ class ShopTest extends TestCase
                 'return_address' => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 4',
-                    'street_number'        => '4',
+                    'street_number'        => 4,
                     'street_number_suffix' => 'A',
                     'postal_code'          => '1AR BR2',
                     'city'                 => 'London',

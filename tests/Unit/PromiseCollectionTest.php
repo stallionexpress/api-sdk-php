@@ -42,7 +42,7 @@ class PromiseCollectionTest extends TestCase
             $resources = [];
             for ($n = $start; $n < 123 && $n < $start + $this->pageSize; $n++) {
                 $resources[] = $this->createConfiguredMock(ResourceInterface::class, [
-                    'getId' => $n,
+                    'getId' => (string) $n,
                 ]);
             }
 

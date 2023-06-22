@@ -11,11 +11,13 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\PickUpDropOffLocationInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\PositionInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
+use MyParcelCom\ApiSdk\Resources\Traits\Resource;
 use MyParcelCom\ApiSdk\Utils\DistanceUtils;
 
 class PickUpDropOffLocation implements PickUpDropOffLocationInterface
 {
     use JsonSerializable;
+    use Resource;
 
     const ATTRIBUTE_CODE = 'code';
     const ATTRIBUTE_ADDRESS = 'address';
@@ -27,14 +29,11 @@ class PickUpDropOffLocation implements PickUpDropOffLocationInterface
 
     const META_DISTANCE = 'distance';
 
-    /** @var string */
-    private $id;
+    private ?string $id = null;
 
-    /** @var string */
-    private $type = ResourceInterface::TYPE_PUDO_LOCATION;
+    private string $type = ResourceInterface::TYPE_PUDO_LOCATION;
 
-    /** @var array */
-    private $attributes = [
+    private array $attributes = [
         self::ATTRIBUTE_CODE          => null,
         self::ATTRIBUTE_ADDRESS       => null,
         self::ATTRIBUTE_OPENING_HOURS => [],
@@ -42,84 +41,41 @@ class PickUpDropOffLocation implements PickUpDropOffLocationInterface
         self::ATTRIBUTE_CATEGORIES    => [],
     ];
 
-    /** @var array */
-    private $relationships = [
+    private array $relationships = [
         self::RELATIONSHIP_CARRIER => [
             'data' => null,
         ],
     ];
 
-    /** @var array */
-    private $meta = [
+    private array $meta = [
         self::META_DISTANCE => null,
     ];
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setCode($code)
+    public function setCode(string $code): self
     {
         $this->attributes[self::ATTRIBUTE_CODE] = $code;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getCode()
+    public function getCode(): string
     {
         return $this->attributes[self::ATTRIBUTE_CODE];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setAddress(AddressInterface $address)
+    public function setAddress(AddressInterface $address): self
     {
         $this->attributes[self::ATTRIBUTE_ADDRESS] = $address;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getAddress()
+    public function getAddress(): AddressInterface
     {
         return $this->attributes[self::ATTRIBUTE_ADDRESS];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setOpeningHours(array $openingHours)
+    public function setOpeningHours(array $openingHours): self
     {
         $this->attributes[self::ATTRIBUTE_OPENING_HOURS] = [];
 
@@ -130,92 +86,66 @@ class PickUpDropOffLocation implements PickUpDropOffLocationInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function addOpeningHour(OpeningHourInterface $openingHour)
+    public function addOpeningHour(OpeningHourInterface $openingHour): self
     {
         $this->attributes[self::ATTRIBUTE_OPENING_HOURS][] = $openingHour;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getOpeningHours()
+    public function getOpeningHours(): array
     {
         return $this->attributes[self::ATTRIBUTE_OPENING_HOURS];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setPosition(PositionInterface $position)
+    public function setPosition(PositionInterface $position): self
     {
         $this->attributes[self::ATTRIBUTE_POSITION] = $position;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getPosition()
+    public function getPosition(): PositionInterface
     {
         return $this->attributes[self::ATTRIBUTE_POSITION];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setCarrier(CarrierInterface $carrier)
+    public function setCarrier(CarrierInterface $carrier): self
     {
         $this->relationships[self::RELATIONSHIP_CARRIER]['data'] = $carrier;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getCarrier()
+    public function getCarrier(): CarrierInterface
     {
         return $this->relationships[self::RELATIONSHIP_CARRIER]['data'];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setDistance($distance, $unit = DistanceUtils::UNIT_METER)
+    public function setDistance(float|int $distance, string $unit = DistanceUtils::UNIT_METER): self
     {
         $this->meta[self::META_DISTANCE] = round(DistanceUtils::convertDistance($distance, $unit, DistanceUtils::UNIT_METER));
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getDistance($unit = DistanceUtils::UNIT_METER)
+    public function getDistance($unit = DistanceUtils::UNIT_METER): float|int|null
     {
+        if ($this->meta[self::META_DISTANCE] === null) {
+            return null;
+        }
+
         return round(DistanceUtils::convertDistance($this->meta[self::META_DISTANCE], DistanceUtils::UNIT_METER, $unit));
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setCategories(array $categories)
+    public function setCategories(array $categories): self
     {
         $this->attributes[self::ATTRIBUTE_CATEGORIES] = $categories;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getCategories()
+    public function getCategories(): array
     {
         return $this->attributes[self::ATTRIBUTE_CATEGORIES];
     }

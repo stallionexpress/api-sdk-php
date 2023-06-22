@@ -8,84 +8,48 @@ use GuzzleHttp\Psr7\Utils;
 use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
+use MyParcelCom\ApiSdk\Resources\Traits\Resource;
 use Psr\Http\Message\StreamInterface;
 
 class File implements FileInterface
 {
     use JsonSerializable;
+    use Resource;
 
     const ATTRIBUTE_DOCUMENT_TYPE = 'document_type';
     const ATTRIBUTE_FORMATS = 'formats';
 
-    /** @var string */
-    private $id;
+    private ?string $id = null;
 
-    /** @var string */
-    private $type = ResourceInterface::TYPE_FILE;
+    private string $type = ResourceInterface::TYPE_FILE;
 
-    /** @var array */
-    private $attributes = [
+    private array $attributes = [
         self::ATTRIBUTE_FORMATS       => [],
         self::ATTRIBUTE_DOCUMENT_TYPE => null,
     ];
 
     /** @var StreamInterface[] */
-    private $streams = [];
+    private array $streams = [];
 
     /** @var string[] */
-    private $base64Data = [];
+    private array $base64Data = [];
 
     /** @var string[] */
-    private $paths = [];
+    private array $paths = [];
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setDocumentType($documentType)
+    public function setDocumentType(string $documentType): self
     {
         $this->attributes[self::ATTRIBUTE_DOCUMENT_TYPE] = $documentType;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getDocumentType()
+    public function getDocumentType(): string
     {
         return $this->attributes[self::ATTRIBUTE_DOCUMENT_TYPE];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setFormats(array $formats)
+    public function setFormats(array $formats): self
     {
         $this->attributes[self::ATTRIBUTE_FORMATS] = [];
         array_walk($formats, function ($format) {
@@ -95,10 +59,7 @@ class File implements FileInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function addFormat($mimeType, $extension)
+    public function addFormat(string $mimeType, string $extension): self
     {
         $this->attributes[self::ATTRIBUTE_FORMATS][] = [
             self::FORMAT_MIME_TYPE => $mimeType,
@@ -114,28 +75,19 @@ class File implements FileInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getFormats()
+    public function getFormats(): array
     {
         return $this->attributes[self::ATTRIBUTE_FORMATS];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setStream(StreamInterface $stream, $mimeType)
+    public function setStream(StreamInterface $stream, string $mimeType): self
     {
         $this->streams[$mimeType] = $stream;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getStream($mimeType = null)
+    public function getStream(?string $mimeType = null): ?StreamInterface
     {
         if ($mimeType === null) {
             foreach ($this->getFormats() as $format) {
@@ -144,7 +96,7 @@ class File implements FileInterface
                 if ($stream !== null) {
                     return $stream;
                 }
-            };
+            }
 
             return null;
         }
@@ -158,22 +110,18 @@ class File implements FileInterface
         if (isset($this->paths[$mimeType])) {
             return Utils::streamFor(fopen($this->paths[$mimeType], 'r'));
         }
+
+        return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setBase64Data($data, $mimeType)
+    public function setBase64Data(string $data, string $mimeType): self
     {
         $this->base64Data[$mimeType] = $data;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getBase64Data($mimeType = null)
+    public function getBase64Data(?string $mimeType = null): ?string
     {
         if ($mimeType === null) {
             foreach ($this->getFormats() as $format) {
@@ -182,7 +130,7 @@ class File implements FileInterface
                 if ($data !== null) {
                     return $data;
                 }
-            };
+            }
 
             return null;
         }
@@ -194,7 +142,7 @@ class File implements FileInterface
             return $this->base64Data[$mimeType] = base64_encode(file_get_contents($this->paths[$mimeType]));
         }
         if (isset($this->streams[$mimeType])) {
-            // Rewind the stream to ensure that we're getting all of the contents.
+            // Rewind the stream to ensure that we're getting all the contents.
             $this->streams[$mimeType]->rewind();
 
             return $this->base64Data[$mimeType] = base64_encode($this->streams[$mimeType]->getContents());
@@ -203,20 +151,14 @@ class File implements FileInterface
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setTemporaryFilePath($path, $mimeType)
+    public function setTemporaryFilePath(string $path, string $mimeType): self
     {
         $this->paths[$mimeType] = $path;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getTemporaryFilePath($mimeType = null)
+    public function getTemporaryFilePath(?string $mimeType = null): ?string
     {
         $extension = null;
         foreach ($this->getFormats() as $format) {
@@ -225,7 +167,7 @@ class File implements FileInterface
                 $extension = $format[self::FORMAT_EXTENSION];
                 break;
             }
-        };
+        }
 
         if (isset($this->paths[$mimeType])) {
             return $this->paths[$mimeType];
@@ -246,9 +188,6 @@ class File implements FileInterface
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function jsonSerialize(): array
     {
         $values = get_object_vars($this);

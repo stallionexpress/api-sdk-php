@@ -9,75 +9,38 @@ use DateTime;
 interface ShipmentStatusInterface extends ResourceInterface
 {
     /**
-     * @param string $id
-     * @return $this
-     */
-    public function setId($id);
-
-    /**
      * @param CarrierStatusInterface[] $carrierStatuses
-     * @return $this
      */
-    public function setCarrierStatuses(array $carrierStatuses);
+    public function setCarrierStatuses(array $carrierStatuses): self;
 
-    /**
-     * @param CarrierStatusInterface $carrierStatus
-     * @return $this
-     */
-    public function addCarrierStatus(CarrierStatusInterface $carrierStatus);
+    public function addCarrierStatus(CarrierStatusInterface $carrierStatus): self;
 
     /**
      * @return CarrierStatusInterface[]
      */
-    public function getCarrierStatuses();
+    public function getCarrierStatuses(): array;
 
     /**
      * @param ErrorInterface[] $errors
-     * @return $this
      */
-    public function setErrors(array $errors);
+    public function setErrors(array $errors): self;
 
-    /**
-     * @param ErrorInterface $error
-     * @return $this
-     */
-    public function addError(ErrorInterface $error);
+    public function addError(ErrorInterface $error): self;
 
     /**
      * @return ErrorInterface[]
      */
-    public function getErrors();
+    public function getErrors(): array;
 
-    /**
-     * @param DateTime|string|int $createdAt
-     * @return $this
-     */
-    public function setCreatedAt($createdAt);
+    public function setCreatedAt(DateTime|int $createdAt): self;
 
-    /**
-     * @return DateTime
-     */
-    public function getCreatedAt();
+    public function getCreatedAt(): DateTime;
 
-    /**
-     * @param ShipmentInterface $shipment
-     * @return $this
-     */
-    public function setShipment(ShipmentInterface $shipment);
+    public function setShipment(ShipmentInterface $shipment): self;
 
-    /**
-     * @return ShipmentInterface
-     */
-    public function getShipment();
+    public function getShipment(): ShipmentInterface;
 
-    /**
-     * @param StatusInterface $status
-     * @return $this
-     */
-    public function setStatus(StatusInterface $status);
+    public function setStatus(StatusInterface $status): self;
 
-    /**
-     * @return StatusInterface
-     */
-    public function getStatus();
+    public function getStatus(): StatusInterface;
 }

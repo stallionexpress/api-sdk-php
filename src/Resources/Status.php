@@ -7,10 +7,12 @@ namespace MyParcelCom\ApiSdk\Resources;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\StatusInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
+use MyParcelCom\ApiSdk\Resources\Traits\Resource;
 
 class Status implements StatusInterface
 {
     use JsonSerializable;
+    use Resource;
 
     const ATTRIBUTE_CODE = 'code';
     const ATTRIBUTE_RESOURCE_TYPE = 'resource_type';
@@ -18,19 +20,11 @@ class Status implements StatusInterface
     const ATTRIBUTE_NAME = 'name';
     const ATTRIBUTE_DESCRIPTION = 'description';
 
-    const META_CODE = 'carrier_status_code';
-    const META_DESCRIPTION = 'carrier_status_description';
-    const META_TIMESTAMP = 'carrier_timestamp';
-    const META_RESOURCE_DATA = 'resource_data';
+    private ?string $id = null;
 
-    /** @var string */
-    private $id;
+    private string $type = ResourceInterface::TYPE_STATUS;
 
-    /** @var string */
-    private $type = ResourceInterface::TYPE_STATUS;
-
-    /** @var array */
-    private $attributes = [
+    private array $attributes = [
         self::ATTRIBUTE_CODE          => null,
         self::ATTRIBUTE_RESOURCE_TYPE => null,
         self::ATTRIBUTE_LEVEL         => null,
@@ -38,124 +32,62 @@ class Status implements StatusInterface
         self::ATTRIBUTE_DESCRIPTION   => null,
     ];
 
-    /**
-     * @return string
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param string $id
-     * @return $this
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * @param string $code
-     * @return $this
-     */
-    public function setCode($code)
+    public function setCode(string $code): self
     {
         $this->attributes[self::ATTRIBUTE_CODE] = $code;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getCode()
+    public function getCode(): string
     {
         return $this->attributes[self::ATTRIBUTE_CODE];
     }
 
-    /**
-     * @param string $resourceType
-     * @return $this
-     */
-    public function setResourceType($resourceType)
+    public function setResourceType(string $resourceType): self
     {
         $this->attributes[self::ATTRIBUTE_RESOURCE_TYPE] = $resourceType;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getResourceType()
+    public function getResourceType(): string
     {
         return $this->attributes[self::ATTRIBUTE_RESOURCE_TYPE];
     }
 
-    /**
-     * @param string $level
-     * @return $this
-     */
-    public function setLevel($level)
+    public function setLevel(string $level): self
     {
         $this->attributes[self::ATTRIBUTE_LEVEL] = $level;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getLevel()
+    public function getLevel(): string
     {
         return $this->attributes[self::ATTRIBUTE_LEVEL];
     }
 
-    /**
-     * @param string $name
-     * @return $this
-     */
-    public function setName($name)
+    public function setName(string $name): self
     {
         $this->attributes[self::ATTRIBUTE_NAME] = $name;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->attributes[self::ATTRIBUTE_NAME];
     }
 
-    /**
-     * @param string $description
-     * @return $this
-     */
-    public function setDescription($description)
+    public function setDescription(string $description): self
     {
         $this->attributes[self::ATTRIBUTE_DESCRIPTION] = $description;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->attributes[self::ATTRIBUTE_DESCRIPTION];
     }

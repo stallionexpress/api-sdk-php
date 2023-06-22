@@ -10,157 +10,90 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\OrganizationInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
+use MyParcelCom\ApiSdk\Resources\Shop;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 use MyParcelCom\ApiSdk\Resources\Traits\ProxiesResource;
+use MyParcelCom\ApiSdk\Resources\Traits\Resource;
 
+/**
+ * @method Shop getResource()
+ */
 class ShopProxy implements ShopInterface, ResourceProxyInterface
 {
     use JsonSerializable;
     use ProxiesResource;
+    use Resource;
 
-    /** @var string */
-    private $id;
+    private ?string $id = null;
 
-    /** @var string */
-    private $type = ResourceInterface::TYPE_SHOP;
+    private string $type = ResourceInterface::TYPE_SHOP;
 
-    /**
-     * Set the identifier for this file.
-     *
-     * @param string $id
-     * @return $this
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param $name
-     * @return $this
-     */
-    public function setName($name)
+    public function setName(string $name): self
     {
         $this->getResource()->setName($name);
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->getResource()->getName();
     }
 
-    /**
-     * @param string $website
-     * @return $this
-     */
-    public function setWebsite($website)
+    public function setWebsite(?string $website): self
     {
         $this->getResource()->setWebsite($website);
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getWebsite()
+    public function getWebsite(): ?string
     {
         return $this->getResource()->getWebsite();
     }
 
-    /**
-     * @param AddressInterface $senderAddress
-     * @return $this
-     */
-    public function setSenderAddress(AddressInterface $senderAddress)
+    public function setSenderAddress(AddressInterface $senderAddress): self
     {
         $this->getResource()->setSenderAddress($senderAddress);
 
         return $this;
     }
 
-    /**
-     * @return AddressInterface
-     */
-    public function getSenderAddress()
+    public function getSenderAddress(): AddressInterface
     {
         return $this->getResource()->getSenderAddress();
     }
 
-    /**
-     * @param AddressInterface $returnAddress
-     * @return $this
-     */
-    public function setReturnAddress(AddressInterface $returnAddress)
+    public function setReturnAddress(AddressInterface $returnAddress): self
     {
         $this->getResource()->setReturnAddress($returnAddress);
 
         return $this;
     }
 
-    /**
-     * @return AddressInterface
-     */
-    public function getReturnAddress()
+    public function getReturnAddress(): AddressInterface
     {
         return $this->getResource()->getReturnAddress();
     }
 
-    /**
-     * @param int|DateTime $time
-     * @return $this
-     */
-    public function setCreatedAt($time)
+    public function setCreatedAt(DateTime|int $createdAt): self
     {
-        $this->getResource()->setCreatedAt($time);
+        $this->getResource()->setCreatedAt($createdAt);
 
         return $this;
     }
 
-    /**
-     * @return DateTime
-     */
-    public function getCreatedAt()
+    public function getCreatedAt(): DateTime
     {
         return $this->getResource()->getCreatedAt();
     }
 
-    /**
-     * @param OrganizationInterface $organization
-     * @return $this
-     */
-    public function setOrganization(OrganizationInterface $organization)
+    public function setOrganization(OrganizationInterface $organization): self
     {
         return $this->getResource()->setOrganization($organization);
     }
 
-    /**
-     * @return OrganizationInterface
-     */
-    public function getOrganization()
+    public function getOrganization(): OrganizationInterface
     {
         return $this->getResource()->getOrganization();
     }

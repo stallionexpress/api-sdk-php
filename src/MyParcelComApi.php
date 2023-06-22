@@ -194,7 +194,7 @@ class MyParcelComApi implements MyParcelComApiInterface
             // for a carrier, the locations of the other carriers should
             // still be returned. The failing carrier returns null.
             $pudoLocations[$carrier->getId()] = !empty($resources) ? new ArrayCollection($resources) : null;
-        };
+        }
 
         return $pudoLocations;
     }
@@ -570,11 +570,7 @@ class MyParcelComApi implements MyParcelComApiInterface
     public function setResourceFactory(ResourceFactoryInterface $resourceFactory): self
     {
         // Let this fetch the resources if the factory allows proxying of resources.
-        if ($resourceFactory instanceof ResourceProxyInterface) {
-            $resourceFactory->setMyParcelComApi($this);
-        }
-
-        $this->resourceFactory = $resourceFactory;
+        $this->resourceFactory = $resourceFactory->setMyParcelComApi($this);
 
         return $this;
     }

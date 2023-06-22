@@ -64,7 +64,7 @@ class ServiceOptionTest extends TestCase
     public function testItSetsAndGetsIncluded()
     {
         $option = new ServiceOption();
-        $this->assertNull($option->isIncluded());
+        $this->assertFalse($option->isIncluded());
         $this->assertTrue($option->setIncluded(true)->isIncluded());
     }
 

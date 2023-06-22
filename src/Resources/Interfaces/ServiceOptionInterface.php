@@ -6,75 +6,27 @@ namespace MyParcelCom\ApiSdk\Resources\Interfaces;
 
 interface ServiceOptionInterface extends ResourceInterface
 {
-    /**
-     * @param string $id
-     * @return $this
-     */
-    public function setId($id);
+    public function setName(string $name): self;
 
-    /**
-     * @param string $name
-     * @return $this
-     */
-    public function setName($name);
+    public function getName(): string;
 
-    /**
-     * @return string
-     */
-    public function getName();
+    public function setCode(string $code): self;
 
-    /**
-     * @param string $code
-     * @return $this
-     */
-    public function setCode($code);
+    public function getCode(): string;
 
-    /**
-     * @return string
-     */
-    public function getCode();
+    public function setCategory(?string $category): self;
 
-    /**
-     * @param null|string $category
-     * @return $this
-     */
-    public function setCategory($category);
+    public function getCategory(): ?string;
 
-    /**
-     * @return null|string
-     */
-    public function getCategory();
+    public function setPrice(?int $price): self;
 
-    /**
-     * @param null|int $price
-     * @return $this
-     */
-    public function setPrice($price);
+    public function getPrice(): ?int;
 
-    /**
-     * @return null|int
-     */
-    public function getPrice();
+    public function setCurrency(?string $currency): self;
 
-    /**
-     * @param string $currency
-     * @return $this
-     */
-    public function setCurrency($currency);
+    public function getCurrency(): ?string;
 
-    /**
-     * @return null|string
-     */
-    public function getCurrency();
+    public function setIncluded(bool $included): self;
 
-    /**
-     * @param null|bool $included
-     * @return $this
-     */
-    public function setIncluded($included);
-
-    /**
-     * @return null|bool
-     */
-    public function isIncluded();
+    public function isIncluded(): bool;
 }

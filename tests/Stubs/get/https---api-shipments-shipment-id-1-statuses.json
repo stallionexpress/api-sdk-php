@@ -122,8 +122,8 @@
       "attributes": {
         "carrier_statuses": [
           {
-            "code": null,
-            "description": null,
+            "code": "10000",
+            "description": "Pre-alert confirmed",
             "assigned_at": 1504101719
           }
         ],
@@ -159,8 +159,8 @@
       "attributes": {
         "carrier_statuses": [
           {
-            "code": null,
-            "description": null,
+            "code": "00000",
+            "description": "Pre-alerted",
             "assigned_at": 1504101718
           }
         ],
