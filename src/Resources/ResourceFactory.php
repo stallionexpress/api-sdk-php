@@ -607,7 +607,7 @@ class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterfac
         return reset($params);
     }
 
-    public function setMyParcelComApi(?MyParcelComApiInterface $api): self
+    public function setMyParcelComApi(MyParcelComApiInterface $api): self
     {
         $this->api = $api;
 

@@ -104,6 +104,7 @@ class ResourceFactoryTest extends TestCase
         ];
 
         $resourceFactory = new ResourceFactory();
+        $resourceFactory->setMyParcelComApi($this->getMockBuilder(MyParcelComApiInterface::class)->getMock());
         $contract = $resourceFactory->create('contracts', $contractProperties);
 
         $this->assertInstanceOf(ContractInterface::class, $contract);
@@ -238,6 +239,7 @@ class ResourceFactoryTest extends TestCase
         ];
 
         $resourceFactory = new ResourceFactory();
+        $resourceFactory->setMyParcelComApi($this->getMockBuilder(MyParcelComApiInterface::class)->getMock());
         $region = $resourceFactory->create('regions', $regionProperties);
 
         $this->assertInstanceOf(RegionInterface::class, $region);
@@ -301,6 +303,7 @@ class ResourceFactoryTest extends TestCase
         ];
 
         $resourceFactory = new ResourceFactory();
+        $resourceFactory->setMyParcelComApi($this->getMockBuilder(MyParcelComApiInterface::class)->getMock());
         $service = $resourceFactory->create('services', $serviceProperties);
 
         $this->assertInstanceOf(ServiceInterface::class, $service);
@@ -384,6 +387,7 @@ class ResourceFactoryTest extends TestCase
         ];
 
         $resourceFactory = new ResourceFactory();
+        $resourceFactory->setMyParcelComApi($this->getMockBuilder(MyParcelComApiInterface::class)->getMock());
         $serviceRate = $resourceFactory->create('service-rates', $serviceRateProperties);
 
         $this->assertInstanceOf(ServiceRateInterface::class, $serviceRate);
@@ -527,6 +531,7 @@ class ResourceFactoryTest extends TestCase
         ];
 
         $resourceFactory = new ResourceFactory();
+        $resourceFactory->setMyParcelComApi($this->getMockBuilder(MyParcelComApiInterface::class)->getMock());
         $shipment = $resourceFactory->create('shipments', $shipmentProperties);
 
         $this->assertInstanceOf(ShipmentInterface::class, $shipment);
@@ -677,6 +682,7 @@ class ResourceFactoryTest extends TestCase
         ];
 
         $resourceFactory = new ResourceFactory();
+        $resourceFactory->setMyParcelComApi($this->getMockBuilder(MyParcelComApiInterface::class)->getMock());
         $shipment = $resourceFactory->create('shipments', $shipmentProperties);
 
         $this->assertInstanceOf(ShipmentInterface::class, $shipment);

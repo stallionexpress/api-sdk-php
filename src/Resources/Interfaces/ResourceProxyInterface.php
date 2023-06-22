@@ -11,5 +11,5 @@ interface ResourceProxyInterface
     /**
      * Set the API with which to fetch the proxied resource.
      */
-    public function setMyParcelComApi(?MyParcelComApiInterface $api): self;
+    public function setMyParcelComApi(MyParcelComApiInterface $api): self;
 }

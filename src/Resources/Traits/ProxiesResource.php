@@ -17,7 +17,7 @@ trait ProxiesResource
     /**
      * Set the api to use when retrieving the resource.
      */
-    public function setMyParcelComApi(?MyParcelComApiInterface $api = null): self
+    public function setMyParcelComApi(MyParcelComApiInterface $api): self
     {
         $this->api = $api;
 
