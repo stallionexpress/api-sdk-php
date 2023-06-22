@@ -18,83 +18,46 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentItemInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentStatusInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
+use MyParcelCom\ApiSdk\Resources\Shipment;
 use MyParcelCom\ApiSdk\Resources\TaxIdentificationNumber;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 use MyParcelCom\ApiSdk\Resources\Traits\ProxiesResource;
+use MyParcelCom\ApiSdk\Resources\Traits\Resource;
 
+/**
+ * @method Shipment getResource()
+ */
 class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
 {
     use JsonSerializable;
     use ProxiesResource;
+    use Resource;
 
-    /** @var string */
-    private $id;
+    private ?string $id = null;
 
-    /** @var string */
-    private $type = ResourceInterface::TYPE_SHIPMENT;
+    private string $type = ResourceInterface::TYPE_SHIPMENT;
 
-    /**
-     * Set the identifier for this file.
-     *
-     * @param string $id
-     * @return $this
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * @return array
-     */
-    public function getMeta()
+    public function getMeta(): array
     {
         return $this->getResource()->getMeta();
     }
 
-    /**
-     * @param AddressInterface $recipientAddress
-     * @return $this
-     */
-    public function setRecipientAddress(AddressInterface $recipientAddress)
+    public function setRecipientAddress(AddressInterface $recipientAddress): self
     {
         $this->getResource()->setRecipientAddress($recipientAddress);
 
         return $this;
     }
 
-    /**
-     * @return AddressInterface
-     */
-    public function getRecipientAddress()
+    public function getRecipientAddress(): ?AddressInterface
     {
         return $this->getResource()->getRecipientAddress();
     }
 
     /**
-     * @param string $recipientTaxNumber
-     * @return $this
-     * @deprecated
+     * @deprecated Use setRecipientTaxIdentificationNumbers() or addRecipientTaxIdentificationNumber() instead.
      */
-    public function setRecipientTaxNumber($recipientTaxNumber)
+    public function setRecipientTaxNumber(?string $recipientTaxNumber): self
     {
         $this->getResource()->setRecipientTaxNumber($recipientTaxNumber);
 
@@ -102,67 +65,48 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
     }
 
     /**
-     * @return string|null
-     * @deprecated
+     * @deprecated Use getRecipientTaxIdentificationNumbers() instead.
      */
-    public function getRecipientTaxNumber()
+    public function getRecipientTaxNumber(): ?string
     {
         return $this->getResource()->getRecipientTaxNumber();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setRecipientTaxIdentificationNumbers(array $taxIdentificationNumbers)
+    public function setRecipientTaxIdentificationNumbers(array $taxIdentificationNumbers): self
     {
         $this->getResource()->setRecipientTaxIdentificationNumbers($taxIdentificationNumbers);
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function addRecipientTaxIdentificationNumber(TaxIdentificationNumber $taxIdentificationNumber)
+    public function addRecipientTaxIdentificationNumber(TaxIdentificationNumber $taxIdentificationNumber): self
     {
         $this->getResource()->addRecipientTaxIdentificationNumber($taxIdentificationNumber);
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getRecipientTaxIdentificationNumbers()
+    public function getRecipientTaxIdentificationNumbers(): array
     {
         return $this->getResource()->getRecipientTaxIdentificationNumbers();
     }
 
-    /**
-     * @param AddressInterface $senderAddress
-     * @return $this
-     */
-    public function setSenderAddress(AddressInterface $senderAddress)
+    public function setSenderAddress(AddressInterface $senderAddress): self
     {
         $this->getResource()->setSenderAddress($senderAddress);
 
         return $this;
     }
 
-    /**
-     * @return AddressInterface
-     */
-    public function getSenderAddress()
+    public function getSenderAddress(): ?AddressInterface
     {
         return $this->getResource()->getSenderAddress();
     }
 
     /**
-     * @param string|null $senderTaxNumber
-     * @return $this
-     * @deprecated
+     * @deprecated Use setSenderTaxIdentificationNumbers() or addSenderTaxIdentificationNumber() instead.
      */
-    public function setSenderTaxNumber($senderTaxNumber)
+    public function setSenderTaxNumber(?string $senderTaxNumber): self
     {
         $this->getResource()->setSenderTaxNumber($senderTaxNumber);
 
@@ -170,257 +114,168 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
     }
 
     /**
-     * @return string|null
-     * @deprecated
+     * @deprecated Use getSenderTaxIdentificationNumbers() instead.
      */
-    public function getSenderTaxNumber()
+    public function getSenderTaxNumber(): ?string
     {
         return $this->getResource()->getSenderTaxNumber();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setSenderTaxIdentificationNumbers(array $taxIdentificationNumbers)
+    public function setSenderTaxIdentificationNumbers(array $taxIdentificationNumbers): self
     {
         $this->getResource()->setSenderTaxIdentificationNumbers($taxIdentificationNumbers);
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function addSenderTaxIdentificationNumber(TaxIdentificationNumber $taxIdentificationNumber)
+    public function addSenderTaxIdentificationNumber(TaxIdentificationNumber $taxIdentificationNumber): self
     {
         $this->getResource()->addSenderTaxIdentificationNumber($taxIdentificationNumber);
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getSenderTaxIdentificationNumbers()
+    public function getSenderTaxIdentificationNumbers(): array
     {
         return $this->getResource()->getSenderTaxIdentificationNumbers();
     }
 
-    /**
-     * @param AddressInterface $returnAddress
-     * @return $this
-     */
-    public function setReturnAddress(AddressInterface $returnAddress)
+    public function setReturnAddress(AddressInterface $returnAddress): self
     {
         $this->getResource()->setReturnAddress($returnAddress);
 
         return $this;
     }
 
-    /**
-     * @return AddressInterface
-     */
-    public function getReturnAddress()
+    public function getReturnAddress(): ?AddressInterface
     {
         return $this->getResource()->getReturnAddress();
     }
 
-    /**
-     * @param string $pickupLocationCode
-     * @return $this
-     */
-    public function setPickupLocationCode($pickupLocationCode)
+    public function setPickupLocationCode(?string $pickupLocationCode): self
     {
         $this->getResource()->setPickupLocationCode($pickupLocationCode);
 
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getPickupLocationCode()
+    public function getPickupLocationCode(): ?string
     {
         return $this->getResource()->getPickupLocationCode();
     }
 
-    /**
-     * @param AddressInterface $pickupLocationAddress
-     * @return $this
-     */
-    public function setPickupLocationAddress(AddressInterface $pickupLocationAddress)
+    public function setPickupLocationAddress(?AddressInterface $pickupLocationAddress): self
     {
         $this->getResource()->setPickupLocationAddress($pickupLocationAddress);
 
         return $this;
     }
 
-    /**
-     * @return AddressInterface|null
-     */
-    public function getPickupLocationAddress()
+    public function getPickupLocationAddress(): ?AddressInterface
     {
         return $this->getResource()->getPickupLocationAddress();
     }
 
-    /**
-     * @param string $channel
-     * @return $this
-     */
-    public function setChannel($channel)
+    public function setChannel(?string $channel): self
     {
         $this->getResource()->setChannel($channel);
 
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getChannel()
+    public function getChannel(): ?string
     {
         return $this->getResource()->getChannel();
     }
 
-    /**
-     * @param string $description
-     * @return $this
-     */
-    public function setDescription($description)
+    public function setDescription(?string $description): self
     {
         $this->getResource()->setDescription($description);
 
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->getResource()->getDescription();
     }
 
-    /**
-     * @param string $customerReference
-     * @return $this
-     */
-    public function setCustomerReference($customerReference)
+    public function setCustomerReference(?string $customerReference): self
     {
         $this->getResource()->setCustomerReference($customerReference);
 
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getCustomerReference()
+    public function getCustomerReference(): ?string
     {
         return $this->getResource()->getCustomerReference();
     }
 
-    /**
-     * @param int $price
-     * @return $this
-     */
-    public function setPrice($price)
+    public function setPrice(?int $price): self
     {
         $this->getResource()->setPrice($price);
 
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getPrice()
+    public function getPrice(): ?int
     {
         return $this->getResource()->getPrice();
     }
 
-    /**
-     * @param string $currency
-     * @return $this
-     */
-    public function setCurrency($currency)
+    public function setCurrency(?string $currency): self
     {
         $this->getResource()->setCurrency($currency);
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getCurrency()
+    public function getCurrency(): ?string
     {
         return $this->getResource()->getCurrency();
     }
 
-    /**
-     * @param string $barcode
-     * @return $this
-     */
-    public function setBarcode($barcode)
+    public function setBarcode(?string $barcode): self
     {
         $this->getResource()->setBarcode($barcode);
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getBarcode()
+    public function getBarcode(): ?string
     {
         return $this->getResource()->getBarcode();
     }
 
-    /**
-     * @param string $trackingCode
-     * @return $this
-     */
-    public function setTrackingCode($trackingCode)
+    public function setTrackingCode(?string $trackingCode): self
     {
         $this->getResource()->setTrackingCode($trackingCode);
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getTrackingCode()
+    public function getTrackingCode(): ?string
     {
         return $this->getResource()->getTrackingCode();
     }
 
-    /**
-     * @param string $trackingUrl
-     * @return $this
-     */
-    public function setTrackingUrl($trackingUrl)
+    public function setTrackingUrl(?string $trackingUrl): self
     {
         $this->getResource()->setTrackingUrl($trackingUrl);
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getTrackingUrl()
+    public function getTrackingUrl(): ?string
     {
         return $this->getResource()->getTrackingUrl();
     }
 
     /**
-     * @param int    $weight
-     * @param string $unit
-     * @return $this
+     * @deprecated Use Shipment::getPhysicalProperties()->setWeight() instead.
      */
-    public function setWeight($weight, $unit = PhysicalPropertiesInterface::WEIGHT_GRAM)
+    public function setWeight(int $weight, string $unit = PhysicalPropertiesInterface::WEIGHT_GRAM): self
     {
         $this->getResource()->setWeight($weight, $unit);
 
@@ -428,364 +283,241 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
     }
 
     /**
-     * @param string $unit
-     * @return int
+     * @deprecated Use Shipment::getPhysicalProperties()->getWeight() instead.
      */
-    public function getWeight($unit = PhysicalPropertiesInterface::WEIGHT_GRAM)
+    public function getWeight(string $unit = PhysicalPropertiesInterface::WEIGHT_GRAM): ?int
     {
         return $this->getResource()->getWeight($unit);
     }
 
-    /**
-     * @param ShopInterface $shop
-     * @return $this
-     */
-    public function setShop(ShopInterface $shop)
+    public function setShop(ShopInterface $shop): self
     {
         $this->getResource()->setShop($shop);
 
         return $this;
     }
 
-    /**
-     * @return ShopInterface
-     */
-    public function getShop()
+    public function getShop(): ?ShopInterface
     {
         return $this->getResource()->getShop();
     }
 
-    /**
-     * @param ServiceOptionInterface[] $options
-     * @return $this
-     */
-    public function setServiceOptions(array $options)
+    public function setServiceOptions(array $options): self
     {
         $this->getResource()->setServiceOptions($options);
 
         return $this;
     }
 
-    /**
-     * @param ServiceOptionInterface $option
-     * @return $this
-     */
-    public function addServiceOption(ServiceOptionInterface $option)
+    public function addServiceOption(ServiceOptionInterface $option): self
     {
         $this->getResource()->addServiceOption($option);
 
         return $this;
     }
 
-    /**
-     * @return ServiceOptionInterface[]
-     */
-    public function getServiceOptions()
+    public function getServiceOptions(): array
     {
         return $this->getResource()->getServiceOptions();
     }
 
-    /**
-     * @param PhysicalPropertiesInterface $physicalProperties
-     * @return $this
-     */
-    public function setPhysicalProperties(PhysicalPropertiesInterface $physicalProperties)
+    public function setPhysicalProperties(PhysicalPropertiesInterface $physicalProperties): self
     {
         $this->getResource()->setPhysicalProperties($physicalProperties);
 
         return $this;
     }
 
-    /**
-     * @return PhysicalPropertiesInterface|null
-     */
-    public function getPhysicalProperties()
+    public function getPhysicalProperties(): ?PhysicalPropertiesInterface
     {
         return $this->getResource()->getPhysicalProperties();
     }
 
     /**
-     * @param int $volumetricWeight
-     * @return $this
+     * @deprecated Use Shipment::getPhysicalProperties()->setVolumetricWeight() instead.
      */
-    public function setVolumetricWeight($volumetricWeight)
+    public function setVolumetricWeight(?int $volumetricWeight): self
     {
-        $this->getResource()->getPhysicalProperties()->setVolumetricWeight($volumetricWeight);
+        $this->getResource()->setVolumetricWeight($volumetricWeight);
 
         return $this;
     }
 
     /**
-     * @return int|null
+     * @deprecated Use Shipment::getPhysicalProperties()->getVolumetricWeight() instead.
      */
-    public function getVolumetricWeight()
+    public function getVolumetricWeight(): ?int
     {
-        return $this->getResource()->getPhysicalProperties()->getVolumetricWeight();
+        return $this->getResource()->getVolumetricWeight();
     }
 
-    /**
-     * @param FileInterface[] $files
-     * @return $this
-     */
-    public function setFiles(array $files)
+    public function setFiles(array $files): self
     {
         $this->getResource()->setFiles($files);
 
         return $this;
     }
 
-    /**
-     * @param FileInterface $file
-     * @return $this
-     */
-    public function addFile(FileInterface $file)
+    public function addFile(FileInterface $file): self
     {
         $this->getResource()->addFile($file);
 
         return $this;
     }
 
-    /**
-     * @param string|null $type
-     * @return FileInterface[]
-     */
-    public function getFiles($type = null)
+    public function getFiles(string $type = null): array
     {
         return $this->getResource()->getFiles($type);
     }
 
-    /**
-     * @param ShipmentStatusInterface $status
-     * @return $this
-     */
-    public function setShipmentStatus(ShipmentStatusInterface $status)
+    public function setShipmentStatus(ShipmentStatusInterface $status): self
     {
         $this->getResource()->setShipmentStatus($status);
 
         return $this;
     }
 
-    /**
-     * @return ShipmentStatusInterface
-     */
-    public function getShipmentStatus()
+    public function getShipmentStatus(): ShipmentStatusInterface
     {
         return $this->getResource()->getShipmentStatus();
     }
 
-    /**
-     * @param CustomsInterface $customs
-     * @return $this
-     */
-    public function setCustoms(CustomsInterface $customs)
+    public function setCustoms(?CustomsInterface $customs): self
     {
         $this->getResource()->setCustoms($customs);
 
         return $this;
     }
 
-    /**
-     * @return CustomsInterface
-     */
-    public function getCustoms()
+    public function getCustoms(): ?CustomsInterface
     {
         return $this->getResource()->getCustoms();
     }
 
-    /**
-     * @param ShipmentStatusInterface[] $statuses
-     * @return $this
-     */
-    public function setStatusHistory(array $statuses)
+    public function setStatusHistory(array $statuses): self
     {
         $this->getResource()->setStatusHistory($statuses);
 
         return $this;
     }
 
-    /**
-     * @return ShipmentStatusInterface[]
-     */
-    public function getStatusHistory()
+    public function getStatusHistory(): array
     {
         return $this->getResource()->getStatusHistory();
     }
 
-    /**
-     * @param ShipmentItemInterface[] $items
-     * @return $this
-     */
-    public function setItems(array $items)
+    public function setItems(?array $items): self
     {
         $this->getResource()->setItems($items);
 
         return $this;
     }
 
-    /**
-     * @param ShipmentItemInterface $item
-     * @return $this
-     */
-    public function addItem(ShipmentItemInterface $item)
+    public function addItem(ShipmentItemInterface $item): self
     {
         $this->getResource()->addItem($item);
 
         return $this;
     }
 
-    /**
-     * @return ShipmentItemInterface[]
-     */
-    public function getItems()
+    public function getItems(): ?array
     {
         return $this->getResource()->getItems();
     }
 
-    /**
-     * @param DateTime|int|string $registerAt
-     * @return $this
-     */
-    public function setRegisterAt($registerAt)
+    public function setRegisterAt(DateTime|int|string|null $registerAt): self
     {
         $this->getResource()->setRegisterAt($registerAt);
 
         return $this;
     }
 
-    /**
-     * @return DateTime
-     */
-    public function getRegisterAt()
+    public function getRegisterAt(): ?DateTime
     {
         return $this->getResource()->getRegisterAt();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setService(ServiceInterface $service)
+    public function setService(?ServiceInterface $service): self
     {
         $this->getResource()->setService($service);
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getService()
+    public function getService(): ?ServiceInterface
     {
         return $this->getResource()->getService();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setContract(ContractInterface $contract)
+    public function setContract(?ContractInterface $contract): self
     {
         $this->getResource()->setContract($contract);
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getContract()
+    public function getContract(): ?ContractInterface
     {
         return $this->getResource()->getContract();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function setTotalValueAmount($totalValueAmount)
+    public function setTotalValueAmount(?int $totalValueAmount): self
     {
         $this->getResource()->setTotalValueAmount($totalValueAmount);
 
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getTotalValueAmount()
+    public function getTotalValueAmount(): ?int
     {
         return $this->getResource()->getTotalValueAmount();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function setTotalValueCurrency($totalValueCurrency)
+    public function setTotalValueCurrency(?string $totalValueCurrency): self
     {
         $this->getResource()->setTotalValueCurrency($totalValueCurrency);
 
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getTotalValueCurrency()
+    public function getTotalValueCurrency(): ?string
     {
         return $this->getResource()->getTotalValueCurrency();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function setServiceCode($serviceCode)
+    public function setServiceCode(?string $serviceCode): self
     {
         $this->getResource()->setServiceCode($serviceCode);
 
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getServiceCode()
+    public function getServiceCode(): ?string
     {
         return $this->getResource()->getServiceCode();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function setTags(array $tags)
+    public function setTags(?array $tags): self
     {
         return $this->getResource()->setTags($tags);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function addTag($tag)
+    public function addTag($tag): self
     {
         return $this->getResource()->addTag($tag);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getTags()
+    public function getTags(): ?array
     {
         return $this->getResource()->getTags();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function clearTags()
+    public function clearTags(): self
     {
         return $this->getResource()->clearTags();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function setLabelMimeType($labelMimeType)
+    public function setLabelMimeType(string $labelMimeType)
     {
         return $this->getResource()->setLabelMimeType($labelMimeType);
     }

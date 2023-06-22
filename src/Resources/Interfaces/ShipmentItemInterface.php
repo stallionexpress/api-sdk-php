@@ -4,93 +4,51 @@ declare(strict_types=1);
 
 namespace MyParcelCom\ApiSdk\Resources\Interfaces;
 
-interface ShipmentItemInterface extends \JsonSerializable
+use JsonSerializable;
+
+interface ShipmentItemInterface extends JsonSerializable
 {
-    /**
-     * @param string|null $sku
-     * @return $this
-     */
-    public function setSku($sku);
+    public function setSku(?string $sku): self;
 
-    /**
-     * @return string|null
-     */
-    public function getSku();
+    public function getSku(): ?string;
 
-    /**
-     * @param string $description
-     * @return $this
-     */
-    public function setDescription($description);
+    public function setDescription(string $description): self;
 
-    /**
-     * @return string
-     */
-    public function getDescription();
+    public function getDescription(): string;
 
-    /**
-     * @param string|null $imageUrl
-     * @return $this
-     */
-    public function setImageUrl($imageUrl);
+    public function setImageUrl(?string $imageUrl): self;
 
-    /**
-     * @return string|null
-     */
-    public function getImageUrl();
+    public function getImageUrl(): ?string;
 
-    /**
-     * @param string|null $hsCode
-     * @return $this
-     */
-    public function setHsCode($hsCode);
+    public function setHsCode(?string $hsCode): self;
 
-    /**
-     * @return string|null
-     */
-    public function getHsCode();
+    public function getHsCode(): ?string;
 
-    /**
-     * @param int $quantity
-     * @return $this
-     */
-    public function setQuantity($quantity);
+    public function setQuantity(int $quantity): self;
 
-    /**
-     * @return int
-     */
-    public function getQuantity();
+    public function getQuantity(): int;
 
-    /**
-     * @param int $value
-     * @return $this
-     */
-    public function setItemValue($value);
+    public function setItemValue(?int $value): self;
 
-    /**
-     * @return int
-     */
-    public function getItemValue();
+    public function getItemValue(): ?int;
 
-    /**
-     * @param string $currency
-     * @return $this
-     */
-    public function setCurrency($currency);
+    public function setCurrency(?string $currency): self;
 
-    /**
-     * @return string
-     */
-    public function getCurrency();
+    public function getCurrency(): ?string;
 
-    /**
-     * @param string|null $countryCode
-     * @return $this
-     */
-    public function setOriginCountryCode($countryCode);
+    public function setOriginCountryCode(?string $countryCode): self;
 
-    /**
-     * @return string|null
-     */
-    public function getOriginCountryCode();
+    public function getOriginCountryCode(): ?string;
+
+    public function setItemWeight(?int $weight, ?string $unit = null): self;
+
+    public function getItemWeight(?string $unit = null): ?int;
+
+    public function setItemWeightUnit(string $weightUnit): self;
+
+    public function getItemWeightUnit(): string;
+
+    public function setIsPreferentialOrigin(bool $isPreferentialOrigin): self;
+
+    public function getIsPreferentialOrigin(): bool;
 }

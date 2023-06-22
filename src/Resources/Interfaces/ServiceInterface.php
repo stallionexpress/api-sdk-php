@@ -13,143 +13,71 @@ interface ServiceInterface extends ResourceInterface
     const DELIVERY_METHOD_DELIVERY = 'delivery';
     const DELIVERY_METHOD_PICKUP = 'pick-up';
 
-    /**
-     * @param string $id
-     * @return $this
-     */
-    public function setId($id);
+    public function setName(string $name): self;
 
-    /**
-     * @param string $name
-     * @return $this
-     */
-    public function setName($name);
+    public function getName(): string;
 
-    /**
-     * @return string
-     */
-    public function getName();
+    public function setCode(string $code): self;
 
-    /**
-     * @param string $code
-     * @return $this
-     */
-    public function setCode($code);
+    public function getCode(): string;
 
-    /**
-     * @return string
-     */
-    public function getCode();
+    public function setPackageType(string $packageType): self;
 
-    /**
-     * @param string $packageType
-     * @return $this
-     */
-    public function setPackageType($packageType);
+    public function getPackageType(): string;
 
-    /**
-     * @return string
-     */
-    public function getPackageType();
+    public function getTransitTimeMin(): ?int;
 
-    /**
-     * @return int|null
-     */
-    public function getTransitTimeMin();
+    public function setTransitTimeMin(?int  $transitTimeMin): self;
 
-    /**
-     * @param int|null $transitTimeMin
-     * @return $this
-     */
-    public function setTransitTimeMin($transitTimeMin);
+    public function getTransitTimeMax(): ?int;
 
-    /**
-     * @return int|null
-     */
-    public function getTransitTimeMax();
+    public function setTransitTimeMax(?int $transitTimeMax): self;
 
-    /**
-     * @param int|null $transitTimeMax
-     * @return $this
-     */
-    public function setTransitTimeMax($transitTimeMax);
+    public function setCarrier(CarrierInterface $carrier): self;
 
-    /**
-     * @param CarrierInterface $carrier
-     * @return $this
-     */
-    public function setCarrier(CarrierInterface $carrier);
+    public function getCarrier(): CarrierInterface;
 
-    /**
-     * @return CarrierInterface
-     */
-    public function getCarrier();
+    public function setHandoverMethod(string $handoverMethod): self;
 
-    /**
-     * @param string $handoverMethod
-     * @return $this
-     */
-    public function setHandoverMethod($handoverMethod);
+    public function getHandoverMethod(): string;
 
-    /**
-     * @return string
-     */
-    public function getHandoverMethod();
+    public function setUsesVolumetricWeight(bool $usesVolumetricWeight): self;
 
-    /**
-     * @param bool $usesVolumetricWeight
-     * @return $this
-     */
-    public function setUsesVolumetricWeight($usesVolumetricWeight);
-
-    /**
-     * @return bool
-     */
-    public function usesVolumetricWeight();
+    public function usesVolumetricWeight(): bool;
 
     /**
      * @param string[] $deliveryDays
-     * @return $this
      */
-    public function setDeliveryDays(array $deliveryDays);
+    public function setDeliveryDays(array $deliveryDays): self;
 
-    /**
-     * @param string $deliveryDay
-     * @return $this
-     */
-    public function addDeliveryDay($deliveryDay);
+    public function addDeliveryDay(string $deliveryDay): self;
 
     /**
      * @return string[]
      */
-    public function getDeliveryDays();
+    public function getDeliveryDays(): array;
 
-    /**
-     * @return string
-     */
-    public function getDeliveryMethod();
+    public function getDeliveryMethod(): string;
 
-    /**
-     * @param string $deliveryMethod
-     * @return $this
-     */
-    public function setDeliveryMethod($deliveryMethod);
+    public function setDeliveryMethod(string $deliveryMethod): self;
+
+    public function setRegionsFrom(array $regions): self;
+
+    public function getRegionsFrom(): array;
+
+    public function setRegionsTo(array $regions): self;
+
+    public function getRegionsTo(): array;
 
     /**
      * @param ServiceRateInterface[] $serviceRates
-     * @return $this
      */
-    public function setServiceRates(array $serviceRates);
+    public function setServiceRates(array $serviceRates): self;
+
+    public function addServiceRate(ServiceRateInterface $serviceRate): self;
 
     /**
-     * @param ServiceRateInterface $serviceRate
-     * @return $this
-     */
-    public function addServiceRate(ServiceRateInterface $serviceRate);
-
-    /**
-     * @param array $filters
      * @return ServiceRateInterface[]
      */
-    public function getServiceRates(array $filters = ['has_active_contract' => 'true']);
+    public function getServiceRates(array $filters = ['has_active_contract' => 'true']): array;
 }

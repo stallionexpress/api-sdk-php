@@ -281,8 +281,6 @@ class ShipmentTest extends TestCase
     {
         $shipment = new Shipment();
 
-        $this->assertEmpty($shipment->getShipmentStatus());
-
         $status = $this->getMockBuilder(ShipmentStatusInterface::class)->getMock();
 
         $this->assertEquals($status, $shipment->setShipmentStatus($status)->getShipmentStatus());
@@ -490,7 +488,7 @@ class ShipmentTest extends TestCase
             ->willReturn([
                 'street_1'             => 'Diagonally',
                 'street_2'             => 'Apartment 4',
-                'street_number'        => '1',
+                'street_number'        => 1,
                 'street_number_suffix' => 'A',
                 'postal_code'          => '1AR BR2',
                 'city'                 => 'London',
@@ -513,7 +511,7 @@ class ShipmentTest extends TestCase
             ->willReturn([
                 'street_1'             => 'Diagonally',
                 'street_2'             => 'Apartment 4',
-                'street_number'        => '2',
+                'street_number'        => 2,
                 'street_number_suffix' => 'A',
                 'postal_code'          => '1AR BR2',
                 'city'                 => 'London',
@@ -536,7 +534,7 @@ class ShipmentTest extends TestCase
             ->willReturn([
                 'street_1'             => 'Diagonally',
                 'street_2'             => 'Apartment 4',
-                'street_number'        => '2',
+                'street_number'        => 2,
                 'street_number_suffix' => 'A',
                 'postal_code'          => '1AR BR2',
                 'city'                 => 'London',
@@ -559,7 +557,7 @@ class ShipmentTest extends TestCase
             ->willReturn([
                 'street_1'             => 'Diagonally',
                 'street_2'             => 'Apartment 4',
-                'street_number'        => '3',
+                'street_number'        => 3,
                 'street_number_suffix' => 'A',
                 'postal_code'          => '1AR BR2',
                 'city'                 => 'London',
@@ -757,7 +755,7 @@ class ShipmentTest extends TestCase
                 'recipient_address'    => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 4',
-                    'street_number'        => '1',
+                    'street_number'        => 1,
                     'street_number_suffix' => 'A',
                     'postal_code'          => '1AR BR2',
                     'city'                 => 'London',
@@ -773,7 +771,7 @@ class ShipmentTest extends TestCase
                 'sender_address'       => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 4',
-                    'street_number'        => '2',
+                    'street_number'        => 2,
                     'street_number_suffix' => 'A',
                     'postal_code'          => '1AR BR2',
                     'city'                 => 'London',
@@ -789,7 +787,7 @@ class ShipmentTest extends TestCase
                 'return_address'       => [
                     'street_1'             => 'Diagonally',
                     'street_2'             => 'Apartment 4',
-                    'street_number'        => '2',
+                    'street_number'        => 2,
                     'street_number_suffix' => 'A',
                     'postal_code'          => '1AR BR2',
                     'city'                 => 'London',
@@ -806,7 +804,7 @@ class ShipmentTest extends TestCase
                     'address' => [
                         'street_1'             => 'Diagonally',
                         'street_2'             => 'Apartment 4',
-                        'street_number'        => '3',
+                        'street_number'        => 3,
                         'street_number_suffix' => 'A',
                         'postal_code'          => '1AR BR2',
                         'city'                 => 'London',

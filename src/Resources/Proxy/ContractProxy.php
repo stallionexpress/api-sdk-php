@@ -4,123 +4,72 @@ declare(strict_types=1);
 
 namespace MyParcelCom\ApiSdk\Resources\Proxy;
 
+use MyParcelCom\ApiSdk\Resources\Contract;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ContractInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 use MyParcelCom\ApiSdk\Resources\Traits\ProxiesResource;
+use MyParcelCom\ApiSdk\Resources\Traits\Resource;
 
+/**
+ * @method Contract getResource()
+ */
 class ContractProxy implements ContractInterface, ResourceProxyInterface
 {
     use JsonSerializable;
     use ProxiesResource;
+    use Resource;
 
-    /** @var string */
-    private $id;
+    private ?string $id = null;
 
-    /** @var string */
-    private $type = ResourceInterface::TYPE_CONTRACT;
+    private string $type = ResourceInterface::TYPE_CONTRACT;
 
-    /**
-     * @return string
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param string $id
-     * @return $this
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * @param string $name
-     * @return $this
-     */
-    public function setName($name)
+    public function setName(string $name): self
     {
         $this->getResource()->setName($name);
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->getResource()->getName();
     }
 
-    /**
-     * @param string $currency
-     * @return $this
-     */
-    public function setCurrency($currency)
+    public function setCurrency(string $currency): self
     {
         $this->getResource()->setCurrency($currency);
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getCurrency()
+    public function getCurrency(): string
     {
         return $this->getResource()->getCurrency();
     }
 
-    /**
-     * @param CarrierInterface $carrier
-     * @return $this
-     */
-    public function setCarrier(CarrierInterface $carrier)
+    public function setCarrier(CarrierInterface $carrier): self
     {
         $this->getResource()->setCarrier($carrier);
 
         return $this;
     }
 
-    /**
-     * @return CarrierInterface
-     */
-    public function getCarrier()
+    public function getCarrier(): CarrierInterface
     {
         return $this->getResource()->getCarrier();
     }
 
-    /**
-     * @param string $status
-     * @return $this
-     */
-    public function setStatus($status)
+    public function setStatus(string $status): self
     {
         $this->getResource()->setStatus($status);
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getStatus()
+    public function getStatus(): string
     {
         return $this->getResource()->getStatus();
     }

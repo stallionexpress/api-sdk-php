@@ -5,39 +5,19 @@ declare(strict_types=1);
 namespace MyParcelCom\ApiSdk\Resources\Interfaces;
 
 use DateTime;
+use JsonSerializable;
 
-interface OpeningHourInterface extends \JsonSerializable
+interface OpeningHourInterface extends JsonSerializable
 {
-    /**
-     * @param string $day
-     * @return $this
-     */
-    public function setDay($day);
+    public function setDay(string $day): self;
 
-    /**
-     * @return string
-     */
-    public function getDay();
+    public function getDay(): string;
 
-    /**
-     * @param DateTime|string $open
-     * @return $this
-     */
-    public function setOpen($open);
+    public function setOpen(DateTime|string $open): self;
 
-    /**
-     * @return DateTime
-     */
-    public function getOpen();
+    public function getOpen(): ?DateTime;
 
-    /**
-     * @param DateTime|string $closed
-     * @return $this
-     */
-    public function setClosed($closed);
+    public function setClosed(DateTime|string $closed): self;
 
-    /**
-     * @return DateTime
-     */
-    public function getClosed();
+    public function getClosed(): ?DateTime;
 }

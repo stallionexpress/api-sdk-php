@@ -9,10 +9,12 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceRateInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
+use MyParcelCom\ApiSdk\Resources\Traits\Resource;
 
 class Service implements ServiceInterface
 {
     use JsonSerializable;
+    use Resource;
 
     const ATTRIBUTE_NAME = 'name';
     const ATTRIBUTE_CODE = 'code';
@@ -29,20 +31,11 @@ class Service implements ServiceInterface
 
     const RELATIONSHIP_CARRIER = 'carrier';
 
-    /** @var string */
-    private $id;
+    private ?string $id = null;
 
-    /** @var string */
-    private $type = ResourceInterface::TYPE_SERVICE;
+    private string $type = ResourceInterface::TYPE_SERVICE;
 
-    /** @var ServiceRateInterface[] */
-    private $serviceRates = [];
-
-    /** @var callable */
-    private $serviceRatesCallback;
-
-    /** @var array */
-    private $attributes = [
+    private array $attributes = [
         self::ATTRIBUTE_NAME            => null,
         self::ATTRIBUTE_CODE            => null,
         self::ATTRIBUTE_PACKAGE_TYPE    => null,
@@ -57,169 +50,103 @@ class Service implements ServiceInterface
         self::ATTRIBUTE_DELIVERY_METHOD => null,
     ];
 
-    /** @var array */
-    private $relationships = [
+    private array $relationships = [
         self::RELATIONSHIP_CARRIER => [
             'data' => null,
         ],
     ];
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
+    /** @var ServiceRateInterface[] */
+    private array $serviceRates = [];
 
-        return $this;
-    }
+    /** @var callable */
+    private $serviceRatesCallback = null;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setName($name)
+    public function setName(string $name): self
     {
         $this->attributes[self::ATTRIBUTE_NAME] = $name;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->attributes[self::ATTRIBUTE_NAME];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setCode($code)
+    public function setCode(string $code): self
     {
         $this->attributes[self::ATTRIBUTE_CODE] = $code;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getCode()
+    public function getCode(): string
     {
         return $this->attributes[self::ATTRIBUTE_CODE];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setPackageType($packageType)
+    public function setPackageType(string $packageType): self
     {
         $this->attributes[self::ATTRIBUTE_PACKAGE_TYPE] = $packageType;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getPackageType()
+    public function getPackageType(): string
     {
         return $this->attributes[self::ATTRIBUTE_PACKAGE_TYPE];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getTransitTimeMin()
+    public function getTransitTimeMin(): ?int
     {
         return $this->attributes[self::ATTRIBUTE_TRANSIT_TIME][self::ATTRIBUTE_TRANSIT_TIME_MIN];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setTransitTimeMin($transitTimeMin)
+    public function setTransitTimeMin(?int $transitTimeMin): self
     {
         $this->attributes[self::ATTRIBUTE_TRANSIT_TIME][self::ATTRIBUTE_TRANSIT_TIME_MIN] = $transitTimeMin;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getTransitTimeMax()
+    public function getTransitTimeMax(): ?int
     {
         return $this->attributes[self::ATTRIBUTE_TRANSIT_TIME][self::ATTRIBUTE_TRANSIT_TIME_MAX];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setTransitTimeMax($transitTimeMax)
+    public function setTransitTimeMax(?int $transitTimeMax): self
     {
         $this->attributes[self::ATTRIBUTE_TRANSIT_TIME][self::ATTRIBUTE_TRANSIT_TIME_MAX] = $transitTimeMax;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setCarrier(CarrierInterface $carrier)
+    public function setCarrier(CarrierInterface $carrier): self
     {
         $this->relationships[self::RELATIONSHIP_CARRIER]['data'] = $carrier;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getCarrier()
+    public function getCarrier(): CarrierInterface
     {
         return $this->relationships[self::RELATIONSHIP_CARRIER]['data'];
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function setHandoverMethod($handoverMethod)
+    public function setHandoverMethod(string $handoverMethod): self
     {
         $this->attributes[self::ATTRIBUTE_HANDOVER_METHOD] = $handoverMethod;
 
         return $this;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getHandoverMethod()
+    public function getHandoverMethod(): string
     {
         return $this->attributes[self::ATTRIBUTE_HANDOVER_METHOD];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setDeliveryDays(array $deliveryDays)
+    public function setDeliveryDays(array $deliveryDays): self
     {
         $this->attributes[self::ATTRIBUTE_DELIVERY_DAYS] = [];
 
@@ -230,102 +157,67 @@ class Service implements ServiceInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function addDeliveryDay($deliveryDay)
+    public function addDeliveryDay(string $deliveryDay): self
     {
         $this->attributes[self::ATTRIBUTE_DELIVERY_DAYS][] = $deliveryDay;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getDeliveryDays()
+    public function getDeliveryDays(): array
     {
         return $this->attributes[self::ATTRIBUTE_DELIVERY_DAYS];
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getDeliveryMethod()
+    public function getDeliveryMethod(): string
     {
         return $this->attributes[self::ATTRIBUTE_DELIVERY_METHOD];
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function setDeliveryMethod($deliveryMethod)
+    public function setDeliveryMethod(string $deliveryMethod): self
     {
         $this->attributes[self::ATTRIBUTE_DELIVERY_METHOD] = $deliveryMethod;
 
         return $this;
     }
 
-    /**
-     * @param array $regions
-     * @return $this
-     */
-    public function setRegionsFrom(array $regions)
+    public function setRegionsFrom(array $regions): self
     {
         $this->attributes[self::ATTRIBUTE_REGIONS_FROM] = $regions;
 
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getRegionsFrom()
+    public function getRegionsFrom(): array
     {
         return $this->attributes[self::ATTRIBUTE_REGIONS_FROM];
     }
 
-    /**
-     * @param array $regions
-     * @return $this
-     */
-    public function setRegionsTo(array $regions)
+    public function setRegionsTo(array $regions): self
     {
         $this->attributes[self::ATTRIBUTE_REGIONS_TO] = $regions;
 
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getRegionsTo()
+    public function getRegionsTo(): array
     {
         return $this->attributes[self::ATTRIBUTE_REGIONS_TO];
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function setUsesVolumetricWeight($usesVolumetricWeight)
+    public function setUsesVolumetricWeight(bool $usesVolumetricWeight): self
     {
         $this->attributes[self::ATTRIBUTE_USES_VOLUMETRIC_WEIGHT] = $usesVolumetricWeight;
 
         return $this;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function usesVolumetricWeight()
+    public function usesVolumetricWeight(): bool
     {
         return $this->attributes[self::ATTRIBUTE_USES_VOLUMETRIC_WEIGHT];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setServiceRates(array $serviceRates)
+    public function setServiceRates(array $serviceRates): self
     {
         $this->serviceRates = [];
 
@@ -336,20 +228,14 @@ class Service implements ServiceInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function addServiceRate(ServiceRateInterface $serviceRate)
+    public function addServiceRate(ServiceRateInterface $serviceRate): self
     {
         $this->serviceRates[] = $serviceRate;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getServiceRates(array $filters = ['has_active_contract' => 'true'])
+    public function getServiceRates(array $filters = ['has_active_contract' => 'true']): array
     {
         if (empty($this->serviceRates) && isset($this->serviceRatesCallback)) {
             $this->setServiceRates(call_user_func_array($this->serviceRatesCallback, [$filters]));
@@ -358,20 +244,13 @@ class Service implements ServiceInterface
         return $this->serviceRates;
     }
 
-    /**
-     * @param callable $callback
-     * @return $this
-     */
-    public function setServiceRatesCallback(callable $callback)
+    public function setServiceRatesCallback(callable $callback): self
     {
         $this->serviceRatesCallback = $callback;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function jsonSerialize(): array
     {
         $values = get_object_vars($this);

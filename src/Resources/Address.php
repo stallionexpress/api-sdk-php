@@ -9,152 +9,102 @@ use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 
 class Address implements AddressInterface
 {
-    /** @var string */
-    private $street1;
-
-    /** @var string */
-    private $street2;
-
-    /** @var int */
-    private $streetNumber;
-
-    /** @var string */
-    private $streetNumberSuffix;
-
-    /** @var string */
-    private $postalCode;
-
-    /** @var string */
-    private $city;
-
-    /** @var string */
-    private $regionCode;
-
-    /** @var string|null */
-    private $stateCode;
-
-    /** @var string */
-    private $countryCode;
-
-    /** @var string */
-    private $firstName;
-
-    /** @var string */
-    private $lastName;
-
-    /** @var string */
-    private $company;
-
-    /** @var string */
-    private $email;
-
-    /** @var string */
-    private $phoneNumber;
-
     use JsonSerializable;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getStreet1()
+    private string $street1;
+
+    private ?string $street2 = null;
+
+    private ?int $streetNumber = null;
+
+    private ?string $streetNumberSuffix = null;
+
+    private ?string $postalCode = null;
+
+    private string $city;
+
+    private ?string $regionCode = null;
+
+    private ?string $stateCode = null;
+
+    private string $countryCode;
+
+    private ?string $firstName = null;
+
+    private ?string $lastName = null;
+
+    private ?string $company = null;
+
+    private ?string $email = null;
+
+    private ?string $phoneNumber = null;
+
+    public function getStreet1(): string
     {
         return $this->street1;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setStreet1($street1)
+    public function setStreet1(string $street1): self
     {
         $this->street1 = $street1;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getStreet2()
+    public function getStreet2(): ?string
     {
         return $this->street2;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setStreet2($street2)
+    public function setStreet2(?string $street2): self
     {
         $this->street2 = $street2;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getStreetNumber()
+    public function getStreetNumber(): ?int
     {
         return $this->streetNumber;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setStreetNumber($streetNumber)
+    public function setStreetNumber(?int $streetNumber): self
     {
         $this->streetNumber = $streetNumber;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getStreetNumberSuffix()
+    public function getStreetNumberSuffix(): ?string
     {
         return $this->streetNumberSuffix;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setStreetNumberSuffix($streetNumberSuffix)
+    public function setStreetNumberSuffix(?string $streetNumberSuffix): self
     {
         $this->streetNumberSuffix = $streetNumberSuffix;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getPostalCode()
+    public function getPostalCode(): ?string
     {
         return $this->postalCode;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setPostalCode($postalCode)
+    public function setPostalCode(?string $postalCode): self
     {
         $this->postalCode = $postalCode;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getCity()
+    public function getCity(): string
     {
         return $this->city;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setCity($city)
+    public function setCity(string $city): self
     {
         $this->city = $city;
 
@@ -162,143 +112,101 @@ class Address implements AddressInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @deprecated
      */
-    public function getRegionCode()
+    public function getRegionCode(): ?string
     {
         return $this->regionCode;
     }
 
     /**
-     * {@inheritdoc}
+     * @deprecated
      */
-    public function setRegionCode($regionCode)
+    public function setRegionCode(?string $regionCode): self
     {
         $this->regionCode = $regionCode;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getStateCode()
+    public function getStateCode(): ?string
     {
         return $this->stateCode;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setStateCode($stateCode)
+    public function setStateCode(?string $stateCode): self
     {
         $this->stateCode = $stateCode;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getCountryCode()
+    public function getCountryCode(): string
     {
         return $this->countryCode;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setCountryCode($countryCode)
+    public function setCountryCode(string $countryCode): self
     {
         $this->countryCode = $countryCode;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getFirstName()
+    public function getFirstName(): ?string
     {
         return $this->firstName;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setFirstName($firstName)
+    public function setFirstName(?string $firstName): self
     {
         $this->firstName = $firstName;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getLastName()
+    public function getLastName(): ?string
     {
         return $this->lastName;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setLastName($lastName)
+    public function setLastName(?string $lastName): self
     {
         $this->lastName = $lastName;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getCompany()
+    public function getCompany(): ?string
     {
         return $this->company;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setCompany($company)
+    public function setCompany(?string $company): self
     {
         $this->company = $company;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getEmail()
+    public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setEmail($email)
+    public function setEmail(?string $email): self
     {
         $this->email = $email;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getPhoneNumber()
+    public function getPhoneNumber(): ?string
     {
         return $this->phoneNumber;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setPhoneNumber($phoneNumber)
+    public function setPhoneNumber(?string $phoneNumber): self
     {
         $this->phoneNumber = $phoneNumber;
 

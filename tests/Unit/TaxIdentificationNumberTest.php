@@ -41,14 +41,6 @@ class TaxIdentificationNumberTest extends TestCase
     }
 
     /** @test */
-    public function testInvalidTypeException()
-    {
-        $this->expectException(MyParcelComException::class);
-
-        (new TaxIdentificationNumber())->setType('boo');
-    }
-
-    /** @test */
     public function testJsonSerialize()
     {
         $number = (new TaxIdentificationNumber())

@@ -8,75 +8,27 @@ use DateTime;
 
 interface ShopInterface extends ResourceInterface
 {
-    /**
-     * @param string $id
-     * @return $this
-     */
-    public function setId($id);
+    public function setName(string $name): self;
 
-    /**
-     * @param $name
-     * @return $this
-     */
-    public function setName($name);
+    public function getName(): string;
 
-    /**
-     * @return string
-     */
-    public function getName();
+    public function setWebsite(?string $website): self;
 
-    /**
-     * @param string $website
-     * @return $this
-     */
-    public function setWebsite($website);
+    public function getWebsite(): ?string;
 
-    /**
-     * @return string
-     */
-    public function getWebsite();
+    public function setSenderAddress(AddressInterface $senderAddress): self;
 
-    /**
-     * @param AddressInterface $senderAddress
-     * @return $this
-     */
-    public function setSenderAddress(AddressInterface $senderAddress);
+    public function getSenderAddress(): AddressInterface;
 
-    /**
-     * @return AddressInterface
-     */
-    public function getSenderAddress();
+    public function setReturnAddress(AddressInterface $returnAddress): self;
 
-    /**
-     * @param AddressInterface $returnAddress
-     * @return $this
-     */
-    public function setReturnAddress(AddressInterface $returnAddress);
+    public function getReturnAddress(): AddressInterface;
 
-    /**
-     * @return AddressInterface
-     */
-    public function getReturnAddress();
+    public function setCreatedAt(DateTime|int $createdAt): self;
 
-    /**
-     * @param int|DateTime $time
-     * @return $this
-     */
-    public function setCreatedAt($time);
+    public function getCreatedAt(): DateTime;
 
-    /**
-     * @return DateTime
-     */
-    public function getCreatedAt();
+    public function setOrganization(OrganizationInterface $organization): self;
 
-    /**
-     * @param OrganizationInterface $organization
-     * @return $this
-     */
-    public function setOrganization(OrganizationInterface $organization);
-
-    /**
-     * @return OrganizationInterface
-     */
-    public function getOrganization();
+    public function getOrganization(): OrganizationInterface;
 }

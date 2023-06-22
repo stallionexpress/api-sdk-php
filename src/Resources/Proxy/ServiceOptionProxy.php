@@ -7,27 +7,30 @@ namespace MyParcelCom\ApiSdk\Resources\Proxy;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ServiceOptionInterface;
+use MyParcelCom\ApiSdk\Resources\ServiceOption;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 use MyParcelCom\ApiSdk\Resources\Traits\ProxiesResource;
+use MyParcelCom\ApiSdk\Resources\Traits\Resource;
 
+/**
+ * @method ServiceOption getResource()
+ */
 class ServiceOptionProxy implements ServiceOptionInterface, ResourceProxyInterface
 {
     use JsonSerializable;
     use ProxiesResource;
+    use Resource;
 
     const META_PRICE = 'price';
     const META_PRICE_AMOUNT = 'amount';
     const META_PRICE_CURRENCY = 'currency';
     const META_INCLUDED = 'included';
 
-    /** @var string */
-    private $id;
+    private ?string $id = null;
 
-    /** @var string */
-    private $type = ResourceInterface::TYPE_SERVICE_OPTION;
+    private string $type = ResourceInterface::TYPE_SERVICE_OPTION;
 
-    /** @var array */
-    private $meta = [
+    private array $meta = [
         self::META_PRICE    => [
             self::META_PRICE_AMOUNT   => null,
             self::META_PRICE_CURRENCY => null,
@@ -35,140 +38,76 @@ class ServiceOptionProxy implements ServiceOptionInterface, ResourceProxyInterfa
         self::META_INCLUDED => null,
     ];
 
-    /**
-     * Set the identifier for this file.
-     *
-     * {@inheritdoc}
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setName($name)
+    public function setName(string $name): self
     {
         $this->getResource()->setName($name);
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->getResource()->getName();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setCode($code)
+    public function setCode(string $code): self
     {
         $this->getResource()->setCode($code);
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getCode()
+    public function getCode(): string
     {
         return $this->getResource()->getCode();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setCategory($category)
+    public function setCategory(?string $category): self
     {
         $this->getResource()->setCategory($category);
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getCategory()
+    public function getCategory(): ?string
     {
         return $this->getResource()->getCategory();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setPrice($price)
+    public function setPrice(?int $price): self
     {
-        $this->meta[self::META_PRICE][self::META_PRICE_AMOUNT] = $price !== null ? (int) $price : null;
+        $this->meta[self::META_PRICE][self::META_PRICE_AMOUNT] = $price;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getPrice()
+    public function getPrice(): ?int
     {
         return $this->meta[self::META_PRICE][self::META_PRICE_AMOUNT];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setCurrency($currency)
+    public function setCurrency(?string $currency): self
     {
         $this->meta[self::META_PRICE][self::META_PRICE_CURRENCY] = $currency;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getCurrency()
+    public function getCurrency(): ?string
     {
         return $this->meta[self::META_PRICE][self::META_PRICE_CURRENCY];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setIncluded($included)
+    public function setIncluded(bool $included): self
     {
         $this->meta[self::META_INCLUDED] = $included;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function isIncluded()
+    public function isIncluded(): bool
     {
-        return $this->meta[self::META_INCLUDED];
+        return (bool) $this->meta[self::META_INCLUDED];
     }
 
     /**

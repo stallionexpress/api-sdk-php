@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace MyParcelCom\ApiSdk\Resources\Interfaces;
 
-interface CustomsInterface extends \JsonSerializable
+use JsonSerializable;
+
+interface CustomsInterface extends JsonSerializable
 {
     const CONTENT_TYPE_MERCHANDISE = 'merchandise';
     const CONTENT_TYPE_SAMPLE_MERCHANDISE = 'sample_merchandise';
@@ -18,69 +20,35 @@ interface CustomsInterface extends \JsonSerializable
     const INCOTERM_DAP = 'DAP';
     const INCOTERM_DDP = 'DDP';
 
-    /**
-     * @param string $contentType
-     * @return $this
-     */
-    public function setContentType($contentType);
+    public function setContentType(?string $contentType): self;
 
-    /**
-     * @return string
-     */
-    public function getContentType();
+    public function getContentType(): ?string;
 
-    /**
-     * @param string $invoiceNumber
-     * @return $this
-     */
-    public function setInvoiceNumber($invoiceNumber);
+    public function setInvoiceNumber(?string $invoiceNumber): self;
 
-    /**
-     * @return string
-     */
-    public function getInvoiceNumber();
+    public function getInvoiceNumber(): ?string;
 
-    /**
-     * @param string $nonDelivery
-     * @return $this
-     */
-    public function setNonDelivery($nonDelivery);
+    public function setNonDelivery(?string $nonDelivery): self;
 
-    /**
-     * @return string
-     */
-    public function getNonDelivery();
+    public function getNonDelivery(): ?string;
 
-    /**
-     * @param string $incoterm
-     * @return $this
-     */
-    public function setIncoterm($incoterm);
+    public function setIncoterm(?string $incoterm): self;
 
-    /**
-     * @return string
-     */
-    public function getIncoterm();
+    public function getIncoterm(): ?string;
 
-    /**
-     * @param string $licenseNumber
-     * @return $this
-     */
-    public function setLicenseNumber($licenseNumber);
+    public function setLicenseNumber(?string $licenseNumber): self;
 
-    /**
-     * @return string|null
-     */
-    public function getLicenseNumber();
+    public function getLicenseNumber(): ?string;
 
-    /**
-     * @param string $certificateNumber
-     * @return $this
-     */
-    public function setCertificateNumber($certificateNumber);
+    public function setCertificateNumber(?string $certificateNumber): self;
 
-    /**
-     * @return string|null
-     */
-    public function getCertificateNumber();
+    public function getCertificateNumber(): ?string;
+
+    public function setShippingValueAmount(?int $shippingValueAmount): self;
+
+    public function getShippingValueAmount(): ?int;
+
+    public function setShippingValueCurrency(?string $shippingValueCurrency): self;
+
+    public function getShippingValueCurrency(): ?string;
 }

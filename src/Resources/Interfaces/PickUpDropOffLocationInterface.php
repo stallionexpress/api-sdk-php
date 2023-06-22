@@ -8,83 +8,39 @@ use MyParcelCom\ApiSdk\Utils\DistanceUtils;
 
 interface PickUpDropOffLocationInterface extends ResourceInterface
 {
-    /**
-     * @param string $id
-     * @return $this
-     */
-    public function setId($id);
+    public function setCode(string $code): self;
 
-    /**
-     * @param string $code
-     * @return $this
-     */
-    public function setCode($code);
+    public function getCode(): string;
 
-    /**
-     * @return string
-     */
-    public function getCode();
+    public function setAddress(AddressInterface $address): self;
 
-    /**
-     * @param AddressInterface $address
-     * @return $this
-     */
-    public function setAddress(AddressInterface $address);
-
-    /**
-     * @return AddressInterface
-     */
-    public function getAddress();
+    public function getAddress(): AddressInterface;
 
     /**
      * @param OpeningHourInterface[] $openingHours
-     * @return $this
      */
-    public function setOpeningHours(array $openingHours);
+    public function setOpeningHours(array $openingHours): self;
 
-    /**
-     * @param OpeningHourInterface $openingHour
-     * @return $this
-     */
-    public function addOpeningHour(OpeningHourInterface $openingHour);
+    public function addOpeningHour(OpeningHourInterface $openingHour): self;
 
     /**
      * @return OpeningHourInterface[]
      */
-    public function getOpeningHours();
+    public function getOpeningHours(): array;
 
-    /**
-     * @param PositionInterface $position
-     * @return $this
-     */
-    public function setPosition(PositionInterface $position);
+    public function setPosition(PositionInterface $position): self;
 
-    /**
-     * @return PositionInterface
-     */
-    public function getPosition();
+    public function getPosition(): PositionInterface;
 
-    /**
-     * @param int    $distance
-     * @param string $unit
-     * @return $this
-     */
-    public function setDistance($distance, $unit = DistanceUtils::UNIT_METER);
+    public function setCarrier(CarrierInterface $carrier): self;
 
-    /**
-     * @param string $unit
-     * @return int
-     */
-    public function getDistance($unit = DistanceUtils::UNIT_METER);
+    public function getCarrier(): CarrierInterface;
 
-    /**
-     * @param string[] $category
-     * @return $this
-     */
-    public function setCategories(array $category);
+    public function setDistance(float|int $distance, string $unit = DistanceUtils::UNIT_METER): self;
 
-    /**
-     * @return array
-     */
-    public function getCategories();
+    public function getDistance(string $unit = DistanceUtils::UNIT_METER): float|int|null;
+
+    public function setCategories(array $categories): self;
+
+    public function getCategories(): array;
 }

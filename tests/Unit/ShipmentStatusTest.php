@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MyParcelCom\ApiSdk\Tests\Unit;
 
+use DateTime;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierStatusInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ErrorInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
@@ -64,8 +65,8 @@ class ShipmentStatusTest extends TestCase
     public function testCreatedAt()
     {
         $shipmentStatus = new ShipmentStatus();
-        $this->assertEquals((new \DateTime())->setTimestamp(1504801719), $shipmentStatus->setCreatedAt(1504801719)->getCreatedAt());
-        $this->assertEquals((new \DateTime())->setTimestamp(1504801720), $shipmentStatus->setCreatedAt((new \DateTime())->setTimestamp(1504801720))->getCreatedAt());
+        $this->assertEquals((new DateTime())->setTimestamp(1504801719), $shipmentStatus->setCreatedAt(1504801719)->getCreatedAt());
+        $this->assertEquals((new DateTime())->setTimestamp(1504801720), $shipmentStatus->setCreatedAt((new DateTime())->setTimestamp(1504801720))->getCreatedAt());
     }
 
     /** @test */

@@ -10,64 +10,23 @@ interface StatusInterface extends ResourceInterface
     const LEVEL_SUCCESS = 'success';
     const LEVEL_FAILED = 'failed';
 
-    /**
-     * @param string $id
-     * @return $this
-     */
-    public function setId($id);
+    public function setCode(string $code): self;
 
-    /**
-     * @param string $code
-     * @return $this
-     */
-    public function setCode($code);
+    public function getCode(): string;
 
-    /**
-     * @return string
-     */
-    public function getCode();
+    public function setResourceType(string $resourceType): self;
 
-    /**
-     * @param string $resourceType
-     * @return $this
-     */
-    public function setResourceType($resourceType);
+    public function getResourceType(): string;
 
-    /**
-     * @return string
-     */
-    public function getResourceType();
+    public function setLevel(string $level): self;
 
-    /**
-     * @param string $level
-     * @return $this
-     */
-    public function setLevel($level);
+    public function getLevel(): string;
 
-    /**
-     * @return string
-     */
-    public function getLevel();
+    public function setName(string $name): self;
 
-    /**
-     * @param string $name
-     * @return $this
-     */
-    public function setName($name);
+    public function getName(): string;
 
-    /**
-     * @return string
-     */
-    public function getName();
+    public function setDescription(string $description): self;
 
-    /**
-     * @param string $description
-     * @return $this
-     */
-    public function setDescription($description);
-
-    /**
-     * @return string
-     */
-    public function getDescription();
+    public function getDescription(): string;
 }

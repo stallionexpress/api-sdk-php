@@ -27,7 +27,7 @@ class AddressTest extends TestCase
     public function testStreetNumber()
     {
         $address = new Address();
-        $this->assertEquals('4', $address->setStreetNumber('4')->getStreetNumber());
+        $this->assertEquals(4, $address->setStreetNumber(4)->getStreetNumber());
     }
 
     /** @test */
@@ -114,7 +114,7 @@ class AddressTest extends TestCase
         $address = (new Address())
             ->setStreet1('Diagonally')
             ->setStreet2('Apartment 4')
-            ->setStreetNumber('4')
+            ->setStreetNumber(4)
             ->setStreetNumberSuffix('A')
             ->setPostalCode('1AR BR2')
             ->setCity('London')
@@ -130,7 +130,7 @@ class AddressTest extends TestCase
         $this->assertEquals([
             'street_1'             => 'Diagonally',
             'street_2'             => 'Apartment 4',
-            'street_number'        => '4',
+            'street_number'        => 4,
             'street_number_suffix' => 'A',
             'postal_code'          => '1AR BR2',
             'city'                 => 'London',

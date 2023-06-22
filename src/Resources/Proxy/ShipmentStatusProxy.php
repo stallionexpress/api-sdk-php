@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MyParcelCom\ApiSdk\Resources\Proxy;
 
+use DateTime;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierStatusInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ErrorInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
@@ -11,162 +12,94 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentStatusInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\StatusInterface;
+use MyParcelCom\ApiSdk\Resources\ShipmentStatus;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 use MyParcelCom\ApiSdk\Resources\Traits\ProxiesResource;
+use MyParcelCom\ApiSdk\Resources\Traits\Resource;
 
+/**
+ * @method ShipmentStatus getResource()
+ */
 class ShipmentStatusProxy implements ShipmentStatusInterface, ResourceProxyInterface
 {
     use JsonSerializable;
     use ProxiesResource;
+    use Resource;
 
-    /** @var string */
-    private $id;
+    private ?string $id = null;
 
-    /** @var string */
-    private $type = ResourceInterface::TYPE_SHIPMENT_STATUS;
+    private string $type = ResourceInterface::TYPE_SHIPMENT_STATUS;
 
-    /**
-     * Set the identifier for this file.
-     *
-     * @param string $id
-     * @return $this
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param array $carrierStatuses
-     * @return $this
-     */
-    public function setCarrierStatuses(array $carrierStatuses)
+    public function setCarrierStatuses(array $carrierStatuses): self
     {
         $this->getResource()->setCarrierStatuses($carrierStatuses);
 
         return $this;
     }
 
-    /**
-     * @param CarrierStatusInterface $carrierStatus
-     * @return $this
-     */
-    public function addCarrierStatus(CarrierStatusInterface $carrierStatus)
+    public function addCarrierStatus(CarrierStatusInterface $carrierStatus): self
     {
         $this->getResource()->addCarrierStatus($carrierStatus);
 
         return $this;
     }
 
-    /**
-     * @return CarrierStatusInterface[]
-     */
-    public function getCarrierStatuses()
+    public function getCarrierStatuses(): array
     {
         return $this->getResource()->getCarrierStatuses();
     }
 
-    /**
-     * @param array $errors
-     * @return $this
-     */
-    public function setErrors(array $errors)
+    public function setErrors(array $errors): self
     {
         $this->getResource()->setErrors($errors);
 
         return $this;
     }
 
-    /**
-     * @param ErrorInterface $error
-     * @return $this
-     */
-    public function addError(ErrorInterface $error)
+    public function addError(ErrorInterface $error): self
     {
         $this->getResource()->addError($error);
 
         return $this;
     }
 
-    /**
-     * @return ErrorInterface[]
-     */
-    public function getErrors()
+    public function getErrors(): array
     {
         return $this->getResource()->getErrors();
     }
 
-    /**
-     * @param int $createdAt
-     * @return $this
-     */
-    public function setCreatedAt($createdAt)
+    public function setCreatedAt(DateTime|int $createdAt): self
     {
         $this->getResource()->setCreatedAt($createdAt);
 
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getCreatedAt()
+    public function getCreatedAt(): DateTime
     {
         return $this->getResource()->getCreatedAt();
     }
 
-    /**
-     * @param ShipmentInterface $shipment
-     * @return $this
-     */
-    public function setShipment(ShipmentInterface $shipment)
+    public function setShipment(ShipmentInterface $shipment): self
     {
         $this->getResource()->setShipment($shipment);
 
         return $this;
     }
 
-    /**
-     * @return ShipmentInterface
-     */
-    public function getShipment()
+    public function getShipment(): ShipmentInterface
     {
         return $this->getResource()->getShipment();
     }
 
-    /**
-     * @param StatusInterface $status
-     * @return $this
-     */
-    public function setStatus(StatusInterface $status)
+    public function setStatus(StatusInterface $status): self
     {
         $this->getResource()->setStatus($status);
 
         return $this;
     }
 
-    /**
-     * @return StatusInterface
-     */
-    public function getStatus()
+    public function getStatus(): StatusInterface
     {
         return $this->getResource()->getStatus();
     }

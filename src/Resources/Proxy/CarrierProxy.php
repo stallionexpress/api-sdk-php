@@ -4,124 +4,71 @@ declare(strict_types=1);
 
 namespace MyParcelCom\ApiSdk\Resources\Proxy;
 
+use MyParcelCom\ApiSdk\Resources\Carrier;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceProxyInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 use MyParcelCom\ApiSdk\Resources\Traits\ProxiesResource;
+use MyParcelCom\ApiSdk\Resources\Traits\Resource;
 
+/**
+ * @method Carrier getResource()
+ */
 class CarrierProxy implements CarrierInterface, ResourceProxyInterface
 {
     use JsonSerializable;
     use ProxiesResource;
+    use Resource;
 
-    /** @var string */
-    private $id;
+    private ?string $id = null;
 
-    /** @var string */
-    private $type = ResourceInterface::TYPE_CARRIER;
+    private string $type = ResourceInterface::TYPE_CARRIER;
 
-    /**
-     * Set the identifier for this file.
-     *
-     * @param string $id
-     * @return $this
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param string $name
-     * @return $this
-     */
-    public function setName($name)
+    public function setName(string $name): self
     {
         $this->getResource()->setName($name);
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->getResource()->getName();
     }
 
-    /**
-     * @param string $code
-     * @return $this
-     */
-    public function setCode($code)
+    public function setCode(string $code): self
     {
         $this->getResource()->setCode($code);
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getCode()
+    public function getCode(): string
     {
         return $this->getResource()->getCode();
     }
 
-    /**
-     * @param array $format
-     * @return $this
-     */
-    public function setCredentialsFormat(array $format)
+    public function setCredentialsFormat(array $format): self
     {
         $this->getResource()->setCredentialsFormat($format);
 
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getCredentialsFormat()
+    public function getCredentialsFormat(): array
     {
         return $this->getResource()->getCredentialsFormat();
     }
 
-    /**
-     * @param array $labelMimeTypes
-     * @return $this
-     */
-    public function setLabelMimeTypes(array $labelMimeTypes)
+    public function setLabelMimeTypes(array $labelMimeTypes): self
     {
         $this->getResource()->setLabelMimeTypes($labelMimeTypes);
 
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getLabelMimeTypes()
+    public function getLabelMimeTypes(): array
     {
         return $this->getResource()->getLabelMimeTypes();
     }

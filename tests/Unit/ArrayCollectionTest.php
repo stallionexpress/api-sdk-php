@@ -23,7 +23,7 @@ class ArrayCollectionTest extends TestCase
 
         for ($i = 0; $i < 123; $i++) {
             $this->resourcesArray[] = $this->createConfiguredMock(ResourceInterface::class, [
-                'getId' => $i,
+                'getId' => (string) $i,
             ]);
         }
 

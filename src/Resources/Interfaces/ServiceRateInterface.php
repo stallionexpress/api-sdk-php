@@ -6,184 +6,75 @@ namespace MyParcelCom\ApiSdk\Resources\Interfaces;
 
 interface ServiceRateInterface extends ResourceInterface
 {
-    /**
-     * @param int $weightMin
-     * @return $this
-     */
-    public function setWeightMin($weightMin);
+    public function setWeightMin(int $weightMin): self;
 
-    /**
-     * @return int
-     */
-    public function getWeightMin();
+    public function getWeightMin(): int;
 
-    /**
-     * @param int $weightMax
-     * @return $this
-     */
-    public function setWeightMax($weightMax);
+    public function setWeightMax(int $weightMax): self;
 
-    /**
-     * @return int
-     */
-    public function getWeightMax();
+    public function getWeightMax(): int;
 
-    /**
-     * @param array $weightBracket
-     */
-    public function setWeightBracket($weightBracket);
+    public function setWeightBracket(array $weightBracket): self;
 
-    /**
-     * @return array
-     */
-    public function getWeightBracket();
+    public function getWeightBracket(): array;
 
-    /**
-     * @param int $weight
-     * @return int|null
-     */
-    public function calculateBracketPrice($weight);
+    public function calculateBracketPrice(int $weight): ?int;
 
-    /**
-     * @param int $lengthMax
-     * @return $this
-     */
-    public function setLengthMax($lengthMax);
+    public function setLengthMax(?int $lengthMax): self;
 
-    /**
-     * @return int
-     */
-    public function getLengthMax();
+    public function getLengthMax(): ?int;
 
-    /**
-     * @param int $heightMax
-     * @return $this
-     */
-    public function setHeightMax($heightMax);
+    public function setHeightMax(?int $heightMax): self;
 
-    /**
-     * @return int
-     */
-    public function getHeightMax();
+    public function getHeightMax(): ?int;
 
-    /**
-     * @param int $widthMax
-     * @return $this
-     */
-    public function setWidthMax($widthMax);
+    public function setWidthMax(?int $widthMax): self;
 
-    /**
-     * @return int
-     */
-    public function getWidthMax();
+    public function getWidthMax(): ?int;
 
-    /**
-     * @param int $volumeMax
-     * @return $this
-     */
-    public function setVolumeMax($volumeMax);
+    public function setVolumeMax(float|int|null $volumeMax): self;
 
-    /**
-     * @return int
-     */
-    public function getVolumeMax();
+    public function getVolumeMax(): float|int|null;
 
-    /**
-     * @param string $currency
-     * @return $this
-     */
-    public function setCurrency($currency);
+    public function setCurrency(?string $currency): self;
 
-    /**
-     * @return string
-     */
-    public function getCurrency();
+    public function getCurrency(): ?string;
 
-    /**
-     * @param int $price
-     * @return $this
-     */
-    public function setPrice($price);
+    public function setPrice(?int $price): self;
 
-    /**
-     * @return null|int
-     */
-    public function getPrice();
+    public function getPrice(): ?int;
 
-    /**
-     * @param int $amount
-     * @return $this
-     */
-    public function setFuelSurchargeAmount($amount);
+    public function setFuelSurchargeAmount(?int $amount): self;
 
-    /**
-     * @return null|int
-     */
-    public function getFuelSurchargeAmount();
+    public function getFuelSurchargeAmount(): ?int;
 
-    /**
-     * @param string $currency
-     * @return $this
-     */
-    public function setFuelSurchargeCurrency($currency);
+    public function setFuelSurchargeCurrency(?string $currency): self;
 
-    /**
-     * @return string
-     */
-    public function getFuelSurchargeCurrency();
+    public function getFuelSurchargeCurrency(): ?string;
 
-    /**
-     * @param ServiceInterface $service
-     * @return $this
-     */
-    public function setService(ServiceInterface $service);
+    public function setService(ServiceInterface $service): self;
 
-    /**
-     * @return ServiceInterface
-     */
-    public function getService();
+    public function getService(): ServiceInterface;
 
-    /**
-     * @param ContractInterface $contract
-     * @return $this
-     */
-    public function setContract(ContractInterface $contract);
+    public function setContract(ContractInterface $contract): self;
 
-    /**
-     * @return ContractInterface
-     */
-    public function getContract();
+    public function getContract(): ContractInterface;
 
     /**
      * @param ServiceOptionInterface[] $serviceOptions
-     * @return $this
      */
-    public function setServiceOptions($serviceOptions);
+    public function setServiceOptions(array $serviceOptions): self;
 
-    /**
-     * @param ServiceOptionInterface $serviceOption
-     * @return $this
-     */
-    public function addServiceOption(ServiceOptionInterface $serviceOption);
+    public function addServiceOption(ServiceOptionInterface $serviceOption): self;
 
     /**
      * @return ServiceOptionInterface[]
      */
-    public function getServiceOptions();
+    public function getServiceOptions(): array;
 
-    /**
-     * @param bool $isDynamic
-     * @return $this
-     */
-    public function setIsDynamic($isDynamic);
+    public function setIsDynamic(bool $isDynamic): self;
 
-    /**
-     * @return bool
-     */
-    public function isDynamic();
+    public function isDynamic(): bool;
 
-    /**
-     * @return ServiceRateInterface
-     */
-    public function resolveDynamicRateForShipment(ShipmentInterface $shipment);
+    public function resolveDynamicRateForShipment(ShipmentInterface $shipment): ServiceRateInterface;
 }

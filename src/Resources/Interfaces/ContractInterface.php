@@ -6,53 +6,19 @@ namespace MyParcelCom\ApiSdk\Resources\Interfaces;
 
 interface ContractInterface extends ResourceInterface
 {
-    /**
-     * @param string $id
-     * @return $this
-     */
-    public function setId($id);
+    public function setName(string $name): self;
 
-    /**
-     * @param string $name
-     * @return $this
-     */
-    public function setName($name);
+    public function getName(): string;
 
-    /**
-     * @return string
-     */
-    public function getName();
+    public function setCurrency(string $currency): self;
 
-    /**
-     * @param string $currency
-     * @return $this
-     */
-    public function setCurrency($currency);
+    public function getCurrency(): string;
 
-    /**
-     * @return string
-     */
-    public function getCurrency();
+    public function setCarrier(CarrierInterface $carrier): self;
 
-    /**
-     * @param CarrierInterface $carrier
-     * @return $this
-     */
-    public function setCarrier(CarrierInterface $carrier);
+    public function getCarrier(): CarrierInterface;
 
-    /**
-     * @return CarrierInterface
-     */
-    public function getCarrier();
+    public function setStatus(string $status): self;
 
-    /**
-     * @param string $status
-     * @return $this
-     */
-    public function setStatus($status);
-
-    /**
-     * @return string
-     */
-    public function getStatus();
+    public function getStatus(): string;
 }

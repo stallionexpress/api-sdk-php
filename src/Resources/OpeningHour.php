@@ -12,43 +12,29 @@ class OpeningHour implements OpeningHourInterface
 {
     use JsonSerializable;
 
-    /** @var string */
-    private $day;
+    private string $day;
 
-    /** @var string */
-    private $open;
+    private ?string $open = null;
 
-    /** @var DateTime */
-    private $openDateTime;
+    private ?DateTime $openDateTime = null;
 
-    /** @var string */
-    private $closed;
+    private ?string $closed = null;
 
-    /** @var DateTime */
-    private $closedDateTime;
+    private ?DateTime $closedDateTime = null;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setDay($day)
+    public function setDay($day): self
     {
         $this->day = $day;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getDay()
+    public function getDay(): string
     {
         return $this->day;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setOpen($open)
+    public function setOpen(DateTime|string $open): self
     {
         if (is_string($open)) {
             $this->open = $open;
@@ -61,18 +47,12 @@ class OpeningHour implements OpeningHourInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getOpen()
+    public function getOpen(): ?DateTime
     {
         return $this->openDateTime;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setClosed($closed)
+    public function setClosed(DateTime|string $closed): self
     {
         if (is_string($closed)) {
             $this->closed = $closed;
@@ -85,10 +65,7 @@ class OpeningHour implements OpeningHourInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getClosed()
+    public function getClosed(): ?DateTime
     {
         return $this->closedDateTime;
     }

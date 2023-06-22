@@ -7,131 +7,75 @@ namespace MyParcelCom\ApiSdk\Resources;
 use MyParcelCom\ApiSdk\Resources\Interfaces\CarrierInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
+use MyParcelCom\ApiSdk\Resources\Traits\Resource;
 
 class Carrier implements CarrierInterface
 {
     use JsonSerializable {
         jsonSerialize as private serialize;
     }
+    use Resource;
 
     const ATTRIBUTE_NAME = 'name';
     const ATTRIBUTE_CODE = 'code';
     const ATTRIBUTE_CREDENTIALS_FORMAT = 'credentials_format';
     const ATTRIBUTE_LABEL_MIME_TYPES = 'label_mime_types';
 
-    /** @var string */
-    private $id;
+    private ?string $id = null;
 
-    /** @var string */
-    private $type = ResourceInterface::TYPE_CARRIER;
+    private string $type = ResourceInterface::TYPE_CARRIER;
 
-    /** @var array */
-    private $attributes = [
+    private array $attributes = [
         self::ATTRIBUTE_NAME               => null,
         self::ATTRIBUTE_CODE               => null,
         self::ATTRIBUTE_CREDENTIALS_FORMAT => [],
         self::ATTRIBUTE_LABEL_MIME_TYPES   => [],
     ];
 
-    /**
-     * @param string $id
-     * @return $this
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param string $name
-     * @return $this
-     */
-    public function setName($name)
+    public function setName(string $name): self
     {
         $this->attributes[self::ATTRIBUTE_NAME] = $name;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->attributes[self::ATTRIBUTE_NAME];
     }
 
-    /**
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param string $code
-     * @return $this
-     */
-    public function setCode($code)
+    public function setCode(string $code): self
     {
         $this->attributes[self::ATTRIBUTE_CODE] = $code;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getCode()
+    public function getCode(): string
     {
         return $this->attributes[self::ATTRIBUTE_CODE];
     }
 
-    /**
-     * @param array $format
-     * @return $this
-     */
-    public function setCredentialsFormat(array $format)
+    public function setCredentialsFormat(array $format): self
     {
         $this->attributes[self::ATTRIBUTE_CREDENTIALS_FORMAT] = $format;
 
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getCredentialsFormat()
+    public function getCredentialsFormat(): array
     {
         return $this->attributes[self::ATTRIBUTE_CREDENTIALS_FORMAT];
     }
 
-    /**
-     * @param array $labelMimeTypes
-     * @return $this
-     */
-    public function setLabelMimeTypes(array $labelMimeTypes)
+    public function setLabelMimeTypes(array $labelMimeTypes): self
     {
         $this->attributes[self::ATTRIBUTE_LABEL_MIME_TYPES] = $labelMimeTypes;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getLabelMimeTypes()
+    public function getLabelMimeTypes(): array
     {
         return $this->attributes[self::ATTRIBUTE_LABEL_MIME_TYPES];
     }

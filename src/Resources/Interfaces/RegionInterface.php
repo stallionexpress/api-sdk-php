@@ -6,76 +6,27 @@ namespace MyParcelCom\ApiSdk\Resources\Interfaces;
 
 interface RegionInterface extends ResourceInterface
 {
-    /**
-     * @param string $id
-     * @return $this
-     */
-    public function setId($id);
+    public function setCountryCode(?string $countryCode): self;
 
-    /**
-     * @param string $countryCode
-     * @return $this
-     */
-    public function setCountryCode($countryCode);
+    public function getCountryCode(): ?string;
 
-    /**
-     * @return string
-     */
-    public function getCountryCode();
+    public function setRegionCode(?string $regionCode): self;
 
-    /**
-     * @param string $regionCode
-     * @return $this
-     */
-    public function setRegionCode($regionCode);
+    public function getRegionCode(): ?string;
 
-    /**
-     * @return string
-     */
-    public function getRegionCode();
+    public function setCurrency(?string $currency): self;
 
-    /**
-     * @param string $currency
-     * @return $this
-     */
-    public function setCurrency($currency);
+    public function getCurrency(): ?string;
 
-    /**
-     * @return string
-     */
-    public function getCurrency();
+    public function setName(string $name): self;
 
-    /**
-     *
-     * @param string $name
-     * @return $this
-     */
-    public function setName($name);
+    public function getName(): string;
 
-    /**
-     * @return string
-     */
-    public function getName();
+    public function setCategory(?string $category);
 
-    /**
-     * @param string $category
-     * @return $this
-     */
-    public function setCategory($category);
+    public function getCategory(): ?string;
 
-    /**
-     * @return string
-     */
-    public function getCategory();
+    public function setParent(?RegionInterface $region): self;
 
-    /**
-     * @param RegionInterface $region
-     * @return $this
-     */
-    public function setParent(RegionInterface $region);
-
-    /**
-     * @return RegionInterface|null
-     */
-    public function getParent();
+    public function getParent(): ?RegionInterface;
 }
