@@ -52,7 +52,7 @@ use ReflectionParameter;
 
 class ResourceFactory implements ResourceFactoryInterface, ResourceProxyInterface
 {
-    protected ?MyParcelComApiInterface $api = null;
+    protected MyParcelComApiInterface $api;
 
     /**
      * Mapping of resource types and interface to concrete implementation.

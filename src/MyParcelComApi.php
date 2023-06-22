@@ -570,11 +570,7 @@ class MyParcelComApi implements MyParcelComApiInterface
     public function setResourceFactory(ResourceFactoryInterface $resourceFactory): self
     {
         // Let this fetch the resources if the factory allows proxying of resources.
-        if ($resourceFactory instanceof ResourceProxyInterface) {
-            $resourceFactory->setMyParcelComApi($this);
-        }
-
-        $this->resourceFactory = $resourceFactory;
+        $this->resourceFactory = $resourceFactory->setMyParcelComApi($this);
 
         return $this;
     }
