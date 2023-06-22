@@ -11,6 +11,7 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ShopInterface;
 use MyParcelCom\ApiSdk\Resources\Traits\JsonSerializable;
 use MyParcelCom\ApiSdk\Resources\Traits\Resource;
+use MyParcelCom\ApiSdk\Utils\DateUtils;
 
 class Shop implements ShopInterface
 {
@@ -93,11 +94,7 @@ class Shop implements ShopInterface
 
     public function setCreatedAt(DateTime|int $createdAt): self
     {
-        if (is_int($createdAt)) {
-            $this->attributes[self::ATTRIBUTE_CREATED_AT] = $createdAt;
-        } elseif ($createdAt instanceof DateTime) {
-            $this->attributes[self::ATTRIBUTE_CREATED_AT] = $createdAt->getTimestamp();
-        }
+        $this->attributes[self::ATTRIBUTE_CREATED_AT] = DateUtils::toTimestamp($createdAt);
 
         return $this;
     }

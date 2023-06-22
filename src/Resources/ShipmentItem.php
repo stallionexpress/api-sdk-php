@@ -132,10 +132,8 @@ class ShipmentItem implements ShipmentItemInterface
      */
     public function setVatPercentage(?int $percentage): self
     {
-        if (is_int($percentage)) {
-            if ($percentage < 0 || $percentage > 100) {
-                throw new MyParcelComException('Invalid percentage: ' . $percentage . ' should be between 0 and 100.');
-            }
+        if (is_int($percentage) && ($percentage < 0 || $percentage > 100)) {
+            throw new MyParcelComException('Invalid percentage: ' . $percentage . ' should be between 0 and 100.');
         }
 
         $this->vatPercentage = $percentage;
