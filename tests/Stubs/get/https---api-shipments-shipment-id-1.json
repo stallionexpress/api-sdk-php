@@ -95,6 +95,7 @@
       "barcode": "3SABCD0123456789",
       "tracking_code": "TR4CK1NGC0D3",
       "tracking_url": "https://track.me/TR4CK1NGC0D3",
+      "tracking_page_url": "https://track.localhost.private/MyParcel.com%20Shop//1433DC",
       "physical_properties": {
         "height": 24,
         "width": 50,
