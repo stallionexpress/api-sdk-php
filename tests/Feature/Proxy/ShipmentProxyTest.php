@@ -60,7 +60,7 @@ class ShipmentProxyTest extends TestCase
         $this->assertEquals('AED', $this->shipmentProxy->setCurrency('AED')->getCurrency());
         $this->assertEquals('Tracking-code_134', $this->shipmentProxy->setTrackingCode('Tracking-code_134')->getTrackingCode());
         $this->assertEquals('https://I.Track.U/134', $this->shipmentProxy->setTrackingUrl('https://I.Track.U/134')->getTrackingUrl());
-        $this->assertEquals('https://track.localhost.private/MyParcel.com%20Shop//1433DC', $this->shipmentProxy->setTrackingPageUrl('https://track.localhost.private/MyParcel.com%20Shop//1433DC')->getTrackingPageUrl());
+        $this->assertEquals('https://track.localhost.private/MyParcel.com%20Shop//1433%20DC', $this->shipmentProxy->setTrackingPageUrl('https://track.localhost.private/MyParcel.com%20Shop//1433%20DC')->getTrackingPageUrl());
         $this->assertEquals('Cartoon Network', $this->shipmentProxy->setChannel('Cartoon Network')->getChannel());
         $this->assertEquals('Something living with hair', $this->shipmentProxy->setDescription('Something living with hair')->getDescription());
         $this->assertEquals('#1234', $this->shipmentProxy->setCustomerReference('#1234')->getCustomerReference());
@@ -191,7 +191,7 @@ class ShipmentProxyTest extends TestCase
         $this->assertEquals('3SABCD0123456789', $this->shipmentProxy->getBarcode());
         $this->assertEquals('TR4CK1NGC0D3', $this->shipmentProxy->getTrackingCode());
         $this->assertEquals('https://track.me/TR4CK1NGC0D3', $this->shipmentProxy->getTrackingUrl());
-        $this->assertEquals('https://track.localhost.private/MyParcel.com%20Shop//1433DC', $this->shipmentProxy->getTrackingPageUrl());
+        $this->assertEquals('https://track.localhost.private/MyParcel.com%20Shop//1433%20DC', $this->shipmentProxy->getTrackingPageUrl());
         $this->assertEquals(24, $this->shipmentProxy->getWeight());
         $this->assertEquals(600, $this->shipmentProxy->getTotalValueAmount());
         $this->assertEquals('GBP', $this->shipmentProxy->getTotalValueCurrency());
