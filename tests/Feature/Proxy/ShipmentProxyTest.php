@@ -151,8 +151,6 @@ class ShipmentProxyTest extends TestCase
     /** @test */
     public function testAttributes()
     {
-//        var_dump('hello: ', $this->shipmentProxy->getTrackingPageUrl());
-
         $this->assertEquals('shipment-id-1', $this->shipmentProxy->getId());
         $this->assertEquals(ResourceInterface::TYPE_SHIPMENT, $this->shipmentProxy->getType());
         $this->assertInstanceOf(AddressInterface::class, $this->shipmentProxy->getRecipientAddress());
