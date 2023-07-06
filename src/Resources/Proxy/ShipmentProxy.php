@@ -272,6 +272,18 @@ class ShipmentProxy implements ShipmentInterface, ResourceProxyInterface
         return $this->getResource()->getTrackingUrl();
     }
 
+    public function setTrackingPageUrl(?string $trackingUrl): self
+    {
+        $this->getResource()->setTrackingPageUrl($trackingUrl);
+
+        return $this;
+    }
+
+    public function getTrackingPageUrl(): ?string
+    {
+        return $this->getResource()->getTrackingPageUrl();
+    }
+
     /**
      * @deprecated Use Shipment::getPhysicalProperties()->setWeight() instead.
      */

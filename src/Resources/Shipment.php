@@ -31,6 +31,7 @@ class Shipment implements ShipmentInterface
     const ATTRIBUTE_BARCODE = 'barcode';
     const ATTRIBUTE_TRACKING_CODE = 'tracking_code';
     const ATTRIBUTE_TRACKING_URL = 'tracking_url';
+    const ATTRIBUTE_TRACKING_PAGE_URL = 'tracking_page_url';
     const ATTRIBUTE_CHANNEL = 'channel';
     const ATTRIBUTE_DESCRIPTION = 'description';
     const ATTRIBUTE_CUSTOMER_REFERENCE = 'customer_reference';
@@ -81,6 +82,7 @@ class Shipment implements ShipmentInterface
         self::ATTRIBUTE_BARCODE                              => null,
         self::ATTRIBUTE_TRACKING_CODE                        => null,
         self::ATTRIBUTE_TRACKING_URL                         => null,
+        self::ATTRIBUTE_TRACKING_PAGE_URL                    => null,
         self::ATTRIBUTE_CHANNEL                              => null,
         self::ATTRIBUTE_DESCRIPTION                          => null,
         self::ATTRIBUTE_CUSTOMER_REFERENCE                   => null,
@@ -377,6 +379,18 @@ class Shipment implements ShipmentInterface
     public function getTrackingUrl(): ?string
     {
         return $this->attributes[self::ATTRIBUTE_TRACKING_URL];
+    }
+
+    public function setTrackingPageUrl(?string $trackingPageUrl): self
+    {
+        $this->attributes[self::ATTRIBUTE_TRACKING_PAGE_URL] = $trackingPageUrl;
+
+        return $this;
+    }
+
+    public function getTrackingPageUrl(): ?string
+    {
+        return $this->attributes[self::ATTRIBUTE_TRACKING_PAGE_URL];
     }
 
     /**
