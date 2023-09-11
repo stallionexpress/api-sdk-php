@@ -114,7 +114,7 @@ class PhysicalProperties implements PhysicalPropertiesInterface
             return null;
         }
 
-        return (int) ceil($this->length * $this->width * $this->height / 5000);
+        return (int) ceil($this->length * $this->width * $this->height / 4000);
     }
 
     public function setVolumetricWeight(?int $volumetricWeight): self
