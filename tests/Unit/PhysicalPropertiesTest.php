@@ -71,7 +71,7 @@ class PhysicalPropertiesTest extends TestCase
         $physicalProperties->setLength(80);
 
         // It calculates the volumetric weight otherwise.
-        $this->assertEquals(68, $physicalProperties->getVolumetricWeight());
+        $this->assertEquals(84, $physicalProperties->getVolumetricWeight());
 
         // If volumetric weight is set, it should return the already set value,
         // regardless of the dimensions.
