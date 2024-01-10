@@ -11,7 +11,7 @@ class Address implements AddressInterface
 {
     use JsonSerializable;
 
-    private string $street1;
+    private ?string $street1;
 
     private ?string $street2 = null;
 
@@ -21,7 +21,7 @@ class Address implements AddressInterface
 
     private ?string $postalCode = null;
 
-    private string $city;
+    private ?string $city;
 
     private ?string $regionCode = null;
 
@@ -39,12 +39,12 @@ class Address implements AddressInterface
 
     private ?string $phoneNumber = null;
 
-    public function getStreet1(): string
+    public function getStreet1(): ?string
     {
         return $this->street1;
     }
 
-    public function setStreet1(string $street1): self
+    public function setStreet1(?string $street1): self
     {
         $this->street1 = $street1;
 
@@ -99,12 +99,12 @@ class Address implements AddressInterface
         return $this;
     }
 
-    public function getCity(): string
+    public function getCity(): ?string
     {
         return $this->city;
     }
 
-    public function setCity(string $city): self
+    public function setCity(?string $city): self
     {
         $this->city = $city;
 
