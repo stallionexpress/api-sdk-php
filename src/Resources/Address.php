@@ -39,7 +39,7 @@ class Address implements AddressInterface
 
     private ?string $phoneNumber = null;
 
-    public function getStreet1(): string
+    public function getStreet1(): ?string
     {
         return $this->street1;
     }
@@ -99,12 +99,12 @@ class Address implements AddressInterface
         return $this;
     }
 
-    public function getCity(): string
+    public function getCity(): ?string
     {
         return $this->city;
     }
 
-    public function setCity(string $city): self
+    public function setCity(?string $city): self
     {
         $this->city = $city;
 
